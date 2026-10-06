@@ -2,6 +2,20 @@
 
 [English](overview.md) | [Français](overview.fr.md)
 
+<details>
+<summary>On this page</summary>
+
+- [Install the libraries](#install-the-libraries)
+- [Coordinate access and custom motion logic](#coordinate-access-and-custom-motion-logic)
+- [SDL2 and SFML examples](#sdl2-and-sfml-examples)
+- [Linux native SDK](#linux-native-sdk)
+- [Website library and camera example](#website-library-and-camera-example)
+- [Building and refreshing distributions](#building-and-refreshing-distributions)
+- [Linux applications and additional integrations](#linux-applications-and-additional-integrations)
+- [React, Vue and Next.js](#react-vue-and-nextjs)
+
+</details>
+
 ## Install the libraries
 
 ```sh

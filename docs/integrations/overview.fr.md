@@ -2,6 +2,17 @@
 
 [English](overview.md) | [Français](overview.fr.md)
 
+<details>
+<summary>Dans cette page</summary>
+
+- [Installation des bibliothèques](#installation-des-bibliothèques)
+- [SDK et coordonnées](#sdk-et-coordonnées)
+- [SDL2/SFML et Linux natif](#sdl2sfml-et-linux-natif)
+- [Navigateur](#navigateur)
+- [Construire les assets](#construire-les-assets)
+
+</details>
+
 ## Installation des bibliothèques
 
 ```sh
@@ -18,17 +29,20 @@ Ces packages sont des bibliothèques. Les applications de bureau et le
 runtime caméra Python se téléchargent séparément dans les
 [Releases](https://github.com/Robin-G0/MIG/releases).
 
-distribution/windows/linux/web fournit apps, SDK CMake et assets de développement.
-build/releases contient les archives compressées. Windows conserve DLL/modèles/configs
-avec les apps. Linux possède Qt 6 et SDK ABI ; exemples graphiques distribués séparément.
+Le dossier `distribution/` regroupe les applications, le SDK CMake et les ressources
+préparées pour chaque plateforme ; `build/releases/` contient les archives compressées.
+Sous Windows, conservez les DLL, modèles et configurations avec les applications.
+La version Linux fournit Qt 6 et le SDK ABI. Les exemples graphiques sont distribués séparément.
 [Bootstrap](../getting-started/bootstrap.fr.md) donne les commandes simples, [Linux](../getting-started/linux.fr.md)
 les limites UI, [exemples](../../examples/README.fr.md) les deux variantes.
 
 ## SDK et coordonnées
 
-MIG::core reçoit les points, format JSON, native capture/MediaPipe facultatif,
-hands21articulations. Un snapshot représente une acquisition/temps/séquence :
-utilisez sur son propriétaire ou copiez vers une boîte synchronisée.
+`MIG::core` reconnaît les mouvements depuis les points fournis. `MIG::format`
+charge les profils JSON ; `MIG::native` ajoute la capture et MediaPipe ; `MIG::hands`
+expose les 21 articulations d’une main. Un snapshot correspond à une acquisition,
+un timestamp et une séquence. Utilisez-le sur son thread propriétaire ou copiez-le
+vers une boîte aux lettres synchronisée.
 
 ```cpp
 #include <mig/core/coordinates.hpp>

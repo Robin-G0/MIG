@@ -1,4 +1,4 @@
-# Implemented positions SDK
+# C++ recognition API
 
 [English](cpp.md) | [Français](cpp.fr.md)
 

@@ -2,19 +2,12 @@
 
 [English](standalone.md) | [Français](standalone.fr.md)
 
-To use the libraries without compiling them, install
-`python -m pip install motion-input-grid` (Python) or
-`npm install motion-input-grid` (browser/React/Vue/Next.js), then run
-`npx mig-copy-assets public/mig` for browser assets.
-[Python](../bindings/python/README.md) · [JavaScript](../bindings/javascript/README.md).
+Download the **`*-examples`** archive matching your system from
+[Releases](https://github.com/Robin-G0/MIG/releases). It includes built applications,
+their sources and dependencies. Examples recognize a raised hand or run an imported
+profile without sending keys to other applications.
 
-Desktop applications and the Python camera runtime remain separate native
-archives; prebuilt examples include their dependencies.
-
-Checkout examples also find the native runtime in `build/release/bin` or
-`build/debug/bin` when built with CMake presets. Automatic selection requires
-both the platform's MediaPipe library and the pose model; model files alone do
-not make a runtime usable. Set `MIG_RUNTIME` to choose another runtime directory.
+## Launch a demo
 
 Extract the complete platform archive. Run one camera example at a time.
 Keep shoulders visible for a second, lower your hands, then raise either wrist
@@ -67,3 +60,10 @@ before toolkit shutdown. Upstream MediaPipe can log internal telemetry warnings;
 those alone do not prove a crash, and offline execution does not promise upstream
 telemetry silence. Read [release preparation](../docs/reference/support.md)
 for platform support and verification results.
+
+## Sources and runtimes
+
+Checkout examples also find the native runtime in `build/release/bin` or
+`build/debug/bin` when built with CMake presets. Automatic selection requires
+both the platform's MediaPipe library and the pose model; model files alone do
+not make a runtime usable. Set `MIG_RUNTIME` to choose another runtime directory.

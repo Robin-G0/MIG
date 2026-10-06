@@ -2,6 +2,17 @@
 
 [English](configurator.md) | [Français](configurator.fr.md)
 
+<details>
+<summary>Dans cette page</summary>
+
+- [Où trouver et lancer l'application](#où-trouver-et-lancer-lapplication)
+- [Exemple : lever la main pour avancer une présentation](#exemple--lever-la-main-pour-avancer-une-présentation)
+- [Créer un premier profil](#créer-un-premier-profil)
+- [Vérifier et utiliser le profil](#vérifier-et-utiliser-le-profil)
+- [Compiler depuis les sources](#compiler-depuis-les-sources)
+
+</details>
+
 Le configurateur de Motion Input Grid (MIG) transforme les mouvements dessinés
 en profils JSON. Choisissez une partie du corps, dessinez son parcours et définissez
 l'action à envoyer. Exécutez le profil enregistré dans le [contrôleur](controller.fr.md)
@@ -24,18 +35,44 @@ le binaire dans `bin/`. Conservez les DLL, modèles, configurations et autres
 ressources de l'archive ensemble. Windows nécessite le runtime Visual C++ 2022
 x64 ; les archives Linux nécessitent glibc 2.35+.
 
-Après compilation depuis les sources :
+## Exemple : lever la main pour avancer une présentation
 
-| Méthode | Fichier depuis la racine du dépôt |
+Un **profil** est un fichier qui regroupe vos mouvements. Un **input** décrit
+un mouvement et son action ; un **layer** contient les régions associées à une
+partie du corps. Plusieurs layers peuvent appartenir au même input.
+
+1. Démarrez la caméra, gardez les deux épaules visibles pour le calibrage, puis
+   ajoutez un input nommé `Next slide` et sélectionnez votre poignet comme partie suivie.
+2. Dessinez des régions 🟩 **Required** en montant depuis la position basse de la
+   main. Numérotez-les dans l'ordre du parcours et placez une région 🟨 **Trigger**
+   au-dessus. Des régions larges laissent plus de liberté au mouvement.
+3. Définissez une action `next_slide`, la touche `Right` et le mode **Single press**.
+   La touche doit correspondre au raccourci de votre application de présentation.
+4. Sous Windows, utilisez **Save layer**, puis **Apply** et **File → Save**.
+   Sous Linux, enregistrez le profil depuis l'interface principale.
+5. Arrêtez la caméra du configurateur, importez le fichier dans le
+   [contrôleur](controller.fr.md) et vérifiez le retour visuel avant d'activer
+   **Keyboard output**. Donnez ensuite le focus à la présentation.
+
+Baissez la main avant de refaire le mouvement. Pour commencer avec un parcours
+déjà dessiné, ouvrez [raised-hands.json](../../examples/common/raised-hands.json),
+puis ajoutez votre raccourci à l'input choisi. Il fournit deux parcours de poignet,
+active le suivi des mains et demande une version compilée avec leur prise en charge.
+Il n'envoie aucune touche tant que vous n'avez pas ajouté de binding.
+
+### Choisir ce que le clavier fait
+
+| Mode | Comportement |
 | --- | --- |
-| Preset Windows `release` | `build/release/bin/mig-configurator.exe` |
-| Script `tools/build-windows.ps1` par défaut | `build/windows/bin/mig-configurator.exe` |
-| Compilation du guide Linux | `build/linux-apps/bin/mig-configurator` |
+| Single press | Exécute la séquence une fois quand le mouvement est accepté. |
+| Hold | Maintient le dernier raccourci jusqu'à la fin des conditions du déclencheur. |
+| Repeat | Répète la séquence tant que les conditions restent valides, à l'intervalle choisi. |
 
-Suivez les guides [Windows](../getting-started/windows.fr.md) ou
-[Linux](../getting-started/linux.fr.md) pour compiler. Le guide Linux indique
-également le paramètre `--runtime` pour les modèles et la bibliothèque MediaPipe.
-Les presets `sdk-*` et les packages de bibliothèques ne construisent pas ces applications.
+Dans le champ des touches, `Ctrl + C` est un raccourci simultané ;
+`"Hello world" _ Enter` écrit le texte puis appuie sur Entrée. `A _ A` appuie
+deux fois sur A. Le mode Hold doit se terminer par un raccourci, pas du texte.
+La [référence clavier](../reference/configuration.fr.md#clavier-et-modes)
+détaille les limites et les séquences.
 
 ## Créer un premier profil
 
@@ -50,10 +87,10 @@ Les couleurs des régions indiquent leurs conditions :
 
 | Couleur | Condition |
 | --- | --- |
-| Vert — Required | Passer par cette région ; les numéros définissent l'ordre du parcours. |
-| Rouge — Forbidden | Éviter cette région. |
-| Jaune — Trigger | Terminer le mouvement ici pour déclencher son action. |
-| Violet — Interaction | Faire le signe de main choisi dans cette région, avec un maintien facultatif. |
+| 🟩 Vert — Required | Passer par cette région ; les numéros définissent l'ordre du parcours. |
+| 🟥 Rouge — Forbidden | Éviter cette région. |
+| 🟨 Jaune — Trigger | Terminer le mouvement ici pour déclencher son action. |
+| 🟪 Violet — Interaction | Faire le signe de main choisi dans cette région, avec un maintien facultatif. |
 
 Sous Windows, utilisez **Save layer** après avoir changé la partie du corps d'un
 layer ; **Apply** enregistre cet input dans le document ouvert et **File → Save**
@@ -73,3 +110,18 @@ La sortie clavier est désactivée au lancement. Le guide du contrôleur expliqu
 comment l'activer et utiliser Single press, Hold et Repeat. **View** règle le thème,
 les calques de l'aperçu et les logs. La [référence de configuration](../reference/configuration.fr.md)
 décrit les champs enregistrés et les modes d'action.
+
+## Compiler depuis les sources
+
+Après compilation depuis les sources :
+
+| Méthode | Fichier depuis la racine du dépôt |
+| --- | --- |
+| Preset Windows `release` | `build/release/bin/mig-configurator.exe` |
+| Script `tools/build-windows.ps1` par défaut | `build/windows/bin/mig-configurator.exe` |
+| Compilation du guide Linux | `build/linux-apps/bin/mig-configurator` |
+
+Suivez les guides [Windows](../getting-started/windows.fr.md) ou
+[Linux](../getting-started/linux.fr.md) pour compiler. Le guide Linux indique
+également le paramètre `--runtime` pour les modèles et la bibliothèque MediaPipe.
+Les presets `sdk-*` et les packages de bibliothèques ne construisent pas ces applications.

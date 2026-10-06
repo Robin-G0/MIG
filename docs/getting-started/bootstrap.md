@@ -2,6 +2,17 @@
 
 [English](bootstrap.md) | [Français](bootstrap.fr.md)
 
+<details>
+<summary>On this page</summary>
+
+- [Configure one action](#configure-one-action)
+- [Run and adapt each integration](#run-and-adapt-each-integration)
+- [Use installed libraries or the checkout](#use-installed-libraries-or-the-checkout)
+- [Choose a CMake preset](#choose-a-cmake-preset)
+- [Verify your changes](#verify-your-changes)
+
+</details>
+
 To install just the library and link it to your project, follow the
 [C++ SDK / CMake guide](cpp.md). It covers archives, source builds,
 `cmake --install` and generated Makefiles on Linux.

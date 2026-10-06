@@ -2,6 +2,16 @@
 
 [English](cpp.md) | [Français](cpp.fr.md)
 
+<details>
+<summary>On this page</summary>
+
+- [Use a prebuilt SDK](#use-a-prebuilt-sdk)
+- [Build and install from source](#build-and-install-from-source)
+- [Link your application](#link-your-application)
+- [Package-manager alternatives and troubleshooting](#package-manager-alternatives-and-troubleshooting)
+
+</details>
+
 Motion Input Grid (MIG) exports a CMake package for C++20 applications. Use an
 installed SDK or build it from source. Both routes provide the same `MIG::`
 targets. Camera tracking is separate from the positions-only SDK.

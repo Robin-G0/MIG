@@ -2,6 +2,20 @@
 
 [English](distribution.md) | [Français](distribution.fr.md)
 
+<details>
+<summary>On this page</summary>
+
+- [Project and package names](#project-and-package-names)
+- [Version and release builds](#version-and-release-builds)
+- [C++ SDK and vcpkg](#c-sdk-and-vcpkg)
+- [Python and npm](#python-and-npm)
+- [Debian and signed APT hosting](#debian-and-signed-apt-hosting)
+- [Engine integrations and validation limits](#engine-integrations-and-validation-limits)
+- [Future registry publication](#future-registry-publication)
+- [Candidate pipeline](#candidate-pipeline)
+
+</details>
+
 Motion Input Grid (MIG) 1.0.0 distributes one recognition engine through the native C++ SDK, its C ABI
 and Emscripten. Python uses ctypes, Unity uses the shared .NET bridge, Godot uses
 the existing GDExtension, and Unreal wraps the C ABI. No integration duplicates
@@ -220,7 +234,7 @@ Then copy the template to `.github/workflows/publish-pypi.yml` and run it manual
 on the selected release tag, supplying its successful candidate Actions run ID.
 The workflow checks that the candidate run used the same commit, verifies hashes
 and publishes only wheels and the sdist. OIDC supplies short-lived credentials;
-no permanent registry token is needed. Publication has not been executed.
+no permanent registry token is needed. The template does not publish until enabled.
 
 The [npm template](../../.github/workflow-templates/publish-npm.yml.disabled)
 is also disabled. Configure the package's Trusted Publisher for `Robin-G0/MIG`,
@@ -228,8 +242,7 @@ is also disabled. Configure the package's Trusted Publisher for `Robin-G0/MIG`,
 It uses GitHub-hosted runners, Node 24, npm 11.11 and OIDC, and publishes the
 validated tarball with provenance. Check ownership/access to `motion-input-grid`
 and perform any initial package registration manually. See [npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers/)
-for registry requirements and first-publication limitations. No npm publish or
-registry configuration has been performed.
+for registry requirements and first-publication limitations. Registry configuration and publication remain manual.
 
 For direct publication, explicitly allow `npm publish` in the Trusted Publisher settings; new configurations can default to staged publication only.
 

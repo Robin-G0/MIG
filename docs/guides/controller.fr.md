@@ -2,6 +2,19 @@
 
 [English](controller.md) | [Français](controller.fr.md)
 
+<details>
+<summary>Dans cette page</summary>
+
+- [Où trouver et lancer l'application](#où-trouver-et-lancer-lapplication)
+- [Premier lancement](#premier-lancement)
+- [Profils](#profils)
+- [Affichage](#affichage)
+- [Vérifier une action](#vérifier-une-action)
+- [Si le mouvement ne fonctionne pas](#si-le-mouvement-ne-fonctionne-pas)
+- [Compilation et problèmes courants](#compilation-et-problèmes-courants)
+
+</details>
+
 Le contrôleur exécute les profils créés dans le configurateur pendant que vous
 utilisez une autre application ou jouez. Il permet de sélectionner un profil,
 de voir les actions reconnues et de vérifier les mouvements avec la caméra.
@@ -23,19 +36,6 @@ ouvrez l'exécutable. Sous Linux, ouvrez un terminal dans ce dossier et lancez
 le binaire dans `bin/`. Conservez les DLL, modèles, configurations et autres
 ressources de l'archive ensemble. Windows nécessite le runtime Visual C++ 2022
 x64 ; les archives Linux nécessitent glibc 2.35+.
-
-Après compilation depuis les sources :
-
-| Méthode | Fichier depuis la racine du dépôt |
-| --- | --- |
-| Preset Windows `release` | `build/release/bin/mig-controller.exe` |
-| Script `tools/build-windows.ps1` par défaut | `build/windows/bin/mig-controller.exe` |
-| Compilation du guide Linux | `build/linux-apps/bin/mig-controller` |
-
-Suivez les guides [Windows](../getting-started/windows.fr.md) ou
-[Linux](../getting-started/linux.fr.md) pour compiler. Le guide Linux indique
-également le paramètre `--runtime` pour les modèles et la bibliothèque MediaPipe.
-Les presets `sdk-*` et les packages de bibliothèques ne construisent pas ces applications.
 
 ## Premier lancement
 
@@ -115,7 +115,35 @@ reconnaissance. Désactivez-la avant de jouer. Vous pouvez recalibrer sans modif
 le profil. La vérification ne modifie pas les régions et n'isole pas la reconnaissance
 à une seule action : toutes les actions continuent de signaler leurs déclenchements.
 
+## Si le mouvement ne fonctionne pas
+
+| Ce que vous observez | Que vérifier |
+| --- | --- |
+| Le calibrage ne finit pas | Gardez les deux épaules visibles et relancez le calibrage. |
+| L'action ne s'allume pas | Activez **Camera preview** et **Verify bindings** pour voir les régions et les conditions manquantes. |
+| L'action s'allume mais aucune touche n'est envoyée | Vérifiez le binding clavier, activez **Keyboard output**, désactivez la vérification et donnez le focus à l'application cible. |
+| L'action ne se déclenche pas une deuxième fois | Sortez de la région finale, puis refaites le parcours ; vérifiez aussi le cooldown du profil. |
+| Un signe de main manque | Vérifiez la prise en charge des mains et leur visibilité ; consultez le [guide des mains](hands.fr.md). |
+
+> [!NOTE]
+> **Verify bindings** suspend toute sortie clavier. Les exemples et les libraries
+> transmettent des événements logiques ; le contrôleur envoie des touches lorsque
+> vous activez cette option.
+
 ## Compilation et problèmes courants
+
+Après compilation depuis les sources :
+
+| Méthode | Fichier depuis la racine du dépôt |
+| --- | --- |
+| Preset Windows `release` | `build/release/bin/mig-controller.exe` |
+| Script `tools/build-windows.ps1` par défaut | `build/windows/bin/mig-controller.exe` |
+| Compilation du guide Linux | `build/linux-apps/bin/mig-controller` |
+
+Suivez les guides [Windows](../getting-started/windows.fr.md) ou
+[Linux](../getting-started/linux.fr.md) pour compiler. Le guide Linux indique
+également le paramètre `--runtime` pour les modèles et la bibliothèque MediaPipe.
+Les presets `sdk-*` et les packages de bibliothèques ne construisent pas ces applications.
 
 Consultez les guides [Windows](../getting-started/windows.fr.md) et [Linux](../getting-started/linux.fr.md)
 pour les dépendances et commandes de compilation. Gardez les bibliothèques natives

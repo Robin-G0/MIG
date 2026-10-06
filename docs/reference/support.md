@@ -17,8 +17,8 @@ Automated synthetic and blank-frame checks cannot establish hardware compatibili
 | Debian / APT tooling | Beta | Tested | amd64; arm64 package generated | amd64 installation; signed test repository update/download |
 | Native capture / desktop apps | Beta | Tested | Windows/Linux x64 | Blank-frame and synthetic/UI tests; real camera/key delivery untested |
 | Godot add-on | Preview | Tested | Godot 4.3, Windows x64, Linux x64/ARM64 | Fresh-project imports and GDScript lifecycle; no exported-game validation |
-| Unity UPM | Preview | Untested in editor | Windows/Linux x64 | Native/.NET payload tested; editor/player builds NOT RUN |
-| Unreal plugin | Preview | Untested in editor | Windows x64, Linux x64/ARM64 payloads | C ABI payload tested; module/game builds NOT RUN |
+| Unity UPM | Preview | Untested in editor | Windows/Linux x64 | Native/.NET payload tested; editor/player builds not run |
+| Unreal plugin | Preview | Untested in editor | Windows x64, Linux x64/ARM64 payloads | C ABI payload tested; module/game builds not run |
 | Face scaffold | Experimental | Untested | Portable source | No face estimator or supported face recognition product |
 | Real cameras, OS key delivery, physical ARM64 | — | Untested | Target-dependent | Hardware/manual tests required |
 | macOS, mobile engine plugins | Planned | Untested | No distributed binaries | No support claim |
@@ -32,7 +32,7 @@ Automated synthetic and blank-frame checks cannot establish hardware compatibili
   need broader manual validation before stabilization.
 - **Experimental**: incomplete or exploratory functionality without a support guarantee.
 - **Tested**: the stated check actually ran; it covers only its stated environment.
-- **Untested**: the relevant check has not run. `NOT RUN` retains this meaning.
+- **Untested**: the relevant check has not run.
 - **Expected to work**: an inference from compatible prerequisites, never test evidence.
 - **Planned**: no delivered support. Roadmap entries are not commitments.
 

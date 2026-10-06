@@ -2,6 +2,16 @@
 
 [English](javascript.md) | [Français](javascript.fr.md)
 
+<details>
+<summary>Dans cette page</summary>
+
+- [Lancer les exemples](#lancer-les-exemples)
+- [Archive compilée](#archive-compilée)
+- [Dans votre projet](#dans-votre-projet)
+- [Fonctionnement](#fonctionnement)
+
+</details>
+
 Les intégrations navigateur utilisent le moteur C++ compilé en WASM. Chaque
 framework propose une démo de levage des mains et un importateur de profils du
 configurateur, affichant chaque action acceptée avec son identifiant.

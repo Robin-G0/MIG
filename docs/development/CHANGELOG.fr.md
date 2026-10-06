@@ -2,10 +2,9 @@
 
 [English](CHANGELOG.md) | [Français](CHANGELOG.fr.md)
 
-## 1.0.0 — candidat de première publication publique
+## 1.0.0 — première version publique
 
 Le prototype et le développement initial ont eu lieu en privé avant cette première publication.
-Ce candidat n'a pas encore été envoyé aux registres de packages.
 
 - Moteur C++20 : grille proportionnelle aux épaules, régions Required/Forbidden/Trigger
   ordonnées, symétrie anatomique, interactions doigts/signes et durée de maintien.

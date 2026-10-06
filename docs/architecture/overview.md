@@ -2,6 +2,20 @@
 
 [English](overview.md) | [Français](overview.fr.md)
 
+<details>
+<summary>On this page</summary>
+
+- [Repository map](#repository-map)
+- [Module boundaries](#module-boundaries)
+- [Dependencies and entry points](#dependencies-and-entry-points)
+- [Build, verification and distribution](#build-verification-and-distribution)
+- [Where to make a change](#where-to-make-a-change)
+- [Scheduling and application ownership](#scheduling-and-application-ownership)
+- [Implemented scope and plans](#implemented-scope-and-plans)
+- [Controller presentation](#controller-presentation)
+
+</details>
+
 Motion Input Grid (MIG) separates supplied observations, calibrated recognition, configuration,
 optional estimation, output and presentation. The same engine processes a profile
 for every host. See [pipeline](lifecycle.md) for execution and ownership,

@@ -2,6 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+Two variants share the same camera tracking: a raised-hand demo with visual
+feedback and a JSON profile importer. Actions stay inside your application;
+this example does not send desktop keyboard shortcuts.
+
 ## Use in your application
 
 ```sh
@@ -13,6 +17,8 @@ Import from `motion-input-grid`. Serve the assets at `/mig/` over localhost or H
 WASM and models, so your application needs no C++ build. The checkout
 commands below are for editing and rebuilding this example. See the
 [npm guide](../../bindings/javascript/README.md).
+
+## Run from the checkout
 
 Build with Emscripten, then package with `tools/package-distribution.ps1`, or copy
 this directory together with `mig.mjs`, `mig.wasm`, `default.json`, `models/` and `vision/`.

@@ -2,6 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+Deux variantes partagent le même suivi caméra : une démo de main levée avec
+retour visuel et un importeur de profils JSON. Les actions restent dans votre
+application ; cet exemple n'envoie pas de raccourcis clavier système.
+
 ## Dans votre application
 
 ```sh
@@ -14,6 +18,8 @@ Le package inclut le moteur WASM et les modèles : aucun build C++ n'est
 nécessaire pour votre application. Les commandes du dépôt ci-dessous
 servent à modifier et recompiler cet exemple. Voir le
 [guide npm](../../bindings/javascript/README.fr.md).
+
+## Lancer depuis le dépôt
 
 Depuis la racine, avec Node.js 22.12+ et le moteur WASM compilé :
 
@@ -45,4 +51,4 @@ Voir le [guide complet](../../docs/integrations/javascript.fr.md) et le
 L'archive fournit aussi `run.cmd` et `run.sh` avec Node portable. MediaPipe et
 les modèles sont locaux ; aucun CDN ni Node installé n'est nécessaire.
 
-[Source walkthrough / explication du code](../../docs/getting-started/examples.fr.md).
+[Parcours du code](../../docs/getting-started/examples.fr.md).

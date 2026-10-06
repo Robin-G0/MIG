@@ -19,13 +19,19 @@ et CMake 3.25+. Pour installer une version précise :
 Alternative locale : `python -m pip install /chemin/motion_input_grid-1.0.0-<tags>.whl`.
 Pour compiler depuis le dépôt complet : `python -m pip install ./bindings/python`.
 
-Python3.10+ accède au moteur C++ via ctypes standard, sans inférence Python.
-Les wheels incluent l'ABI C de positions
-et ses licences : mig-c.dll sous Windows, libmig-c.so.1 sous Linux x64/ARM64.
-Aucun modèle ni estimateur caméra n'est inclus. Passez None pour la bibliothèque
-incluse ou un chemin explicite pour un SDK externe avec caméra. Le sdist inclut
-le moteur C++ canonique et les en-têtes JSON ; il nécessite CMake 3.25+ et un
-compilateur C++20. Sous Linux, utilisez GCC avec ses notices de runtime installées.
+## Envoyer des observations
+
+Enregistrez un profil depuis le configurateur sous `profile.json`. Passez `None`
+pour utiliser le moteur fourni ou un chemin explicite vers un SDK externe.
+Cet exemple envoie **une frame** ; votre application doit alimenter le tracker
+à chaque nouvelle observation. Une seule frame ne suffit pas pour calibrer et
+reconnaître un mouvement complet.
+
+Les wheels fournissent l'ABI C de positions et ses licences : `mig-c.dll` sous
+Windows et `libmig-c.so.1` sous Linux. Aucun modèle ni estimateur caméra n'est
+inclus. Le sdist contient le moteur C++ et les en-têtes JSON ; sa compilation
+demande CMake 3.25+ et un compilateur C++20. Les builds Linux utilisent GCC et
+ses notices de runtime.
 
 ```python
 from pathlib import Path
@@ -41,11 +47,22 @@ with Tracker(None, profile) as tracker:
         print(action, input_id)
 ```
 
-Temps ms/séquence croissants, calibrage environ une seconde d'épaules visibles.
-Indices anatomiques non reflétés, absent=confiance0. Un propriétaire par tracker,
-fermeture explicite/context manager. start_camera(runtime) et poll_camera ajoutent
-la caméra si le SDK est natif. Poll reconnaît déjà ; lisez events sans update
-doublé. Actions logiques, clavier décidé par l'hôte. Le SDK doit fournir
-mig_camera_image pour les vues ; Tracker.camera_image copie les pixels.
-[ABI](https://github.com/Robin-G0/MIG/blob/main/docs/reference/c-abi.fr.md), [exemples](../../examples/README.fr.md),
-[code](https://github.com/Robin-G0/MIG/blob/main/docs/getting-started/examples.fr.md), [démarrage](https://github.com/Robin-G0/MIG/blob/main/docs/getting-started/bootstrap.fr.md).
+## Cycle de vie et caméra
+
+Utilisez des timestamps croissants en millisecondes et des numéros de séquence
+croissants. Le calibrage demande environ une seconde avec les deux épaules visibles.
+Les indices MediaPipe sont anatomiques et non reflétés ; un point absent a une
+confiance nulle. Un seul thread possède chaque tracker. Fermez-le explicitement
+ou utilisez un context manager.
+
+`start_camera(runtime_directory)` et `poll_camera()` utilisent éventuellement
+un SDK natif avec son runtime MediaPipe et ses modèles. `poll_camera()` effectue
+déjà la reconnaissance : lisez ensuite `events()` sans soumettre la frame à nouveau.
+Les viewers demandent l'extension `mig_camera_image` ; `Tracker.camera_image()`
+copie les pixels. Les callbacks sont des événements logiques ; l'application
+choisit comment les utiliser ou envoyer des touches.
+
+[Exemples caméra](https://github.com/Robin-G0/MIG/tree/main/examples) ·
+[Contrat ABI](https://github.com/Robin-G0/MIG/blob/main/docs/reference/c-abi.fr.md) ·
+[Parcours du code](https://github.com/Robin-G0/MIG/blob/main/docs/getting-started/examples.fr.md) ·
+[Démarrage](https://github.com/Robin-G0/MIG/blob/main/docs/getting-started/bootstrap.fr.md).

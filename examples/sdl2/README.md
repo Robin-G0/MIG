@@ -1,4 +1,4 @@
-# sdl2 camera example
+# SDL2 camera example
 
 [English](README.md) | [Français](README.fr.md)
 

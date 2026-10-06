@@ -2,6 +2,17 @@
 
 [English](configurator.md) | [Français](configurator.fr.md)
 
+<details>
+<summary>On this page</summary>
+
+- [Find and launch the application](#find-and-launch-the-application)
+- [Example: raise a hand to advance a presentation](#example-raise-a-hand-to-advance-a-presentation)
+- [Create your first profile](#create-your-first-profile)
+- [Check and use the profile](#check-and-use-the-profile)
+- [Build from source](#build-from-source)
+
+</details>
+
 The Motion Input Grid (MIG) configurator turns drawn body movements into JSON
 profiles. Choose a tracked body part, draw its route and set the action to emit.
 Run the saved profile in the [controller](controller.md) or an application using MIG.
@@ -22,18 +33,43 @@ sets up the bundled libraries before starting the binary in `bin/`. Keep the
 archive's DLLs, models, configurations and other resources together. Windows
 requires the Visual C++ 2022 x64 runtime; Linux archives require glibc 2.35+.
 
-After building from source:
+## Example: raise a hand to advance a presentation
 
-| Method | File relative to the repository root |
+A **profile** is a file containing your movements. An **input** describes one
+movement and its action; a **layer** contains the regions for one tracked body
+part. An input can have several layers.
+
+1. Start the camera, keep both shoulders visible for calibration, then add an
+   input named `Next slide` and select your wrist as its tracked body part.
+2. Draw 🟩 **Required** regions upward from your hand's resting position.
+   Number them in movement order and place a 🟨 **Trigger** region above them.
+   Wide regions give your movement more room.
+3. Set the action to `next_slide`, the key to `Right` and the mode to **Single press**.
+   Match the key to your presentation application's shortcut.
+4. On Windows, use **Save layer**, then **Apply** and **File → Save**.
+   On Linux, save the profile from the main interface.
+5. Stop the configurator's camera, import the file in the [controller](controller.md)
+   and check the visual feedback before enabling **Keyboard output**.
+   Then focus your presentation.
+
+Lower your hand before repeating the movement. To start with a drawn route,
+open [raised-hands.json](../../examples/common/raised-hands.json), then add your
+shortcut to the chosen input. The sample supplies two wrist routes, enables hand
+tracking and needs a hands-enabled build. It sends no keys until you add a binding.
+
+### Choose what the keyboard does
+
+| Mode | Behavior |
 | --- | --- |
-| Windows `release` preset | `build/release/bin/mig-configurator.exe` |
-| Default `tools/build-windows.ps1` script | `build/windows/bin/mig-configurator.exe` |
-| Linux guide's build | `build/linux-apps/bin/mig-configurator` |
+| Single press | Executes the sequence once when the movement is accepted. |
+| Hold | Keeps the final shortcut pressed until the trigger's live conditions end. |
+| Repeat | Repeats the sequence while conditions remain valid, at your chosen interval. |
 
-Follow the [Windows](../getting-started/windows.md) or
-[Linux](../getting-started/linux.md) guide to build. The Linux guide also supplies
-`--runtime` to locate models and the MediaPipe library. The `sdk-*` presets and
-library packages do not build these applications.
+In the keys field, `Ctrl + C` is a simultaneous shortcut;
+`"Hello world" _ Enter` types the text then presses Enter. `A _ A` presses A
+twice. A Hold sequence must end with a shortcut rather than text.
+The [keyboard reference](../reference/configuration.md#action-output-modes)
+explains sequence behavior and limits.
 
 ## Create your first profile
 
@@ -48,10 +84,10 @@ Region colors describe their conditions:
 
 | Color | Condition |
 | --- | --- |
-| Green — Required | Visit this region; numbered regions specify the route's order. |
-| Red — Forbidden | Avoid this region. |
-| Yellow — Trigger | Complete the movement here to emit its action. |
-| Purple — Interaction | Perform the selected hand sign in this region, optionally holding it. |
+| 🟩 Green — Required | Visit this region; numbered regions specify the route's order. |
+| 🟥 Red — Forbidden | Avoid this region. |
+| 🟨 Yellow — Trigger | Complete the movement here to emit its action. |
+| 🟪 Purple — Interaction | Perform the selected hand sign in this region, optionally holding it. |
 
 On Windows, use **Save layer** after changing a layer's body part; **Apply** saves
 that input into the open document, and **File → Save** writes the JSON file.
@@ -70,3 +106,18 @@ Keyboard output starts disabled. The controller guide explains how to enable it
 and use Single press, Hold and Repeat. **View** controls the theme, preview overlays
 and logs. The [configuration reference](../reference/configuration.md) describes
 all saved fields and action modes.
+
+## Build from source
+
+After building from source:
+
+| Method | File relative to the repository root |
+| --- | --- |
+| Windows `release` preset | `build/release/bin/mig-configurator.exe` |
+| Default `tools/build-windows.ps1` script | `build/windows/bin/mig-configurator.exe` |
+| Linux guide's build | `build/linux-apps/bin/mig-configurator` |
+
+Follow the [Windows](../getting-started/windows.md) or
+[Linux](../getting-started/linux.md) guide to build. The Linux guide also supplies
+`--runtime` to locate models and the MediaPipe library. The `sdk-*` presets and
+library packages do not build these applications.

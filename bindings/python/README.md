@@ -18,15 +18,19 @@ sdist, requiring a C++20 compiler and CMake 3.25+. To select a version:
 Local alternative: `python -m pip install /path/to/motion_input_grid-1.0.0-<tags>.whl`.
 To build from a full checkout: `python -m pip install ./bindings/python`.
 
-Python 3.10+ access to MIG's C++ recognition engine through standard-library ctypes.
-No Python inference dependency is required.
+## Submit observations
 
-Release wheels include the positions-only C ABI library and its licenses.
-Windows uses `mig-c.dll`; Linux x64/ARM64 uses `libmig-c.so.1`. No models or camera
-inference are included. Pass `None` to use the bundled library, or an explicit
-path to select an external camera-enabled SDK. A source archive includes the
-canonical C++ engine and JSON headers; rebuilding it requires CMake 3.25+ and a
-C++20 compiler. Linux source builds use GCC and its runtime copyright notices.
+Save a configurator profile as `profile.json`. Pass `None` to select the bundled
+engine or an explicit path to an external SDK. This example submits **one frame**;
+your application should feed the tracker each new observation. One frame alone
+does not calibrate or complete a movement.
+
+Python accesses the C++ engine through standard-library ctypes; no Python
+inference dependency is required. Wheels include the positions C ABI and
+licenses: `mig-c.dll` on Windows, `libmig-c.so.1` on Linux. No camera estimator
+or models are included. The sdist contains the canonical engine and JSON headers;
+rebuilding requires CMake 3.25+ and a C++20 compiler. Linux builds use GCC and
+its runtime copyright notices.
 
 ```python
 from pathlib import Path
@@ -41,6 +45,8 @@ with Tracker(None, profile) as tracker:
     for action, input_id in tracker.update(frame):
         print(action, input_id)
 ```
+
+## Lifecycle and camera
 
 Use increasing timestamps in milliseconds and increasing sequence numbers.
 Calibration requires roughly one second with both shoulders visible.

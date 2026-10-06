@@ -2,6 +2,16 @@
 
 [English](javascript.md) | [Français](javascript.fr.md)
 
+<details>
+<summary>On this page</summary>
+
+- [Run an example](#run-an-example)
+- [Built examples archive](#built-examples-archive)
+- [Add MIG to your application](#add-mig-to-your-application)
+- [How the code works](#how-the-code-works)
+
+</details>
+
 Motion Input Grid (MIG) browser integrations share the native recognition engine compiled to WASM.
 Each framework example has two pages: raised hands with immediate feedback, and
 a configurator JSON importer showing each accepted action and input identifier.

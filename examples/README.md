@@ -2,66 +2,51 @@
 
 [English](README.md) | [Français](README.fr.md)
 
-## Install the libraries
+See Motion Input Grid (MIG) recognize a raised hand, then import a profile of your
+own. The camera demos show a mirrored preview, wrist-following props and feedback
+identifying the accepted action. They report events without sending keyboard keys.
 
-```sh
-python -m pip install motion-input-grid
-npm install motion-input-grid
-npx mig-copy-assets public/mig
-```
+## Try a demo
 
-Choose pip for Python (`from mig import Tracker`) or npm for the browser,
-React, Vue and Next.js. See the guides for
-[Python](../bindings/python/README.md) · [JavaScript](../bindings/javascript/README.md).
+Download a **`*-examples`** archive from
+[Releases](https://github.com/Robin-G0/MIG/releases), extract it completely and
+follow the [standalone launch instructions](standalone.md). Native x64 and browser
+archives include their runtimes and sources; no build is needed to try them.
 
-These packages are libraries. Desktop applications and the Python camera
-runtime are separate downloads from
-[Releases](https://github.com/Robin-G0/MIG/releases).
+1. Start one viewer and allow camera access.
+2. Keep both shoulders visible for calibration, then lower your hands.
+3. Raise either wrist through the green rows into the yellow row.
+4. Open the profile variant to import a JSON file saved by the configurator.
 
-### Other installation options
+> [!TIP]
+> Keep the extracted folders together. Run one camera viewer at a time.
+> Lower your hand before repeating the movement.
 
-Download the artifact matching your system from
-[Releases](https://github.com/Robin-G0/MIG/releases).
+## Choose an integration
 
-| Use | Installation | Guide |
+| Host | Example | Prerequisites when running from source |
 | --- | --- | --- |
-| C++ / C ABI | Extract the `*-sdk` archive, add its path to `CMAKE_PREFIX_PATH` and use `find_package(MIG CONFIG REQUIRED)` | [SDK](../docs/getting-started/cpp.md) |
-| vcpkg | Extract `*-vcpkg-overlay.tar.gz`, then install `motion-input-grid` with `--overlay-ports`; the port is not yet in the main registry | [vcpkg port](../ports/motion-input-grid/README.md) |
-| Debian / Ubuntu | Download your architecture's `.deb` and install it with APT; installation by name requires a configured signed repository | [Debian / APT](../docs/development/distribution.md#debian-and-signed-apt-hosting) |
-| Godot | Extract the add-on ZIP at your project root | [Godot](../integrations/godot/README.md) |
-| Unity | Package Manager → **Add package from tarball**, using the Unity `.tgz` | [Unity UPM](../integrations/unity/README.md) |
-| Unreal | Extract the plugin ZIP into `Plugins`, then rebuild your C++ project | [Unreal](../integrations/unreal/README.md) |
+| Python GUI | [Tkinter](python-tkinter/README.md), [Pygame](pygame/README.md) | Python, UI dependencies and native camera runtime |
+| C++ GUI | [SDL2](sdl2/README.md), [SFML](sfml/README.md) | C++ toolchain, graphics dependencies and native SDK |
+| Browser | [Plain HTML](web/README.md) | Local web server and prepared WASM/assets |
+| Framework | [React](react/README.md), [Vue](vue/README.md), [Next.js](next/README.md) | Node.js and npm package/assets |
+| Game engine | [Godot](godot/README.md), [Unity](unity/README.md), [Unreal](unreal/README.md) | Editor/toolchain and a landmark provider |
+| Console / custom host | [C++ positions](sdk-consumer/README.md), [Native RGB](native-consumer/README.md) | SDK; camera estimator only for the RGB sample |
 
-```sh
-vcpkg install motion-input-grid --overlay-ports=/path/to/motion-input-grid-vcpkg-overlay
-sudo apt install ./motion-input-grid_1.0.0_amd64.deb
-```
+Each visual integration offers a raised-wrist demo and an initially empty profile
+importer. They share [raised-hands.json](common/raised-hands.json) and the C++ engine.
+Game engine samples require their editor and observation provider; they are not
+standalone camera exports. See the [support matrix](../docs/reference/support.md).
 
-Run the APT command in the download directory; choose the `arm64` file on ARM64.
-The `.deb` and vcpkg port provide the SDK/engine without desktop applications or
-a camera estimator. Godot, Unity and Unreal remain Preview integrations and
-require a landmark provider.
+## Adapt the code
 
-For the configurator and controller, choose the `*-native` archive; for runnable
-demos, choose the `*-examples` archive. Building from source is also supported:
-[Windows](../docs/getting-started/windows.md) · [Linux](../docs/getting-started/linux.md).
+Install **`motion-input-grid`** through [pip](../bindings/python/README.md),
+[npm](../bindings/javascript/README.md), or use the [C++ SDK / CMake guide](../docs/getting-started/cpp.md).
+[Other packages](../docs/development/distribution.md) cover vcpkg, Debian and editor integrations.
+Per-example guides explain installed-library use and full-checkout fallback.
 
-Start with [standalone launch instructions](standalone.md) or the
-[bootstrap guide](../docs/getting-started/bootstrap.md). Each visual integration has a raised-wrist
-demo and an empty profile importer. The sample is [common/raised-hands.json](common/raised-hands.json).
-Logical events give feedback; examples do not inject keyboard output.
-
-| Integration | Guide |
-| --- | --- |
-| Tk/Python | [python-tkinter](python-tkinter/README.md) |
-| Pygame | [pygame](pygame/README.md) |
-| SDL2 / SFML | [SDL2](sdl2/README.md), [SFML](sfml/README.md) |
-| Plain HTML / React / Vue / Next.js | [Web](web/README.md), [React](react/README.md), [Vue](vue/README.md), [Next](next/README.md) |
-| Unity / Godot GDScript / C# / Unreal | [Unity](unity/README.md), [Godot](godot/README.md), [Unreal](unreal/README.md) |
-| C++ positions / native RGB | [SDK](sdk-consumer/README.md), [native](native-consumer/README.md) |
-| Shared helpers | [Common](common/README.md), [source walkthrough](../docs/getting-started/examples.md) |
-
-Installed-library imports and checkout fallback are described per integration.
-Native x64 and JavaScript archives include sources and documentation with their
-built output. Editors and unsupported native ARM64 camera builds remain explicit
-limits, not standalone binaries. See [release preparation](../docs/reference/support.md).
+[Bootstrap](../docs/getting-started/bootstrap.md) connects a profile to action
+feedback. The [source walkthrough](../docs/getting-started/examples.md) explains
+the modules and lifecycle; [shared helpers](common/README.md) covers camera
+discovery, coordinates and drawing. Start by replacing the action callback with
+your application's command.

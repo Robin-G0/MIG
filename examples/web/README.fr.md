@@ -2,6 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+Deux variantes partagent le même suivi caméra : une démo de main levée avec
+retour visuel et un importeur de profils JSON. Les actions restent dans votre
+application ; cet exemple n'envoie pas de raccourcis clavier système.
+
 ## Dans votre application
 
 ```sh

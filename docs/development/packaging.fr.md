@@ -1,6 +1,18 @@
-# Préparer la première publication
+# Compiler et préparer une release
 
 [English](packaging.md) | [Français](packaging.fr.md)
+
+<details>
+<summary>Dans cette page</summary>
+
+- [Variantes disponibles ou préparées](#variantes-disponibles-ou-préparées)
+- [Windows](#windows)
+- [Linux](#linux)
+- [JavaScript](#javascript)
+- [Publications manuelles](#publications-manuelles)
+- [Modifier la documentation après publication](#modifier-la-documentation-après-publication)
+
+</details>
 
 Pour installer les bibliothèques publiées plutôt que fabriquer leurs packages :
 

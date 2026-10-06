@@ -2,19 +2,12 @@
 
 [English](standalone.md) | [Français](standalone.fr.md)
 
-Pour utiliser les bibliothèques sans les compiler, installez
-`python -m pip install motion-input-grid` (Python) ou
-`npm install motion-input-grid` (navigateur/React/Vue/Next.js), puis
-`npx mig-copy-assets public/mig` pour les ressources navigateur.
-[Python](../bindings/python/README.fr.md) · [JavaScript](../bindings/javascript/README.fr.md).
+Téléchargez l'archive **`*-examples`** correspondant à votre système depuis les
+[Releases](https://github.com/Robin-G0/MIG/releases). Elle inclut les applications
+compilées, leurs sources et leurs dépendances. Les exemples reconnaissent une main
+levée ou exécutent un profil importé, sans envoyer de touches à d'autres applications.
 
-Les applications de bureau et le runtime caméra Python restent des
-archives natives séparées ; les exemples précompilés incluent leurs dépendances.
-
-Les exemples du checkout trouvent aussi le runtime natif dans `build/release/bin`
-ou `build/debug/bin` après un build avec les presets CMake. La sélection automatique
-exige la bibliothèque MediaPipe de la plateforme et le modèle de pose ; les modèles
-seuls ne suffisent pas. Utilisez `MIG_RUNTIME` pour choisir un autre dossier runtime.
+## Lancer une démo
 
 Extrayez l'archive complète et lancez une seule caméra à la fois. Gardez les
 épaules visibles une seconde, baissez les mains puis levez un poignet à travers
@@ -65,3 +58,10 @@ l'inférence avant le toolkit. MediaPipe peut écrire des avertissements de
 télémétrie ; seuls, ils ne prouvent pas un crash. Une exécution sans téléchargement
 ne garantit pas le silence de la télémétrie upstream. Les vérifications et
 exigences restantes figurent dans la [préparation](../docs/reference/support.fr.md).
+
+## Sources et runtimes
+
+Les exemples du checkout trouvent aussi le runtime natif dans `build/release/bin`
+ou `build/debug/bin` après un build avec les presets CMake. La sélection automatique
+exige la bibliothèque MediaPipe de la plateforme et le modèle de pose ; les modèles
+seuls ne suffisent pas. Utilisez `MIG_RUNTIME` pour choisir un autre dossier runtime.

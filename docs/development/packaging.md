@@ -1,6 +1,19 @@
-# Preparing the first release
+# Build and package a release
 
 [English](packaging.md) | [Français](packaging.fr.md)
+
+<details>
+<summary>On this page</summary>
+
+- [Runnable examples archives](#runnable-examples-archives)
+- [Supported release variants](#supported-release-variants)
+- [Build and package Windows](#build-and-package-windows)
+- [Build and package Linux](#build-and-package-linux)
+- [Manual publication](#manual-publication)
+- [Frozen viewers and editor source bundles](#frozen-viewers-and-editor-source-bundles)
+- [Update documentation after publication](#update-documentation-after-publication)
+
+</details>
 
 To install the published libraries rather than build their packages:
 
@@ -30,7 +43,8 @@ Outputs are separate `motion-input-grid-1.0.0-*-examples` archives in `build/rel
 file manifests and SHA256 sidecars. See [standalone instructions](../../examples/standalone.md)
 for bundled execution, source dependencies, installed-library fallback and limits.
 
-Build, test and inspect the 1.0.0 artifacts before uploading them. These scripts do not publish to GitHub, PyPI or an apt repository.
+Build, test and inspect the 1.0.0 artifacts before uploading them. These scripts do not publish to
+GitHub, PyPI or an apt repository.
 
 ## Supported release variants
 

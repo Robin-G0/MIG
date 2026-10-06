@@ -2,6 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+Recognize movements in the browser with the C++ engine compiled to WASM.
+`MIGSession` owns the camera, models and tracker; React and Vue adapters connect
+that session to your components. Next.js uses the React adapter.
+
 ## Install from npm
 
 In your application (Node.js 22.12+), run:
@@ -29,24 +33,6 @@ Use only the import matching your application. In PowerShell, use
 composable backed by the existing C++/WASM engine. React and Vue are optional
 peer dependencies; Next.js uses the React adapter.
 
-## Alternative: build the package
-
-Build the WASM engine first, then run from the full checkout:
-
-```sh
-npm ci
-npm run prepare:javascript
-npm pack --workspace motion-input-grid --pack-destination build/releases
-```
-
-The tarball includes WASM, model files, runtime modules, declarations and licenses.
-Install that local tarball into your application, then copy its runtime assets:
-
-```sh
-npm install /path/to/motion-input-grid-1.0.0.tgz
-npx --package motion-input-grid mig-copy-assets public/mig
-```
-
 ## Use the package
 
 Pass the public asset URL to `useMIG` or `MIGSession`. The default is `/mig/`;
@@ -54,18 +40,40 @@ applications hosted under a subpath should pass their actual URL. Keep all runti
 files together. The camera opens only after `start(video, canvas)` or the example's
 Start button. Serve over localhost or HTTPS.
 
+Add these elements to your page and the JavaScript to your application's
+bundled module. Start loads the supplied demo profile. To use your own profile,
+call `await session.importJSON(jsonText)` from your file picker; invalid JSON
+rejects the promise without replacing the active profile. Place video and canvas
+in one container to overlay the preview, and mirror that container once.
+The framework examples include the complete CSS and controls.
+
+```html
+<button id="start">Start</button>
+<button id="stop">Stop</button>
+<p id="status"></p>
+<video id="camera" muted playsinline></video>
+<canvas id="overlay"></canvas>
+```
+
 ```js
 import { MIGSession } from 'motion-input-grid';
 
+const video = document.querySelector('#camera');
+const canvas = document.querySelector('#overlay');
+const status = document.querySelector('#status');
 const session = new MIGSession({
     assetBase: new URL('/mig/', location.href).href,
     onAction: ({ action, id }) => console.log(action, id)
 });
-const unsubscribe = session.subscribe(state => updateStatus(state.status));
-await session.start(videoElement, canvasElement);
-await session.importJSON(configuratorJson);
-unsubscribe();
-session.dispose();
+const unsubscribe = session.subscribe(state => { status.textContent = state.status; });
+document.querySelector('#start').onclick = () => {
+    session.start(video, canvas).catch(error => { status.textContent = error.message; });
+};
+document.querySelector('#stop').onclick = () => session.stop();
+window.addEventListener('pagehide', () => {
+    unsubscribe();
+    session.dispose();
+}, { once: true });
 ```
 
 `subscribe` immediately supplies a snapshot, then receives status changes and
@@ -95,3 +103,21 @@ Start loads local files; no CDN request or consumer dependency installation is n
 See the [React](https://github.com/Robin-G0/MIG/blob/main/examples/react/README.md), [Vue](https://github.com/Robin-G0/MIG/blob/main/examples/vue/README.md)
 and [Next.js](https://github.com/Robin-G0/MIG/blob/main/examples/next/README.md) examples and the
 [JavaScript bootstrap guide](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.md).
+
+## Alternative: build the package
+
+Build the WASM engine first, then run from the full checkout:
+
+```sh
+npm ci
+npm run prepare:javascript
+npm pack --workspace motion-input-grid --pack-destination build/releases
+```
+
+The tarball includes WASM, model files, runtime modules, declarations and licenses.
+Install that local tarball into your application, then copy its runtime assets:
+
+```sh
+npm install /path/to/motion-input-grid-1.0.0.tgz
+npx --package motion-input-grid mig-copy-assets public/mig
+```

@@ -2,10 +2,9 @@
 
 [English](CHANGELOG.md) | [Français](CHANGELOG.fr.md)
 
-## 1.0.0 — first public release candidate
+## 1.0.0 — first public release
 
 Prototype and initial development took place privately before this first public release.
-This candidate has not yet been uploaded to package registries.
 
 - C++20 recognition engine: shoulder-scaled grids, ordered Required/Forbidden/Trigger
   regions, mirrored anatomy, hand/finger Interaction conditions and hold durations.

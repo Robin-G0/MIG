@@ -2,6 +2,17 @@
 
 [English](bootstrap.md) | [Français](bootstrap.fr.md)
 
+<details>
+<summary>Dans cette page</summary>
+
+- [Configurer une action](#configurer-une-action)
+- [Lancer et adapter](#lancer-et-adapter)
+- [Bibliothèque installée ou dépôt](#bibliothèque-installée-ou-dépôt)
+- [Choisir un preset CMake](#choisir-un-preset-cmake)
+- [Vérifier](#vérifier)
+
+</details>
+
 Pour installer uniquement la bibliothèque et la lier à votre projet, suivez
 le [guide SDK C++ / CMake](cpp.fr.md). Il couvre les archives,
 la compilation, `cmake --install` et les Makefiles générés sous Linux.

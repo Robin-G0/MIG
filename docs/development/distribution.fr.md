@@ -2,6 +2,20 @@
 
 [English](distribution.md) | [Français](distribution.fr.md)
 
+<details>
+<summary>Dans cette page</summary>
+
+- [Noms du projet et des packages](#noms-du-projet-et-des-packages)
+- [Version et compilation de publication](#version-et-compilation-de-publication)
+- [SDK C++ et vcpkg](#sdk-c-et-vcpkg)
+- [Python et npm](#python-et-npm)
+- [Debian et hébergement APT signé](#debian-et-hébergement-apt-signé)
+- [Intégrations et limites de validation](#intégrations-et-limites-de-validation)
+- [Publication future dans les registres](#publication-future-dans-les-registres)
+- [Pipeline du candidat](#pipeline-du-candidat)
+
+</details>
+
 Motion Input Grid (MIG) 1.0.0 distribue un moteur de reconnaissance unique via le SDK C++, son ABI C
 et Emscripten. Python utilise ctypes, Unity le pont .NET partagé, Godot la
 GDExtension existante et Unreal un pont vers l'ABI C. Les intégrations ne recopient
@@ -225,7 +239,7 @@ Copier ensuite le modèle vers `.github/workflows/publish-pypi.yml` et le lancer
 manuellement sur le tag choisi avec l'identifiant du run de validation réussi.
 Le workflow vérifie le commit, les empreintes et ne publie que les wheels et le
 sdist. OIDC fournit des identifiants temporaires ; aucun token permanent n'est
-nécessaire. Aucune publication n'a été exécutée.
+nécessaire. Le modèle ne publie rien tant qu'il n'est pas activé.
 
 Le [modèle npm](../../.github/workflow-templates/publish-npm.yml.disabled) est aussi
 désactivé. Configurer le Trusted Publisher du package pour `Robin-G0/MIG`,
@@ -233,8 +247,7 @@ désactivé. Configurer le Trusted Publisher du package pour `Robin-G0/MIG`,
 Il utilise un runner GitHub, Node 24, npm 11.11 et OIDC, puis publie le tarball
 validé avec provenance. Vérifier les droits sur `motion-input-grid` et effectuer
 manuellement l'enregistrement initial si nécessaire. Les [règles npm](https://docs.npmjs.com/trusted-publishers/)
-décrivent les prérequis et limites de première publication. Aucune publication
-ni configuration du registre n'a été effectuée.
+décrivent les prérequis et limites de première publication. La configuration du registre et la publication restent manuelles.
 
 Pour une publication directe, autoriser explicitement `npm publish` dans le Trusted Publisher ; les nouvelles configurations peuvent limiter les droits à la publication en attente.
 

@@ -1,4 +1,4 @@
-# SDK de reconnaissance à partir de positions
+# API C++ de reconnaissance
 
 [English](cpp.md) | [Français](cpp.fr.md)
 
@@ -6,10 +6,11 @@ Pour installer uniquement la bibliothèque et la lier à votre projet, suivez
 le [guide SDK C++ / CMake](../getting-started/cpp.fr.md). Il couvre les archives,
 la compilation, `cmake --install` et les Makefiles générés sous Linux.
 
-Liez MIG::core et éventuellement MIG::format. Headers publics :
-mig/core/engine.hpp et mig/format/configuration.hpp, indépendants de caméra/MediaPipe.
-MIG::native ajoute capture/estimateur Windows/Linux séparément. Une façade SDK
-threadée complète reste prévue. [Consommateur natif](../../examples/native-consumer/CMakeLists.txt).
+Liez `MIG::core` pour reconnaître les positions et `MIG::format` pour charger
+les profils. Les en-têtes publics `mig/core/engine.hpp` et
+`mig/format/configuration.hpp` ne dépendent ni de la caméra ni de MediaPipe.
+`MIG::native` ajoute séparément capture et estimation sous Windows/Linux.
+Une façade SDK complète avec gestion des threads reste prévue. [Consommateur natif](../../examples/native-consumer/CMakeLists.txt).
 
 mig/core/coordinates.hpp donne XYZ O(1) sans allocation et spans empruntés.
 La profondeur image et les mètres monde relatifs aux hanches sont indépendants

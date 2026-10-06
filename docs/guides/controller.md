@@ -2,6 +2,19 @@
 
 [English](controller.md) | [Français](controller.fr.md)
 
+<details>
+<summary>On this page</summary>
+
+- [Find and launch the application](#find-and-launch-the-application)
+- [First run](#first-run)
+- [Profiles](#profiles)
+- [Views](#views)
+- [Verify a binding](#verify-a-binding)
+- [If a movement does not work](#if-a-movement-does-not-work)
+- [Build and troubleshooting](#build-and-troubleshooting)
+
+</details>
+
 The controller runs profiles created in the configurator while you use another
 application or play a game. It provides profile selection, binding feedback and
 optional camera verification. Use the [configurator](configurator.md) to draw or change movements.
@@ -21,19 +34,6 @@ On Linux, open a terminal in that folder and run `./mig-controller`; this launch
 sets up the bundled libraries before starting the binary in `bin/`. Keep the
 archive's DLLs, models, configurations and other resources together. Windows
 requires the Visual C++ 2022 x64 runtime; Linux archives require glibc 2.35+.
-
-After building from source:
-
-| Method | File relative to the repository root |
-| --- | --- |
-| Windows `release` preset | `build/release/bin/mig-controller.exe` |
-| Default `tools/build-windows.ps1` script | `build/windows/bin/mig-controller.exe` |
-| Linux guide's build | `build/linux-apps/bin/mig-controller` |
-
-Follow the [Windows](../getting-started/windows.md) or
-[Linux](../getting-started/linux.md) guide to build. The Linux guide also supplies
-`--runtime` to locate models and the MediaPipe library. The `sdk-*` presets and
-library packages do not build these applications.
 
 ## First run
 
@@ -108,7 +108,34 @@ Turn verification off before playing. You can recalibrate without modifying the
 profile. Verification does not edit regions or isolate recognition to one input;
 all bindings continue to report their accepted actions.
 
+## If a movement does not work
+
+| What you see | What to check |
+| --- | --- |
+| Calibration does not finish | Keep both shoulders visible and recalibrate. |
+| The binding does not light up | Enable **Camera preview** and **Verify bindings** to see regions and missing conditions. |
+| The binding lights up but no key is sent | Check its keyboard binding, enable **Keyboard output**, turn verification off and focus the target application. |
+| The action does not fire a second time | Leave the final region, then repeat the route; also check the profile's cooldown. |
+| A hand sign is missing | Check hand support and visibility; see the [hand guide](hands.md). |
+
+> [!NOTE]
+> **Verify bindings** pauses all keyboard output. Examples and libraries report
+> logical events; the controller sends keys when you enable that option.
+
 ## Build and troubleshooting
+
+After building from source:
+
+| Method | File relative to the repository root |
+| --- | --- |
+| Windows `release` preset | `build/release/bin/mig-controller.exe` |
+| Default `tools/build-windows.ps1` script | `build/windows/bin/mig-controller.exe` |
+| Linux guide's build | `build/linux-apps/bin/mig-controller` |
+
+Follow the [Windows](../getting-started/windows.md) or
+[Linux](../getting-started/linux.md) guide to build. The Linux guide also supplies
+`--runtime` to locate models and the MediaPipe library. The `sdk-*` presets and
+library packages do not build these applications.
 
 See [Windows applications](../getting-started/windows.md) or [Linux applications](../getting-started/linux.md)
 for dependencies and build commands. Keep the runtime libraries and models beside

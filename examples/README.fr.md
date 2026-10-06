@@ -2,68 +2,54 @@
 
 [English](README.md) | [Français](README.fr.md)
 
-## Installation des bibliothèques
+Découvrez la reconnaissance d'une main levée avec Motion Input Grid (MIG), puis
+importez votre propre profil. Les démos caméra affichent une image miroir, des
+objets suivant les poignets et un retour indiquant l'action acceptée. Elles
+transmettent des événements sans envoyer de touches clavier.
 
-```sh
-python -m pip install motion-input-grid
-npm install motion-input-grid
-npx mig-copy-assets public/mig
-```
+## Essayer une démo
 
-Choisissez pip pour Python (`from mig import Tracker`) ou npm pour le
-navigateur, React, Vue et Next.js. Consultez les guides
-[Python](../bindings/python/README.fr.md) · [JavaScript](../bindings/javascript/README.fr.md).
+Téléchargez une archive **`*-examples`** depuis les
+[Releases](https://github.com/Robin-G0/MIG/releases), extrayez-la entièrement et
+suivez les [instructions de lancement](standalone.fr.md). Les archives natives
+x64 et navigateur incluent leurs runtimes et sources ; aucune compilation n'est nécessaire.
 
-Ces packages sont des bibliothèques. Les applications de bureau et le
-runtime caméra Python se téléchargent séparément dans les
-[Releases](https://github.com/Robin-G0/MIG/releases).
+1. Lancez un viewer et autorisez la caméra.
+2. Gardez les deux épaules visibles pour le calibrage, puis baissez les mains.
+3. Levez un poignet à travers les lignes vertes jusqu'à la ligne jaune.
+4. Ouvrez la variante profil pour importer un JSON enregistré par le configurateur.
 
-### Autres installations
+> [!TIP]
+> Conservez les dossiers extraits ensemble. Lancez un seul viewer caméra à la fois.
+> Baissez la main avant de refaire le mouvement.
 
-Téléchargez l'artefact adapté à votre système dans les
-[Releases](https://github.com/Robin-G0/MIG/releases).
+## Choisir une intégration
 
-| Usage | Installation | Guide |
+| Application | Exemple | Prérequis pour lancer depuis les sources |
 | --- | --- | --- |
-| C++ / C ABI | Extraire l'archive `*-sdk`, puis fournir son chemin à `CMAKE_PREFIX_PATH` et utiliser `find_package(MIG CONFIG REQUIRED)` | [SDK](../docs/getting-started/cpp.fr.md) |
-| vcpkg | Extraire `*-vcpkg-overlay.tar.gz`, puis installer `motion-input-grid` avec `--overlay-ports` ; le port n'est pas encore dans le registre principal | [Port vcpkg](../ports/motion-input-grid/README.fr.md) |
-| Debian / Ubuntu | Télécharger le `.deb` de votre architecture et l'installer avec APT ; l'installation par nom nécessite un dépôt signé configuré | [Debian / APT](../docs/development/distribution.fr.md#debian-et-hébergement-apt-signé) |
-| Godot | Extraire le ZIP add-on à la racine du projet | [Godot](../integrations/godot/README.fr.md) |
-| Unity | Package Manager → **Add package from tarball**, avec le `.tgz` Unity | [Unity UPM](../integrations/unity/README.fr.md) |
-| Unreal | Extraire le ZIP plugin dans `Plugins`, puis recompiler le projet C++ | [Unreal](../integrations/unreal/README.fr.md) |
+| Interface Python | [Tkinter](python-tkinter/README.fr.md), [Pygame](pygame/README.fr.md) | Python, dépendances UI et runtime caméra natif |
+| Interface C++ | [SDL2](sdl2/README.fr.md), [SFML](sfml/README.fr.md) | Compilateur C++, dépendances graphiques et SDK natif |
+| Navigateur | [HTML simple](web/README.fr.md) | Serveur web local et WASM/assets préparés |
+| Framework | [React](react/README.fr.md), [Vue](vue/README.fr.md), [Next.js](next/README.fr.md) | Node.js et package npm/assets |
+| Moteur de jeu | [Godot](godot/README.fr.md), [Unity](unity/README.fr.md), [Unreal](unreal/README.fr.md) | Éditeur/toolchain et fournisseur de points |
+| Console / application personnalisée | [Positions C++](sdk-consumer/README.fr.md), [RGB natif](native-consumer/README.fr.md) | SDK ; estimateur caméra seulement pour l'exemple RGB |
 
-```sh
-vcpkg install motion-input-grid --overlay-ports=/chemin/motion-input-grid-vcpkg-overlay
-sudo apt install ./motion-input-grid_1.0.0_amd64.deb
-```
+Chaque intégration visuelle propose une démo de poignet levé et un importeur de
+profil initialement vide. Elles partagent [raised-hands.json](common/raised-hands.json)
+et le moteur C++. Les exemples de moteurs de jeu demandent leur éditeur et un
+fournisseur d'observations ; ce ne sont pas des exports caméra autonomes.
+Consultez la [matrice de support](../docs/reference/support.fr.md).
 
-La commande APT s'exécute dans le dossier du téléchargement ; choisissez le
-fichier `arm64` sur ARM64. Le `.deb` et le port vcpkg fournissent le SDK/moteur,
-sans application de bureau ni estimateur caméra. Godot, Unity et Unreal restent
-des intégrations Preview et demandent un fournisseur de landmarks.
+## Adapter le code
 
-Pour le configurator et le controller, choisissez l'archive `*-native` ; pour
-les démos prêtes à lancer, choisissez l'archive `*-examples`. La compilation
-depuis les sources reste disponible : [Windows](../docs/getting-started/windows.fr.md) ·
-[Linux](../docs/getting-started/linux.fr.md).
+Installez **`motion-input-grid`** avec [pip](../bindings/python/README.fr.md),
+[npm](../bindings/javascript/README.fr.md), ou suivez le [guide SDK C++ / CMake](../docs/getting-started/cpp.fr.md).
+Les [autres packages](../docs/development/distribution.fr.md) couvrent vcpkg, Debian
+et les éditeurs. Chaque guide d'exemple décrit l'utilisation d'une bibliothèque
+installée et le repli vers le dépôt complet.
 
-Commencez par les [lanceurs autonomes](standalone.fr.md) ou le
-[démarrage](../docs/getting-started/bootstrap.fr.md). Chaque intégration visuelle fournit une démo
-de levée de poignet et un importeur vide. Le profil commun est
-[common/raised-hands.json](common/raised-hands.json). Les événements affichent
-un retour sans injection clavier.
-
-| Intégration | Guide |
-| --- | --- |
-| Tk/Python | [python-tkinter](python-tkinter/README.fr.md) |
-| Pygame | [pygame](pygame/README.fr.md) |
-| SDL2 / SFML | [SDL2](sdl2/README.fr.md), [SFML](sfml/README.fr.md) |
-| HTML / React / Vue / Next.js | [Web](web/README.fr.md), [React](react/README.fr.md), [Vue](vue/README.fr.md), [Next](next/README.fr.md) |
-| Unity / Godot GDScript / C# / Unreal | [Unity](unity/README.fr.md), [Godot](godot/README.fr.md), [Unreal](unreal/README.fr.md) |
-| C++ positions / RGB natif | [SDK](sdk-consumer/README.fr.md), [natif](native-consumer/README.fr.md) |
-| Helpers partagés | [Common](common/README.fr.md), [explication](../docs/getting-started/examples.fr.md) |
-
-Chaque guide décrit bibliothèque installée et repli dépôt. Les archives natives
-x64 et JavaScript incluent sources, documentation et sorties compilées.
-Les éditeurs et les runtimes caméra ARM64 absents restent des limites explicites :
-[préparation de publication](../docs/reference/support.fr.md).
+Le [guide de démarrage](../docs/getting-started/bootstrap.fr.md) relie un profil
+au retour d'action. Le [parcours du code](../docs/getting-started/examples.fr.md)
+explique les modules et leur cycle de vie ; les [helpers communs](common/README.fr.md)
+couvrent la découverte du runtime, les coordonnées et le dessin. Commencez par
+remplacer le callback d'action par une commande de votre application.

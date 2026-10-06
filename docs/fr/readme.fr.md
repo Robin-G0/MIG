@@ -2,132 +2,122 @@
 
 [English](../../readme.md) | [Français](readme.fr.md)
 
-MIG transforme les mouvements du corps et des mains en actions pour vos applications
-et jeux. Dessinez un mouvement dans le [configurateur](../guides/configurator.fr.md), sauvegardez son profil JSON,
-puis utilisez le [contrôleur](../guides/controller.fr.md) ou votre propre application. Les points suivis peuvent
-provenir d'une caméra ou de votre fournisseur de landmarks.
+**Transformez un mouvement en action.** Dessinez le trajet d'un poignet ou d'une
+autre partie du corps, puis utilisez une caméra pour le reconnaître. MIG peut
+envoyer un raccourci clavier à votre application ou transmettre une action à
+votre jeu, site web ou programme Python.
 
-Landmarks → grille proportionnelle aux épaules → contraintes de mouvement/signe → action.
-Toutes les intégrations utilisent le même moteur C++20. La sortie clavier du
-contrôleur propose Single press, Hold et Repeat et reste désactivée au démarrage.
+Levez la main pour avancer une présentation, utilisez un mouvement dans un jeu
+ou associez un signe de main à un raccourci. Vous choisissez les mouvements et
+leurs commandes. La grille suit l'écartement des épaules et s'adapte donc à
+votre distance par rapport à la caméra.
 
-Motion Input Grid (MIG) utilise `motion-input-grid` comme identifiant de distribution.
-Python conserve `import mig` ; C++ conserve `find_package(MIG)` et `MIG::core`.
+[**Télécharger**](https://github.com/Robin-G0/MIG/releases) ·
+[**Documentation**](../index.fr.md) · [**Exemples**](../../examples/README.fr.md)
 
-## Statut et packages
+## Utiliser MIG sur votre ordinateur
 
-MIG 1.0.0 est le candidat de première publication publique. Les contrats du moteur
-et de la C ABI sont couverts par des tests de régression et des consommateurs
-installés. La précision caméra et les exports de jeux demandent des validations
-séparées : voir la [matrice de support](../reference/support.fr.md).
+Aucun code n'est nécessaire pour créer et utiliser un profil de mouvements.
 
-| Écosystème | Package / point d'entrée | Maturité |
-| --- | --- | --- |
-| C++ / C ABI | Archive SDK, `find_package(MIG)`, overlay vcpkg | Moteur Stable ; vcpkg Beta |
-| Python | Wheel autonome `motion-input-grid`, `from mig import Tracker` | Beta |
-| Navigateur / React / Vue / Next.js | `motion-input-grid`, moteur C++ dans WASM | Beta |
-| Debian / APT | `motion-input-grid`, outils de dépôt signé | Beta |
-| Godot / Unity / Unreal | Add-on ZIP / tarball UPM / Code Plugin ZIP | Preview |
+1. Téléchargez l'**archive `*-native`** pour Windows x64 ou Linux x64 et extrayez-la entièrement.
+2. Ouvrez le [**configurateur**](../guides/configurator.fr.md), démarrez la caméra,
+   dessinez votre mouvement et enregistrez son profil.
+3. Ouvrez le [**contrôleur**](../guides/controller.fr.md), importez ce profil et
+   essayez le mouvement. Sa ligne s'allume lorsqu'il est reconnu. Activez
+   **Keyboard output** pour envoyer des touches à l'application que vous utilisez.
 
-Les applications caméra natives ciblent Windows/Linux x64. Les packages Linux
-ARM64 reçoivent des landmarks ; aucun runtime caméra ARM64 n'est inclus. Les
-bibliothèques Python et navigateur s'installent via pip et npm ; les archives
-de release permettent aussi une installation hors ligne.
+| Dessiner une condition | Signification |
+| --- | --- |
+| 🟩 Required | Traversez cette région ; les numéros définissent l'ordre. |
+| 🟥 Forbidden | Évitez cette région. |
+| 🟨 Trigger | Terminez le mouvement ici. |
+| 🟪 Interaction | Faites un signe de main ici, avec un maintien facultatif. |
 
-## Installation des bibliothèques
+> [!TIP]
+> Pour découvrir le suivi sans envoyer de touches, commencez par les
+> [exemples caméra autonomes](../../examples/standalone.fr.md).
+> Levez une main et observez le retour visuel.
+
+Les archives de bureau incluent le runtime caméra et les modèles. Conservez
+tous leurs fichiers ensemble. Windows demande le runtime Visual C++ 2022 x64 ;
+Linux demande glibc 2.35+. L'envoi de touches sous Linux utilise X11/XTest.
+Les guides des applications expliquent le lancement, le calibrage, les thèmes
+et la résolution des problèmes.
+
+## Intégrer MIG dans votre application
+
+Toutes les intégrations partagent le **moteur C++20**. Créez un profil JSON dans
+le configurateur, puis importez-le dans votre application. Fournissez les points
+du corps ou utilisez un adaptateur caméra disponible.
+
+Les gestionnaires de packages utilisent **`motion-input-grid`**. Les API gardent
+le nom court : Python importe `mig` ; CMake exporte `MIG::core`.
+
+### Python
 
 ```sh
 python -m pip install motion-input-grid
+python -c "from mig import Tracker; print('MIG ready')"
+```
+
+Le wheel inclut le moteur de reconnaissance pour les positions fournies.
+Les viewers caméra utilisent un runtime natif séparé.
+[Utilisation Python et exemple de frame](../../bindings/python/README.fr.md).
+
+### Navigateur, React, Vue et Next.js
+
+```sh
 npm install motion-input-grid
 npx mig-copy-assets public/mig
 ```
 
-Choisissez pip pour Python (`from mig import Tracker`) ou npm pour le
-navigateur, React, Vue et Next.js. Consultez les guides
-[Python](../../bindings/python/README.fr.md) · [JavaScript](../../bindings/javascript/README.fr.md).
+Le package inclut WASM, les modèles caméra et les adaptateurs des frameworks.
+Servez les fichiers depuis votre application et démarrez le suivi après un clic.
+[Utilisation JavaScript](../../bindings/javascript/README.fr.md) ·
+[Exemples des frameworks](../integrations/javascript.fr.md).
 
-Ces packages sont des bibliothèques. Les applications de bureau et le
-runtime caméra Python se téléchargent séparément dans les
-[Releases](https://github.com/Robin-G0/MIG/releases).
+### C++ et moteurs de jeu
 
-### Autres installations
+| Intégration | Par où commencer |
+| --- | --- |
+| C++ / CMake / Make | [Installer le SDK et lier `MIG::core`](../getting-started/cpp.fr.md) |
+| vcpkg | [Installer avec l'overlay de la release](../../ports/motion-input-grid/README.fr.md) |
+| Debian / Ubuntu | [Installer un `.deb` ou configurer un dépôt APT signé](../development/distribution.fr.md#debian-et-hébergement-apt-signé) |
+| Godot | [Add-on GDScript et exemples C#](../../integrations/godot/README.fr.md) |
+| Unity | [Package UPM .NET / C ABI](../../integrations/unity/README.fr.md) |
+| Unreal | [Plugin natif C ABI](../../integrations/unreal/README.fr.md) |
 
-Téléchargez l'artefact adapté à votre système dans les
-[Releases](https://github.com/Robin-G0/MIG/releases).
+Un projet CMake lie le SDK installé ainsi :
 
-| Usage | Installation | Guide |
-| --- | --- | --- |
-| C++ / C ABI | Extraire l'archive `*-sdk`, puis fournir son chemin à `CMAKE_PREFIX_PATH` et utiliser `find_package(MIG CONFIG REQUIRED)` | [SDK](../getting-started/cpp.fr.md) |
-| vcpkg | Extraire `*-vcpkg-overlay.tar.gz`, puis installer `motion-input-grid` avec `--overlay-ports` ; le port n'est pas encore dans le registre principal | [Port vcpkg](../../ports/motion-input-grid/README.fr.md) |
-| Debian / Ubuntu | Télécharger le `.deb` de votre architecture et l'installer avec APT ; l'installation par nom nécessite un dépôt signé configuré | [Debian / APT](../development/distribution.fr.md#debian-et-hébergement-apt-signé) |
-| Godot | Extraire le ZIP add-on à la racine du projet | [Godot](../../integrations/godot/README.fr.md) |
-| Unity | Package Manager → **Add package from tarball**, avec le `.tgz` Unity | [Unity UPM](../../integrations/unity/README.fr.md) |
-| Unreal | Extraire le ZIP plugin dans `Plugins`, puis recompiler le projet C++ | [Unreal](../../integrations/unreal/README.fr.md) |
-
-```sh
-vcpkg install motion-input-grid --overlay-ports=/chemin/motion-input-grid-vcpkg-overlay
-sudo apt install ./motion-input-grid_1.0.0_amd64.deb
+```cmake
+find_package(MIG 1.0 CONFIG REQUIRED)
+target_link_libraries(my-application PRIVATE MIG::core MIG::format)
 ```
 
-La commande APT s'exécute dans le dossier du téléchargement ; choisissez le
-fichier `arm64` sur ARM64. Le `.deb` et le port vcpkg fournissent le SDK/moteur,
-sans application de bureau ni estimateur caméra. Godot, Unity et Unreal restent
-des intégrations Preview et demandent un fournisseur de landmarks.
+Le [guide C++](../getting-started/cpp.fr.md) contient un projet complet, les
+commandes de compilation et les prérequis. Les intégrations des moteurs de jeu
+demandent un fournisseur de points ; elles n'incluent pas le suivi caméra de bureau.
 
-Pour le configurator et le controller, choisissez l'archive `*-native` ; pour
-les démos prêtes à lancer, choisissez l'archive `*-examples`. La compilation
-depuis les sources reste disponible : [Windows](../getting-started/windows.fr.md) ·
-[Linux](../getting-started/linux.fr.md).
+## Explorer le moteur
 
-## Applications de bureau
+![Les points passent par le calibrage et la reconnaissance pour produire des actions](../assets/architecture/engine-flow.svg)
 
-Le [configurateur](../guides/configurator.fr.md) crée les profils ; le
-[contrôleur](../guides/controller.fr.md) les exécute. Leurs guides expliquent
-comment les lancer et où trouver les fichiers.
+L'[architecture](../architecture/overview.fr.md) décrit les modules et leurs
+responsabilités. Le [format de configuration](../reference/configuration.fr.md),
+l'[API C++](../reference/cpp.fr.md) et l'[ABI C](../reference/c-abi.fr.md)
+décrivent la reconnaissance, l'état actif d'une action et les cycles de vie.
 
-Pour les versions précompilées, consultez les [Releases](https://github.com/Robin-G0/MIG/releases)
-et cherchez une archive `motion-input-grid-<version>-windows-x64-native.zip` ou
-`motion-input-grid-<version>-linux-x64-native.tar.gz`. Extrayez l'archive entière.
-Les archives SDK et les packages Python/npm/Debian contiennent les bibliothèques.
-Si aucune archive native n'est publiée, suivez les instructions de compilation
-[Windows](../getting-started/windows.fr.md) ou [Linux](../getting-started/linux.fr.md).
-Avec le preset Windows `release`, les deux exécutables sont dans `build/release/bin/`.
+MIG 1.0.0 fournit des applications Windows/Linux x64 et des SDK Linux ARM64
+pour les positions fournies. Les intégrations des moteurs de jeu sont Preview.
+Les tests automatisés couvrent la reconnaissance et les packages ; les caméras
+physiques, l'envoi de touches au jeu visé et les exports des éditeurs demandent
+une validation séparée. Consultez la [matrice de support](../reference/support.fr.md)
+pour choisir une plateforme.
 
-## Essayer
+Compiler depuis les sources : [Windows](../getting-started/windows.fr.md) ·
+[Linux](../getting-started/linux.fr.md) · [SDK portable](../getting-started/cpp.fr.md).
 
-Les [exemples autonomes](../../examples/standalone.fr.md) affichent la caméra en miroir,
-un objet suivant chaque poignet et un retour quand une main se lève. Extraire
-l'archive complète adaptée, puis lancer le binaire ou le lanceur navigateur.
-
-Pour un test C++ depuis les sources, installer le SDK puis lancer :
-
-```sh
-cmake -S examples/sdk-consumer -B build/demo -DCMAKE_PREFIX_PATH=/chemin/vers/sdk
-cmake --build build/demo --config Release
-```
-
-Lancer `mig-sdk-example` avec `configs/default.json` ; sous Windows, il est dans
-`build/demo/Release`. L'exemple fournit des positions synthétiques et affiche
-`Game event: left_raise`, sans utiliser de caméra.
-
-```python
-from pathlib import Path
-from mig import Tracker
-
-profile = Path("examples/common/raised-hands.json").read_text()
-with Tracker(None, profile) as tracker:
-    print(tracker.export_json())
-```
-
-Installer d'abord une wheel adaptée. Elle contient le moteur de positions ; les
-exemples caméra utilisent le runtime natif séparé. Pour fournir des observations
-et traiter les actions, suivre le [démarrage](../getting-started/bootstrap.fr.md)
-et les [exemples](../../examples/README.fr.md).
-
-[Documentation](../index.fr.md) · [Architecture](../architecture/overview.fr.md) ·
-[Configuration](../reference/configuration.fr.md) · [Distribution](../development/distribution.fr.md) ·
-[Contribution](CONTRIBUTING.fr.md)
+[Contribuer](CONTRIBUTING.fr.md) · [Historique](../development/CHANGELOG.fr.md) ·
+[Roadmap](../development/ROADMAP.fr.md) · [Packages et releases](../development/distribution.fr.md)
 
 Licence [Apache-2.0](../../LICENSE). Les dépendances redistribuées conservent leurs notices.
-
-[Changelog](../development/CHANGELOG.fr.md) · [Roadmap](../development/ROADMAP.fr.md)

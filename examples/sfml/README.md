@@ -1,4 +1,4 @@
-# sfml camera example
+# SFML camera example
 
 [English](README.md) | [Français](README.fr.md)
 

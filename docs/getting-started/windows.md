@@ -2,18 +2,20 @@
 
 [English](windows.md) | [Français](windows.fr.md)
 
-To install just the library and link it to your project, follow the
-[C++ SDK / CMake guide](cpp.md). It covers archives, source builds,
-`cmake --install` and generated Makefiles on Linux.
+<details>
+<summary>On this page</summary>
 
-To use the libraries without compiling them, install
-`python -m pip install motion-input-grid` (Python) or
-`npm install motion-input-grid` (browser/React/Vue/Next.js), then run
-`npx mig-copy-assets public/mig` for browser assets.
-[Python](../../bindings/python/README.md) · [JavaScript](../../bindings/javascript/README.md).
+- [Build and launch](#build-and-launch)
+- [Workspace and drawing](#workspace-and-drawing)
+- [Output, test and recording](#output-test-and-recording)
+- [Diagnostics and provenance](#diagnostics-and-provenance)
 
-Desktop applications and the Python camera runtime remain separate native
-archives; prebuilt examples include their dependencies.
+</details>
+
+To use prebuilt applications, follow the [configurator](../guides/configurator.md)
+and [controller](../guides/controller.md) guides. This page covers source builds
+and platform-specific controls. For just a library, see the [C++ SDK / CMake](cpp.md),
+[Python](../../bindings/python/README.md) or [JavaScript](../../bindings/javascript/README.md) guide.
 
 Both C++20 Win32/GDI applications use Media Foundation capture, native MediaPipe
 and the same engine/schema-v2 reader. No interpreter, UDP bridge or separate

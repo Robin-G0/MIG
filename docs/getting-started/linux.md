@@ -2,18 +2,10 @@
 
 [English](linux.md) | [Français](linux.fr.md)
 
-To install just the library and link it to your project, follow the
-[C++ SDK / CMake guide](cpp.md). It covers archives, source builds,
-`cmake --install` and generated Makefiles on Linux.
-
-To use the libraries without compiling them, install
-`python -m pip install motion-input-grid` (Python) or
-`npm install motion-input-grid` (browser/React/Vue/Next.js), then run
-`npx mig-copy-assets public/mig` for browser assets.
-[Python](../../bindings/python/README.md) · [JavaScript](../../bindings/javascript/README.md).
-
-Desktop applications and the Python camera runtime remain separate native
-archives; prebuilt examples include their dependencies.
+To use prebuilt applications, follow the [configurator](../guides/configurator.md)
+and [controller](../guides/controller.md) guides. This page covers source builds
+and platform-specific controls. For just a library, see the [C++ SDK / CMake](cpp.md),
+[Python](../../bindings/python/README.md) or [JavaScript](../../bindings/javascript/README.md) guide.
 
 Both `mig-configurator` and `mig-controller` build as native Qt6 applications,
 sharing the existing engine, estimator and schema-v2 profiles with Windows.

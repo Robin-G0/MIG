@@ -2,75 +2,57 @@
 
 [English](index.md) | [Français](index.fr.md)
 
-## Installation des bibliothèques
+Motion Input Grid (MIG) reconnaît les mouvements décrits dans un profil JSON.
+Utilisez ses applications de bureau pour contrôler une autre application,
+ou intégrez le même moteur dans votre projet. Choisissez un point de départ.
 
-```sh
-python -m pip install motion-input-grid
-npm install motion-input-grid
-npx mig-copy-assets public/mig
-```
+## Utiliser les applications de bureau
 
-Choisissez pip pour Python (`from mig import Tracker`) ou npm pour le
-navigateur, React, Vue et Next.js. Consultez les guides
-[Python](../bindings/python/README.fr.md) · [JavaScript](../bindings/javascript/README.fr.md).
-
-Ces packages sont des bibliothèques. Les applications de bureau et le
-runtime caméra Python se téléchargent séparément dans les
-[Releases](https://github.com/Robin-G0/MIG/releases).
-
-### Autres installations
-
-Téléchargez l'artefact adapté à votre système dans les
-[Releases](https://github.com/Robin-G0/MIG/releases).
-
-| Usage | Installation | Guide |
-| --- | --- | --- |
-| Installer et lier le SDK C++ / CMake | [Installation C++](getting-started/cpp.fr.md) |
-| C++ / C ABI | Extraire l'archive `*-sdk`, puis fournir son chemin à `CMAKE_PREFIX_PATH` et utiliser `find_package(MIG CONFIG REQUIRED)` | [SDK](../docs/getting-started/cpp.fr.md) |
-| vcpkg | Extraire `*-vcpkg-overlay.tar.gz`, puis installer `motion-input-grid` avec `--overlay-ports` ; le port n'est pas encore dans le registre principal | [Port vcpkg](../ports/motion-input-grid/README.fr.md) |
-| Debian / Ubuntu | Télécharger le `.deb` de votre architecture et l'installer avec APT ; l'installation par nom nécessite un dépôt signé configuré | [Debian / APT](../docs/development/distribution.fr.md#debian-et-hébergement-apt-signé) |
-| Godot | Extraire le ZIP add-on à la racine du projet | [Godot](../integrations/godot/README.fr.md) |
-| Unity | Package Manager → **Add package from tarball**, avec le `.tgz` Unity | [Unity UPM](../integrations/unity/README.fr.md) |
-| Unreal | Extraire le ZIP plugin dans `Plugins`, puis recompiler le projet C++ | [Unreal](../integrations/unreal/README.fr.md) |
-
-```sh
-vcpkg install motion-input-grid --overlay-ports=/chemin/motion-input-grid-vcpkg-overlay
-sudo apt install ./motion-input-grid_1.0.0_amd64.deb
-```
-
-La commande APT s'exécute dans le dossier du téléchargement ; choisissez le
-fichier `arm64` sur ARM64. Le `.deb` et le port vcpkg fournissent le SDK/moteur,
-sans application de bureau ni estimateur caméra. Godot, Unity et Unreal restent
-des intégrations Preview et demandent un fournisseur de landmarks.
-
-Pour le configurator et le controller, choisissez l'archive `*-native` ; pour
-les démos prêtes à lancer, choisissez l'archive `*-examples`. La compilation
-depuis les sources reste disponible : [Windows](../docs/getting-started/windows.fr.md) ·
-[Linux](../docs/getting-started/linux.fr.md).
-
-Commencez par le [démarrage rapide](getting-started/bootstrap.fr.md), puis les
-[exemples](../examples/README.fr.md). L'anglais est la langue par défaut.
-Chaque guide possède un lien anglais/français en tête. Les identifiants,
-champs JSON, extraits de code et mentions légales officielles restent inchangés.
-
-| Sujet | Guide |
+| Je veux… | Guide |
 | --- | --- |
-| SDK, PyPI, npm, vcpkg, APT et packages moteurs | [Distribution](development/distribution.fr.md) |
-| Installation, action et retour par technologie | [Démarrage](getting-started/bootstrap.fr.md) |
-| Modules et cycle de vie des exemples | [Code des exemples](getting-started/examples.fr.md) |
-| Installation et commandes natives | [Windows](getting-started/windows.fr.md), [Linux](getting-started/linux.fr.md) |
-| Dessiner et enregistrer les mouvements | [Configurateur](guides/configurator.fr.md) |
-| Contrôleur en arrière-plan et profils | [Contrôleur](guides/controller.fr.md) |
-| Référence JSON du schéma 2 | [Configuration](reference/configuration.fr.md) |
-| Contrats du moteur C++ | [API moteur](reference/cpp.fr.md) |
-| ABI Python/C#/native | [API C](reference/c-abi.fr.md), [intégration](integrations/overview.fr.md) |
-| React/Vue/Next et navigateur | [JavaScript](integrations/javascript.fr.md) |
-| Architecture complète du dépôt et exécution | [Architecture](architecture/overview.fr.md), [pipeline](architecture/lifecycle.fr.md) |
-| Observations et signes de main | [Mains](guides/hands.fr.md) |
-| Mesures et limites | [Performances](architecture/performance.fr.md) |
-| Règles de code et vérifications | [Contribution](development/contributing.fr.md) |
-| Archives et paquets pip/npm/Debian/éditeurs | [Publication](development/packaging.fr.md) |
-| Plateformes et vérifications | [Préparation](reference/support.fr.md) |
+| Dessiner un mouvement et lui attribuer un raccourci | [Configurateur](guides/configurator.fr.md) |
+| Utiliser mon profil avec une autre application | [Contrôleur](guides/controller.fr.md) |
+| Essayer une démo caméra sans créer de profil | [Exemples autonomes](../examples/standalone.fr.md) |
+| Ajouter un signe de main ou une condition sur les doigts | [Suivi des mains](guides/hands.fr.md) |
 
+Téléchargez une archive **`*-native`** pour les applications ou **`*-examples`**
+pour les démos depuis les [Releases](https://github.com/Robin-G0/MIG/releases).
+Les guides des applications indiquent les fichiers à lancer et les prérequis.
 
-[Changelog](development/CHANGELOG.fr.md) · [Roadmap](development/ROADMAP.fr.md)
+## Développer une application avec MIG
+
+| Technologie | Installation et première action |
+| --- | --- |
+| C++ / CMake / Make | [Installation du SDK](getting-started/cpp.fr.md), [API C++](reference/cpp.fr.md) |
+| Python | [pip et envoi de frames](../bindings/python/README.fr.md), [Tkinter](../examples/python-tkinter/README.fr.md), [Pygame](../examples/pygame/README.fr.md) |
+| Navigateur / React / Vue / Next.js | [Package npm](../bindings/javascript/README.fr.md), [Installation des frameworks](integrations/javascript.fr.md) |
+| Godot / Unity / Unreal | [Add-on Godot](../integrations/godot/README.fr.md), [UPM Unity](../integrations/unity/README.fr.md), [Plugin Unreal](../integrations/unreal/README.fr.md) |
+| vcpkg / Debian / APT | [Distribution des packages](development/distribution.fr.md) |
+
+Le [guide de démarrage](getting-started/bootstrap.fr.md) relie profil, suivi et
+retour d'action. Le [catalogue des exemples](../examples/README.fr.md) et le
+[parcours du code](getting-started/examples.fr.md) vous aident ensuite à adapter
+une application fonctionnelle. Le [guide d'intégration](integrations/overview.fr.md)
+décrit les points fournis et les adaptateurs caméra natifs.
+
+## Comprendre les contrats
+
+| Sujet | Référence |
+| --- | --- |
+| Champs JSON, séquences clavier, contraintes et layers | [Schéma de configuration](reference/configuration.fr.md) |
+| Packets, handles et cycle de vie des bindings | [ABI C](reference/c-abi.fr.md), [Pont .NET](../bindings/dotnet/README.fr.md) |
+| Modules, dépendances et structure du dépôt | [Architecture](architecture/overview.fr.md) |
+| Calibrage, espaces de coordonnées et reconnaissance | [Reconnaissance](architecture/recognition.fr.md) |
+| Workers, capture et arrêt | [Pipeline d'exécution](architecture/lifecycle.fr.md) |
+| Travail temps réel, mesures et limites | [Performances](architecture/performance.fr.md) |
+| Plateformes et couverture des tests | [Matrice de support](reference/support.fr.md) |
+
+## Compiler, contribuer et publier
+
+[Compilation Windows](getting-started/windows.fr.md) · [Compilation Linux](getting-started/linux.fr.md) ·
+[Style et vérifications](development/contributing.fr.md) · [Packaging](development/packaging.fr.md) ·
+[Distribution et hébergement APT signé](development/distribution.fr.md) ·
+[Historique](development/CHANGELOG.fr.md) · [Roadmap](development/ROADMAP.fr.md)
+
+Chaque guide possède un lien English/Français en tête. Les noms d'API, champs
+JSON et notices légales des dépendances conservent leur écriture d'origine.

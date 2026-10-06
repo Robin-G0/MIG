@@ -2,6 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+Reconnaissez des mouvements dans le navigateur avec le moteur C++ compilé en
+WASM. `MIGSession` possède la caméra, les modèles et le tracker ; les adaptateurs
+React et Vue relient cette session aux composants. Next.js utilise l'adaptateur React.
+
 ## Installer depuis npm
 
 Dans votre projet (Node.js 22.12+), lancez :
@@ -28,28 +32,48 @@ utilisez `npm.cmd` et `npx.cmd` si la politique bloque les scripts `.ps1`.
 `motion-input-grid` fournit une session caméra, un hook React et un composable
 Vue utilisant le moteur C++/WASM. Next.js réutilise React.
 
-## Alternative : compiler le package
-
-Après compilation WASM, depuis le dépôt complet :
-
-```sh
-npm ci
-npm run prepare:javascript
-npm pack --workspace motion-input-grid --pack-destination build/releases
-```
-
-Dans votre application, installez l'archive locale puis copiez les ressources :
-
-```sh
-npm install /chemin/motion-input-grid-1.0.0.tgz
-npx --package motion-input-grid mig-copy-assets public/mig
-```
-
 ## Utiliser le package
 
 Le package contient WASM, modèles, modules, types et licences. `assetBase` indique
 leur URL publique (`/mig/` par défaut). Servez sur localhost ou HTTPS. La caméra
 s'ouvre uniquement avec Start. React et Vue sont des dépendances optionnelles.
+
+Ajoutez les éléments suivants à votre page et le JavaScript à son module
+compilé par votre application. Start charge le profil de démonstration fourni.
+Pour utiliser votre profil, appelez `await session.importJSON(jsonText)` depuis
+votre sélecteur de fichier ; un import invalide rejette la promesse sans remplacer
+le profil actif. Placez vidéo et canvas dans un même conteneur pour superposer
+l'aperçu, et appliquez le miroir une seule fois. Les exemples des frameworks
+fournissent le CSS et les contrôles complets.
+
+```html
+<button id="start">Start</button>
+<button id="stop">Stop</button>
+<p id="status"></p>
+<video id="camera" muted playsinline></video>
+<canvas id="overlay"></canvas>
+```
+
+```js
+import { MIGSession } from 'motion-input-grid';
+
+const video = document.querySelector('#camera');
+const canvas = document.querySelector('#overlay');
+const status = document.querySelector('#status');
+const session = new MIGSession({
+    assetBase: new URL('/mig/', location.href).href,
+    onAction: ({ action, id }) => console.log(action, id)
+});
+const unsubscribe = session.subscribe(state => { status.textContent = state.status; });
+document.querySelector('#start').onclick = () => {
+    session.start(video, canvas).catch(error => { status.textContent = error.message; });
+};
+document.querySelector('#stop').onclick = () => session.stop();
+window.addEventListener('pagehide', () => {
+    unsubscribe();
+    session.dispose();
+}, { once: true });
+```
 
 `MIGSession` fournit `subscribe`, `start(video, canvas)`, `stop`, `importJSON`,
 `recalibrate` et `dispose`. Les abonnés reçoivent immédiatement un état puis les
@@ -80,3 +104,20 @@ et le [guide de démarrage](https://github.com/Robin-G0/MIG/blob/main/docs/integ
 
 Le paquet inclut `runtime/vision` : MediaPipe JS/WASM est copié avec les modèles
 par mig-copy-assets. Start charge ces fichiers locaux, sans CDN.
+
+## Alternative : compiler le package
+
+Après compilation WASM, depuis le dépôt complet :
+
+```sh
+npm ci
+npm run prepare:javascript
+npm pack --workspace motion-input-grid --pack-destination build/releases
+```
+
+Dans votre application, installez l'archive locale puis copiez les ressources :
+
+```sh
+npm install /chemin/motion-input-grid-1.0.0.tgz
+npx --package motion-input-grid mig-copy-assets public/mig
+```

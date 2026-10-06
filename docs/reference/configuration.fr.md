@@ -2,6 +2,21 @@
 
 [English](configuration.md) | [Français](configuration.fr.md)
 
+<details>
+<summary>Dans cette page</summary>
+
+- [Racine et inputs](#racine-et-inputs)
+- [Clavier et modes](#clavier-et-modes)
+- [Grille et contraintes](#grille-et-contraintes)
+- [Doigts et commandes globales](#doigts-et-commandes-globales)
+- [Interaction violette](#interaction-violette)
+- [Enregistrement et validation](#enregistrement-et-validation)
+- [Présentation et layers](#présentation-et-layers)
+- [Exemples JSON de la référence](#exemples-json-de-la-référence)
+- [Liste des profils du contrôleur](#liste-des-profils-du-contrôleur)
+
+</details>
+
 Les exemples utilisent [raised-hands.json](../../examples/common/raised-hands.json) :
 deux inputs de poignet en espace body, quatre bandes horizontales Required vertes
 puis Trigger jaune. Les ordres exigent un chemin, pas un test de hauteur écrit

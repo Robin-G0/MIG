@@ -2,6 +2,21 @@
 
 [English](configuration.md) | [Français](configuration.fr.md)
 
+<details>
+<summary>On this page</summary>
+
+- [Document and coordinate system](#document-and-coordinate-system)
+- [Action output modes](#action-output-modes)
+- [Independent spatial constraints and steps](#independent-spatial-constraints-and-steps)
+- [Finger scopes and global controls](#finger-scopes-and-global-controls)
+- [Purple Interaction cells](#purple-interaction-cells)
+- [Recording, limits and validation](#recording-limits-and-validation)
+- [Example: generic Jump](#example-generic-jump)
+- [Editor presentation and live scaling](#editor-presentation-and-live-scaling)
+- [Controller profile list](#controller-profile-list)
+
+</details>
+
 The standalone camera examples use
 [`raised-hands.json`](../../examples/common/raised-hands.json): separate left/right
 wrist inputs in body space, with four full-width green Required rows followed by

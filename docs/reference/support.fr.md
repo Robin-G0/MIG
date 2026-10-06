@@ -17,8 +17,8 @@ synthétiques et les images vides ne prouvent pas une compatibilité matérielle
 | Debian / outils APT | Beta | Tested | amd64 ; package arm64 généré | Installation amd64 ; dépôt signé de test et téléchargement |
 | Capture / applications natives | Beta | Tested | Windows/Linux x64 | Images vides et tests UI/synthétiques ; caméra/clavier réels non testés |
 | Add-on Godot | Preview | Tested | Godot 4.3, Windows x64, Linux x64/ARM64 | Import en projet neuf et cycle de vie GDScript ; exports de jeux non validés |
-| UPM Unity | Preview | Untested en éditeur | Windows/Linux x64 | Payload natif/.NET testé ; builds éditeur/player NOT RUN |
-| Plugin Unreal | Preview | Untested en éditeur | Payloads Windows x64, Linux x64/ARM64 | Payload C ABI testé ; compilation module/jeu NOT RUN |
+| UPM Unity | Preview | Untested en éditeur | Windows/Linux x64 | Payload natif/.NET testé ; builds éditeur/player non exécutés |
+| Plugin Unreal | Preview | Untested en éditeur | Payloads Windows x64, Linux x64/ARM64 | Payload C ABI testé ; compilation module/jeu non exécutés |
 | Structure visage | Experimental | Untested | Sources portables | Aucun estimateur visage ni produit de reconnaissance supporté |
 | Caméras, touches OS, ARM64 physique | — | Untested | Selon cible | Tests matériels/manuels nécessaires |
 | macOS, plugins mobiles | Planned | Untested | Aucun binaire distribué | Aucun support déclaré |
@@ -31,7 +31,7 @@ synthétiques et les images vides ne prouvent pas une compatibilité matérielle
   doivent être testés plus largement avant stabilisation.
 - **Experimental** : fonctionnalité incomplète ou exploratoire sans garantie de support.
 - **Tested** : la vérification indiquée a réellement été exécutée dans son environnement.
-- **Untested** : vérification non exécutée ; `NOT RUN` conserve ce sens.
+- **Untested** : la vérification concernée n’a pas été exécutée.
 - **Expected to work** : compatibilité supposée, distincte d’une preuve de test.
 - **Planned** : support non livré ; la roadmap n’est pas une promesse.
 

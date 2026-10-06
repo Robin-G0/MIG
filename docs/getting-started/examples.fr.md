@@ -2,6 +2,18 @@
 
 [English](examples.md) | [Français](examples.fr.md)
 
+<details>
+<summary>Dans cette page</summary>
+
+- [Profil et coordonnées](#profil-et-coordonnées)
+- [Python/Tk et Pygame](#pythontk-et-pygame)
+- [SDL2 et SFML](#sdl2-et-sfml)
+- [Navigateur, React, Vue et Next.js](#navigateur-react-vue-et-nextjs)
+- [Unity, Godot et Unreal](#unity-godot-et-unreal)
+- [Personnaliser](#personnaliser)
+
+</details>
+
 Pour utiliser les bibliothèques sans les compiler, installez
 `python -m pip install motion-input-grid` (Python) ou
 `npm install motion-input-grid` (navigateur/React/Vue/Next.js), puis

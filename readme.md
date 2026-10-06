@@ -2,127 +2,116 @@
 
 [English](readme.md) | [Français](docs/fr/readme.fr.md)
 
-MIG turns body and hand movements into named actions for applications and games.
-Draw a movement in the [configurator](docs/guides/configurator.md), save its JSON profile, then run it in the
-[controller](docs/guides/controller.md) or your own application. Use camera tracking or supply your own landmarks.
+**Turn a movement into an action.** Draw a route for a wrist or another body part,
+then use a camera to recognize it. MIG can send a keyboard shortcut to your desktop
+application or report an action to your game, website or Python program.
 
-Landmarks → grid scaled to shoulder spacing → movement/sign constraints → action.
-The same C++20 recognition engine serves every binding. Desktop keyboard output
-supports Single press, Hold and Repeat and starts disabled.
+Use a raised hand to advance a presentation, a movement to control a game, or a
+hand sign to run a shortcut. You choose the movements and their bindings.
+The grid follows shoulder spacing, so it scales as you move toward the camera.
 
-Motion Input Grid (MIG) uses `motion-input-grid` as its distribution identifier.
-Python keeps `import mig`; C++ keeps `find_package(MIG)` and `MIG::core`.
+[**Download**](https://github.com/Robin-G0/MIG/releases) ·
+[**Documentation**](docs/index.md) · [**Examples**](examples/README.md)
 
-## Status and packages
+## Use MIG on your desktop
 
-MIG 1.0.0 is the first public release candidate. The core and C ABI contracts are
-covered by regression and installed-consumer tests. Camera accuracy and engine
-exports need separate checks; see the [support matrix](docs/reference/support.md).
+No code is needed to create and run a movement profile.
 
-| Ecosystem | Package / entry point | Maturity |
-| --- | --- | --- |
-| C++ / C ABI | SDK archive, `find_package(MIG)`, vcpkg overlay | Core Stable; vcpkg Beta |
-| Python | Self-contained `motion-input-grid` wheel, `from mig import Tracker` | Beta |
-| Browser / React / Vue / Next.js | `motion-input-grid`, same C++ engine in WASM | Beta |
-| Debian / APT | `motion-input-grid`, signed-repository tooling | Beta |
-| Godot / Unity / Unreal | Add-on ZIP / UPM tarball / Code Plugin ZIP | Preview |
+1. Download the **`*-native` archive** for Windows x64 or Linux x64 and extract it completely.
+2. Open the [**configurator**](docs/guides/configurator.md), start the camera,
+   draw your movement and save its profile.
+3. Open the [**controller**](docs/guides/controller.md), import that profile and
+   try the movement. Its row lights up when recognized. Enable **Keyboard output**
+   when you want it to send keys to the application you are using.
 
-Native camera applications target Windows/Linux x64. Linux ARM64 packages accept
-supplied landmarks; no ARM64 camera runtime is included. Python and browser libraries can be installed through pip and npm;
-release archives provide offline installation alternatives.
+| Draw a condition | What it means |
+| --- | --- |
+| 🟩 Required | Pass through this region; numbers define the order. |
+| 🟥 Forbidden | Avoid this region. |
+| 🟨 Trigger | Finish the movement here. |
+| 🟪 Interaction | Make a hand sign here, optionally holding it. |
 
-## Install the libraries
+> [!TIP]
+> Try the [standalone camera examples](examples/standalone.md) first if you just
+> want to see tracking work. Raise either hand and watch its feedback, without
+> sending any keys.
+
+Desktop archives include the camera runtime and models. Keep their files together.
+Windows needs the Visual C++ 2022 x64 runtime; Linux needs glibc 2.35+.
+Linux keyboard output requires X11/XTest. See the application guides for launch
+paths, calibration, themes and troubleshooting.
+
+## Add MIG to your application
+
+The **C++20 engine is shared by every integration**. Create a JSON profile once
+in the configurator, then import it wherever your application runs. Supply body
+landmarks yourself, or use an available camera adapter.
+
+Package managers use **`motion-input-grid`**. Technical APIs keep the short name:
+Python imports `mig`; CMake exports `MIG::core`.
+
+### Python
 
 ```sh
 python -m pip install motion-input-grid
+python -c "from mig import Tracker; print('MIG ready')"
+```
+
+The wheel includes the recognition engine for supplied positions. Camera viewers
+use a separate native runtime. [Python usage and frame example](bindings/python/README.md).
+
+### Browser, React, Vue and Next.js
+
+```sh
 npm install motion-input-grid
 npx mig-copy-assets public/mig
 ```
 
-Choose pip for Python (`from mig import Tracker`) or npm for the browser,
-React, Vue and Next.js. See the guides for
-[Python](bindings/python/README.md) · [JavaScript](bindings/javascript/README.md).
+The package includes WASM, camera models and framework adapters. Serve the assets
+from your application and start tracking after a user click.
+[JavaScript usage](bindings/javascript/README.md) · [Framework examples](docs/integrations/javascript.md).
 
-These packages are libraries. Desktop applications and the Python camera
-runtime are separate downloads from
-[Releases](https://github.com/Robin-G0/MIG/releases).
+### C++ and game engines
 
-### Other installation options
+| Integration | Start here |
+| --- | --- |
+| C++ / CMake / Make | [Install an SDK and link `MIG::core`](docs/getting-started/cpp.md) |
+| vcpkg | [Install through the release overlay](ports/motion-input-grid/README.md) |
+| Debian / Ubuntu | [Install a `.deb` or configure a signed APT repository](docs/development/distribution.md#debian-and-signed-apt-hosting) |
+| Godot | [GDScript add-on and C# examples](integrations/godot/README.md) |
+| Unity | [.NET / C ABI UPM package](integrations/unity/README.md) |
+| Unreal | [Native C ABI plugin](integrations/unreal/README.md) |
 
-Download the artifact matching your system from
-[Releases](https://github.com/Robin-G0/MIG/releases).
+A CMake consumer links the installed SDK like this:
 
-| Use | Installation | Guide |
-| --- | --- | --- |
-| C++ / C ABI | Extract the `*-sdk` archive, add its path to `CMAKE_PREFIX_PATH` and use `find_package(MIG CONFIG REQUIRED)` | [SDK](docs/getting-started/cpp.md) |
-| vcpkg | Extract `*-vcpkg-overlay.tar.gz`, then install `motion-input-grid` with `--overlay-ports`; the port is not yet in the main registry | [vcpkg port](ports/motion-input-grid/README.md) |
-| Debian / Ubuntu | Download your architecture's `.deb` and install it with APT; installation by name requires a configured signed repository | [Debian / APT](docs/development/distribution.md#debian-and-signed-apt-hosting) |
-| Godot | Extract the add-on ZIP at your project root | [Godot](integrations/godot/README.md) |
-| Unity | Package Manager → **Add package from tarball**, using the Unity `.tgz` | [Unity UPM](integrations/unity/README.md) |
-| Unreal | Extract the plugin ZIP into `Plugins`, then rebuild your C++ project | [Unreal](integrations/unreal/README.md) |
-
-```sh
-vcpkg install motion-input-grid --overlay-ports=/path/to/motion-input-grid-vcpkg-overlay
-sudo apt install ./motion-input-grid_1.0.0_amd64.deb
+```cmake
+find_package(MIG 1.0 CONFIG REQUIRED)
+target_link_libraries(my-application PRIVATE MIG::core MIG::format)
 ```
 
-Run the APT command in the download directory; choose the `arm64` file on ARM64.
-The `.deb` and vcpkg port provide the SDK/engine without desktop applications or
-a camera estimator. Godot, Unity and Unreal remain Preview integrations and
-require a landmark provider.
+The [C++ guide](docs/getting-started/cpp.md) includes a complete project, build
+commands and runtime requirements. Editor integrations require a landmark
+provider; they do not include desktop camera tracking.
 
-For the configurator and controller, choose the `*-native` archive; for runnable
-demos, choose the `*-examples` archive. Building from source is also supported:
-[Windows](docs/getting-started/windows.md) · [Linux](docs/getting-started/linux.md).
+## Explore the engine
 
-## Desktop applications
+![Landmarks flow through calibration and recognition to actions](docs/assets/architecture/engine-flow.svg)
 
-The [configurator](docs/guides/configurator.md) creates profiles; the
-[controller](docs/guides/controller.md) runs them. Their guides explain how to
-launch each application and where to find its files.
+[Architecture](docs/architecture/overview.md) explains module boundaries and
+ownership. The [configuration reference](docs/reference/configuration.md),
+[C++ API](docs/reference/cpp.md) and [C ABI](docs/reference/c-abi.md) describe
+recognition, live action state and lifecycle contracts.
 
-For prebuilt applications, check [Releases](https://github.com/Robin-G0/MIG/releases)
-for `motion-input-grid-<version>-windows-x64-native.zip` or
-`motion-input-grid-<version>-linux-x64-native.tar.gz`. Extract the whole archive.
-SDK archives and Python/npm/Debian packages provide libraries.
-If no native archive has been published, follow the
-[Windows](docs/getting-started/windows.md) or [Linux](docs/getting-started/linux.md) build guide.
-The Windows `release` preset places both executables in `build/release/bin/`.
+MIG 1.0.0 provides Windows/Linux x64 desktop applications and Linux ARM64
+positions-based SDKs. Engine integrations are Preview. Automated tests cover
+recognition and packages; physical cameras, target-game key delivery and editor
+exports need separate validation. Check the [support matrix](docs/reference/support.md)
+before choosing a platform.
 
-## Try it
+Build from source: [Windows](docs/getting-started/windows.md) ·
+[Linux](docs/getting-started/linux.md) · [Portable SDK](docs/getting-started/cpp.md).
 
-The [standalone examples](examples/standalone.md) show a mirrored camera preview,
-a prop following each wrist and feedback when a hand is raised. Extract the whole
-matching examples archive, then run its binary or browser launcher.
-
-For a source-based C++ smoke test, install an SDK and run:
-
-```sh
-cmake -S examples/sdk-consumer -B build/demo -DCMAKE_PREFIX_PATH=/path/to/sdk
-cmake --build build/demo --config Release
-```
-
-Run the generated `mig-sdk-example` with `configs/default.json`; on Windows it is
-under `build/demo/Release`. The example supplies synthetic positions and prints
-`Game event: left_raise`. This checks recognition without a camera.
-
-```python
-from pathlib import Path
-from mig import Tracker
-
-profile = Path("examples/common/raised-hands.json").read_text()
-with Tracker(None, profile) as tracker:
-    print(tracker.export_json())
-```
-
-Install a matching wheel first. It includes the positions engine; camera viewers
-need the separate native runtime. To feed observations and handle actions, follow
-[bootstrap](docs/getting-started/bootstrap.md) and the [examples](examples/README.md).
-
-[Documentation](docs/index.md) · [Architecture](docs/architecture/overview.md) ·
-[Configuration](docs/reference/configuration.md) · [Distribution](docs/development/distribution.md) ·
-[Contributing](CONTRIBUTING.md)
+[Contributing](CONTRIBUTING.md) · [Changelog](docs/development/CHANGELOG.md) ·
+[Roadmap](docs/development/ROADMAP.md) · [Package and release details](docs/development/distribution.md)
 
 Licensed under [Apache-2.0](LICENSE). Redistributed dependencies retain their notices.
-
-[Changelog](docs/development/CHANGELOG.md) · [Roadmap](docs/development/ROADMAP.md)

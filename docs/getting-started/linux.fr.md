@@ -2,18 +2,11 @@
 
 [English](linux.md) | [Français](linux.fr.md)
 
-Pour installer uniquement la bibliothèque et la lier à votre projet, suivez
-le [guide SDK C++ / CMake](cpp.fr.md). Il couvre les archives,
-la compilation, `cmake --install` et les Makefiles générés sous Linux.
-
-Pour utiliser les bibliothèques sans les compiler, installez
-`python -m pip install motion-input-grid` (Python) ou
-`npm install motion-input-grid` (navigateur/React/Vue/Next.js), puis
-`npx mig-copy-assets public/mig` pour les ressources navigateur.
-[Python](../../bindings/python/README.fr.md) · [JavaScript](../../bindings/javascript/README.fr.md).
-
-Les applications de bureau et le runtime caméra Python restent des
-archives natives séparées ; les exemples précompilés incluent leurs dépendances.
+Pour utiliser les applications précompilées, suivez les guides du
+[configurateur](../guides/configurator.fr.md) et du [contrôleur](../guides/controller.fr.md).
+Cette page décrit la compilation et les contrôles propres à la plateforme.
+Pour une bibliothèque seule, consultez le [SDK C++ / CMake](cpp.fr.md),
+[Python](../../bindings/python/README.fr.md) ou [JavaScript](../../bindings/javascript/README.fr.md).
 
 mig-configurator et mig-controller sont des applications Qt 6 natives partageant
 moteur, estimateur et profils schéma 2 avec Windows.

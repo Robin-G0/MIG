@@ -2,8 +2,18 @@
 
 [English](hands.md) | [Français](hands.fr.md)
 
-Both Windows applications estimate hand/finger positions with native MediaPipe
-Hand Landmarker in-process. Joint-angle extension now feeds scoped finger rules and Thumb/V application controls.
+<details>
+<summary>On this page</summary>
+
+- [Run](#run)
+- [Data contract](#data-contract)
+- [Runtime and verification](#runtime-and-verification)
+
+</details>
+
+Windows and Linux applications estimate hand and finger positions with native
+MediaPipe Hand Landmarker. Finger geometry supplies scoped rules, recognized signs
+and application controls.
 See [schema v2](../reference/configuration.md) and [authoring](../getting-started/windows.md).
 
 ## Run
@@ -25,7 +35,8 @@ input with finger rules enables Hands in an ON build; Save persists the setting.
 Absent flags mean body-only.
 The controller's `--hands` flag is accepted only for diagnostics, not normal use.
 
-Click Start camera. The main video is unobstructed; rule diagnostics appear in the separate editor. Hand tracking does not require shoulder calibration; body path
+Click Start camera. The main video is unobstructed; rule diagnostics appear in the separate editor.
+Hand tracking does not require shoulder calibration; body path
 recognition still does. Without an explicit host request, the hand model is not loaded or run.
 The editor displays yellow hand bones/joints alongside body markers. Main status
 shows detected hands and available anatomical finger observations. Finger assignment

@@ -2,6 +2,20 @@
 
 [English](overview.md) | [Français](overview.fr.md)
 
+<details>
+<summary>Dans cette page</summary>
+
+- [Carte du dépôt](#carte-du-dépôt)
+- [Modules](#modules)
+- [Dépendances et points d'entrée](#dépendances-et-points-dentrée)
+- [Compilation, validation et distribution](#compilation-validation-et-distribution)
+- [Où modifier une fonctionnalité](#où-modifier-une-fonctionnalité)
+- [Exécution et propriété](#exécution-et-propriété)
+- [Disponible et prévu](#disponible-et-prévu)
+- [Interface du contrôleur](#interface-du-contrôleur)
+
+</details>
+
 Motion Input Grid (MIG) sépare observations, reconnaissance calibrée, configuration, estimation
 facultative, sorties et présentation. Tous les hôtes utilisent le même moteur.
 Le [pipeline](lifecycle.fr.md) décrit exécution/propriété, le [format](../reference/configuration.fr.md)

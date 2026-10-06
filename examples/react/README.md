@@ -2,6 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+Two variants share the same camera tracking: a raised-hand demo with visual
+feedback and a JSON profile importer. Actions stay inside your application;
+this example does not send desktop keyboard shortcuts.
+
 ## Use in your application
 
 ```sh
@@ -13,6 +17,8 @@ Import from `motion-input-grid/react`. Serve the assets at `/mig/` over localhos
 WASM and models, so your application needs no C++ build. The checkout
 commands below are for editing and rebuilding this example. See the
 [npm guide](../../bindings/javascript/README.md).
+
+## Run from the checkout
 
 From the repository root, with Node.js 22.12+ and the compiled WASM engine:
 
@@ -46,4 +52,4 @@ resolve the same import to `bindings/javascript`. See the
 [complete bootstrap and shared-code explanation](../../docs/integrations/javascript.md) and
 [package setup](../../bindings/javascript/README.md).
 
-[Source walkthrough / explication du code](../../docs/getting-started/examples.md).
+[Source walkthrough](../../docs/getting-started/examples.md).
