@@ -51,12 +51,16 @@ tests do not verify a physical desktop, camera or keyboard output.
 ./tools/package-windows-release.ps1
 ```
 
+The native bootstrap copies the license from the verified MediaPipe wheel to
+`build/native-deps/MediaPipe-LICENSE`. Native and examples archives include it
+alongside `nlohmann-LICENSE`; packaging does not require a Web bootstrap.
+
 For ARM64, install the Visual Studio ARM64 C++ tools and matching Windows SDK,
 use a separate build directory, then package that directory explicitly:
 
 ```powershell
 ./tools/build-windows.ps1 -Architecture ARM64 -BuildDirectory build/windows-arm64
-./tools/package-distribution.ps1 -WindowsBuild build/windows-arm64 -Destination distribution-arm64
+./tools/package-distribution.ps1 -WindowsBuild build/windows-arm64 -NativeDependencies build/native-deps-arm64 -Destination distribution-arm64
 ./tools/package-windows-release.ps1 -Distribution distribution-arm64/windows -Architecture arm64
 ```
 

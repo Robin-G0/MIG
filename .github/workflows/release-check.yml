@@ -52,7 +52,7 @@ jobs:
                   dotnet-version: '8.0.x'
             - name: Validate the extracted Linux Unity managed bridge
               run: python3 tests/native_integration_package_tests.py build/releases/motion-input-grid-*-linux-x64-unity.tgz
-            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+            - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: motion-input-grid-linux-and-python-candidates
                   path: build/releases/
@@ -93,7 +93,7 @@ jobs:
             - name: Build and validate SDK, Python and engine integration artifacts
               shell: pwsh
               run: ./tools/prepare-windows-packages.ps1
-            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+            - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: motion-input-grid-windows-x64-candidate
                   path: build/releases/
@@ -126,7 +126,7 @@ jobs:
                   mkdir -p build/releases
                   npm pack --workspace motion-input-grid --pack-destination build/releases
                   node tests/npm_package_tests.mjs build/releases/motion-input-grid-*.tgz
-            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+            - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: motion-input-grid-npm-candidate
                   path: build/releases/
@@ -152,7 +152,7 @@ jobs:
                   git -C build/vcpkg-release-tool checkout 434307da09bc05b2c86996dccc8b2351fc0d5d37
                   build/vcpkg-release-tool/bootstrap-vcpkg.sh -disableMetrics
                   python3 tests/vcpkg_package_tests.py build/releases/motion-input-grid-*-vcpkg-overlay.tar.gz build/releases/motion-input-grid-*-source.tar.gz --vcpkg build/vcpkg-release-tool/vcpkg
-            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+            - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: motion-input-grid-source-and-vcpkg-candidates
                   path: build/releases/
@@ -182,7 +182,7 @@ jobs:
                   auditwheel repair --plat manylinux_2_35_aarch64 build/python-arm64/*-linux_aarch64.whl -w build/releases
                   python3 tests/python_package_tests.py build/releases/*-manylinux_2_35_aarch64.whl
                   python3 -m twine check build/releases/*.whl
-            - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+            - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
               with:
                   name: motion-input-grid-linux-and-python-candidates
                   path: build/linux-candidates
@@ -191,7 +191,7 @@ jobs:
                   python3 tools/bootstrap-godot.py --editor
                   python3 tests/godot_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-godot.zip --godot build/godot-deps/Godot_v4.3-stable_linux.arm64
                   python3 tests/native_integration_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-unreal.zip
-            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+            - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: motion-input-grid-arm64-python-candidate
                   path: build/releases/
@@ -206,7 +206,7 @@ jobs:
                   fetch-depth: 0
             - name: Propagate exact-tag package versions
               run: python3 tools/release-version.py --sync
-            - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+            - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
               with:
                   pattern: motion-input-grid-*-candidate*
                   path: build/release-candidates
@@ -218,7 +218,7 @@ jobs:
                   python3 tests/package_artifact_tests.py build/release-candidates
                   python3 tools/release-manifest.py build/release-candidates ${RELEASE_TAG:+--tag "$RELEASE_TAG"}
                   python3 tools/release-checksums.py build/release-candidates --check
-            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+            - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: motion-input-grid-release-candidates
                   path: build/release-candidates/

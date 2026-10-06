@@ -44,11 +44,15 @@ Le SDK de l'archive permet de recompiler avec CMAKE_PREFIX_PATH ; compilateur
 et dépendances de développement restent nécessaires à la recompilation.
 Les archives sont sous build/releases avec manifest et SHA256.
 
+Le bootstrap natif copie la licence du wheel MediaPipe vérifié vers
+`build/native-deps/MediaPipe-LICENSE`. Les archives natives et d'exemples
+l'incluent avec `nlohmann-LICENSE`, sans nécessiter le bootstrap Web.
+
 Pour ARM64, installez MSVC ARM64 et le SDK correspondant, puis :
 
 ```powershell
 ./tools/build-windows.ps1 -Architecture ARM64 -BuildDirectory build/windows-arm64
-./tools/package-distribution.ps1 -WindowsBuild build/windows-arm64 -Destination distribution-arm64
+./tools/package-distribution.ps1 -WindowsBuild build/windows-arm64 -NativeDependencies build/native-deps-arm64 -Destination distribution-arm64
 ./tools/package-windows-release.ps1 -Distribution distribution-arm64/windows -Architecture arm64
 ```
 

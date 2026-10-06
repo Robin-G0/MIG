@@ -1,5 +1,6 @@
 param(
     [string]$WindowsBuild = 'build/windows',
+    [string]$NativeDependencies = 'build/native-deps',
     [string]$LinuxInstall = 'build/linux-install',
     [string]$LinuxExamples = 'build/linux-examples',
     [string]$WebBuild = 'build/web/web',
@@ -35,6 +36,9 @@ if (Test-Path "$projectRoot/$WindowsBuild/bin/mig-configurator.exe") {
     }
     if (Test-Path "$targetRoot/windows/sdk/bin/mig-c.dll") {
         Copy-Artifact "$targetRoot/windows/sdk/bin/mig-c.dll" "$targetRoot/windows/mig-c.dll"
+    }
+    foreach ($name in @('MediaPipe-LICENSE', 'nlohmann-LICENSE')) {
+        Copy-Artifact "$projectRoot/$NativeDependencies/$name" "$targetRoot/windows/licenses/$name"
     }
 }
 if (Test-Path "$projectRoot/$LinuxInstall/include") {

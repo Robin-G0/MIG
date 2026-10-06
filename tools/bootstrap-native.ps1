@@ -27,6 +27,8 @@ if ($wheel.digests.sha256 -ne $pinnedHash) {
 }
 Get-MigArtifact -Uri $wheel.url -Destination $archive -Sha256 $pinnedHash
 Expand-Archive -LiteralPath $archive -DestinationPath "$root/mediapipe-package" -Force
+$license = Join-Path "$root/mediapipe-package" "mediapipe-$version.dist-info/licenses/LICENSE"
+Copy-Item -LiteralPath $license -Destination "$root/MediaPipe-LICENSE" -Force
 $headers = [Collections.Generic.HashSet[string]]::new()
 $pending = [Collections.Generic.Queue[string]]::new()
 $pending.Enqueue('mediapipe/tasks/c/vision/pose_landmarker/pose_landmarker.h')

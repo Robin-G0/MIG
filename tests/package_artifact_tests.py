@@ -44,6 +44,11 @@ def verify(path):
     assert not any("node_modules" in Path(name).parts or ".git" in Path(name).parts for name in names)
     assert not any(private_file(part) for name in names for part in Path(name).parts), path
     assert any(name.endswith("LICENSE") for name in names), path
+    if "-native." in path.name or "-examples." in path.name:
+        assert any(name.endswith("licenses/MediaPipe-LICENSE") and files[name].strip()
+                   for name in names), "Missing MediaPipe runtime license"
+        assert any(name.endswith("licenses/nlohmann-LICENSE") and files[name].strip()
+                   for name in names), "Missing nlohmann runtime license"
     if "vcpkg-overlay" in path.name:
         source = next(data.decode() for name, data in files.items() if name.endswith("source.cmake"))
         assert re.search(r'MIG_SOURCE_SHA512 "[0-9a-f]{128}"', source)
