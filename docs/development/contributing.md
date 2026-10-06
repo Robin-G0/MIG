@@ -54,3 +54,17 @@ egress. CI does not establish leak freedom or human gesture accuracy.
 Checkout is pinned to a commit and workflow permissions are read-only.
 To block merges on failures, mark these checks as required in the repository's
 branch protection/ruleset settings; merely adding this workflow does not do so.
+
+## Windows dependency downloads
+
+The example and native bootstrap scripts share `tools/download.ps1`. Network
+failures, HTTP 408/429 and server errors have at most four attempts, with 90-second
+request timeouts and delays of 2, 4 and 8 seconds. Other HTTP client errors fail
+immediately. Downloads use a temporary file and enter the cache only after the
+SHA256 check, or a nonempty check for unpinned headers/licenses. Invalid cached
+artifacts are downloaded again. Checksum failures still stop the build.
+
+`powershell -NoProfile -ExecutionPolicy Bypass -File tests/download_tests.ps1`
+checks recovery and integrity failures without using the network. Both Windows
+CI and release jobs run it before bootstrap. Only downloads are retried; failed
+builds and tests are never turned into successful runs by retries.

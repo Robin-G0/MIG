@@ -74,6 +74,9 @@ jobs:
                   dotnet-version: '8.0.x'
             - name: Propagate exact-tag package versions
               run: python tools/release-version.py --sync
+            - name: Test download recovery and integrity checks
+              shell: pwsh
+              run: ./tests/download_tests.ps1
             - name: Build and test Windows x64
               shell: pwsh
               run: ./tools/build-windows.ps1

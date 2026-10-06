@@ -55,6 +55,8 @@ jobs:
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
               with:
                   persist-credentials: false
+            - name: Test download recovery and integrity checks
+              run: ./tests/download_tests.ps1
             - name: Bootstrap, compile both applications and run CTest
               run: ./tools/build-windows.ps1 -Hands '${{ matrix.hands }}' -BuildDirectory build/ci-windows
             - name: Install libraries and CMake package

@@ -45,3 +45,18 @@ Ces vérifications ne prouvent ni précision humaine ni absence de fuite.
 Les actions sont épinglées et les permissions sont en lecture. Configurez les
 checks requis dans les règles de branche si vous voulez bloquer les merges :
 le workflow seul ne le fait pas.
+
+## Téléchargement des dépendances Windows
+
+Les scripts d'exemples et le bootstrap natif partagent `tools/download.ps1`.
+Les erreurs réseau, HTTP 408/429 et serveur permettent au maximum quatre
+tentatives, avec un timeout de 90 secondes et des pauses de 2, 4 et 8 secondes.
+Les autres erreurs HTTP client échouent immédiatement. Les fichiers temporaires
+n'entrent dans le cache qu'après validation SHA256, ou vérification non vide pour
+les headers/licences sans hash épinglé. Un cache invalide est téléchargé à nouveau.
+Une erreur de checksum arrête toujours le build.
+
+`powershell -NoProfile -ExecutionPolicy Bypass -File tests/download_tests.ps1`
+vérifie la récupération et les erreurs d'intégrité sans réseau. Les jobs Windows
+de CI et de release l'exécutent avant le bootstrap. Seuls les téléchargements
+sont réessayés ; les erreurs de compilation ou de test restent des échecs.

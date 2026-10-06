@@ -1,5 +1,6 @@
 param([string]$CMakePath = 'cmake', [string]$Sdk = 'build/examples-sdk/windows')
 $ErrorActionPreference = 'Stop'
+. "$PSScriptRoot/download.ps1"
 $projectRoot = [IO.Path]::GetFullPath("$PSScriptRoot/..")
 Set-Location $projectRoot
 if (-not (Get-Command $CMakePath -ErrorAction SilentlyContinue)) {
@@ -9,12 +10,7 @@ $dependencies = Join-Path $projectRoot 'build/example-deps'
 New-Item -ItemType Directory -Force $dependencies | Out-Null
 function Get-ExampleDependency([string]$name, [string]$url, [string]$hash) {
     $archive = Join-Path $dependencies "$name.zip"
-    if (-not (Test-Path -LiteralPath $archive)) {
-        Invoke-WebRequest -UseBasicParsing $url -OutFile $archive
-    }
-    if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne $hash) {
-        throw "Dependency checksum mismatch: $name"
-    }
+    Get-MigArtifact -Uri $url -Destination $archive -Sha256 $hash
     Expand-Archive -LiteralPath $archive -DestinationPath $dependencies -Force
 }
 Get-ExampleDependency 'sdl' 'https://www.libsdl.org/release/SDL2-devel-2.30.12-VC.zip' '1ca980f9964fb44cf94be235c9818fa1dc8e3f76b08096d751b2d689e5e37d02'
