@@ -286,7 +286,9 @@ Thème, Basic/Pro, onglets, viewport et logs sont des états UI.
 
 Nouveau Basic : une étape Ordered, Pencil actif, aucun délai de mouvement.
 Pencil, Fill, Tolerance, Eraser, Select dans le volet ; vert Required, rouge
-Forbidden, jaune Trigger. Tolerance clique directement High pour son contour Low.
+Forbidden, jaune Trigger. Tolerance cible directement la région cliquée, même
+via son contour Low. Select trace une sélection rectangulaire ; Ctrl conserve
+la précédente. Supprimer une région retire aussi ses entrées Low liées.
 Pencil/Eraser interpolent, un trait=un undo. Trigger unique movable, nouveaux
 Required avant. Full grid affiche numéros centrés par voie (step.order si
 plusieurs étapes), X Forbidden, R Required non ordonné. Low n'ajoute pas une visite.

@@ -1,15 +1,24 @@
 #include "canvas.hpp"
 #include "../apps/authoring.hpp"
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <QPainter>
 #include <cmath>
 namespace mig::linux_ui {
 Canvas::Canvas(QWidget* parent) : QWidget(parent) {
     setMinimumSize(500, 420);
+    setFocusPolicy(Qt::StrongFocus);
 }
 QRectF Canvas::area() const {
     const auto size = std::min(width(), height()) - 32;
     return {(width() - size) / 2.0, (height() - size) / 2.0, double(size), double(size)};
+}
+Vec2 Canvas::local(QPointF point) const {
+    const auto rectangle = area();
+    return {float(Grid::min_cell +
+                  (rectangle.right() - point.x()) / rectangle.width() * Grid::cell_count),
+            float(Grid::min_cell +
+                  (point.y() - rectangle.top()) / rectangle.height() * Grid::cell_count)};
 }
 const Grid& Canvas::basis() const {
     return motion && motion->space == CoordinateSpace::Calibrated ? snapshot.reference_grid
@@ -65,9 +74,10 @@ void Canvas::paintEvent(QPaintEvent*) {
                                                        status == ConstraintStatus::HandMissing ||
                                                        status == ConstraintStatus::SignMismatch ||
                                                        status == ConstraintStatus::LandmarkLost);
-                    auto color = invalid    ? QColor("#ed6372")
-                                 : reacting ? QColor("#ffffff")
-                                            : colors[int(cell.type)];
+                    auto color = selection.includes(cell.id) ? palette().highlight().color()
+                                 : invalid                   ? QColor("#ed6372")
+                                 : reacting                  ? QColor("#ffffff")
+                                                             : colors[int(cell.type)];
                     painter.setPen(QPen(color, 2));
                     color.setAlpha(cell.landmark == landmark ? 90 : 25);
                     painter.setBrush(color);
@@ -90,6 +100,13 @@ void Canvas::paintEvent(QPaintEvent*) {
                 cells(step.constraints);
             }
         }
+    }
+    if (selection.dragging) {
+        const auto first = selection.origin, last = selection.end;
+        painter.setPen(QPen(palette().highlight().color(), 1, Qt::DashLine));
+        painter.setBrush(Qt::NoBrush);
+        painter.drawPolygon(QPolygonF{project(first), project({last.x, first.y}), project(last),
+                                      project({first.x, last.y})});
     }
     if (show_dots && basis().valid) {
         painter.setBrush(QColor("#42dba3"));
@@ -154,9 +171,20 @@ void Canvas::edit_cell(QPointF point) {
     }
     auto& cells = motion->steps[0].constraints;
     if (erase) {
-        std::erase_if(cells, [&](const auto& cell) {
-            return cell.landmark == landmark && cell.cell.x == x && cell.cell.y == y;
-        });
+        const auto remove = [&](auto& regions) {
+            std::vector<std::string> ids;
+            for (const auto& cell : regions) {
+                if (cell.landmark == landmark && ui::contains(cell.cell, {float(x), float(y)})) {
+                    ids.push_back(cell.id);
+                }
+            }
+            ui::erase_regions(regions, ids);
+        };
+        remove(motion->constraints);
+        for (auto& step : motion->steps) {
+            remove(step.constraints);
+        }
+        selection.clear();
     } else {
         SpatialConstraint brush;
         brush.id = "cell" + std::to_string(cells.size() + 1);
@@ -220,7 +248,18 @@ void Canvas::edit_cell(QPointF point) {
 void Canvas::mousePressEvent(QMouseEvent* event) {
 #ifndef MIG_CONTROLLER
     if (event->button() == Qt::LeftButton) {
-        paint_cell(event->position());
+        setFocus();
+        if (select) {
+            if (motion && full_grid && !read_only && area().contains(event->position())) {
+                selection.begin(local(event->position()), event->modifiers() & Qt::ControlModifier);
+                selection.update(motion->steps.empty() ? motion->constraints
+                                                       : motion->steps[0].constraints,
+                                 local(event->position()), landmark);
+                update();
+            }
+        } else {
+            paint_cell(event->position());
+        }
     }
 #else
     QWidget::mousePressEvent(event);
@@ -229,10 +268,41 @@ void Canvas::mousePressEvent(QMouseEvent* event) {
 void Canvas::mouseMoveEvent(QMouseEvent* event) {
 #ifndef MIG_CONTROLLER
     if (event->buttons() & Qt::LeftButton) {
-        paint_cell(event->position());
+        if (selection.dragging && motion) {
+            selection.update(motion->steps.empty() ? motion->constraints
+                                                   : motion->steps[0].constraints,
+                             local(event->position()), landmark);
+            update();
+        } else if (!select) {
+            paint_cell(event->position());
+        }
     }
 #else
     QWidget::mouseMoveEvent(event);
 #endif
+}
+void Canvas::mouseReleaseEvent(QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton) {
+        selection.dragging = false;
+        update();
+    }
+    QWidget::mouseReleaseEvent(event);
+}
+void Canvas::keyPressEvent(QKeyEvent* event) {
+#ifndef MIG_CONTROLLER
+    if (event->key() == Qt::Key_Delete && motion && !read_only) {
+        ui::erase_regions(motion->constraints, selection.ids);
+        for (auto& step : motion->steps) {
+            ui::erase_regions(step.constraints, selection.ids);
+        }
+        selection.clear();
+        if (changed) {
+            changed();
+        }
+        update();
+        return;
+    }
+#endif
+    QWidget::keyPressEvent(event);
 }
 } // namespace mig::linux_ui

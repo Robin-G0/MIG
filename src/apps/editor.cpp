@@ -63,7 +63,8 @@ void App::undo(bool redo, bool draft_scope) {
         }
         if (changed) {
             typing_control = 0;
-            selected_constraint = -1;
+            selected_constraint = selected_finger = -1;
+            region_selection.clear();
             editing_layer = -1;
             const auto stack = ui::layers(draft);
             const auto brush = landmarks[selection(edit_window, Members)].index;
@@ -106,6 +107,8 @@ void App::open_editor(bool creating, bool test) {
         recording_allowed = true;
         reviewed_recording.discard();
     }
+    region_selection.clear();
+    stroke = trace_stroke = false;
     new_input = creating;
     if (creating) {
         draft = {};
@@ -182,13 +185,15 @@ std::vector<FingerConstraint>& App::current_fingers() {
     }
     if (selected_scope == 1) {
         if (scope == 0 || draft.steps.empty()) {
-            throw std::runtime_error("Select a step for step fingers");
+            SendDlgItemMessageW(edit_window, FingerScope, CB_SETCURSEL, 0, 0);
+            return draft.fingers;
         }
         return draft.steps[scope - 1].fingers;
     }
     auto& constraints = current_constraints();
     if (selected_constraint < 0 || std::size_t(selected_constraint) >= constraints.size()) {
-        throw std::runtime_error("Select a spatial constraint");
+        SendDlgItemMessageW(edit_window, FingerScope, CB_SETCURSEL, 0, 0);
+        return draft.fingers;
     }
     return constraints[selected_constraint].fingers;
 }
@@ -239,6 +244,29 @@ void App::refresh_editor() {
         SetDlgItemInt(edit_window, HoldTime, draft.steps[scope - 1].hold_ms, FALSE);
     }
     auto& constraints = current_constraints();
+    std::erase_if(region_selection.ids, [&](const auto& id) {
+        return std::none_of(constraints.begin(), constraints.end(),
+                            [&](const auto& item) { return item.id == id; });
+    });
+    if (selected_constraint >= int(constraints.size())) {
+        selected_constraint = -1;
+    }
+    const int finger_scope = selection(edit_window, FingerScope);
+    const auto counts = ui::binding_counts(draft);
+    const auto scope_label = [&](const wchar_t* label, std::size_t count) {
+        const auto text = std::wstring(label) + L" (" + std::to_wstring(count) + L")";
+        SendDlgItemMessageW(edit_window, FingerScope, CB_ADDSTRING, 0,
+                            reinterpret_cast<LPARAM>(text.c_str()));
+    };
+    SendDlgItemMessageW(edit_window, FingerScope, CB_RESETCONTENT, 0, 0);
+    scope_label(L"Whole input fingers", counts.input);
+    scope_label(L"Current step fingers", scope > 0 ? draft.steps[scope - 1].fingers.size() : 0);
+    scope_label(L"Selected region fingers",
+                selected_constraint >= 0 ? constraints[selected_constraint].fingers.size() : 0);
+    SendDlgItemMessageW(edit_window, FingerScope, CB_SETCURSEL,
+                        finger_scope == 2 && selected_constraint < 0 ? 0 : finger_scope, 0);
+    EnableWindow(GetDlgItem(edit_window, ClearFingers),
+                 counts.input + counts.steps + counts.cells > 0);
     const auto order_labels = ui::constraint_labels(draft);
     std::size_t offset = scope > 0 ? draft.constraints.size() : 0;
     for (int s = 0; s < scope - 1; ++s) {
@@ -514,29 +542,23 @@ void App::editor_click(int x, int y, bool begin) {
         return;
     }
     if (tool == 0) {
-        for (std::size_t i = 0; i < list.size(); ++i) {
-            const auto& cell = list[i].cell;
-            if (cell_x >= cell.x && cell_x < cell.x + cell.width && cell_y >= cell.y &&
-                cell_y < cell.y + cell.height) {
-                // Repeated clicks cycle independent overlapping constraints.
-                if (int(i) > selected_constraint) {
-                    selected_constraint = int(i);
-                    if (pro_mode && list[i].type == ConstraintType::Interaction) {
-                        inspector_tab = 4;
-                    }
-                    refresh_editor();
-                    return;
-                }
-            }
-        }
-        selected_constraint = -1;
-        refresh_editor();
+        select_regions(point, begin);
         return;
     }
     if (begin) {
         stroke_before = draft;
         stroke = true;
         last_brush_cell = {cell_x, cell_y};
+    }
+    if (tool == 3 || tool == 4) {
+        if (tool == 3) {
+            erase_at(cell_x, cell_y);
+        } else if (begin) {
+            add_contour(point);
+        }
+        last_brush_cell = {cell_x, cell_y};
+        InvalidateRect(edit_window, nullptr, FALSE);
+        return;
     }
     SpatialConstraint brush;
     brush.id = "constraint_" + std::to_string(++serial) + "_" + std::to_string(now_ms());
@@ -597,13 +619,15 @@ void App::editor_click(int x, int y, bool begin) {
         }
     }
     if (brush.priority == Priority::Low && brush.type != ConstraintType::Forbidden) {
-        if (selected_constraint < 0 || std::size_t(selected_constraint) >= list.size() ||
-            list[selected_constraint].priority != Priority::High) {
-            throw std::runtime_error(
-                "Select the matching High constraint before painting Low tolerance");
+        brush.tolerance_for = ui::tolerance_target(list, brush, point);
+        if (brush.tolerance_for.empty()) {
+            message("Draw a main region of this colour before adding tolerance.");
+            return;
         }
-        brush.tolerance_for = list[selected_constraint].id;
-        brush.interaction = list[selected_constraint].interaction;
+        const auto target = std::find_if(list.begin(), list.end(), [&](const auto& region) {
+            return region.id == brush.tolerance_for;
+        });
+        brush.interaction = target->interaction;
     }
     if (tool == 1) {
         if (!pro_mode && is_trigger(brush.type) && selection(edit_window, BrushOrder) == 0) {
@@ -646,53 +670,6 @@ void App::editor_click(int x, int y, bool begin) {
     if (tool == 2 && begin) {
         ui::bucket(list, brush, cell_x, cell_y, brush.id + "_",
                    selection(edit_window, BrushOrder) > 0);
-    }
-    if (tool == 3) {
-        const auto erase_scope = [&](auto& target) {
-            ui::line(last_brush_cell.first, last_brush_cell.second, cell_x, cell_y,
-                     [&](int cx, int cy) {
-                         std::erase_if(target, [&](const auto& item) {
-                             return (pro_mode ? ui::same_layer(item, brush)
-                                              : item.landmark == brush.landmark) &&
-                                    cx >= item.cell.x && cx < item.cell.x + item.cell.width &&
-                                    cy >= item.cell.y && cy < item.cell.y + item.cell.height;
-                         });
-                     });
-            std::erase_if(target, [&](const auto& item) {
-                return !item.tolerance_for.empty() &&
-                       !std::any_of(target.begin(), target.end(), [&](const auto& high) {
-                           return high.id == item.tolerance_for;
-                       });
-            });
-        };
-        if (pro_mode) {
-            erase_scope(list);
-        } else {
-            erase_scope(draft.constraints);
-            for (auto& step : draft.steps) {
-                erase_scope(step.constraints);
-            }
-        }
-        selected_constraint = -1;
-    }
-    if (tool == 4 && begin) {
-        if (!pro_mode) {
-            selected_constraint = -1;
-            for (std::size_t i = 0; i < list.size(); ++i) {
-                const auto& item = list[i];
-                if (item.landmark == brush.landmark && item.type == brush.type &&
-                    item.priority == Priority::High && cell_x >= item.cell.x &&
-                    cell_x < item.cell.x + item.cell.width && cell_y >= item.cell.y &&
-                    cell_y < item.cell.y + item.cell.height) {
-                    selected_constraint = int(i);
-                    break;
-                }
-            }
-        }
-        if (selected_constraint < 0 || std::size_t(selected_constraint) >= list.size()) {
-            throw std::runtime_error("Select a High region before adding its contour");
-        }
-        ui::contour(list, list[selected_constraint].id, brush.id + "_");
     }
     last_brush_cell = {cell_x, cell_y};
     if (!list.empty()) {

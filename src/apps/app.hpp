@@ -3,6 +3,7 @@
 #include "action_output.hpp"
 #include "authoring.hpp"
 #include "camera.hpp"
+#include "editor_tools.hpp"
 #include "keybindings.hpp"
 #include "paint_buffer.hpp"
 #include "pose.hpp"
@@ -170,7 +171,8 @@ enum {
     CameraView,
     VerifyView,
     CompactView,
-    OpenView
+    OpenView,
+    ClearFingers
 };
 struct Snapshot {
     std::shared_ptr<const VideoFrame> video;
@@ -253,6 +255,7 @@ struct App {
     ui::History<EditorDocument> draft_history;
     int scope{}, selected_constraint{-1}, selected_finger{-1}, typing_control{};
     bool new_input{}, stroke{};
+    ui::RegionSelection region_selection;
     Motion stroke_before;
     std::pair<int, int> last_brush_cell{};
     std::uint64_t serial{};
@@ -314,6 +317,9 @@ struct App {
     void finish_dialog();
     void click(int x, int y);
     void editor_click(int x, int y, bool begin);
+    void select_regions(Vec2 point, bool begin);
+    void add_contour(Vec2 point);
+    void erase_at(int x, int y);
     void set_test(bool enabled);
     void open_controls();
     void apply_controls();

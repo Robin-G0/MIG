@@ -51,13 +51,12 @@ void App::update_constraint() {
 }
 void App::delete_constraint() {
     auto& list = current_constraints();
-    if (selected_constraint < 0 || std::size_t(selected_constraint) >= list.size()) {
-        return;
+    auto ids = region_selection.ids;
+    if (ids.empty() && selected_constraint >= 0 && std::size_t(selected_constraint) < list.size()) {
+        ids.push_back(list[selected_constraint].id);
     }
-    const auto removed = list[selected_constraint].id;
-    std::erase_if(list, [&](const auto& item) {
-        return item.id == removed || item.tolerance_for == removed;
-    });
+    ui::erase_regions(list, ids);
+    region_selection.clear();
     selected_constraint = -1;
 }
 void App::reorder_constraint(int id) {
@@ -161,6 +160,10 @@ void App::edit_authoring(int id) {
             if (scope > 0) {
                 draft.steps.erase(draft.steps.begin() + scope - 1);
                 --scope;
+                if (draft.steps.empty()) {
+                    draft.steps.push_back({"step_" + std::to_string(++serial), StepMode::Ordered});
+                    scope = 1;
+                }
             }
             break;
         case StepUp:
@@ -201,6 +204,11 @@ void App::edit_authoring(int id) {
             break;
         case DeleteFinger:
             delete_finger();
+            selected_finger = -1;
+            break;
+        case ClearFingers:
+            ui::clear_fingers(draft);
+            selected_finger = -1;
             break;
         case DeleteLayer:
             delete_layer();
@@ -208,8 +216,14 @@ void App::edit_authoring(int id) {
         case Clear:
             if (pro_mode) {
                 current_constraints().clear();
+                if (scope == 0) {
+                    draft.fingers.clear();
+                } else {
+                    draft.steps[scope - 1].fingers.clear();
+                }
             } else {
                 draft.constraints.clear();
+                draft.fingers.clear();
                 draft.steps = {{"step_1", StepMode::Ordered}};
                 draft.recordings.clear();
                 scope = 1;
@@ -225,6 +239,11 @@ void App::edit_authoring(int id) {
     }
     if (draft != before) {
         remember_edit(before);
+        if (id == Clear || id == DeleteLayer || id == DeleteStep || id == ConvertRecording) {
+            region_selection.clear();
+            selected_constraint = -1;
+        }
+        selected_finger = -1;
     }
     refresh_editor();
 }

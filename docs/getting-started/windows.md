@@ -88,7 +88,9 @@ inverse transform; a stroke freezes its view until release.
 
 Basic starts empty with one Ordered step and no time limit. Select body part,
 Pencil/Fill/Tolerance/Eraser/Select and green Required, red Forbidden or yellow
-Trigger. Tolerance clicks a High region to add a faint Low contour. A stroke is
+Trigger. Tolerance targets the clicked region, including an existing Low contour,
+without preselection. Select drags a rectangle; Ctrl retains the previous
+selection, and Delete removes selected regions with their linked tolerances. A stroke is
 one Undo. Manual Order1/2 draws alternative horizontal rows; any one region of
 each number advances that anatomical lane. Trigger is one movable finish.
 The grid displays centered numbers, X guards and R unordered Required.

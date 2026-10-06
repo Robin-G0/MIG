@@ -98,6 +98,21 @@ The [Windows controls](../getting-started/windows.md#workspace-and-drawing) and
 
 ## Check and use the profile
 
+Use **Select** and drag with the left button held to select a rectangle on the
+current layer. Hold **Ctrl** to retain the previous selection. Press **Delete**
+to remove the selected regions and their linked tolerances. On Linux, use the
+full-grid view for selection. On Windows, **Tolerance** targets the region you
+click, including its existing tolerance; no prior selection is needed.
+
+Basic/Pro switches preserve the input's conditions. Removing a purple region
+removes its own sign and finger rules, but independent whole-input and step
+finger rules still apply. The binding summary shows these rules. Use
+**Clear fingers** on Windows or **Clear all finger rules** on Linux to remove
+finger conditions across all scopes;
+this leaves the regions and purple hand signs in place. On Windows, the Pro
+finger scope selector also shows each scope's rule count. After editing, apply
+the input again before testing and save the document to persist it.
+
 Keep your shoulders visible so the grid can follow your body. Try the movement
 and watch for action feedback. Use the [hand tracking guide](hands.md) for signs
 and finger conditions. Close one application's camera before opening the other's.

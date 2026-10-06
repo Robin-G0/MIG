@@ -101,6 +101,23 @@ et [Linux](../getting-started/linux.fr.md) détaillent les outils disponibles.
 
 ## Vérifier et utiliser le profil
 
+Choisissez **Select**, puis maintenez le clic gauche en déplaçant la souris pour
+sélectionner un rectangle du layer courant. Maintenez **Ctrl** pour conserver
+la sélection précédente. **Suppr** retire les régions sélectionnées et leurs
+tolérances liées. Sous Linux, utilisez la vue grille complète pour sélectionner.
+Sous Windows, **Tolerance** cible directement la région cliquée, y compris sa
+tolérance existante ; aucune sélection préalable n'est nécessaire.
+
+Passer de Basic à Pro conserve les conditions de l'input. Supprimer une région
+violette retire son signe et ses règles de doigts propres, mais les règles
+indépendantes de l'input entier et des étapes restent actives. Le résumé des
+bindings indique ces règles. **Clear fingers** sous Windows ou
+**Clear all finger rules** sous Linux efface les conditions
+de doigts de toutes les portées sans supprimer les régions ni les signes des
+cases violettes. Sous Windows, le sélecteur de portée en Pro indique aussi le
+nombre de règles par portée. Après modification, appliquez de nouveau l'input
+avant de le tester et enregistrez le document pour conserver les changements.
+
 Gardez les épaules visibles pour que la grille suive votre corps. Essayez le
 mouvement et observez le retour des actions. Consultez le [suivi des mains](hands.fr.md)
 pour les signes et conditions de doigts. Fermez la caméra d'une application avant

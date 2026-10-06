@@ -1,0 +1,56 @@
+#include "app.hpp"
+namespace mig::app {
+void App::erase_at(int x, int y) {
+    const int landmark = landmarks[selection(edit_window, Members)].index;
+    const auto erase = [&](auto& regions) {
+        std::vector<std::string> removed;
+        ui::line(last_brush_cell.first, last_brush_cell.second, x, y, [&](int cx, int cy) {
+            for (const auto& region : regions) {
+                if (region.landmark == landmark &&
+                    ui::contains(region.cell, {float(cx), float(cy)})) {
+                    removed.push_back(region.id);
+                }
+            }
+        });
+        ui::erase_regions(regions, removed);
+    };
+    if (pro_mode) {
+        erase(current_constraints());
+    } else {
+        erase(draft.constraints);
+        for (auto& step : draft.steps) {
+            erase(step.constraints);
+        }
+    }
+    region_selection.clear();
+    selected_constraint = selected_finger = -1;
+}
+void App::select_regions(Vec2 point, bool begin) {
+    if (begin) {
+        stroke_before = draft;
+        stroke = true;
+        region_selection.begin(point, (GetKeyState(VK_CONTROL) & 0x8000) != 0);
+    }
+    region_selection.update(current_constraints(), point,
+                            landmarks[selection(edit_window, Members)].index);
+    selected_constraint = -1;
+    const auto& regions = current_constraints();
+    for (std::size_t index = 0; index < regions.size(); ++index) {
+        if (region_selection.includes(regions[index].id)) {
+            selected_constraint = int(index);
+            break;
+        }
+    }
+    InvalidateRect(edit_window, nullptr, FALSE);
+}
+void App::add_contour(Vec2 point) {
+    auto& regions = current_constraints();
+    const auto target =
+        ui::contour_target(regions, point, landmarks[selection(edit_window, Members)].index);
+    if (target.empty()) {
+        message("Tolerance: click an existing region, or choose Pencil to draw.");
+        return;
+    }
+    ui::contour(regions, target, "contour_" + std::to_string(++serial) + "_");
+}
+} // namespace mig::app

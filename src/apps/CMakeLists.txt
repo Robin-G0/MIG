@@ -11,7 +11,7 @@ foreach(app IN ITEMS configurator controller)
         keyboard.cpp controls.cpp diagnostics.cpp theme.cpp scrollbars.cpp)
     if(app STREQUAL "configurator")
         list(APPEND app_sources window.cpp renderer.cpp key_editor.cpp editor.cpp
-            editor_navigation.cpp editor_settings.cpp editor_constraints.cpp)
+            editor_navigation.cpp editor_settings.cpp editor_constraints.cpp editor_selection.cpp)
     else()
         list(APPEND app_sources controller_window.cpp controller_profiles.cpp controller_preview.cpp
             controller_diagnostics.cpp)

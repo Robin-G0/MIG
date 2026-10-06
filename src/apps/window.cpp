@@ -143,7 +143,8 @@ void App::layout_editor() {
     const bool repeat = selection(edit_window, ActionModeId) == int(ActionMode::Repeat);
     show(RepeatCaption, repeat);
     show(RepeatInterval, repeat);
-    place(BindingSummary, 580, 66, 440, 28);
+    place(BindingSummary, 580, 66, 300, 28);
+    place(ClearFingers, 890, 66, 130, 28);
     show(ConstraintTypeId, false);
     show(Space, pro_mode);
     show(Cooldown, !pro_mode || inspector_tab == 0);
@@ -574,6 +575,7 @@ LRESULT CALLBACK editor_procedure(HWND window, UINT message, WPARAM wp, LPARAM l
             button(window, EditKeys, L"Edit keys", 452, 638, 98);
             control(window, L"STATIC", L"", KeyTokens, 20, 674, 530, 28, SS_OWNERDRAW);
             button(window, BindingSummary, L"Fingers: 0 | Signs: 0 / Details", 580, 66, 440);
+            button(window, ClearFingers, L"Clear fingers", 890, 66, 130);
             label(window, L"Time limit ms", 450, 10, 110, DurationCaption);
             edit(window, Duration, L"0", 450, 32, 100);
             label(window, L"Cooldown ms (0 = off)", 380, 10, 170, CooldownCaption);
@@ -752,6 +754,7 @@ LRESULT CALLBACK editor_procedure(HWND window, UINT message, WPARAM wp, LPARAM l
             }
             break;
         case WM_LBUTTONDOWN:
+            SetFocus(window);
             SetCapture(window);
             app.editor_click(GET_X_LPARAM(lp), GET_Y_LPARAM(lp), true);
             return 0;
@@ -773,12 +776,19 @@ LRESULT CALLBACK editor_procedure(HWND window, UINT message, WPARAM wp, LPARAM l
                     app.remember_edit(app.stroke_before);
                 }
                 app.stroke = false;
+                app.region_selection.dragging = false;
                 app.refresh_editor();
             }
             if (message == WM_LBUTTONUP) {
                 ReleaseCapture();
             }
             return 0;
+        case WM_KEYDOWN:
+            if (wp == VK_DELETE) {
+                app.editor_command(DeleteConstraint, BN_CLICKED);
+                return 0;
+            }
+            break;
         case WM_PAINT:
             paint_window(window, true);
             return 0;

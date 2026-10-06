@@ -11,6 +11,8 @@ bool App::editor_layer_selection(int id, int notification) {
         throw std::runtime_error("Save layer before changing the drawing body part.");
     }
     if (id == LayerList && notification == LBN_SELCHANGE) {
+        region_selection.clear();
+        selected_finger = -1;
         if (layer_change_pending()) {
             const auto found = std::find(layer_members.begin(), layer_members.end(), editing_layer);
             SendDlgItemMessageW(edit_window, LayerList, LB_SETCURSEL, found - layer_members.begin(),
@@ -39,6 +41,7 @@ bool App::editor_layer_selection(int id, int notification) {
         return true;
     }
     if (id == SaveLayer && notification == BN_CLICKED) {
+        region_selection.clear();
         const auto target = landmarks[selection(edit_window, LayerBodyPart)].index;
         const auto before = draft;
         ui::reassign_layer(draft, editing_layer, target);
@@ -71,6 +74,10 @@ bool App::editor_drawing_tools(int id, int notification) {
     }
     if (notification == BN_CLICKED && id >= PaintRequired && id <= DrawContour) {
         if (id <= PaintInteraction) {
+            if (selection(edit_window, Tool) != 1 && selection(edit_window, Tool) != 2) {
+                SendDlgItemMessageW(edit_window, Tool, CB_SETCURSEL, 1, 0);
+            }
+            region_selection.clear();
             selected_constraint = -1;
             SendDlgItemMessageW(edit_window, ConstraintTypeId, CB_SETCURSEL, id - PaintRequired, 0);
             SendDlgItemMessageW(edit_window, PriorityId, CB_SETCURSEL, 0, 0);
@@ -112,6 +119,9 @@ bool App::editor_views(int id, int notification) {
         return true;
     }
     if (id == ProMode && notification == BN_CLICKED) {
+        region_selection.clear();
+        selected_constraint = selected_finger = -1;
+        SendDlgItemMessageW(edit_window, FingerScope, CB_SETCURSEL, 0, 0);
         pro_mode = !pro_mode;
         SetDlgItemTextW(edit_window, ProMode, pro_mode ? L"Pro mode: On" : L"Pro mode: Off");
         if (!pro_mode) {
@@ -171,10 +181,13 @@ bool App::editor_navigation(int id, int notification) {
             reviewed_recording.discard();
         }
         draft.constraints.clear();
+        draft.fingers.clear();
         draft.steps = {{"step_1", StepMode::Ordered}};
         draft.recordings.clear();
         scope = 1;
         selected_constraint = -1;
+        selected_finger = -1;
+        region_selection.clear();
         refresh_editor();
         return true;
     }

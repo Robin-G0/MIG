@@ -423,7 +423,10 @@ parameters. Dark/light menus, combo fields, buttons and linked logs use one pale
 The default Basic editor uses one ordered step for a new input. Visible Pencil,
 Fill, Tolerance, Eraser and Select buttons operate on the chosen landmark with
 green Required, red Forbidden and yellow Trigger paint. Tolerance selects its
-High target directly on click; one click adds a faint Low contour. Pencil/eraser
+High target directly on click, including through its linked Low region; one click
+adds a faint Low contour. Select supports rectangular dragging and Ctrl to retain
+the previous selection. Deletion also removes the deleted region's linked Low entries.
+Pencil/eraser
 interpolate between mouse samples, and each stroke remains one Undo operation.
 The yellow finish is one movable Trigger. Adding Required cells keeps them before
 that finish. Full grid shows centered order numbers per landmark for ordered

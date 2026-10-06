@@ -870,6 +870,76 @@ int run_ui_test(App& app, HWND window) {
     check(app.draft.steps[0].constraints.back().interaction->hold_ms == 12000,
           "Editor must accept hand-sign holds above ten seconds");
     validate(Configuration{{app.draft}});
+    app.open_editor(true);
+    app.body_view = false;
+    app.update_grid_view({});
+    app.editor_command(PaintRequired, BN_CLICKED);
+    draw_cell(6, 2, 4);
+    draw_cell(6, 2, 3);
+    draw_cell(6, 5, 5);
+    app.editor_command(DrawSelect, BN_CLICKED);
+    const auto selection_start = app.grid_view.screen({1.8f, 4.8f});
+    const auto selection_end = app.grid_view.screen({3.2f, 2.8f});
+    SendMessageW(app.edit_window, WM_LBUTTONDOWN, MK_LBUTTON,
+                 MAKELPARAM(int(selection_start.x), int(selection_start.y)));
+    SendMessageW(app.edit_window, WM_MOUSEMOVE, MK_LBUTTON,
+                 MAKELPARAM(int(selection_end.x), int(selection_end.y)));
+    SendMessageW(app.edit_window, WM_LBUTTONUP, 0,
+                 MAKELPARAM(int(selection_end.x), int(selection_end.y)));
+    check(app.region_selection.ids.size() == 2 && !app.region_selection.dragging,
+          "Mouse drag must select a rectangle without modifying the drawing");
+    BYTE keyboard_state[256]{};
+    check(GetKeyboardState(keyboard_state), "Read thread keyboard state for Ctrl selection");
+    auto control_state = std::to_array(keyboard_state);
+    control_state[VK_CONTROL] |= 0x80;
+    check(SetKeyboardState(control_state.data()), "Set thread-local Ctrl state");
+    const auto extra_point = app.grid_view.screen({5.5f, 5.5f});
+    SendMessageW(app.edit_window, WM_LBUTTONDOWN, MK_LBUTTON | MK_CONTROL,
+                 MAKELPARAM(int(extra_point.x), int(extra_point.y)));
+    SendMessageW(app.edit_window, WM_LBUTTONUP, MK_CONTROL,
+                 MAKELPARAM(int(extra_point.x), int(extra_point.y)));
+    check(SetKeyboardState(keyboard_state), "Restore thread keyboard state");
+    check(app.region_selection.ids.size() == 3, "Ctrl-click must retain the rectangle selection");
+    SendMessageW(app.edit_window, WM_KEYDOWN, VK_DELETE, 0);
+    check(app.draft.steps[0].constraints.empty(),
+          "Delete must remove every selected region in one operation");
+    app.undo(false, true);
+    check(app.draft.steps[0].constraints.size() == 3 && app.region_selection.ids.empty(),
+          "Undo must restore rectangular deletion without leaving stale selection");
+    app.draft.fingers.push_back({});
+    app.draft.steps[0].fingers.push_back({});
+    app.refresh_editor();
+    const auto with_fingers = app.draft;
+    app.editor_command(ProMode, BN_CLICKED);
+    app.editor_command(ProMode, BN_CLICKED);
+    check(app.draft == with_fingers && selection(app.edit_window, FingerScope) == 0,
+          "Mode switches must preserve finger rules and restore whole-input inspection");
+    app.editor_command(ClearFingers, BN_CLICKED);
+    check(!ui::needs_fingers(app.draft), "Clear fingers must remove rules from every scope");
+    app.undo(false, true);
+    check(app.draft == with_fingers, "Finger cleanup must be fully undoable");
+    app.editor_command(ProMode, BN_CLICKED);
+    app.editor_command(DrawContour, BN_CLICKED);
+    const auto contour_point = app.grid_view.screen({2.5f, 4.5f});
+    SendMessageW(app.edit_window, WM_LBUTTONDOWN, MK_LBUTTON,
+                 MAKELPARAM(int(contour_point.x), int(contour_point.y)));
+    SendMessageW(app.edit_window, WM_LBUTTONUP, 0,
+                 MAKELPARAM(int(contour_point.x), int(contour_point.y)));
+    check(app.draft.steps[0].constraints.size() > 3,
+          "Pro tolerance must resolve a clicked region without requiring High preselection");
+    app.editor_command(PaintRequired, BN_CLICKED);
+    check(selection(app.edit_window, Tool) == 1,
+          "Choosing a colour must leave Tolerance and restore Pencil");
+    app.editor_command(Clear, BN_CLICKED);
+    check(app.draft.steps[0].constraints.empty() && app.draft.steps[0].fingers.empty() &&
+              !app.draft.fingers.empty(),
+          "Clear scope must remove scoped fingers without deleting whole-input rules");
+    app.editor_command(DeleteStep, BN_CLICKED);
+    app.editor_command(ProMode, BN_CLICKED);
+    check(app.draft.steps.size() == 1 && app.scope == 1,
+          "Deleting the last step must leave a usable drawing scope in Basic mode");
+    app.editor_command(Clear, BN_CLICKED);
+    check(!ui::needs_fingers(app.draft), "Clear drawing must not leave invisible finger rules");
     SendMessageW(window, WM_CLOSE, 0, 0);
     check(!IsWindow(terminal), "Linked terminal must close with application");
     application = nullptr;

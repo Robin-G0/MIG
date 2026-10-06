@@ -39,6 +39,11 @@ bool App::editor_settings(int id, int notification) {
     }
     if (id == ConstraintList && notification == LBN_SELCHANGE) {
         selected_constraint = int(SendDlgItemMessageW(edit_window, id, LB_GETCURSEL, 0, 0));
+        region_selection.clear();
+        if (selected_constraint >= 0 &&
+            std::size_t(selected_constraint) < current_constraints().size()) {
+            region_selection.ids.push_back(current_constraints()[selected_constraint].id);
+        }
         refresh_editor();
         return true;
     }
@@ -72,10 +77,13 @@ bool App::editor_settings(int id, int notification) {
             draft.action_mode = ActionMode(selection(edit_window, id));
             refresh_editor();
         } else if (id == StepList) {
+            region_selection.clear();
+            selected_finger = -1;
             scope = selection(edit_window, id);
             selected_constraint = -1;
             refresh_editor();
         } else if (id == FingerScope) {
+            selected_finger = -1;
             refresh_editor();
         } else if (id == Space || id == StepModeId) {
             remember_edit(draft);
@@ -94,10 +102,14 @@ bool App::editor_settings(int id, int notification) {
             refresh_editor();
         } else if (id == Members || id == BrushOrder || id == Tool || id == ConstraintTypeId ||
                    id == PriorityId) {
+            if (id == Tool) {
+                region_selection.clear();
+            }
             if (selection(edit_window, Tool) != 0 || id == Tool) {
                 selected_constraint = -1;
             }
             if (id == Members) {
+                region_selection.clear();
                 sync_interaction_hand();
             }
             refresh_layers();

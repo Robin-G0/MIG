@@ -160,6 +160,7 @@ void Window::build_sidebar() {
     layout->addWidget(body);
     connect(body, &QComboBox::currentIndexChanged, this, [this, body] {
         canvas_->landmark = body->currentData().toInt();
+        canvas_->selection.clear();
         canvas_->update();
     });
     button("Save layer as selected body part", [this] {
@@ -193,11 +194,29 @@ void Window::build_sidebar() {
             stop();
             canvas_->type = ConstraintType(type);
             canvas_->erase = false;
+            canvas_->select = false;
+            canvas_->selection.clear();
         });
     }
+    button("Select: drag / Ctrl to add", [this] {
+        stop();
+        canvas_->select = true;
+        canvas_->erase = false;
+    });
+    button("Clear all finger rules", [this] {
+        stop();
+        if (canvas_->motion) {
+            const int index = inputs_->currentRow();
+            ui::clear_fingers(*canvas_->motion);
+            refresh_inputs();
+            inputs_->setCurrentRow(index);
+        }
+    });
     button("Eraser", [this] {
         stop();
         canvas_->erase = true;
+        canvas_->select = false;
+        canvas_->selection.clear();
     });
     auto* order = new QSpinBox(panel);
     order->setRange(0, 1024);
@@ -240,6 +259,7 @@ void Window::refresh_inputs() {
     canvas_->update();
 }
 void Window::select_input(int index) {
+    canvas_->selection.clear();
     canvas_->motion =
         index >= 0 && index < int(config_.motions.size()) ? &config_.motions[index] : nullptr;
     canvas_->update();

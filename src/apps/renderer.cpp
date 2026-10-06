@@ -239,7 +239,8 @@ void App::paint_editor(HDC dc) {
             hint(heading_y + 40, L"Choose a body part, a colour, then draw on the grid.");
             hint(heading_y + 68, L"Green: pass through. Red: avoid. Yellow: fire action.");
             hint(heading_y + 96, L"Tolerance: click a painted square to add its contour.");
-            hint(heading_y + 124, L"Select: click again to cycle overlapping cells.");
+            hint(heading_y + 124,
+                 L"Select: drag a rectangle. Ctrl keeps selection; Delete removes it.");
             hint(heading_y + 152, L"Each body part has a layer; together they form the input.");
             hint(heading_y + 180, L"Same number: alternatives. Reach any 1, then any 2.");
         } else {
@@ -358,9 +359,10 @@ void App::paint_editor(HDC dc) {
         const bool highlighted =
             state != ConstraintStatus::Missing && state != ConstraintStatus::LandmarkLost;
         const auto& editable = current_constraints();
-        const bool selected_cell = selected_constraint >= 0 &&
-                                   std::size_t(selected_constraint) < editable.size() &&
-                                   &editable[selected_constraint] == &item;
+        const bool selected_cell =
+            region_selection.includes(item.id) ||
+            (selected_constraint >= 0 && std::size_t(selected_constraint) < editable.size() &&
+             &editable[selected_constraint] == &item);
         const auto pen = CreatePen(
             item.priority == Priority::Low && !highlighted ? PS_DOT : PS_SOLID,
             highlighted || selected_cell ? 3 : 1,
@@ -388,6 +390,18 @@ void App::paint_editor(HDC dc) {
             DrawTextW(dc, label.c_str(), int(label.size()), &region,
                       DT_CENTER | DT_VCENTER | DT_SINGLELINE);
         }
+    }
+    if (region_selection.dragging) {
+        const auto first = region_selection.origin, last = region_selection.end;
+        const POINT corners[]{pixel(first), pixel({last.x, first.y}), pixel(last),
+                              pixel({first.x, last.y})};
+        const auto pen = CreatePen(PS_DOT, 1, palette().accent);
+        const auto old_pen = SelectObject(dc, pen);
+        const auto old_brush = SelectObject(dc, GetStockObject(NULL_BRUSH));
+        Polygon(dc, corners, 4);
+        SelectObject(dc, old_brush);
+        SelectObject(dc, old_pen);
+        DeleteObject(pen);
     }
     for (const auto& trace : traces) {
         if (!layer_visible[trace.landmark]) {
@@ -484,10 +498,13 @@ void App::paint_editor(HDC dc) {
                   std::to_wstring(draft.steps.size()) +
                   (progress->failed      ? L"  INVALID"
                    : progress->triggered ? L"  TRIGGERED"
-                                         : L"  In progress") +
+                   : progress->active    ? L"  In progress"
+                                         : L"  Waiting for entry / finger rules") +
                   (progress->mirrored ? L"  Mirrored" : L"") +
-                  (progress->fingers_valid ? L"  Fingers valid / unconstrained"
-                                           : L"  Input/step finger rule not satisfied (Details)");
+                  (!progress->active && !progress->triggered && ui::needs_fingers(draft)
+                       ? L"  Finger rules not yet validated"
+                   : progress->fingers_valid ? L"  Fingers valid / unconstrained"
+                                             : L"  Input/step finger rule not satisfied (Details)");
         std::size_t index = 0;
         bool explained = false;
         const auto explain = [&](const auto& constraints) {

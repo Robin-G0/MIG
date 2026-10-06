@@ -85,7 +85,9 @@ Body suit les épaules ; Full grid montre27x27, dots/traces reflétés une fois.
 Pointage inverse identique ; un trait gèle sa vue.
 Basic vide, une étape Ordered sans limite. Choisissez corps, Pencil/Fill/Tolerance/
 Eraser/Select et couleur : vert Required, rouge Forbidden, jaune Trigger.
-Tolerance clique High pour contour Low, un trait=un undo. Order1/2 crée des
+Tolerance cible la région cliquée, même via son contour Low, sans sélection
+préalable. Select trace un rectangle ; Ctrl conserve la sélection précédente,
+Suppr retire les régions sélectionnées et leurs tolérances. Un trait=un undo. Order1/2 crée des
 alternatives horizontales ; une région de chaque numéro suffit. Trigger unique
 movable ; numéros centrés, X gardes, R Required non ordonné.
 
