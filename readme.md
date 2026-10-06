@@ -3,8 +3,8 @@
 [English](readme.md) | [Français](readme.fr.md)
 
 MIG turns body and hand movements into named actions for applications and games.
-Draw a movement in the configurator, save its JSON profile, then run it in the
-controller or your own application. Use camera tracking or supply your own landmarks.
+Draw a movement in the [configurator](docs/guides/configurator.md), save its JSON profile, then run it in the
+[controller](docs/guides/controller.md) or your own application. Use camera tracking or supply your own landmarks.
 
 Landmarks → grid scaled to shoulder spacing → movement/sign constraints → action.
 The same C++20 recognition engine serves every binding. Desktop keyboard output
@@ -30,6 +30,20 @@ exports need separate checks; see the [support matrix](docs/reference/support.md
 Native camera applications target Windows/Linux x64. Linux ARM64 packages accept
 supplied landmarks; no ARM64 camera runtime is included. Packages are prepared
 locally; registry names and first uploads still require registration/review.
+
+## Desktop applications
+
+The [configurator](docs/guides/configurator.md) creates profiles; the
+[controller](docs/guides/controller.md) runs them. Their guides explain how to
+launch each application and where to find its files.
+
+For prebuilt applications, check [Releases](https://github.com/Robin-G0/MIG/releases)
+for `motion-input-grid-<version>-windows-x64-native.zip` or
+`motion-input-grid-<version>-linux-x64-native.tar.gz`. Extract the whole archive.
+SDK archives and Python/npm/Debian packages provide libraries.
+If no native archive has been published, follow the
+[Windows](docs/getting-started/windows.md) or [Linux](docs/getting-started/linux.md) build guide.
+The Windows `release` preset places both executables in `build/release/bin/`.
 
 ## Try it
 

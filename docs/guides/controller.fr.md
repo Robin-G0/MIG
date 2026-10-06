@@ -5,7 +5,37 @@
 Le contrôleur exécute les profils créés dans le configurateur pendant que vous
 utilisez une autre application ou jouez. Il permet de sélectionner un profil,
 de voir les actions reconnues et de vérifier les mouvements avec la caméra.
-Utilisez le configurateur pour dessiner ou modifier les mouvements.
+Utilisez le [configurateur](configurator.fr.md) pour dessiner ou modifier les mouvements.
+
+## Où trouver et lancer l'application
+
+Dans les [Releases](https://github.com/Robin-G0/MIG/releases), choisissez une
+archive native correspondant à votre système, lorsqu'elle est disponible :
+
+| Système | Archive | Fichier après extraction |
+| --- | --- | --- |
+| Windows x64 | `motion-input-grid-<version>-windows-x64-native.zip` | `windows/mig-controller.exe` |
+| Linux x64 | `motion-input-grid-<version>-linux-x64-native.tar.gz` | `./mig-controller` |
+
+Ces chemins partent du dossier principal de l'archive extraite. Sous Windows,
+ouvrez l'exécutable. Sous Linux, ouvrez un terminal dans ce dossier et lancez
+`./mig-controller` ; ce lanceur configure les bibliothèques fournies avant d'ouvrir
+le binaire dans `bin/`. Conservez les DLL, modèles, configurations et autres
+ressources de l'archive ensemble. Windows nécessite le runtime Visual C++ 2022
+x64 ; les archives Linux nécessitent glibc 2.35+.
+
+Après compilation depuis les sources :
+
+| Méthode | Fichier depuis la racine du dépôt |
+| --- | --- |
+| Preset Windows `release` | `build/release/bin/mig-controller.exe` |
+| Script `tools/build-windows.ps1` par défaut | `build/windows/bin/mig-controller.exe` |
+| Compilation du guide Linux | `build/linux-apps/bin/mig-controller` |
+
+Suivez les guides [Windows](../getting-started/windows.fr.md) ou
+[Linux](../getting-started/linux.fr.md) pour compiler. Le guide Linux indique
+également le paramètre `--runtime` pour les modèles et la bibliothèque MediaPipe.
+Les presets `sdk-*` et les packages de bibliothèques ne construisent pas ces applications.
 
 ## Premier lancement
 

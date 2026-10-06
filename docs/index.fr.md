@@ -13,6 +13,7 @@ champs JSON, extraits de code et mentions légales officielles restent inchangé
 | Installation, action et retour par technologie | [Démarrage](getting-started/bootstrap.fr.md) |
 | Modules et cycle de vie des exemples | [Code des exemples](getting-started/examples.fr.md) |
 | Installation et commandes natives | [Windows](getting-started/windows.fr.md), [Linux](getting-started/linux.fr.md) |
+| Dessiner et enregistrer les mouvements | [Configurateur](guides/configurator.fr.md) |
 | Contrôleur en arrière-plan et profils | [Contrôleur](guides/controller.fr.md) |
 | Référence JSON du schéma 2 | [Configuration](reference/configuration.fr.md) |
 | Contrats du moteur C++ | [API moteur](reference/cpp.fr.md) |

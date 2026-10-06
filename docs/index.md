@@ -12,6 +12,7 @@ Identifiers, JSON fields, code and upstream legal notices remain untranslated.
 | Setup, action, feedback by technology | [Bootstrap](getting-started/bootstrap.md) |
 | Every example's modules and lifecycle | [Example code](getting-started/examples.md) |
 | Desktop installation and controls | [Windows](getting-started/windows.md), [Linux](getting-started/linux.md) |
+| Draw and save movements | [Configurator](guides/configurator.md) |
 | Background controller and profiles | [Controller](guides/controller.md) |
 | Schema-v2 JSON reference | [Configuration](reference/configuration.md) |
 | C++ recognition contracts | [Engine API](reference/cpp.md) |

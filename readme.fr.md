@@ -3,8 +3,8 @@
 [English](readme.md) | [Français](readme.fr.md)
 
 MIG transforme les mouvements du corps et des mains en actions pour vos applications
-et jeux. Dessinez un mouvement dans le configurateur, sauvegardez son profil JSON,
-puis utilisez le contrôleur ou votre propre application. Les points suivis peuvent
+et jeux. Dessinez un mouvement dans le [configurateur](docs/guides/configurator.fr.md), sauvegardez son profil JSON,
+puis utilisez le [contrôleur](docs/guides/controller.fr.md) ou votre propre application. Les points suivis peuvent
 provenir d'une caméra ou de votre fournisseur de landmarks.
 
 Landmarks → grille proportionnelle aux épaules → contraintes de mouvement/signe → action.
@@ -33,6 +33,20 @@ Les applications caméra natives ciblent Windows/Linux x64. Les packages Linux
 ARM64 reçoivent des landmarks ; aucun runtime caméra ARM64 n'est inclus. Les
 packages sont préparés localement ; les noms de registres et premiers uploads
 restent à vérifier et enregistrer.
+
+## Applications de bureau
+
+Le [configurateur](docs/guides/configurator.fr.md) crée les profils ; le
+[contrôleur](docs/guides/controller.fr.md) les exécute. Leurs guides expliquent
+comment les lancer et où trouver les fichiers.
+
+Pour les versions précompilées, consultez les [Releases](https://github.com/Robin-G0/MIG/releases)
+et cherchez une archive `motion-input-grid-<version>-windows-x64-native.zip` ou
+`motion-input-grid-<version>-linux-x64-native.tar.gz`. Extrayez l'archive entière.
+Les archives SDK et les packages Python/npm/Debian contiennent les bibliothèques.
+Si aucune archive native n'est publiée, suivez les instructions de compilation
+[Windows](docs/getting-started/windows.fr.md) ou [Linux](docs/getting-started/linux.fr.md).
+Avec le preset Windows `release`, les deux exécutables sont dans `build/release/bin/`.
 
 ## Essayer
 
