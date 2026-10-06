@@ -16,4 +16,4 @@ This candidate has not yet been uploaded to package registries.
 - Godot add-on, Unity UPM and Unreal Code Plugin packages, all **Preview**.
 - Reproducible candidate builds, extracted-package tests, manifests and checksums.
 
-See [support and validation limits](docs/reference/support.md) and the [roadmap](ROADMAP.md).
+See [support and validation limits](../reference/support.md) and the [roadmap](ROADMAP.md).

@@ -2,6 +2,10 @@
 
 [English](bootstrap.md) | [Français](bootstrap.fr.md)
 
+Pour installer uniquement la bibliothèque et la lier à votre projet, suivez
+le [guide SDK C++ / CMake](cpp.fr.md). Il couvre les archives,
+la compilation, `cmake --install` et les Makefiles générés sous Linux.
+
 Pour utiliser les bibliothèques sans les compiler, installez
 `python -m pip install motion-input-grid` (Python) ou
 `npm install motion-input-grid` (navigateur/React/Vue/Next.js), puis

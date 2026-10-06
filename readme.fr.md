@@ -57,7 +57,7 @@ Téléchargez l'artefact adapté à votre système dans les
 
 | Usage | Installation | Guide |
 | --- | --- | --- |
-| C++ / C ABI | Extraire l'archive `*-sdk`, puis fournir son chemin à `CMAKE_PREFIX_PATH` et utiliser `find_package(MIG CONFIG REQUIRED)` | [SDK](docs/reference/cpp.fr.md) |
+| C++ / C ABI | Extraire l'archive `*-sdk`, puis fournir son chemin à `CMAKE_PREFIX_PATH` et utiliser `find_package(MIG CONFIG REQUIRED)` | [SDK](docs/getting-started/cpp.fr.md) |
 | vcpkg | Extraire `*-vcpkg-overlay.tar.gz`, puis installer `motion-input-grid` avec `--overlay-ports` ; le port n'est pas encore dans le registre principal | [Port vcpkg](ports/motion-input-grid/README.fr.md) |
 | Debian / Ubuntu | Télécharger le `.deb` de votre architecture et l'installer avec APT ; l'installation par nom nécessite un dépôt signé configuré | [Debian / APT](docs/development/distribution.fr.md#debian-et-hébergement-apt-signé) |
 | Godot | Extraire le ZIP add-on à la racine du projet | [Godot](integrations/godot/README.fr.md) |
@@ -129,3 +129,5 @@ et les [exemples](examples/README.fr.md).
 [Contribution](CONTRIBUTING.fr.md)
 
 Licence [Apache-2.0](LICENSE). Les dépendances redistribuées conservent leurs notices.
+
+[Changelog](docs/development/CHANGELOG.fr.md) · [Roadmap](docs/development/ROADMAP.fr.md)

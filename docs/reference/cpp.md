@@ -2,6 +2,10 @@
 
 [English](cpp.md) | [Français](cpp.fr.md)
 
+To install just the library and link it to your project, follow the
+[C++ SDK / CMake guide](../getting-started/cpp.md). It covers archives, source builds,
+`cmake --install` and generated Makefiles on Linux.
+
 Link `MIG::core` for positions recognition and optionally `MIG::format` to load
 configurations. Public headers are `mig/core/engine.hpp` and
 `mig/format/configuration.hpp`. These exports do not depend on MediaPipe or Windows

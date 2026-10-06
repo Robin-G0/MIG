@@ -2,6 +2,10 @@
 
 [English](cpp.md) | [Français](cpp.fr.md)
 
+Pour installer uniquement la bibliothèque et la lier à votre projet, suivez
+le [guide SDK C++ / CMake](../getting-started/cpp.fr.md). Il couvre les archives,
+la compilation, `cmake --install` et les Makefiles générés sous Linux.
+
 Liez MIG::core et éventuellement MIG::format. Headers publics :
 mig/core/engine.hpp et mig/format/configuration.hpp, indépendants de caméra/MediaPipe.
 MIG::native ajoute capture/estimateur Windows/Linux séparément. Une façade SDK

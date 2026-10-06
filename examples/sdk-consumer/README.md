@@ -2,6 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+To install just the library and link it to your project, follow the
+[C++ SDK / CMake guide](../../docs/getting-started/cpp.md). It covers archives, source builds,
+`cmake --install` and generated Makefiles on Linux.
+
 Requires CMake 3.25, C++20 and an installed MIG SDK with `MIG::core`/`MIG::format`.
 No camera, models, Python or window system is needed.
 

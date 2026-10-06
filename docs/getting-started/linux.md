@@ -2,6 +2,10 @@
 
 [English](linux.md) | [Français](linux.fr.md)
 
+To install just the library and link it to your project, follow the
+[C++ SDK / CMake guide](cpp.md). It covers archives, source builds,
+`cmake --install` and generated Makefiles on Linux.
+
 To use the libraries without compiling them, install
 `python -m pip install motion-input-grid` (Python) or
 `npm install motion-input-grid` (browser/React/Vue/Next.js), then run

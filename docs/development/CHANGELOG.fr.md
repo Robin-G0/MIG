@@ -16,4 +16,4 @@ Ce candidat n'a pas encore été envoyé aux registres de packages.
 - Add-on Godot, UPM Unity et Code Plugin Unreal, tous **Preview**.
 - Builds candidats reproductibles, tests de packages extraits, manifestes et empreintes.
 
-Voir les [limites de validation](docs/reference/support.fr.md) et la [roadmap](ROADMAP.fr.md).
+Voir les [limites de validation](../reference/support.fr.md) et la [roadmap](ROADMAP.fr.md).

@@ -25,7 +25,7 @@ Download the artifact matching your system from
 
 | Use | Installation | Guide |
 | --- | --- | --- |
-| C++ / C ABI | Extract the `*-sdk` archive, add its path to `CMAKE_PREFIX_PATH` and use `find_package(MIG CONFIG REQUIRED)` | [SDK](../docs/reference/cpp.md) |
+| C++ / C ABI | Extract the `*-sdk` archive, add its path to `CMAKE_PREFIX_PATH` and use `find_package(MIG CONFIG REQUIRED)` | [SDK](../docs/getting-started/cpp.md) |
 | vcpkg | Extract `*-vcpkg-overlay.tar.gz`, then install `motion-input-grid` with `--overlay-ports`; the port is not yet in the main registry | [vcpkg port](../ports/motion-input-grid/README.md) |
 | Debian / Ubuntu | Download your architecture's `.deb` and install it with APT; installation by name requires a configured signed repository | [Debian / APT](../docs/development/distribution.md#debian-and-signed-apt-hosting) |
 | Godot | Extract the add-on ZIP at your project root | [Godot](../integrations/godot/README.md) |

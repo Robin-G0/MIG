@@ -2,6 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+Pour installer uniquement la bibliothèque et la lier à votre projet, suivez
+le [guide SDK C++ / CMake](../../docs/getting-started/cpp.fr.md). Il couvre les archives,
+la compilation, `cmake --install` et les Makefiles générés sous Linux.
+
 CMake 3.25, C++20, SDK MIG installé avec core/format. Aucune caméra, modèle,
 Python ni fenêtre. Depuis l'archive, utilisez sdk comme préfixe.
 

@@ -5,7 +5,7 @@
 Les priorités suivent la validation et les retours utilisateurs, sans date promise.
 Godot, Unity et Unreal restent **Preview** jusqu'à validation suffisante dans les
 éditeurs et les jeux exportés, sur plusieurs versions/plateformes. Les preuves
-actuelles figurent dans la [matrice de support](docs/reference/support.fr.md).
+actuelles figurent dans la [matrice de support](../reference/support.fr.md).
 
 - [ ] Tester webcams intégrées/USB sur plusieurs machines, CPU/GPU, résolutions et
   cadences, avec perte du suivi et relâchement des touches maintenues.

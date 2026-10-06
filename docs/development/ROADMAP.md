@@ -4,7 +4,7 @@
 
 Priorities follow validation and user feedback; no delivery dates are promised.
 Godot, Unity and Unreal stay **Preview** until editor and exported-game testing
-covers enough supported versions/platforms. Current evidence is in the [support matrix](docs/reference/support.md).
+covers enough supported versions/platforms. Current evidence is in the [support matrix](../reference/support.md).
 
 - [ ] Test integrated and USB webcams on multiple machines, CPU/GPU configurations,
   resolutions and frame rates, including tracking loss and held-key release.
