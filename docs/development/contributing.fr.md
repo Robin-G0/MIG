@@ -25,7 +25,13 @@ l’inférence dépassée : conservez cette barrière, les files bornées et la 
 ## Intégration continue
 
 [GitHub Actions](../../.github/workflows/ci.yml) s’exécute sur les push et pull requests,
-ou manuellement depuis l’onglet Actions.
+sauf si tous les fichiers modifiés sont dans `docs/` ou sont du Markdown (`*.md`).
+Les changements qui touchent aussi au code, à la configuration ou au packaging
+lancent toujours toute la CI. Les lancements manuels depuis l’onglet Actions et
+les builds de tags de release restent disponibles. Pour les changements de
+documentation seuls, lancez `python tools/check-docs.py` localement.
+
+Le workflow vérifie :
 
 - Format : clang-format 16 vérifie `src`, `tests` et `examples` sans les modifier.
   `tools/check-docs.py` vérifie les traductions, les sélecteurs de langue et les liens locaux.
@@ -45,6 +51,11 @@ Ces vérifications ne prouvent ni précision humaine ni absence de fuite.
 Les actions sont épinglées et les permissions sont en lecture. Configurez les
 checks requis dans les règles de branche si vous voulez bloquer les merges :
 le workflow seul ne le fait pas.
+GitHub laisse les checks requis en attente lorsqu’un filtre de chemins ignore
+un workflow. Tenez compte des changements de documentation seuls dans ces règles,
+ou lancez le workflow manuellement sur la branche de la pull request avant de
+merger. Voir la
+[documentation des filtres GitHub](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onpushpull_requestpull_request_targetpathspaths-ignore).
 
 ## Téléchargement des dépendances Windows
 

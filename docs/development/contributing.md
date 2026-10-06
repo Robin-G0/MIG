@@ -27,8 +27,13 @@ not bypass it or reintroduce polling, unbounded queues or unsynchronised buffers
 
 ## Continuous integration
 
-[GitHub Actions](../../.github/workflows/ci.yml) runs on every push and pull request,
-and can also be started manually from the Actions tab:
+[GitHub Actions](../../.github/workflows/ci.yml) runs on pushes and pull requests,
+except when all changed files are under `docs/` or are Markdown (`*.md`). Changes
+that also affect code, configuration or packaging still run the full CI.
+Manual runs from the Actions tab and release tag builds remain available.
+For documentation-only changes, run `python tools/check-docs.py` locally.
+
+The workflow checks:
 
 - C++ formatting: clang-format 16 checks first-party `.cpp`/`.hpp`/`.h` in `src`,
   `tests` and `examples`, using `.clang-format` (four spaces, no tabs, braces, etc.).
@@ -54,6 +59,10 @@ egress. CI does not establish leak freedom or human gesture accuracy.
 Checkout is pinned to a commit and workflow permissions are read-only.
 To block merges on failures, mark these checks as required in the repository's
 branch protection/ruleset settings; merely adding this workflow does not do so.
+GitHub leaves required checks pending when a workflow is skipped by path filters.
+Account for documentation-only changes when configuring these rules, or run the
+workflow manually on the pull request branch before merging. See
+[GitHub's path filter documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onpushpull_requestpull_request_targetpathspaths-ignore).
 
 ## Windows dependency downloads
 
