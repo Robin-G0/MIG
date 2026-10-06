@@ -2,6 +2,16 @@
 
 [English](packaging.md) | [Français](packaging.fr.md)
 
+Pour installer les bibliothèques publiées plutôt que fabriquer leurs packages :
+
+```sh
+python -m pip install motion-input-grid
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+[Python](../../bindings/python/README.fr.md) · [JavaScript](../../bindings/javascript/README.fr.md).
+
 La version de publication est 1.0.0.
 Les outils préparent des fichiers locaux ; ils ne publient rien sur GitHub,
 PyPI, npm ou apt. Les [instructions](../../examples/standalone.fr.md) décrivent

@@ -2,6 +2,15 @@
 
 [English](examples.md) | [Français](examples.fr.md)
 
+Pour utiliser les bibliothèques sans les compiler, installez
+`python -m pip install motion-input-grid` (Python) ou
+`npm install motion-input-grid` (navigateur/React/Vue/Next.js), puis
+`npx mig-copy-assets public/mig` pour les ressources navigateur.
+[Python](../../bindings/python/README.fr.md) · [JavaScript](../../bindings/javascript/README.fr.md).
+
+Les applications de bureau et le runtime caméra Python restent des
+archives natives séparées ; les exemples précompilés incluent leurs dépendances.
+
 Chaque interface suit le même cycle : charger le profil, acquérir une observation,
 mettre à jour MIG, consommer les événements, afficher, libérer les ressources.
 L'interface ne contient pas un second reconnaisseur. Le [démarrage](bootstrap.fr.md)

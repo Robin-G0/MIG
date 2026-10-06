@@ -21,11 +21,23 @@ s'appelle `com.robin-g0.motion-input-grid`, selon sa convention de domaine inver
 Le module Python reste `mig`, les exports CMake restent `MIG::*` et les noms
 techniques des bibliothèques, API et binaires d'exemples sont conservés.
 
-Après publication dans les registres correspondants :
+Installez les bibliothèques Python et navigateur depuis PyPI et npm, ou utilisez
+les wheels et tarballs de release pour une installation hors ligne :
 
 ```sh
 python -m pip install motion-input-grid
 npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+Python conserve `import mig` et inclut le moteur de positions sans modèles caméra.
+npm inclut WASM et modèles navigateur. Consultez les guides
+[Python](../../bindings/python/README.fr.md) et [npm](../../bindings/javascript/README.fr.md).
+Ces packages n'installent pas le configurator ni le controller.
+
+Pour APT et l'overlay vcpkg :
+
+```sh
 sudo apt install motion-input-grid
 vcpkg install motion-input-grid --overlay-ports=/chemin/motion-input-grid-vcpkg-overlay
 ```

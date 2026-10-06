@@ -2,6 +2,15 @@
 
 [English](examples.md) | [Français](examples.fr.md)
 
+To use the libraries without compiling them, install
+`python -m pip install motion-input-grid` (Python) or
+`npm install motion-input-grid` (browser/React/Vue/Next.js), then run
+`npx mig-copy-assets public/mig` for browser assets.
+[Python](../../bindings/python/README.md) · [JavaScript](../../bindings/javascript/README.md).
+
+Desktop applications and the Python camera runtime remain separate native
+archives; prebuilt examples include their dependencies.
+
 Every camera viewer follows the same sequence: load an initial profile, acquire
 one observation, update MIG, consume accepted events, draw feedback, release
 resources. UI code never implements a second gesture recognizer.

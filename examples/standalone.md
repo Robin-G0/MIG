@@ -2,6 +2,15 @@
 
 [English](standalone.md) | [Français](standalone.fr.md)
 
+To use the libraries without compiling them, install
+`python -m pip install motion-input-grid` (Python) or
+`npm install motion-input-grid` (browser/React/Vue/Next.js), then run
+`npx mig-copy-assets public/mig` for browser assets.
+[Python](../bindings/python/README.md) · [JavaScript](../bindings/javascript/README.md).
+
+Desktop applications and the Python camera runtime remain separate native
+archives; prebuilt examples include their dependencies.
+
 Checkout examples also find the native runtime in `build/release/bin` or
 `build/debug/bin` when built with CMake presets. Automatic selection requires
 both the platform's MediaPipe library and the pose model; model files alone do
@@ -23,7 +32,7 @@ follow your wrists. The image is mirrored once; feedback is anatomical.
 Frozen Python viewers include the interpreter, Tk/Pillow/Pygame and native
 recognition assets. No Python installation or pip command is needed. Source
 scripts remain beside them for modification. Scripts run with Python 3.10+ and
-`python -m pip install pillow pygame`; Tk is also required for file pickers.
+`python -m pip install motion-input-grid pillow pygame`; Tk is also required for file pickers.
 They prefer an installed `mig`, then fall back to the archive's binding.
 
 Windows native viewers still require the Microsoft Visual C++ 2022 Redistributable.

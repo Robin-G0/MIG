@@ -2,6 +2,15 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+Pour utiliser les bibliothèques sans les compiler, installez
+`python -m pip install motion-input-grid` (Python) ou
+`npm install motion-input-grid` (navigateur/React/Vue/Next.js), puis
+`npx mig-copy-assets public/mig` pour les ressources navigateur.
+[Python](../../bindings/python/README.fr.md) · [JavaScript](../../bindings/javascript/README.fr.md).
+
+Les applications de bureau et le runtime caméra Python restent des
+archives natives séparées ; les exemples précompilés incluent leurs dépendances.
+
 Ces fichiers appartiennent aux exemples, pas au reconnaisseur. Ils utilisent
 le SDK public installé et partagent les variantes au lieu de dupliquer les boucles.
 

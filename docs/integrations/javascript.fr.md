@@ -54,9 +54,16 @@ bindings/javascript/runtime/mig.mjs` à la place du chemin de compilation du dé
 
 ## Dans votre projet
 
-Préparez le [package npm](../../bindings/javascript/README.fr.md), installez son
-archive locale puis lancez `npx --package motion-input-grid mig-copy-assets public/mig`. Aucun package n'est
-publié automatiquement. React expose `useMIG` dans `motion-input-grid/react`,
+Installez le package dans votre application :
+
+```sh
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+WASM et modèles sont inclus, sans compilation Emscripten. Alternative hors ligne :
+`npm install /chemin/motion-input-grid-1.0.0.tgz`, puis la même commande de copie
+des ressources. Voir le [guide npm](../../bindings/javascript/README.fr.md). React expose `useMIG` dans `motion-input-grid/react`,
 Vue dans `motion-input-grid/vue`. Reliez leurs refs vidéo/canvas, méthodes
 `start`, `stop`, `recalibrate`, `importJSON` et état aux contrôles de l'interface.
 `onAction({ action, id })` peut commander votre navigation ou vos sélections.
@@ -102,4 +109,4 @@ vrai WASM et des observations/flux synthétiques ; ils ne vérifient pas la cam�
 physique ni la précision des gestes humains.
 `npm run test:types` vérifie les déclarations publiques. Versions compilées :
 React 19.3, Vue 3.5.43 et Next.js 16.3.8. Vérifiez votre application si elle
-utilise d'autres versions. Vérifiez la disponibilité de `motion-input-grid` avant sa première publication npm.
+utilise d'autres versions.

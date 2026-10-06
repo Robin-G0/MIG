@@ -2,6 +2,22 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+## Install the libraries
+
+```sh
+python -m pip install motion-input-grid
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+Choose pip for Python (`from mig import Tracker`) or npm for the browser,
+React, Vue and Next.js. See the guides for
+[Python](../bindings/python/README.md) · [JavaScript](../bindings/javascript/README.md).
+
+These packages are libraries. Desktop applications and the Python camera
+runtime are separate downloads from
+[Releases](https://github.com/Robin-G0/MIG/releases).
+
 Start with [standalone launch instructions](standalone.md) or the
 [bootstrap guide](../docs/getting-started/bootstrap.md). Each visual integration has a raised-wrist
 demo and an empty profile importer. The sample is [common/raised-hands.json](common/raised-hands.json).

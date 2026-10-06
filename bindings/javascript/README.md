@@ -2,9 +2,34 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+## Install from npm
+
+In your application (Node.js 22.12+), run:
+
+```sh
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+The package includes WASM, models, MediaPipe, types and licenses. Serve
+`public/mig` at `/mig/` over localhost or HTTPS. React and Vue use this
+same package; Next.js uses the React adapter. Install your chosen framework
+in your application.
+
+```js
+import { MIGSession } from 'motion-input-grid';
+import { useMIG } from 'motion-input-grid/react'; // React / Next.js
+// import { useMIG } from 'motion-input-grid/vue'; // Vue
+```
+
+Use only the import matching your application. In PowerShell, use
+`npm.cmd` and `npx.cmd` if the execution policy blocks `.ps1` scripts.
+
 `motion-input-grid` provides a browser camera session, React hook and Vue
 composable backed by the existing C++/WASM engine. React and Vue are optional
 peer dependencies; Next.js uses the React adapter.
+
+## Alternative: build the package
 
 Build the WASM engine first, then run from the full checkout:
 
@@ -21,6 +46,8 @@ Install that local tarball into your application, then copy its runtime assets:
 npm install /path/to/motion-input-grid-1.0.0.tgz
 npx --package motion-input-grid mig-copy-assets public/mig
 ```
+
+## Use the package
 
 Pass the public asset URL to `useMIG` or `MIGSession`. The default is `/mig/`;
 applications hosted under a subpath should pass their actual URL. Keep all runtime
@@ -65,6 +92,6 @@ the preview's CSS. No desktop keyboard injection occurs. MediaPipe Tasks Vision
 0.10.35 is included in `runtime/vision` and copied with the other public assets.
 Start loads local files; no CDN request or consumer dependency installation is needed.
 
-See the [React](../../examples/react/README.md), [Vue](../../examples/vue/README.md)
-and [Next.js](../../examples/next/README.md) examples and the
-[JavaScript bootstrap guide](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.md). Publish `motion-input-grid` manually after testing it with your camera.
+See the [React](https://github.com/Robin-G0/MIG/blob/main/examples/react/README.md), [Vue](https://github.com/Robin-G0/MIG/blob/main/examples/vue/README.md)
+and [Next.js](https://github.com/Robin-G0/MIG/blob/main/examples/next/README.md) examples and the
+[JavaScript bootstrap guide](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.md).

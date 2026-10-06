@@ -2,10 +2,23 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+## Install the Python library
+
+```sh
+python -m pip install motion-input-grid pillow pygame
+```
+
+The import remains `mig`. Tk is supplied separately by Python or the OS.
+The wheel includes the positions engine; this camera example also needs
+a camera-enabled native SDK and its models. Set `MIG_LIBRARY` to its
+`mig-c.dll` / `libmig-c.so.1` and `MIG_RUNTIME` to its MediaPipe/model
+directory when automatic discovery does not find them.
+[Python installation](../../bindings/python/README.md).
+
 Run from the complete checkout or extracted examples archive:
 
 ```sh
-python3 -m pip install pillow pygame
+python3 -m pip install motion-input-grid pillow pygame
 python3 examples/pygame/main.py
 python3 examples/pygame/profile.py
 ```

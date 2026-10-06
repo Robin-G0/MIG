@@ -28,8 +28,24 @@ exports need separate checks; see the [support matrix](docs/reference/support.md
 | Godot / Unity / Unreal | Add-on ZIP / UPM tarball / Code Plugin ZIP | Preview |
 
 Native camera applications target Windows/Linux x64. Linux ARM64 packages accept
-supplied landmarks; no ARM64 camera runtime is included. Packages are prepared
-locally; registry names and first uploads still require registration/review.
+supplied landmarks; no ARM64 camera runtime is included. Python and browser libraries can be installed through pip and npm;
+release archives provide offline installation alternatives.
+
+## Install the libraries
+
+```sh
+python -m pip install motion-input-grid
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+Choose pip for Python (`from mig import Tracker`) or npm for the browser,
+React, Vue and Next.js. See the guides for
+[Python](bindings/python/README.md) · [JavaScript](bindings/javascript/README.md).
+
+These packages are libraries. Desktop applications and the Python camera
+runtime are separate downloads from
+[Releases](https://github.com/Robin-G0/MIG/releases).
 
 ## Desktop applications
 

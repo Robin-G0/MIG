@@ -62,9 +62,16 @@ bindings/javascript/runtime/mig.mjs` there instead of the checkout build path.
 
 ## Add MIG to your application
 
-Prepare the [npm package](../../bindings/javascript/README.md), install its local
-tarball and run `npx --package motion-input-grid mig-copy-assets public/mig`. Published installation by npm
-name becomes available only after your manual upload. React uses:
+Install the package in your application:
+
+```sh
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+The package includes WASM and models; no Emscripten build is needed. As an offline
+alternative, install a release `.tgz` with `npm install /path/to/motion-input-grid-1.0.0.tgz`,
+then copy its assets with the same command. See the [npm guide](../../bindings/javascript/README.md). React uses:
 
 ```jsx
 import { useMIG } from 'motion-input-grid/react';
@@ -131,4 +138,4 @@ instead if desired. Browser tests use real WASM and synthetic observations/
 camera streams; they do not establish physical camera or gesture accuracy.
 `npm run test:types` checks the published declarations. Builds were checked with
 React 19.3, Vue 3.5.43 and Next.js 16.3.8; older peer versions require your own
-application verification. Check availability of `motion-input-grid` before its first npm publication.
+application verification.

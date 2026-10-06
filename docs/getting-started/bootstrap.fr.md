@@ -2,6 +2,15 @@
 
 [English](bootstrap.md) | [Français](bootstrap.fr.md)
 
+Pour utiliser les bibliothèques sans les compiler, installez
+`python -m pip install motion-input-grid` (Python) ou
+`npm install motion-input-grid` (navigateur/React/Vue/Next.js), puis
+`npx mig-copy-assets public/mig` pour les ressources navigateur.
+[Python](../../bindings/python/README.fr.md) · [JavaScript](../../bindings/javascript/README.fr.md).
+
+Les applications de bureau et le runtime caméra Python restent des
+archives natives séparées ; les exemples précompilés incluent leurs dépendances.
+
 Téléchargez l'archive complète d'exemples de votre plateforme pour obtenir
 rapidement un retour caméra. Extrayez-la entièrement : `runtime`, `bindings`,
 `examples/common` et les licences sont partagés. Le code accompagne les binaires
@@ -52,14 +61,15 @@ générique. Ils nécessitent l'éditeur installé et un fournisseur caméra/poi
 Les sources Python nécessitent Python 3.10+, Pillow, Pygame et Tk pour le sélecteur :
 
 ```sh
-python -m pip install pillow pygame
+python -m pip install motion-input-grid pillow pygame
 python examples/python-tkinter/main.py
 python examples/pygame/profile.py
 ```
 
 L'import `mig` installé est préféré, avec repli sur `bindings/python` du dépôt.
-Le paquet nécessite encore la bibliothèque ABI C native. `MIG_LIBRARY` et
-`MIG_RUNTIME` permettent de remplacer la découverte. Les exécutables figés
+La wheel pip inclut l’ABI C de positions. Les exemples caméra demandent aussi
+un SDK natif avec caméra ; `MIG_LIBRARY` désigne sa bibliothèque ABI C et
+`MIG_RUNTIME` son dossier MediaPipe/modèles pour remplacer la découverte. Les exécutables figés
 incluent Python et les interfaces, puis utilisent le runtime natif de l'archive.
 Consultez le [paquet Python](../../bindings/python/README.fr.md).
 

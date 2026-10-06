@@ -2,6 +2,22 @@
 
 [English](index.md) | [Français](index.fr.md)
 
+## Install the libraries
+
+```sh
+python -m pip install motion-input-grid
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+Choose pip for Python (`from mig import Tracker`) or npm for the browser,
+React, Vue and Next.js. See the guides for
+[Python](../bindings/python/README.md) · [JavaScript](../bindings/javascript/README.md).
+
+These packages are libraries. Desktop applications and the Python camera
+runtime are separate downloads from
+[Releases](https://github.com/Robin-G0/MIG/releases).
+
 Start with [bootstrap](getting-started/bootstrap.md), then [examples](../examples/README.md).
 English is the default. Each maintained guide has an English/French link at the top.
 Identifiers, JSON fields, code and upstream legal notices remain untranslated.

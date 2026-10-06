@@ -2,6 +2,18 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+## Use in your application
+
+```sh
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+Import from `motion-input-grid`. Serve the assets at `/mig/` over localhost or HTTPS. The package includes
+WASM and models, so your application needs no C++ build. The checkout
+commands below are for editing and rebuilding this example. See the
+[npm guide](../../bindings/javascript/README.md).
+
 Build with Emscripten, then package with `tools/package-distribution.ps1`, or copy
 this directory together with `mig.mjs`, `mig.wasm`, `default.json`, `models/` and `vision/`.
 Serve over localhost/HTTPS, never `file://`:

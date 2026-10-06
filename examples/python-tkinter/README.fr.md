@@ -2,6 +2,19 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+## Installer la bibliothèque Python
+
+```sh
+python -m pip install motion-input-grid pillow
+```
+
+L'import reste `mig`. Tk est fourni séparément par Python ou le système.
+La wheel inclut le moteur de positions ; cet exemple caméra exige aussi
+un SDK natif avec caméra et ses modèles. Utilisez `MIG_LIBRARY` pour
+sa bibliothèque `mig-c.dll` / `libmig-c.so.1` et `MIG_RUNTIME` pour son
+dossier MediaPipe/modèles si la découverte automatique ne les trouve pas.
+[Installation Python](../../bindings/python/README.fr.md).
+
 Depuis les sources : `python examples/python-tkinter/main.py` pour la démo,
 `python examples/python-tkinter/profile.py` pour importer un profil configurateur.
 Sans arguments, les deux affichent caméra reflétée, objets aux poignets et toutes

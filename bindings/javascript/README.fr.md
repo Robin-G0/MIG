@@ -2,8 +2,33 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+## Installer depuis npm
+
+Dans votre projet (Node.js 22.12+), lancez :
+
+```sh
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+Le package inclut le moteur WASM, les modèles, MediaPipe, les types et les
+licences. Servez `public/mig` à l'URL `/mig/` sur localhost ou HTTPS.
+React et Vue utilisent le même package ; Next.js utilise l'adaptateur React.
+Installez le framework choisi dans votre application.
+
+```js
+import { MIGSession } from 'motion-input-grid';
+import { useMIG } from 'motion-input-grid/react'; // React / Next.js
+// import { useMIG } from 'motion-input-grid/vue'; // Vue
+```
+
+Utilisez uniquement l'import adapté à votre application. Sous PowerShell,
+utilisez `npm.cmd` et `npx.cmd` si la politique bloque les scripts `.ps1`.
+
 `motion-input-grid` fournit une session caméra, un hook React et un composable
 Vue utilisant le moteur C++/WASM. Next.js réutilise React.
+
+## Alternative : compiler le package
 
 Après compilation WASM, depuis le dépôt complet :
 
@@ -19,6 +44,8 @@ Dans votre application, installez l'archive locale puis copiez les ressources :
 npm install /chemin/motion-input-grid-1.0.0.tgz
 npx --package motion-input-grid mig-copy-assets public/mig
 ```
+
+## Utiliser le package
 
 Le package contient WASM, modèles, modules, types et licences. `assetBase` indique
 leur URL publique (`/mig/` par défaut). Servez sur localhost ou HTTPS. La caméra
@@ -47,9 +74,9 @@ Seules les nouvelles frames sont traitées, hors état réactif ; `tracking.hand
 contrôle l'inférence des mains. Le miroir est uniquement visuel. Aucun raccourci
 clavier système n'est injecté ; les callbacks sont des événements de votre application.
 
-Consultez les exemples [React](../../examples/react/README.fr.md),
-[Vue](../../examples/vue/README.fr.md), [Next.js](../../examples/next/README.fr.md)
-et le [guide de démarrage](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.fr.md). Publiez `motion-input-grid` manuellement après un test avec votre caméra.
+Consultez les exemples [React](https://github.com/Robin-G0/MIG/blob/main/examples/react/README.fr.md),
+[Vue](https://github.com/Robin-G0/MIG/blob/main/examples/vue/README.fr.md), [Next.js](https://github.com/Robin-G0/MIG/blob/main/examples/next/README.fr.md)
+et le [guide de démarrage](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.fr.md).
 
 Le paquet inclut `runtime/vision` : MediaPipe JS/WASM est copié avec les modèles
 par mig-copy-assets. Start charge ces fichiers locaux, sans CDN.

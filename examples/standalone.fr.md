@@ -2,6 +2,15 @@
 
 [English](standalone.md) | [Français](standalone.fr.md)
 
+Pour utiliser les bibliothèques sans les compiler, installez
+`python -m pip install motion-input-grid` (Python) ou
+`npm install motion-input-grid` (navigateur/React/Vue/Next.js), puis
+`npx mig-copy-assets public/mig` pour les ressources navigateur.
+[Python](../bindings/python/README.fr.md) · [JavaScript](../bindings/javascript/README.fr.md).
+
+Les applications de bureau et le runtime caméra Python restent des
+archives natives séparées ; les exemples précompilés incluent leurs dépendances.
+
 Les exemples du checkout trouvent aussi le runtime natif dans `build/release/bin`
 ou `build/debug/bin` après un build avec les presets CMake. La sélection automatique
 exige la bibliothèque MediaPipe de la plateforme et le modèle de pose ; les modèles
@@ -23,7 +32,7 @@ L'image est reflétée une fois ; les actions restent anatomiques.
 Les exécutables Python figés incluent l'interpréteur, Tk/Pillow/Pygame et les
 ressources natives. Aucun Python installé ni pip n'est nécessaire. Les scripts
 restent à côté pour les modifier ; ils demandent Python 3.10+,
-`python -m pip install pillow pygame` et Tk pour les sélecteurs. L'import installé
+`python -m pip install motion-input-grid pillow pygame` et Tk pour les sélecteurs. L'import installé
 `mig` est préféré, avec repli sur celui de l'archive.
 
 Les exécutables natifs Windows nécessitent encore Microsoft Visual C++ 2022

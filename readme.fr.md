@@ -31,8 +31,24 @@ séparées : voir la [matrice de support](docs/reference/support.fr.md).
 
 Les applications caméra natives ciblent Windows/Linux x64. Les packages Linux
 ARM64 reçoivent des landmarks ; aucun runtime caméra ARM64 n'est inclus. Les
-packages sont préparés localement ; les noms de registres et premiers uploads
-restent à vérifier et enregistrer.
+bibliothèques Python et navigateur s'installent via pip et npm ; les archives
+de release permettent aussi une installation hors ligne.
+
+## Installation des bibliothèques
+
+```sh
+python -m pip install motion-input-grid
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+Choisissez pip pour Python (`from mig import Tracker`) ou npm pour le
+navigateur, React, Vue et Next.js. Consultez les guides
+[Python](bindings/python/README.fr.md) · [JavaScript](bindings/javascript/README.fr.md).
+
+Ces packages sont des bibliothèques. Les applications de bureau et le
+runtime caméra Python se téléchargent séparément dans les
+[Releases](https://github.com/Robin-G0/MIG/releases).
 
 ## Applications de bureau
 

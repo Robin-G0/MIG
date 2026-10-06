@@ -2,6 +2,15 @@
 
 [English](windows.md) | [Français](windows.fr.md)
 
+To use the libraries without compiling them, install
+`python -m pip install motion-input-grid` (Python) or
+`npm install motion-input-grid` (browser/React/Vue/Next.js), then run
+`npx mig-copy-assets public/mig` for browser assets.
+[Python](../../bindings/python/README.md) · [JavaScript](../../bindings/javascript/README.md).
+
+Desktop applications and the Python camera runtime remain separate native
+archives; prebuilt examples include their dependencies.
+
 Both C++20 Win32/GDI applications use Media Foundation capture, native MediaPipe
 and the same engine/schema-v2 reader. No interpreter, UDP bridge or separate
 inference process is used. The interface is English; documentation is bilingual.

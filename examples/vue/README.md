@@ -2,6 +2,18 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+## Use in your application
+
+```sh
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+Import from `motion-input-grid/vue`. Serve the assets at `/mig/` over localhost or HTTPS. The package includes
+WASM and models, so your application needs no C++ build. The checkout
+commands below are for editing and rebuilding this example. See the
+[npm guide](../../bindings/javascript/README.md).
+
 From the repository root, after building WASM, with Node.js 22.12+:
 
 ```sh

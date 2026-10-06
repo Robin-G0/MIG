@@ -2,6 +2,15 @@
 
 [English](bootstrap.md) | [Français](bootstrap.fr.md)
 
+To use the libraries without compiling them, install
+`python -m pip install motion-input-grid` (Python) or
+`npm install motion-input-grid` (browser/React/Vue/Next.js), then run
+`npx mig-copy-assets public/mig` for browser assets.
+[Python](../../bindings/python/README.md) · [JavaScript](../../bindings/javascript/README.md).
+
+Desktop applications and the Python camera runtime remain separate native
+archives; prebuilt examples include their dependencies.
+
 Choose a complete examples archive for your platform when you want immediate
 camera feedback. Extract the whole archive; its shared `runtime`, `bindings`,
 `examples/common` and license folders are required. Source files sit beside
@@ -52,14 +61,15 @@ Game engines require their installed editor and a camera/landmark provider;
 Python sources require Python 3.10+, Pillow and Pygame (Tk for the picker):
 
 ```sh
-python -m pip install pillow pygame
+python -m pip install motion-input-grid pillow pygame
 python examples/python-tkinter/main.py
 python examples/pygame/profile.py
 ```
 
 Scripts prefer an installed `mig` import, then use `bindings/python` from a full
-checkout. That package still needs the matching native C ABI library. Set
-`MIG_LIBRARY` and `MIG_RUNTIME` only when overriding discovery. Frozen viewers
+checkout. The pip wheel bundles the positions-only C ABI. Camera examples need a
+camera-enabled native SDK too; set `MIG_LIBRARY` to its C ABI library and
+`MIG_RUNTIME` to its MediaPipe/model directory when overriding discovery. Frozen viewers
 include Python/UI dependencies and use the archive's native runtime.
 See the [Python package](../../bindings/python/README.md).
 

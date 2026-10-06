@@ -2,6 +2,16 @@
 
 [English](packaging.md) | [Français](packaging.fr.md)
 
+To install the published libraries rather than build their packages:
+
+```sh
+python -m pip install motion-input-grid
+npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+[Python](../../bindings/python/README.md) · [JavaScript](../../bindings/javascript/README.md).
+
 ## Runnable examples archives
 
 `build/examples/windows-x64` and `build/examples/linux-x64` contain camera demos,

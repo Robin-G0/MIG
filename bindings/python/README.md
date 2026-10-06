@@ -2,11 +2,24 @@
 
 [English](README.md) | [Français](README.fr.md)
 
+## Install from PyPI
+
+```sh
+python -m pip install motion-input-grid
+python -c "from mig import Tracker; print('MIG OK')"
+```
+
+The distribution name is `motion-input-grid`; the import remains `mig`.
+Prefer a Python 3.10+ virtual environment. Wheels cover Windows x64 and
+Linux x64/ARM64 with glibc 2.35+. On other platforms, pip may build the
+sdist, requiring a C++20 compiler and CMake 3.25+. To select a version:
+`python -m pip install motion-input-grid==1.0.0`.
+
+Local alternative: `python -m pip install /path/to/motion_input_grid-1.0.0-<tags>.whl`.
+To build from a full checkout: `python -m pip install ./bindings/python`.
+
 Python 3.10+ access to MIG's C++ recognition engine through standard-library ctypes.
 No Python inference dependency is required.
-
-Install with `python -m pip install motion-input-grid` after the package is published,
-or `python -m pip install ./bindings/python` from a checkout.
 
 Release wheels include the positions-only C ABI library and its licenses.
 Windows uses `mig-c.dll`; Linux x64/ARM64 uses `libmig-c.so.1`. No models or camera

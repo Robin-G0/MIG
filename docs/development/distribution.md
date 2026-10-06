@@ -20,11 +20,23 @@ the standard normalized `motion_input_grid` filename. The Unity UPM identifier i
 The Python module remains `mig`, CMake exports remain `MIG::*`, and native
 libraries, APIs and example binaries keep their existing technical names.
 
-After the corresponding registry publication, install with:
+Install Python and browser libraries from PyPI and npm, or use the release
+wheels and tarballs for offline installation:
 
 ```sh
 python -m pip install motion-input-grid
 npm install motion-input-grid
+npx mig-copy-assets public/mig
+```
+
+Python keeps `import mig`; its wheels contain the positions engine, without
+camera models. npm includes browser WASM and models. See the
+[Python](../../bindings/python/README.md) and [npm](../../bindings/javascript/README.md) guides.
+These packages do not install the configurator or controller.
+
+For APT and the vcpkg overlay:
+
+```sh
 sudo apt install motion-input-grid
 vcpkg install motion-input-grid --overlay-ports=/path/to/motion-input-grid-vcpkg-overlay
 ```
