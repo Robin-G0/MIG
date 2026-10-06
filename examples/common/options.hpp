@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdlib>
+#include "runtime.hpp"
 #include <filesystem>
 #include <stdexcept>
 #include <string>
@@ -21,16 +21,8 @@ struct Options {
             if (!std::filesystem::exists(config)) {
                 config = (root / "examples/common/raised-hands.json").string();
             }
-            for (const auto& candidate :
-                 {directory / "../../runtime", directory / "../runtime", root / "build/windows/bin",
-                  root / "build/native-linux-deps"}) {
-                if (std::filesystem::exists(candidate / "models/pose_landmarker_lite.task")) {
-                    runtime = candidate.lexically_normal().string();
-                    break;
-                }
-            }
-            if (const auto installed = std::getenv("MIG_RUNTIME")) {
-                runtime = installed;
+            if (argc < 2) {
+                runtime = find_runtime(directory, root).string();
             }
             smoke = synthetic = argc > 1;
             hands = true;

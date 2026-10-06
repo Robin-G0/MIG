@@ -2,6 +2,11 @@
 
 [English](standalone.md) | [Français](standalone.fr.md)
 
+Checkout examples also find the native runtime in `build/release/bin` or
+`build/debug/bin` when built with CMake presets. Automatic selection requires
+both the platform's MediaPipe library and the pose model; model files alone do
+not make a runtime usable. Set `MIG_RUNTIME` to choose another runtime directory.
+
 Extract the complete platform archive. Run one camera example at a time.
 Keep shoulders visible for a second, lower your hands, then raise either wrist
 through the green rows into the yellow row. The flying props and hand bones

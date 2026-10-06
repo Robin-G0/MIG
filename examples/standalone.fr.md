@@ -2,6 +2,11 @@
 
 [English](standalone.md) | [Français](standalone.fr.md)
 
+Les exemples du checkout trouvent aussi le runtime natif dans `build/release/bin`
+ou `build/debug/bin` après un build avec les presets CMake. La sélection automatique
+exige la bibliothèque MediaPipe de la plateforme et le modèle de pose ; les modèles
+seuls ne suffisent pas. Utilisez `MIG_RUNTIME` pour choisir un autre dossier runtime.
+
 Extrayez l'archive complète et lancez une seule caméra à la fois. Gardez les
 épaules visibles une seconde, baissez les mains puis levez un poignet à travers
 les lignes vertes vers la jaune. Les objets et os des mains suivent les poignets.

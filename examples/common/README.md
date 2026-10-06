@@ -8,6 +8,7 @@ Each has one responsibility and uses the installed public SDK.
 | File | Reusable entry point |
 | --- | --- |
 | options.hpp | `Options(argc, argv)`: explicit synthetic/runtime selection |
+| runtime.hpp | `find_runtime()`: bundled or checkout runtime with platform library and models |
 | source.hpp | `Source::sample()`: camera/model ownership and copied observations |
 | synthetic.hpp | `synthetic_frame()`: deterministic default-profile body/hand fixture |
 | recognition.hpp | `consume()`: logical action callback |

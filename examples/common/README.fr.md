@@ -8,6 +8,7 @@ le SDK public installé et partagent les variantes au lieu de dupliquer les bouc
 | Fichier | Entrée / responsabilité |
 | --- | --- |
 | options.hpp | Options : choix runtime/profil/synthétique |
+| runtime.hpp | `find_runtime()` : runtime embarqué ou du checkout, bibliothèque et modèles vérifiés |
 | source.hpp | Source::sample : capture, modèles, observations |
 | synthetic.hpp | synthetic_frame : fixture déterministe |
 | recognition.hpp | consume : événements logiques |

@@ -35,6 +35,7 @@ def native_library():
         return None
     if os.name == "nt":
         paths = ("runtime/mig-c.dll", "build/windows/src/c-api/Release/mig-c.dll",
+                 "build/release/src/c-api/Release/mig-c.dll", "build/debug/src/c-api/Debug/mig-c.dll",
                  "windows/mig-c.dll", "distribution/windows/mig-c.dll")
     else:
         paths = ("runtime/libmig-c.so.1", "build/release-linux-x64/src/c-api/libmig-c.so",
@@ -45,10 +46,12 @@ def native_library():
 def runtime_directory():
     if os.environ.get("MIG_RUNTIME"):
         return Path(os.environ["MIG_RUNTIME"])
-    paths = ("runtime", "build/windows/bin", "build/native-linux-deps",
-             "distribution/windows", "distribution/linux")
+    library = "libmediapipe.dll" if os.name == "nt" else "libmediapipe.so"
+    paths = ("runtime", "build/windows/bin", "build/release/bin", "build/debug/bin",
+             "build/native-linux-deps", "distribution/windows", "distribution/linux")
     return next((ROOT / name for name in paths
-                 if (ROOT / name / "models/pose_landmarker_lite.task").is_file()), None)
+                 if (ROOT / name / library).is_file()
+                 and (ROOT / name / "models/pose_landmarker_lite.task").is_file()), None)
 
 
 def options(smoke=False, profile_mode=False):
