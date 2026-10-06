@@ -86,13 +86,24 @@ if (Test-Path "$projectRoot/$WebBuild/mig.wasm") {
     }
 }
 foreach ($language in @('', '.fr')) {
-    $guide = [IO.File]::ReadAllText("$projectRoot/readme$language.md")
+    $guideSource = "$projectRoot/readme.md"
+    if ($language -eq '.fr') { $guideSource = "$projectRoot/docs/fr/readme.fr.md" }
+    $guide = [IO.File]::ReadAllText($guideSource)
+    if ($language -eq '.fr') {
+        $guide = $guide.Replace('(../../', '(').Replace('(../', '(docs/')
+        $guide = $guide.Replace('(CONTRIBUTING.fr.md)', '(docs/fr/CONTRIBUTING.fr.md)')
+        $guide = $guide.Replace('(SECURITY.fr.md)', '(docs/fr/SECURITY.fr.md)')
+    }
     $guide = $guide.Replace('(readme.md)', '(README.md)').Replace('(readme.fr.md)', '(README.fr.md)')
+    $guide = $guide.Replace('(docs/fr/readme.fr.md)', '(README.fr.md)')
     [IO.File]::WriteAllText("$targetRoot/README$language.md", $guide, [Text.UTF8Encoding]::new($false))
 }
 Copy-Artifact "$projectRoot/examples" "$targetRoot/examples"
 Copy-Artifact "$projectRoot/bindings" "$targetRoot/bindings"
 Copy-Artifact "$projectRoot/integrations" "$targetRoot/integrations"
+Copy-Artifact "$projectRoot/ports" "$targetRoot/ports"
 Copy-Artifact "$projectRoot/docs" "$targetRoot/docs"
+Copy-Artifact "$projectRoot/CONTRIBUTING.md" "$targetRoot/CONTRIBUTING.md"
+Copy-Artifact "$projectRoot/SECURITY.md" "$targetRoot/SECURITY.md"
 Copy-Artifact "$projectRoot/LICENSE" "$targetRoot/LICENSE"
 Write-Output "Distribution ready: $targetRoot"

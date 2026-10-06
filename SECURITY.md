@@ -1,6 +1,6 @@
 # Security
 
-[English](SECURITY.md) | [Français](SECURITY.fr.md)
+[English](SECURITY.md) | [Français](docs/fr/SECURITY.fr.md)
 
 Report vulnerabilities privately. If **Report a vulnerability** is available in
 this repository's Security tab, use GitHub Private Vulnerability Reporting.

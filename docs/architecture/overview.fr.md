@@ -29,6 +29,7 @@ MIG/
   tools/                Préparation, compilation, vérification et packaging
   .github/workflows/    Tâches automatisées de compilation et validation
   docs/                 Guides, contrats et revues historiques
+    fr/                 Traductions françaises du README et des politiques racine
   CMakeLists.txt        Sélection des cibles natives/portables/WebAssembly
   CMakePresets.json     Configurations CMake nommées
   package.json          Workspaces JavaScript et commandes communes

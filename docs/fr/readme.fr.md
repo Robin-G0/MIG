@@ -1,10 +1,10 @@
 # Motion Input Grid (MIG)
 
-[English](readme.md) | [Français](readme.fr.md)
+[English](../../readme.md) | [Français](readme.fr.md)
 
 MIG transforme les mouvements du corps et des mains en actions pour vos applications
-et jeux. Dessinez un mouvement dans le [configurateur](docs/guides/configurator.fr.md), sauvegardez son profil JSON,
-puis utilisez le [contrôleur](docs/guides/controller.fr.md) ou votre propre application. Les points suivis peuvent
+et jeux. Dessinez un mouvement dans le [configurateur](../guides/configurator.fr.md), sauvegardez son profil JSON,
+puis utilisez le [contrôleur](../guides/controller.fr.md) ou votre propre application. Les points suivis peuvent
 provenir d'une caméra ou de votre fournisseur de landmarks.
 
 Landmarks → grille proportionnelle aux épaules → contraintes de mouvement/signe → action.
@@ -19,7 +19,7 @@ Python conserve `import mig` ; C++ conserve `find_package(MIG)` et `MIG::core`.
 MIG 1.0.0 est le candidat de première publication publique. Les contrats du moteur
 et de la C ABI sont couverts par des tests de régression et des consommateurs
 installés. La précision caméra et les exports de jeux demandent des validations
-séparées : voir la [matrice de support](docs/reference/support.fr.md).
+séparées : voir la [matrice de support](../reference/support.fr.md).
 
 | Écosystème | Package / point d'entrée | Maturité |
 | --- | --- | --- |
@@ -44,7 +44,7 @@ npx mig-copy-assets public/mig
 
 Choisissez pip pour Python (`from mig import Tracker`) ou npm pour le
 navigateur, React, Vue et Next.js. Consultez les guides
-[Python](bindings/python/README.fr.md) · [JavaScript](bindings/javascript/README.fr.md).
+[Python](../../bindings/python/README.fr.md) · [JavaScript](../../bindings/javascript/README.fr.md).
 
 Ces packages sont des bibliothèques. Les applications de bureau et le
 runtime caméra Python se téléchargent séparément dans les
@@ -57,12 +57,12 @@ Téléchargez l'artefact adapté à votre système dans les
 
 | Usage | Installation | Guide |
 | --- | --- | --- |
-| C++ / C ABI | Extraire l'archive `*-sdk`, puis fournir son chemin à `CMAKE_PREFIX_PATH` et utiliser `find_package(MIG CONFIG REQUIRED)` | [SDK](docs/getting-started/cpp.fr.md) |
-| vcpkg | Extraire `*-vcpkg-overlay.tar.gz`, puis installer `motion-input-grid` avec `--overlay-ports` ; le port n'est pas encore dans le registre principal | [Port vcpkg](ports/motion-input-grid/README.fr.md) |
-| Debian / Ubuntu | Télécharger le `.deb` de votre architecture et l'installer avec APT ; l'installation par nom nécessite un dépôt signé configuré | [Debian / APT](docs/development/distribution.fr.md#debian-et-hébergement-apt-signé) |
-| Godot | Extraire le ZIP add-on à la racine du projet | [Godot](integrations/godot/README.fr.md) |
-| Unity | Package Manager → **Add package from tarball**, avec le `.tgz` Unity | [Unity UPM](integrations/unity/README.fr.md) |
-| Unreal | Extraire le ZIP plugin dans `Plugins`, puis recompiler le projet C++ | [Unreal](integrations/unreal/README.fr.md) |
+| C++ / C ABI | Extraire l'archive `*-sdk`, puis fournir son chemin à `CMAKE_PREFIX_PATH` et utiliser `find_package(MIG CONFIG REQUIRED)` | [SDK](../getting-started/cpp.fr.md) |
+| vcpkg | Extraire `*-vcpkg-overlay.tar.gz`, puis installer `motion-input-grid` avec `--overlay-ports` ; le port n'est pas encore dans le registre principal | [Port vcpkg](../../ports/motion-input-grid/README.fr.md) |
+| Debian / Ubuntu | Télécharger le `.deb` de votre architecture et l'installer avec APT ; l'installation par nom nécessite un dépôt signé configuré | [Debian / APT](../development/distribution.fr.md#debian-et-hébergement-apt-signé) |
+| Godot | Extraire le ZIP add-on à la racine du projet | [Godot](../../integrations/godot/README.fr.md) |
+| Unity | Package Manager → **Add package from tarball**, avec le `.tgz` Unity | [Unity UPM](../../integrations/unity/README.fr.md) |
+| Unreal | Extraire le ZIP plugin dans `Plugins`, puis recompiler le projet C++ | [Unreal](../../integrations/unreal/README.fr.md) |
 
 ```sh
 vcpkg install motion-input-grid --overlay-ports=/chemin/motion-input-grid-vcpkg-overlay
@@ -76,13 +76,13 @@ des intégrations Preview et demandent un fournisseur de landmarks.
 
 Pour le configurator et le controller, choisissez l'archive `*-native` ; pour
 les démos prêtes à lancer, choisissez l'archive `*-examples`. La compilation
-depuis les sources reste disponible : [Windows](docs/getting-started/windows.fr.md) ·
-[Linux](docs/getting-started/linux.fr.md).
+depuis les sources reste disponible : [Windows](../getting-started/windows.fr.md) ·
+[Linux](../getting-started/linux.fr.md).
 
 ## Applications de bureau
 
-Le [configurateur](docs/guides/configurator.fr.md) crée les profils ; le
-[contrôleur](docs/guides/controller.fr.md) les exécute. Leurs guides expliquent
+Le [configurateur](../guides/configurator.fr.md) crée les profils ; le
+[contrôleur](../guides/controller.fr.md) les exécute. Leurs guides expliquent
 comment les lancer et où trouver les fichiers.
 
 Pour les versions précompilées, consultez les [Releases](https://github.com/Robin-G0/MIG/releases)
@@ -90,12 +90,12 @@ et cherchez une archive `motion-input-grid-<version>-windows-x64-native.zip` ou
 `motion-input-grid-<version>-linux-x64-native.tar.gz`. Extrayez l'archive entière.
 Les archives SDK et les packages Python/npm/Debian contiennent les bibliothèques.
 Si aucune archive native n'est publiée, suivez les instructions de compilation
-[Windows](docs/getting-started/windows.fr.md) ou [Linux](docs/getting-started/linux.fr.md).
+[Windows](../getting-started/windows.fr.md) ou [Linux](../getting-started/linux.fr.md).
 Avec le preset Windows `release`, les deux exécutables sont dans `build/release/bin/`.
 
 ## Essayer
 
-Les [exemples autonomes](examples/standalone.fr.md) affichent la caméra en miroir,
+Les [exemples autonomes](../../examples/standalone.fr.md) affichent la caméra en miroir,
 un objet suivant chaque poignet et un retour quand une main se lève. Extraire
 l'archive complète adaptée, puis lancer le binaire ou le lanceur navigateur.
 
@@ -121,13 +121,13 @@ with Tracker(None, profile) as tracker:
 
 Installer d'abord une wheel adaptée. Elle contient le moteur de positions ; les
 exemples caméra utilisent le runtime natif séparé. Pour fournir des observations
-et traiter les actions, suivre le [démarrage](docs/getting-started/bootstrap.fr.md)
-et les [exemples](examples/README.fr.md).
+et traiter les actions, suivre le [démarrage](../getting-started/bootstrap.fr.md)
+et les [exemples](../../examples/README.fr.md).
 
-[Documentation](docs/index.fr.md) · [Architecture](docs/architecture/overview.fr.md) ·
-[Configuration](docs/reference/configuration.fr.md) · [Distribution](docs/development/distribution.fr.md) ·
+[Documentation](../index.fr.md) · [Architecture](../architecture/overview.fr.md) ·
+[Configuration](../reference/configuration.fr.md) · [Distribution](../development/distribution.fr.md) ·
 [Contribution](CONTRIBUTING.fr.md)
 
-Licence [Apache-2.0](LICENSE). Les dépendances redistribuées conservent leurs notices.
+Licence [Apache-2.0](../../LICENSE). Les dépendances redistribuées conservent leurs notices.
 
-[Changelog](docs/development/CHANGELOG.fr.md) · [Roadmap](docs/development/ROADMAP.fr.md)
+[Changelog](../development/CHANGELOG.fr.md) · [Roadmap](../development/ROADMAP.fr.md)

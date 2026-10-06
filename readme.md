@@ -1,6 +1,6 @@
 # Motion Input Grid (MIG)
 
-[English](readme.md) | [Français](readme.fr.md)
+[English](readme.md) | [Français](docs/fr/readme.fr.md)
 
 MIG turns body and hand movements into named actions for applications and games.
 Draw a movement in the [configurator](docs/guides/configurator.md), save its JSON profile, then run it in the

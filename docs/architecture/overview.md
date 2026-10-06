@@ -30,6 +30,7 @@ MIG/
   tools/                Bootstrap, builds, validation and packaging
   .github/workflows/    Automated build and validation jobs
   docs/                 Guides and implementation contracts
+    fr/                 French translations of root README/community policies
   CMakeLists.txt        Native/portable/WebAssembly target selection
   CMakePresets.json     Named CMake configurations
   package.json          JavaScript workspaces and shared scripts

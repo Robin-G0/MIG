@@ -1,5 +1,6 @@
 """Check first-party guide translations, language links and local Markdown targets."""
 from pathlib import Path
+import os
 import re
 from urllib.parse import unquote, urlsplit
 import sys
@@ -40,11 +41,18 @@ def check(path):
     errors = []
     if any(ord(character) < 32 and character not in "\n\r\t" for character in content):
         errors.append("unexpected control character")
-    for name in (english_name, french_name):
-        if not path.with_name(name).is_file():
-            errors.append(f"missing translation: {name}")
-        if f"]({name})" not in content:
-            errors.append(f"missing language link: {name}")
+    if path.parent == ROOT:
+        translations = (path.with_name(english_name), ROOT / "docs/fr" / french_name)
+    elif path.parent == ROOT / "docs/fr":
+        translations = (ROOT / english_name, path.with_name(french_name))
+    else:
+        translations = (path.with_name(english_name), path.with_name(french_name))
+    for translation in translations:
+        target = Path(os.path.relpath(translation, path.parent)).as_posix()
+        if not translation.is_file():
+            errors.append(f"missing translation: {target}")
+        if f"]({target})" not in content:
+            errors.append(f"missing language link: {target}")
     outside_code = re.sub(r"```.*?```", "", content, flags=re.S)
     targets = re.findall(r"\]\(([^\s)]+)(?:\s+\"[^\"]*\")?\)", outside_code)
     targets.extend(re.findall(r"^ *\[[^]]+\]: *<?([^\s>]+)>?", outside_code, flags=re.M))

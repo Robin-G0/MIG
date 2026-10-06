@@ -1,6 +1,6 @@
 # Contributing
 
-[English](CONTRIBUTING.md) | [Français](CONTRIBUTING.fr.md)
+[English](CONTRIBUTING.md) | [Français](docs/fr/CONTRIBUTING.fr.md)
 
 Use CMake 3.25+, a C++20 compiler and Git. The positions SDK can fetch its pinned
 JSON dependency; camera applications additionally need the platform bootstrap.

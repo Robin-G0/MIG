@@ -1,6 +1,6 @@
 # Sécurité
 
-[English](SECURITY.md) | [Français](SECURITY.fr.md)
+[English](../../SECURITY.md) | [Français](SECURITY.fr.md)
 
 Signaler les vulnérabilités en privé. Si **Report a vulnerability** apparaît dans
 l'onglet Security du dépôt, utiliser GitHub Private Vulnerability Reporting.
@@ -13,7 +13,7 @@ active : les profils peuvent configurer des séquences de touches volontaires.
 
 Les corrections ciblent la branche 1.x actuelle. Les intégrations Preview et
 les dépendances caméra/modèles ont leurs propres limites de validation ; voir la
-[matrice de support](docs/reference/support.fr.md). Aucun délai de réponse n'est garanti.
+[matrice de support](../reference/support.fr.md). Aucun délai de réponse n'est garanti.
 
 Les administrateurs peuvent activer signalement privé, secret scanning, push
 protection et contrôles CI requis dans GitHub. Cette politique ne les active pas.
