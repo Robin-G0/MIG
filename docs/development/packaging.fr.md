@@ -160,3 +160,20 @@ et les archives Linux tar.xz avec tar, après vérification des SHA256 épinglé
 Seuls l'exécutable Node et sa licence sont extraits pour chaque plateforme.
 Le générateur TAR conserve les droits exécutables Linux depuis Windows.
 Python n’est pas nécessaire pour lancer les exemples navigateur préparés.
+
+## Modifier la documentation après publication
+
+Les guides du dépôt et les notes de release GitHub peuvent être mis à jour sans
+changer la version des packages. En revanche, le README affiché sur npm et la
+description PyPI proviennent des fichiers publiés : un push GitHub ne les modifie
+pas. Une nouvelle version de package est nécessaire pour les actualiser, même
+si seul le texte change. Une version corrective telle que `1.0.1` convient.
+
+Ne remplacez pas les fichiers `1.0.0` déjà publiés. Pour préparer la prochaine
+version, utilisez le mécanisme de synchronisation décrit dans le
+[guide de distribution](distribution.fr.md#version-et-compilation-de-publication), puis
+reconstruisez et validez les packages avant de les publier manuellement.
+
+Références : [README npm](https://docs.npmjs.com/about-package-readme-files/),
+[métadonnées PyPI](https://docs.pypi.org/api/json/),
+[fichiers PyPI immuables](https://pypi.org/help/#file-name-reuse).

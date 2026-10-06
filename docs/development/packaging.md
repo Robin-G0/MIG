@@ -205,3 +205,20 @@ Only the Node executable and LICENSE are extracted for each platform.
 The TAR writer preserves Linux executable permissions when packaging on Windows.
 Python is not
 required to run the generated browser examples.
+
+## Update documentation after publication
+
+Repository guides and GitHub release notes can be updated without changing
+package versions. The npm README and PyPI description come from uploaded
+packages; a GitHub push does not update them. Publishing a new package version
+is required to refresh them, even for text-only changes. A patch version such
+as `1.0.1` is appropriate.
+
+Do not replace already published `1.0.0` files. Prepare the next version using
+the synchronization mechanism in the
+[distribution guide](distribution.md#version-and-release-builds), then rebuild
+and validate packages before publishing them manually.
+
+References: [npm README](https://docs.npmjs.com/about-package-readme-files/),
+[PyPI metadata](https://docs.pypi.org/api/json/),
+[immutable PyPI files](https://pypi.org/help/#file-name-reuse).
