@@ -33,7 +33,7 @@ build_sdk() {
     ctest --test-dir "$build_directory" --output-on-failure
     cmake --install "$build_directory" --prefix "$install_directory"
     (cd "$build_directory" && cpack -G DEB)
-    cp "$build_directory"/libmig-dev_*.deb build/releases/
+    cp "$build_directory"/motion-input-grid_*.deb build/releases/
     cmake -S examples/sdk-consumer -B "$build_directory-consumer" -G Ninja \
         "${toolchain[@]}" \
         -DCMAKE_BUILD_TYPE=Release "-DCMAKE_PREFIX_PATH=$install_directory"

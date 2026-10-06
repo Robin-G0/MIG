@@ -40,8 +40,8 @@ def write_indexes(root, suite, component, architectures):
         (folder / "Packages.gz").write_bytes(gzip.compress(data, mtime=0))
     distribution = root / "dists" / suite
     expires = (datetime.now(timezone.utc) + timedelta(days=30)).strftime("%a, %d %b %Y %H:%M:%S UTC")
-    release = output("apt-ftparchive", "-o", "APT::FTPArchive::Release::Origin=MIG",
-                     "-o", "APT::FTPArchive::Release::Label=MIG",
+    release = output("apt-ftparchive", "-o", "APT::FTPArchive::Release::Origin=Motion Input Grid",
+                     "-o", "APT::FTPArchive::Release::Label=Motion Input Grid",
                      "-o", f"APT::FTPArchive::Release::Suite={suite}",
                      "-o", f"APT::FTPArchive::Release::Codename={suite}",
                      "-o", f"APT::FTPArchive::Release::Components={component}",
@@ -63,7 +63,7 @@ def sign_repository(distribution, key, home):
     public_key = output(*command, "--export", key)
     if not public_key:
         raise ValueError("The signing key has no exportable public key")
-    (distribution.parents[1] / "mig-archive-keyring.gpg").write_bytes(public_key)
+    (distribution.parents[1] / "motion-input-grid-archive-keyring.gpg").write_bytes(public_key)
 
 
 def main():

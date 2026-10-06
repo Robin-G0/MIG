@@ -1,4 +1,4 @@
-# Overlay vcpkg MIG
+# Port vcpkg Motion Input Grid (MIG)
 
 [English](README.md) | [Français](README.fr.md)
 
@@ -7,11 +7,11 @@ séparé des dépendances nécessaires pour compiler MIG.
 
 Lancez `python tools/package-source.py` pour créer les archives du moteur et de
 l'overlay dans `build/releases`. Extrayez l'overlay et passez sa racine à
-`vcpkg install mig --overlay-ports=/chemin/mig-vcpkg-overlay`. Le fichier généré
-`mig/source.cmake` fixe l'URL de publication et le SHA512 réel de l'archive source.
+`vcpkg install motion-input-grid --overlay-ports=/chemin/motion-input-grid-vcpkg-overlay`. Le fichier généré
+`motion-input-grid/source.cmake` fixe l'URL de publication et le SHA512 réel de l'archive source.
 Le modèle versionné échoue volontairement tant que ce fichier n'a pas été généré.
 
-Les features par défaut activent les profils JSON et les mains. `mig[c-api]`
+Les features par défaut activent les profils JSON et les mains. `motion-input-grid[c-api]`
 ajoute l'ABI C partagée et nécessite un triplet dynamique. Applications et
 MediaPipe sont exclus. Utilisez `find_package(MIG CONFIG REQUIRED)` et les cibles
 `MIG::core`, `MIG::format`, `MIG::hands` ou `MIG::c`. Le SDK et son consommateur

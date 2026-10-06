@@ -11,7 +11,7 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
-from release_metadata import release_version
+from release_metadata import PACKAGE_NAME, PROJECT_NAME, REPOSITORY, release_version
 from distribution_policy import private_file, GENERATED_DIRECTORIES
 
 SYSTEM_LIBRARIES = {
@@ -127,7 +127,8 @@ def write_manifest(root, arguments, dependencies):
     for path in sorted(root.rglob("*")):
         if path.is_file() and not path.is_symlink():
             files[str(path.relative_to(root))] = hashlib.sha256(path.read_bytes()).hexdigest()
-    manifest = {"version": arguments.version, "architecture": arguments.architecture,
+    manifest = {"project": PROJECT_NAME, "package": PACKAGE_NAME, "repository": REPOSITORY,
+                "version": arguments.version, "architecture": arguments.architecture,
                 "variant": "native" if arguments.native else "positions-sdk",
                 "baseline": "Ubuntu 22.04 / glibc 2.35",
                 "dependencies": dependencies, "sha256": files}
@@ -183,7 +184,7 @@ def main():
     options = arguments()
     options.destination.mkdir(parents=True, exist_ok=True)
     suffix = "native" if options.native else "sdk"
-    name = f"mig-{options.version}-linux-{options.architecture}-{suffix}"
+    name = f"motion-input-grid-{options.version}-linux-{options.architecture}-{suffix}"
     project = Path(__file__).resolve().parents[1]
     with tempfile.TemporaryDirectory(prefix="mig-package-", dir=options.destination) as folder:
         root = Path(folder) / name
@@ -199,7 +200,7 @@ def main():
         usage = ("Run `./mig-controller` or `./mig-configurator` from this directory."
                  if options.native else "Set CMAKE_PREFIX_PATH to the extracted `sdk` directory.")
         (root / "README.md").write_text(
-            f"# MIG {options.version} — Linux {options.architecture}\n\n"
+            f"# Motion Input Grid (MIG) {options.version} — Linux {options.architecture}\n\n"
             "[English](README.md) | [Français](README.fr.md)\n\n"
             f"{usage}\n\n"
             "See [release instructions](docs/development/packaging.md) and the "
@@ -207,7 +208,7 @@ def main():
         usage_fr = ("Lancez ./mig-controller ou ./mig-configurator depuis ce dossier."
                     if options.native else "Utilisez le dossier sdk comme CMAKE_PREFIX_PATH.")
         (root / "README.fr.md").write_text(
-            f"# MIG {options.version} — Linux {options.architecture}\n\n"
+            f"# Motion Input Grid (MIG) {options.version} — Linux {options.architecture}\n\n"
             "[English](README.md) | [Français](README.fr.md)\n\n"
             f"{usage_fr}\n\n"
             "[Publication](docs/development/packaging.fr.md) et "

@@ -1,5 +1,5 @@
 {
-    "name": "mig-react-example",
+    "name": "motion-input-grid-react-example",
     "private": true,
     "type": "module",
     "scripts": {
@@ -8,7 +8,7 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@mig-input/browser": "1.0.0",
+        "motion-input-grid": "1.0.0",
         "react": "19.3.0",
         "react-dom": "19.3.0"
     },

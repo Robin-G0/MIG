@@ -7,7 +7,7 @@ import { execFileSync } from "node:child_process";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const version = (await readFile(join(root, "VERSION"), "utf8")).trim();
-const name = `mig-${version}-javascript-examples`;
+const name = `motion-input-grid-${version}-javascript-examples`;
 const destination = join(root, "build/examples", name);
 const releases = join(root, "build/releases");
 try {
@@ -80,7 +80,7 @@ await copyFile(join(root, "examples/common/raised-hands.json"),
 for (const file of ["package.json", "package-lock.json", "LICENSE", "VERSION"]) {
     await copyFile(join(root, file), join(destination, file));
 }
-await writeFile(join(destination, "README.md"), `# MIG JavaScript examples
+await writeFile(join(destination, "README.md"), `# Motion Input Grid (MIG) JavaScript examples
 
 [English](README.md) | [Français](README.fr.md)
 
@@ -99,7 +99,7 @@ are included beside built output. No npm install is needed to run compiled pages
 A modern browser and its camera permission are required. Models, WASM and the
 MediaPipe browser runtime are local; no CDN download or npm install is needed.
 `);
-await writeFile(join(destination, "README.fr.md"), `# Exemples JavaScript MIG
+await writeFile(join(destination, "README.fr.md"), `# Exemples JavaScript Motion Input Grid (MIG)
 
 [English](README.md) | [Français](README.fr.md)
 
@@ -146,7 +146,10 @@ async function inventory(folder) {
     }
 }
 await inventory(destination);
-await writeFile(join(destination, "manifest.json"), JSON.stringify({ sha256: hashes }, null, 2) + "\n");
+await writeFile(join(destination, "manifest.json"), JSON.stringify({
+    project: "Motion Input Grid", package: "motion-input-grid",
+    repository: "https://github.com/Robin-G0/MIG", version, sha256: hashes
+}, null, 2) + "\n");
 const archive = join(releases, `${name}.tar.gz`);
 const python = process.platform === "win32" ? "py" : "python3";
 const pythonOptions = process.platform === "win32" ? ["-3"] : [];

@@ -7,7 +7,7 @@ import shutil
 import zipfile
 
 from package_linux import SYSTEM_LIBRARIES, bundle_libraries, copy_tree, create_archive, verify_architecture
-from release_metadata import release_version
+from release_metadata import PACKAGE_NAME, PROJECT_NAME, REPOSITORY, release_version
 
 PROJECT = Path(__file__).resolve().parents[1]
 
@@ -177,7 +177,8 @@ def write_manifest(root, platform, dependencies):
     hashes = {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
               for path in sorted(root.rglob("*")) if path.is_file()}
     (root / "manifest.json").write_text(json.dumps(
-        {"version": release_version(), "platform": platform, "dependencies": dependencies, "sha256": hashes},
+        {"project": PROJECT_NAME, "package": PACKAGE_NAME, "repository": REPOSITORY,
+         "version": release_version(), "platform": platform, "dependencies": dependencies, "sha256": hashes},
         indent=2) + "\n")
 
 
@@ -202,7 +203,7 @@ def main():
     write_manifest(root, options.platform, inventory)
     output = PROJECT / "build/releases"
     output.mkdir(parents=True, exist_ok=True)
-    name = f"mig-{release_version()}-{options.platform}-examples"
+    name = f"motion-input-grid-{release_version()}-{options.platform}-examples"
     if options.platform == "windows-x64":
         archive = output / f"{name}.zip"
         with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED,

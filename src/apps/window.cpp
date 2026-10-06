@@ -814,7 +814,7 @@ LRESULT CALLBACK editor_procedure(HWND window, UINT message, WPARAM wp, LPARAM l
             ReleaseCapture();
         }
         app.message(error.what());
-        MessageBoxW(window, wide(error.what()).c_str(), L"MIG Input", MB_OK | MB_ICONERROR);
+        MessageBoxW(window, wide(error.what()).c_str(), L"Motion Input Grid", MB_OK | MB_ICONERROR);
     }
     return DefWindowProcW(window, message, wp, lp);
 }

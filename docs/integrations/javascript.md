@@ -2,7 +2,7 @@
 
 [English](javascript.md) | [Français](javascript.fr.md)
 
-MIG's browser integrations share the native recognition engine compiled to WASM.
+Motion Input Grid (MIG) browser integrations share the native recognition engine compiled to WASM.
 Each framework example has two pages: raised hands with immediate feedback, and
 a configurator JSON importer showing each accepted action and input identifier.
 No new configuration schema or framework-specific recognition logic is added.
@@ -42,7 +42,7 @@ npm run build:examples
 npm run package:examples
 ```
 
-`build/releases/mig-1.0.0-javascript-examples.tar.gz` contains source, docs,
+`build/releases/motion-input-grid-1.0.0-javascript-examples.tar.gz` contains source, docs,
 compiled React/Vue pages, Next.js static export, WASM, models, licenses and a
 SHA256 manifest. Extract it and run one script, with no dependency installation:
 
@@ -63,11 +63,11 @@ bindings/javascript/runtime/mig.mjs` there instead of the checkout build path.
 ## Add MIG to your application
 
 Prepare the [npm package](../../bindings/javascript/README.md), install its local
-tarball and run `npx mig-copy-assets public/mig`. Published installation by npm
+tarball and run `npx --package motion-input-grid mig-copy-assets public/mig`. Published installation by npm
 name becomes available only after your manual upload. React uses:
 
 ```jsx
-import { useMIG } from '@mig-input/browser/react';
+import { useMIG } from 'motion-input-grid/react';
 
 function Camera() {
     const mig = useMIG({
@@ -83,7 +83,7 @@ function Camera() {
 }
 ```
 
-Vue's `useMIG` comes from `@mig-input/browser/vue`: destructure `state`, `video`,
+Vue's `useMIG` comes from `motion-input-grid/vue`: destructure `state`, `video`,
 `canvas`, `start`, `stop`, `recalibrate` and `importJSON`, attach refs in the
 template and show `state.status`/`state.actions`. Pass `profileMode: true` for
 an initially empty engine. Import file text with `await importJSON(json)` and
@@ -131,4 +131,4 @@ instead if desired. Browser tests use real WASM and synthetic observations/
 camera streams; they do not establish physical camera or gesture accuracy.
 `npm run test:types` checks the published declarations. Builds were checked with
 React 19.3, Vue 3.5.43 and Next.js 16.3.8; older peer versions require your own
-application verification. Public npm scope/name ownership remains unverified.
+application verification. Check availability of `motion-input-grid` before its first npm publication.

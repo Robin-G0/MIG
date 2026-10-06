@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useMIG } from "@mig-input/browser/react";
+import { useMIG } from "motion-input-grid/react";
 
 export function CameraExample({ profileMode = false,
     handsHref = "./index.html", profileHref = "./profile.html" }) {

@@ -76,7 +76,7 @@ jobs:
             - name: Upload Windows distribution
               uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
               with:
-                  name: mig-windows-hands-${{ matrix.hands }}
+                  name: motion-input-grid-windows-hands-${{ matrix.hands }}
                   path: distribution/windows
 
     portable:
@@ -159,11 +159,11 @@ jobs:
                   cp -r build/native-linux-deps/models configs distribution/linux/
                   cp -r examples bindings docs distribution/
                   cp docs/integrations/overview.md distribution/README.md
-                  tar --exclude='*/__pycache__' --exclude='*.pyc' -czf build/mig-linux.tar.gz -C distribution linux examples bindings docs README.md
+                  tar --exclude='*/__pycache__' --exclude='*.pyc' -czf build/motion-input-grid-linux.tar.gz -C distribution linux examples bindings docs README.md
             - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
               with:
-                  name: mig-linux-native
-                  path: build/mig-linux.tar.gz
+                  name: motion-input-grid-linux-native
+                  path: build/motion-input-grid-linux.tar.gz
 
     web:
         name: WebAssembly browser SDK
@@ -198,7 +198,7 @@ jobs:
                   cp docs/integrations/overview.md distribution/README.md
             - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
               with:
-                  name: mig-web
+                  name: motion-input-grid-web
                   path: distribution
 
     javascript:
@@ -218,7 +218,7 @@ jobs:
                   cache: npm
             - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
               with:
-                  name: mig-web
+                  name: motion-input-grid-web
                   path: build/web-artifact
             - name: Prepare shared WASM assets
               run: |
@@ -241,9 +241,9 @@ jobs:
               run: |
                   mkdir -p build/releases
                   node tools/bootstrap-node.mjs
-                  npm pack --workspace @mig-input/browser --pack-destination build/releases
+                  npm pack --workspace motion-input-grid --pack-destination build/releases
                   npm run package:examples
             - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
               with:
-                  name: mig-javascript
+                  name: motion-input-grid-javascript
                   path: build/releases

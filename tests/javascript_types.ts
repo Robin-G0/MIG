@@ -1,6 +1,6 @@
-import { MIGSession, type MIGAction } from "@mig-input/browser";
-import { useMIG as useReactMIG } from "@mig-input/browser/react";
-import { useMIG as useVueMIG } from "@mig-input/browser/vue";
+import { MIGSession, type MIGAction } from "motion-input-grid";
+import { useMIG as useReactMIG } from "motion-input-grid/react";
+import { useMIG as useVueMIG } from "motion-input-grid/vue";
 
 const onAction = (event: MIGAction): void => { console.log(event.action, event.id); };
 const session = new MIGSession({ assetBase: "/mig/", onAction });

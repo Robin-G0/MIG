@@ -29,9 +29,9 @@ def verify(packages):
             run(sys.executable, str(ROOT / "tools/build-apt-repository.py"),
                 *[str(path.resolve()) for path in packages], "--destination", str(repo),
                 "--signing-key", fingerprint, "--gnupg-home", str(home))
-            run("gpgv", "--keyring", str(repo / "mig-archive-keyring.gpg"),
+            run("gpgv", "--keyring", str(repo / "motion-input-grid-archive-keyring.gpg"),
                 str(repo / "dists/stable/InRelease"))
-            run("gpgv", "--keyring", str(repo / "mig-archive-keyring.gpg"),
+            run("gpgv", "--keyring", str(repo / "motion-input-grid-archive-keyring.gpg"),
                 str(repo / "dists/stable/Release.gpg"), str(repo / "dists/stable/Release"))
             assert "Valid-Until:" in (repo / "dists/stable/Release").read_text()
             for architecture in ("amd64", "arm64"):
@@ -39,9 +39,9 @@ def verify(packages):
                 if index.exists():
                     for record in index.read_text().strip().split("\n\n"):
                         assert f"Architecture: {architecture}" in record
-            sources = folder / "mig.sources"
+            sources = folder / "motion-input-grid.sources"
             sources.write_text(f"Types: deb\nURIs: file:{repo}\nSuites: stable\nComponents: main\n"
-                               f"Signed-By: {repo}/mig-archive-keyring.gpg\n")
+                               f"Signed-By: {repo}/motion-input-grid-archive-keyring.gpg\n")
             for directory in ("lists/partial", "cache/archives/partial", "downloads"):
                 (folder / directory).mkdir(parents=True)
             (folder / "status").touch()
@@ -49,7 +49,7 @@ def verify(packages):
                    "-o", f"Dir::State::lists={folder}/lists", "-o", f"Dir::State::status={folder}/status",
                    "-o", f"Dir::Cache={folder}/cache", "-o", "APT::Sandbox::User=root"]
             run(*apt, "update")
-            subprocess.run([*apt, "download", "libmig-dev"], cwd=folder / "downloads", check=True)
+            subprocess.run([*apt, "download", "motion-input-grid"], cwd=folder / "downloads", check=True)
             downloaded = next((folder / "downloads").glob("*.deb"))
             digest = hashlib.sha256(downloaded.read_bytes()).digest()
             assert any(hashlib.sha256(path.read_bytes()).digest() == digest for path in packages)

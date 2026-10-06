@@ -2,7 +2,7 @@
 
 [English](overview.md) | [Français](overview.fr.md)
 
-MIG sépare observations, reconnaissance calibrée, configuration, estimation
+Motion Input Grid (MIG) sépare observations, reconnaissance calibrée, configuration, estimation
 facultative, sorties et présentation. Tous les hôtes utilisent le même moteur.
 Le [pipeline](lifecycle.fr.md) décrit exécution/propriété, le [format](../reference/configuration.fr.md)
 les données et les [performances](performance.fr.md) les coûts mesurés.
@@ -20,7 +20,7 @@ MIG/
   src/                  Moteur C++, adaptateurs natifs et applications desktop
   bindings/             Interfaces publiques Python, .NET et JavaScript
   integrations/         Add-ons/packages runtime Godot, Unity et Unreal
-  ports/                Modèle du port vcpkg MIG
+  ports/                Modèle du port vcpkg motion-input-grid
   VERSION               Version commune du moteur et des archives
   examples/             Applications clientes et code de démonstration partagé
   tests/                Vérifications moteur, intégrations, interfaces et paquets

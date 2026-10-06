@@ -1,10 +1,10 @@
-# Add-on Godot
+# Add-on Godot Motion Input Grid (MIG)
 
 [English](README.md) | [Français](README.fr.md)
 
 **Preview.** Les exports éditeur/jeu et un fournisseur réel restent à valider. Voir la [matrice de support](../../docs/reference/support.fr.md).
 
-Extrayez le ZIP `mig-<version>-<plateforme>-godot.zip` adapté à la racine d'un
+Extrayez le ZIP `motion-input-grid-<version>-<plateforme>-godot.zip` adapté à la racine d'un
 projet Godot 4.3+. Il contient `addons/mig`, la GDExtension, la bibliothèque C ABI
 et les licences. À l'export, gardez les bibliothèques natives hors du PCK.
 L'add-on utilise les points fournis par votre estimateur ; il n'ouvre pas de caméra.

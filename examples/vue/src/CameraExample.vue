@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useMIG } from "@mig-input/browser/vue";
+import { useMIG } from "motion-input-grid/vue";
 
 const props = defineProps({ profileMode: Boolean });
 const error = ref("");

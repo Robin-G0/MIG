@@ -7,6 +7,9 @@ import subprocess
 import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
+PROJECT_NAME = "Motion Input Grid"
+PACKAGE_NAME = "motion-input-grid"
+REPOSITORY = "https://github.com/Robin-G0/MIG"
 
 
 def build_directory():
@@ -36,7 +39,7 @@ def synchronize_versions(root=ROOT):
     (root / "VERSION").write_text(version + "\n")
     for relative, key in (
         ("vcpkg.json", "version-string"), ("bindings/javascript/package.json", "version"),
-        ("integrations/unity/package.json", "version"), ("ports/mig/vcpkg.json", "version"),
+        ("integrations/unity/package.json", "version"), ("ports/motion-input-grid/vcpkg.json", "version"),
         ("examples/unity/package.json", "version"),
         ("integrations/unreal/MIG.uplugin", "VersionName"),
         ("examples/unreal/MigExample.uplugin", "VersionName"),
@@ -53,7 +56,7 @@ def synchronize_versions(root=ROOT):
     path.write_text(re.sub(r'^version="[^"]+"', f'version="{version}"', path.read_text(), flags=re.M))
     path = root / "examples/unity/package.json"
     package = json.loads(path.read_text())
-    package["dependencies"]["com.mig-input.engine"] = version
+    package["dependencies"]["com.robin-g0.motion-input-grid"] = version
     path.write_text(json.dumps(package, indent=4) + "\n")
     lock = root / "package-lock.json"
     data = json.loads(lock.read_text())
@@ -61,9 +64,9 @@ def synchronize_versions(root=ROOT):
     for workspace in ("examples/react", "examples/vue", "examples/next"):
         path = root / workspace / "package.json"
         package = json.loads(path.read_text())
-        package["dependencies"]["@mig-input/browser"] = version
+        package["dependencies"]["motion-input-grid"] = version
         path.write_text(json.dumps(package, indent=4) + "\n")
-        data["packages"][workspace]["dependencies"]["@mig-input/browser"] = version
+        data["packages"][workspace]["dependencies"]["motion-input-grid"] = version
     lock.write_text(json.dumps(data, indent=2) + "\n")
     major_minor = version.rsplit(".", 1)[0]
     for path in (root / "examples").rglob("*.cmake"):
@@ -87,6 +90,7 @@ def write_package_manifest(folder, ecosystem, platform):
     files = {path.relative_to(folder).as_posix(): file_hash(path)
              for path in sorted(folder.rglob("*")) if path.is_file() and path.name != "manifest.json"}
     (folder / "manifest.json").write_text(json.dumps({
+        "project": PROJECT_NAME, "package": PACKAGE_NAME, "repository": REPOSITORY,
         "version": release_version(), "ecosystem": ecosystem, "platform": platform,
         "sha256": files,
     }, indent=2) + "\n")

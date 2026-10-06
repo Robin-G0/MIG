@@ -22,7 +22,7 @@
 namespace mig::linux_ui {
 Window::Window(std::string runtime, unsigned camera)
     : runtime_(std::move(runtime)), camera_(camera) {
-    setWindowTitle(QString("MIG %1").arg(MIG_APP_NAME));
+    setWindowTitle(QString("Motion Input Grid — %1").arg(MIG_APP_NAME));
     resize(1200, 850);
     canvas_ = new Canvas(this);
     canvas_->failed = [this](const std::string& message) {

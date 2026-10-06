@@ -41,7 +41,7 @@ Get-ChildItem -LiteralPath $source -Recurse -File | Where-Object {
 }
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 $staging = Join-Path $output ('staging-' + [guid]::NewGuid().ToString('N'))
-$name = "mig-$Version-windows-$Architecture-native"
+$name = "motion-input-grid-$Version-windows-$Architecture-native"
 $package = Join-Path $staging $name
 try {
     New-Item -ItemType Directory -Force -Path $package | Out-Null
@@ -52,7 +52,7 @@ try {
     }
     Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') -Destination $package
     @"
-# MIG $Version - Windows $Architecture
+# Motion Input Grid (MIG) $Version - Windows $Architecture
 
 [English](README.md) | [Français](README.fr.md)
 
@@ -64,7 +64,7 @@ See [release instructions](docs/development/packaging.md) and the
 [support matrix](docs/reference/support.md) for prerequisites and limitations.
 "@ | Set-Content -LiteralPath (Join-Path $package 'README.md') -Encoding UTF8
     @"
-# MIG $Version - Windows $Architecture
+# Motion Input Grid (MIG) $Version - Windows $Architecture
 
 [English](README.md) | [Français](README.fr.md)
 
@@ -79,7 +79,14 @@ Utilisez windows/sdk comme CMAKE_PREFIX_PATH pour compiler un consommateur.
         $relative = $_.FullName.Substring($package.Length + 1).Replace('\', '/')
         $hashes[$relative] = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
     }
-    $manifest = [ordered]@{ version = $Version; architecture = $Architecture; sha256 = $hashes }
+    $manifest = [ordered]@{
+        project = 'Motion Input Grid'
+        package = 'motion-input-grid'
+        repository = 'https://github.com/Robin-G0/MIG'
+        version = $Version
+        architecture = $Architecture
+        sha256 = $hashes
+    }
     $manifest | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $package 'manifest.json') -Encoding UTF8
     $archive = Join-Path $output "$name.zip"
     Write-ReleaseArchive $package $archive

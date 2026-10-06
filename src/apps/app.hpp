@@ -28,10 +28,10 @@ namespace mig::app {
 using namespace mig::native;
 #ifdef MIG_CONFIGURATOR
 constexpr bool editor = true;
-constexpr wchar_t title[] = L"MIG Configurator";
+constexpr wchar_t title[] = L"Motion Input Grid — Configurator";
 #else
 constexpr bool editor = false;
-constexpr wchar_t title[] = L"MIG Controller";
+constexpr wchar_t title[] = L"Motion Input Grid — Controller";
 #endif
 enum {
     Start = 101,

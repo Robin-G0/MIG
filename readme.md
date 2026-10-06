@@ -10,6 +10,9 @@ Landmarks → grid scaled to shoulder spacing → movement/sign constraints → 
 The same C++20 recognition engine serves every binding. Desktop keyboard output
 supports Single press, Hold and Repeat and starts disabled.
 
+Motion Input Grid (MIG) uses `motion-input-grid` as its distribution identifier.
+Python keeps `import mig`; C++ keeps `find_package(MIG)` and `MIG::core`.
+
 ## Status and packages
 
 MIG 1.0.0 is the first public release candidate. The core and C ABI contracts are
@@ -20,8 +23,8 @@ exports need separate checks; see the [support matrix](docs/reference/support.md
 | --- | --- | --- |
 | C++ / C ABI | SDK archive, `find_package(MIG)`, vcpkg overlay | Core Stable; vcpkg Beta |
 | Python | Self-contained `motion-input-grid` wheel, `from mig import Tracker` | Beta |
-| Browser / React / Vue / Next.js | `@mig-input/browser`, same C++ engine in WASM | Beta |
-| Debian / APT | `libmig-dev`, signed-repository tooling | Beta |
+| Browser / React / Vue / Next.js | `motion-input-grid`, same C++ engine in WASM | Beta |
+| Debian / APT | `motion-input-grid`, signed-repository tooling | Beta |
 | Godot / Unity / Unreal | Add-on ZIP / UPM tarball / Code Plugin ZIP | Preview |
 
 Native camera applications target Windows/Linux x64. Linux ARM64 packages accept

@@ -105,7 +105,7 @@ def stage_godot(folder, sdk, platform, bridge, godot_cpp):
 def package(args):
     args.destination.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="integration-", dir=build_directory()) as temporary:
-        name = f"mig-{release_version()}-{args.platform}-{args.ecosystem}"
+        name = f"motion-input-grid-{release_version()}-{args.platform}-{args.ecosystem}"
         folder = Path(temporary) / ("package" if args.ecosystem == "unity" else name)
         if args.ecosystem == "unity":
             stage_unity(folder, args.sdk, args.platform)

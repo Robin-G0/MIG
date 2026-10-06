@@ -2,7 +2,7 @@
 
 [English](overview.md) | [Français](overview.fr.md)
 
-MIG separates supplied observations, calibrated recognition, configuration,
+Motion Input Grid (MIG) separates supplied observations, calibrated recognition, configuration,
 optional estimation, output and presentation. The same engine processes a profile
 for every host. See [pipeline](lifecycle.md) for execution and ownership,
 [configuration](../reference/configuration.md) for persisted semantics and
@@ -21,7 +21,7 @@ MIG/
   src/                  C++ engine, native adapters and desktop applications
   bindings/             Python, .NET and JavaScript public interfaces
   integrations/         Runtime Godot, Unity and Unreal packages
-  ports/                MIG vcpkg port template
+  ports/                motion-input-grid vcpkg port template
   VERSION               Shared engine and archive version
   examples/             Consumer applications and shared demonstration code
   tests/                Recognition, integration, UI and packaging checks

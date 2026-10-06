@@ -3,7 +3,7 @@ if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/source.cmake")
 endif()
 include("${CMAKE_CURRENT_LIST_DIR}/source.cmake")
 vcpkg_download_distfile(ARCHIVE URLS "${MIG_SOURCE_URL}"
-    FILENAME "mig-${VERSION}-source.tar.gz" SHA512 "${MIG_SOURCE_SHA512}")
+    FILENAME "motion-input-grid-${VERSION}-source.tar.gz" SHA512 "${MIG_SOURCE_SHA512}")
 vcpkg_extract_source_archive(SOURCE_PATH ARCHIVE "${ARCHIVE}")
 vcpkg_check_features(OUT_FEATURE_OPTIONS OPTIONS
     FEATURES format MIG_BUILD_FORMAT hands MIG_BUILD_HANDS c-api MIG_BUILD_C_API)

@@ -1,4 +1,4 @@
-MIG provides CMake targets:
+Motion Input Grid (MIG) provides CMake targets:
     find_package(MIG CONFIG REQUIRED)
     target_link_libraries(your_target PRIVATE MIG::core MIG::format MIG::hands)
 

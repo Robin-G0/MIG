@@ -15,9 +15,9 @@ les prérequis et le [rapport actuel](../reference/support.fr.md) les limites.
 | Windows ARM64 | Scripts préparés, toolchain et vérification matérielle encore nécessaires |
 | Linux x64 natif | Qt, SDK et dépendances ; glibc 2.35+, X11/XWayland, pilotes système |
 | Linux ARM64 SDK | Positions fournies, hands et ABI ; glibc 2.35+, libstdc++ GCC 11+ |
-| libmig-dev DEB amd64/arm64 | Headers, bibliothèques et CMake ; Ubuntu 22.04+/Debian 12+, C++20 |
+| motion-input-grid DEB amd64/arm64 | Headers, bibliothèques et CMake ; Ubuntu 22.04+/Debian 12+, C++20 |
 | Wheel/sdist Python | ctypes et ABI C incluse, Python 3.10+ ; sources C++/JSON autonomes |
-| npm @mig-input/browser | Session/adaptateurs, WASM, modèles et vision locaux |
+| npm motion-input-grid | Session/adaptateurs, WASM, modèles et vision locaux |
 | Exemples natifs | Sources, docs, binaires C++ et Python figés, SDK partagé |
 | Exemples JavaScript | Sources/pages, modèles, vision et Node portable |
 
@@ -86,7 +86,7 @@ Compilez WASM et préparez les modèles selon le [guide](../integrations/javascr
 node tools/bootstrap-browser.mjs
 node tools/bootstrap-node.mjs
 npm run build:examples
-npm pack --workspace @mig-input/browser --pack-destination build/releases
+npm pack --workspace motion-input-grid --pack-destination build/releases
 npm run package:examples
 ```
 
@@ -97,8 +97,8 @@ Un navigateur moderne reste nécessaire. Le paquet npm ne dépend pas de Node
 pour l'inférence navigateur ; Node sert aux outils et lanceurs.
 
 Installez le tarball dans un projet distinct, copiez ses assets avec
-npx mig-copy-assets public/mig et vérifiez votre caméra. @mig-input/browser
-demande un accès au scope npm `@mig-input` pour la publication.
+`npx --package motion-input-grid mig-copy-assets public/mig` et vérifiez votre caméra.
+Le nom npm `motion-input-grid` doit être disponible au moment de la publication.
 React/Vue sont des peers facultatifs ; Next utilise React, pas un autre moteur.
 
 ## Publications manuelles
@@ -110,7 +110,7 @@ l'installation isolée et lancez python -m twine check avant votre upload manuel
 Ne publiez pas les anciennes wheels none-any. Le [guide de distribution](distribution.fr.md)
 couvre SDK, PyPI, npm, vcpkg, APT signé et packages runtime Godot/Unity/Unreal.
 
-Pour Debian, testez sudo apt install ./libmig-dev_*.deb. L'installation par nom
+Pour Debian, testez sudo apt install ./motion-input-grid_*.deb. L'installation par nom
 exige votre dépôt apt signé ou une acceptation par la distribution. Signature,
 hébergement et soumission restent manuels. Le paquet développeur contient l'ABI
 partagé et les statiques C++, pas de GUI/estimateur. Configurez

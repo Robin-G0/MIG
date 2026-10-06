@@ -39,7 +39,7 @@ npm run build:examples
 npm run package:examples
 ```
 
-`build/releases/mig-1.0.0-javascript-examples.tar.gz` contient sources, docs,
+`build/releases/motion-input-grid-1.0.0-javascript-examples.tar.gz` contient sources, docs,
 pages compilées, export statique Next.js, modèles, WASM, licences et manifeste
 SHA256. Après extraction : `node examples/react/run.mjs` (ou Vue/Next).
 Ouvrez `http://localhost:8820`, fermez avec Ctrl+C avant de lancer un autre exemple.
@@ -55,9 +55,9 @@ bindings/javascript/runtime/mig.mjs` à la place du chemin de compilation du dé
 ## Dans votre projet
 
 Préparez le [package npm](../../bindings/javascript/README.fr.md), installez son
-archive locale puis lancez `npx mig-copy-assets public/mig`. Aucun package n'est
-publié automatiquement. React expose `useMIG` dans `@mig-input/browser/react`,
-Vue dans `@mig-input/browser/vue`. Reliez leurs refs vidéo/canvas, méthodes
+archive locale puis lancez `npx --package motion-input-grid mig-copy-assets public/mig`. Aucun package n'est
+publié automatiquement. React expose `useMIG` dans `motion-input-grid/react`,
+Vue dans `motion-input-grid/vue`. Reliez leurs refs vidéo/canvas, méthodes
 `start`, `stop`, `recalibrate`, `importJSON` et état aux contrôles de l'interface.
 `onAction({ action, id })` peut commander votre navigation ou vos sélections.
 Vue utilise une ref `state` superficielle ; React expose directement ses champs.
@@ -102,4 +102,4 @@ vrai WASM et des observations/flux synthétiques ; ils ne vérifient pas la cam�
 physique ni la précision des gestes humains.
 `npm run test:types` vérifie les déclarations publiques. Versions compilées :
 React 19.3, Vue 3.5.43 et Next.js 16.3.8. Vérifiez votre application si elle
-utilise d'autres versions. La disponibilité du nom/scope npm reste à confirmer.
+utilise d'autres versions. Vérifiez la disponibilité de `motion-input-grid` avant sa première publication npm.

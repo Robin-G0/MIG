@@ -1,8 +1,13 @@
 {
-  "name": "com.mig-input.engine",
+  "name": "com.robin-g0.motion-input-grid",
   "version": "1.0.0",
   "displayName": "Motion Input Grid",
-  "description": "MIG C ABI recognition for caller-supplied landmark packets.",
+  "description": "Motion Input Grid (MIG) C ABI recognition for caller-supplied landmark packets.",
   "unity": "2021.3",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Robin-G0/MIG.git",
+    "directory": "integrations/unity"
+  }
 }

@@ -22,7 +22,7 @@ def verify():
         files = ["cmake/MIGVersion.cmake", "VERSION", "vcpkg.json", "package-lock.json",
                  "bindings/python/pyproject.toml",
                  "bindings/javascript/package.json", "integrations/unity/package.json",
-                 "ports/mig/vcpkg.json", "examples/unity/package.json",
+                 "ports/motion-input-grid/vcpkg.json", "examples/unity/package.json",
                  "integrations/unreal/MIG.uplugin", "examples/unreal/MigExample.uplugin",
                  "integrations/godot/addons/mig/plugin.cfg", "examples/common/sdk.cmake",
                  "examples/sdk-consumer/CMakeLists.txt", "examples/native-consumer/CMakeLists.txt",
@@ -43,7 +43,7 @@ def verify():
                                          cwd=root, text=True)
         assert "MIG 2.3.4 (Git tag v2.3.4)" in output
         assert synchronize_versions(root) == "2.3.4"
-        assert json.loads((root / "ports/mig/vcpkg.json").read_text())["version"] == "2.3.4"
+        assert json.loads((root / "ports/motion-input-grid/vcpkg.json").read_text())["version"] == "2.3.4"
         assert json.loads((root / "bindings/javascript/package.json").read_text())["version"] == "2.3.4"
         assert 'version = "2.3.4"' in (root / "bindings/python/pyproject.toml").read_text()
         assert 'version="2.3.4"' in (root / "integrations/godot/addons/mig/plugin.cfg").read_text()

@@ -35,7 +35,7 @@ jobs:
                   python3 tools/check-release-run.py "$CANDIDATE_RUN_ID"
             - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
               with:
-                  name: mig-release-candidates
+                  name: motion-input-grid-release-candidates
                   run-id: ${{ inputs.candidate_run_id }}
                   github-token: ${{ github.token }}
                   path: candidate
@@ -48,4 +48,5 @@ jobs:
               run: |
                   python3 tools/release-checksums.py candidate --check
                   npm install --global npm@11.11.0
-                  npm publish candidate/mig-input-browser-*.tgz --access public --provenance
+                  package_version="$(python3 -c 'import json; print(json.load(open("candidate/release-manifest.json"))["version"])')"
+                  npm publish "candidate/motion-input-grid-${package_version}.tgz" --access public --provenance

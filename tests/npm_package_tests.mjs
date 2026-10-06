@@ -15,10 +15,10 @@ try {
     } else {
         execFileSync("npm", args, { cwd: folder, stdio: "inherit" });
     }
-    const installed = path.join(folder, "node_modules/@mig-input/browser");
+    const installed = path.join(folder, "node_modules/motion-input-grid");
     await writeFile(path.join(folder, "consumer.mjs"),
         'import assert from "node:assert/strict";\n'
-        + 'import { MIGSession } from "@mig-input/browser";\n'
+        + 'import { MIGSession } from "motion-input-grid";\n'
         + 'assert.equal(typeof MIGSession, "function");\n');
     execFileSync(process.execPath, [path.join(folder, "consumer.mjs")], { cwd: folder, stdio: "inherit" });
     execFileSync(process.execPath, [path.join(installed, "src/validate-runtime.mjs")], { stdio: "inherit" });

@@ -1,8 +1,8 @@
-# MIG browser package
+# Motion Input Grid (MIG) browser package
 
 [English](README.md) | [Français](README.fr.md)
 
-`@mig-input/browser` provides a browser camera session, React hook and Vue
+`motion-input-grid` provides a browser camera session, React hook and Vue
 composable backed by the existing C++/WASM engine. React and Vue are optional
 peer dependencies; Next.js uses the React adapter.
 
@@ -11,15 +11,15 @@ Build the WASM engine first, then run from the full checkout:
 ```sh
 npm ci
 npm run prepare:javascript
-npm pack --workspace @mig-input/browser --pack-destination build/releases
+npm pack --workspace motion-input-grid --pack-destination build/releases
 ```
 
 The tarball includes WASM, model files, runtime modules, declarations and licenses.
 Install that local tarball into your application, then copy its runtime assets:
 
 ```sh
-npm install /path/to/mig-input-browser-1.0.0.tgz
-npx mig-copy-assets public/mig
+npm install /path/to/motion-input-grid-1.0.0.tgz
+npx --package motion-input-grid mig-copy-assets public/mig
 ```
 
 Pass the public asset URL to `useMIG` or `MIGSession`. The default is `/mig/`;
@@ -28,7 +28,7 @@ files together. The camera opens only after `start(video, canvas)` or the exampl
 Start button. Serve over localhost or HTTPS.
 
 ```js
-import { MIGSession } from '@mig-input/browser';
+import { MIGSession } from 'motion-input-grid';
 
 const session = new MIGSession({
     assetBase: new URL('/mig/', location.href).href,
@@ -52,9 +52,9 @@ system)` for imperative animation/XYZ feedback without reactive updates; system
 0 is normalized image XYZ, 1 world metres, 2 world metres with Y up. Missing
 coordinates return `null`. Keep callbacks short to avoid delaying inference.
 
-React exports `useMIG` from `@mig-input/browser/react`. Attach its `video` and
+React exports `useMIG` from `motion-input-grid/react`. Attach its `video` and
 `canvas` refs and bind `start`, `stop`, `recalibrate`, `importJSON`. Vue exports the
-same operations from `@mig-input/browser/vue` and a shallow `state` ref. React
+same operations from `motion-input-grid/vue` and a shallow `state` ref. React
 options `assetBase`/`profileMode` recreate the session when changed; Vue options
 are fixed for that component's lifetime. Both dispose on unmount/page exit.
 `onAction` receives `{ action, id }`; use it for your application's commands.
@@ -67,5 +67,4 @@ Start loads local files; no CDN request or consumer dependency installation is n
 
 See the [React](../../examples/react/README.md), [Vue](../../examples/vue/README.md)
 and [Next.js](../../examples/next/README.md) examples and the
-[JavaScript bootstrap guide](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.md). Publication, npm scope
-ownership, package metadata and real-camera verification remain manual.
+[JavaScript bootstrap guide](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.md). Publish `motion-input-grid` manually after testing it with your camera.

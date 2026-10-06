@@ -9,7 +9,7 @@ import tempfile
 import zipfile
 
 from package_linux import copy_tree, verify_architecture
-from release_metadata import build_directory, release_version
+from release_metadata import PACKAGE_NAME, PROJECT_NAME, REPOSITORY, build_directory, release_version
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -35,12 +35,14 @@ def assemble(folder, technology, sdk):
         copy_tree(sdk, folder / "sdk")
     hashes = {file.relative_to(folder).as_posix(): hashlib.sha256(file.read_bytes()).hexdigest()
               for file in sorted(folder.rglob("*")) if file.is_file()}
-    (folder / "manifest.json").write_text(json.dumps({"sha256": hashes}, indent=2) + "\n")
+    (folder / "manifest.json").write_text(json.dumps(
+        {"project": PROJECT_NAME, "package": PACKAGE_NAME, "repository": REPOSITORY,
+         "version": release_version(), "sha256": hashes}, indent=2) + "\n")
 
 
 def package(technology, platform, sdk):
     releases = ROOT / "build/releases"
-    name = f"mig-{release_version()}-{platform}-{technology}-editor-sources"
+    name = f"motion-input-grid-{release_version()}-{platform}-{technology}-editor-sources"
     releases.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="mig-editor-", dir=build_directory()) as temporary:
         folder = Path(temporary) / name

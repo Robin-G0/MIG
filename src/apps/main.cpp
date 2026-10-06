@@ -203,7 +203,7 @@ int run_application(int argc, wchar_t** argv) {
         }
         if (!diagnostic) {
             const auto text = wide(e.what());
-            MessageBoxW(nullptr, text.c_str(), L"MIG - Startup error", MB_OK | MB_ICONERROR);
+            MessageBoxW(nullptr, text.c_str(), L"Motion Input Grid - Startup error", MB_OK | MB_ICONERROR);
         }
         return 1;
     }

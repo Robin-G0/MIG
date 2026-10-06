@@ -70,10 +70,10 @@ def check_zip(path):
 
 def main():
     directory = Path(sys.argv[1] if len(sys.argv) > 1 else "build/releases")
-    for path in sorted(directory.glob("mig-*.tar.gz")):
+    for path in sorted(directory.glob("motion-input-grid-*.tar.gz")):
         check_tar(path)
         print(f"Verified {path.name}")
-    for path in sorted(directory.glob("mig-*.zip")):
+    for path in sorted(directory.glob("motion-input-grid-*.zip")):
         check_zip(path)
         print(f"Verified {path.name}")
 

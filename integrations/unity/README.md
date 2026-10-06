@@ -1,14 +1,16 @@
-# Unity UPM package
+# Motion Input Grid (MIG) Unity UPM package
 
 [English](README.md) | [Français](README.fr.md)
 
 **Preview.** Editor/player export and live-provider validation remain required. See the [support matrix](../../docs/reference/support.md).
 
 Use Unity 2021.3+ on Windows/Linux x64. In Package Manager choose **Add package
-from tarball** and select the matching `mig-<version>-<platform>-unity.tgz`.
+from tarball** and select the matching `motion-input-grid-<version>-<platform>-unity.tgz`.
 The package contains the existing `MotionInputGrid.MigTracker` .NET bridge in
 the `MIG.Runtime` assembly, a native plugin restricted to its matching platform,
 and Apache/MIT licenses. Windows requires a matching VC++ runtime installation.
+
+The UPM identifier is `com.robin-g0.motion-input-grid`.
 
 ```csharp
 using MotionInputGrid;

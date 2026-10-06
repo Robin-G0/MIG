@@ -5,7 +5,7 @@ build-backend = "scikit_build_core.build"
 [project]
 name = "motion-input-grid"
 version = "1.0.0"
-description = "Python access to the native MIG recognition engine"
+description = "Python access to the native Motion Input Grid (MIG) recognition engine"
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE"]

@@ -2,12 +2,37 @@
 
 [English](distribution.md) | [Français](distribution.fr.md)
 
-MIG 1.0.0 distribue un moteur de reconnaissance unique via le SDK C++, son ABI C
+Motion Input Grid (MIG) 1.0.0 distribue un moteur de reconnaissance unique via le SDK C++, son ABI C
 et Emscripten. Python utilise ctypes, Unity le pont .NET partagé, Godot la
 GDExtension existante et Unreal un pont vers l'ABI C. Les intégrations ne recopient
 pas la reconnaissance. Les packages runtime utilisent les points anatomiques
 fournis par votre estimateur. Les applications caméra et leurs modèles restent
 dans des archives séparées.
+
+## Noms du projet et des packages
+
+Motion Input Grid (MIG) est le nom du projet. PyPI, npm, Debian et le port vcpkg
+utilisent `motion-input-grid`. Les archives SDK, natives et d’intégration suivent
+`motion-input-grid-<version>-<plateforme>-<type>`. Le tarball npm se nomme
+`motion-input-grid-<version>.tgz` et les packages Debian
+`motion-input-grid_<version>_<architecture>.deb`. Les wheels et sdists Python
+emploient le nom de fichier normalisé `motion_input_grid`. Le package Unity UPM
+s'appelle `com.robin-g0.motion-input-grid`, selon sa convention de domaine inversé.
+Le module Python reste `mig`, les exports CMake restent `MIG::*` et les noms
+techniques des bibliothèques, API et binaires d'exemples sont conservés.
+
+Après publication dans les registres correspondants :
+
+```sh
+python -m pip install motion-input-grid
+npm install motion-input-grid
+sudo apt install motion-input-grid
+vcpkg install motion-input-grid --overlay-ports=/chemin/motion-input-grid-vcpkg-overlay
+```
+
+APT nécessite le dépôt signé décrit ci-dessous. vcpkg utilise l'overlay de release
+généré tant qu'une soumission au registre n'est pas acceptée. La publication
+reste séparée de la préparation de ces artefacts.
 
 ## Version et compilation de publication
 
@@ -40,7 +65,9 @@ python tools/release-manifest.py build/release-candidates/1.0.0 --tag v1.0.0
 python tools/release-checksums.py build/release-candidates/1.0.0 --check
 ```
 
-Le manifeste indique les noms, tailles et SHA256. C'est un inventaire, pas une
+Le manifeste indique le nom du projet, l'identifiant de distribution, le dépôt,
+les noms des artefacts, leurs tailles et SHA256. Les anciens identifiants de
+packages sont refusés. C'est un inventaire, pas une
 signature ni une preuve de validation matérielle ou dans les éditeurs. Conservez
 le rapport de validation avec les notes de publication.
 
@@ -52,7 +79,7 @@ Installez-le avec `cmake --install`, puis archivez cette installation :
 ```sh
 python tools/package-sdk.py --sdk build/release-sdk-x64-install \
     --dependencies build/native-linux-deps --platform linux-x64
-python tests/sdk_package_tests.py build/releases/mig-1.0.0-linux-x64-sdk.tar.gz
+python tests/sdk_package_tests.py build/releases/motion-input-grid-1.0.0-linux-x64-sdk.tar.gz
 ```
 
 L'archive conserve en-têtes, bibliothèques, exports CMake relocalisables et licences.
@@ -62,7 +89,7 @@ un toolset/runtime MSVC compatible ; Linux cible glibc 2.35+ et GCC 11+.
 Les tests SDK ARM64 utilisent QEMU ; mesurez les performances sur du matériel ARM64.
 
 `tools/package-source.py` crée les sources du moteur et l'overlay de
-[ports/mig](../../ports/mig/README.fr.md). Il fixe le SHA512 réel et la future URL
+[ports/motion-input-grid](../../ports/motion-input-grid/README.fr.md). Il fixe le SHA512 réel et la future URL
 GitHub Release. Le test utilise le cache avant l'upload ; testez l'URL publique
 sans cache après votre upload manuel. Le `vcpkg.json` racine reste le manifeste
 des dépendances, pas le port de distribution. Une proposition à vcpkg ou une
@@ -96,7 +123,7 @@ La [configuration scikit-build-core](https://scikit-build-core.readthedocs.io/en
 décrit le tag d'API `py3` utilisé avec ctypes.
 
 La [préparation JavaScript](../integrations/javascript.fr.md) existante compile le moteur WASM et
-prépare les assets navigateur. Lancez `npm pack --workspace @mig-input/browser`,
+prépare les assets navigateur. Lancez `npm pack --workspace motion-input-grid`,
 puis `node tests/npm_package_tests.mjs <archive.tgz>`. Le test installe l'archive
 dans un projet séparé, importe l'API publique, copie les assets et exécute la
 reconnaissance WASM native. React/Vue restent des dépendances peer optionnelles ;
@@ -107,7 +134,7 @@ registres, puis effectuez l'upload PyPI/npm manuellement après validation.
 
 ## Debian et hébergement APT signé
 
-La configuration CPack existante produit `libmig-dev` pour amd64 et arm64. Elle
+La configuration CPack existante produit `motion-input-grid` pour amd64 et arm64. Elle
 contient SDK C++ et ABI C partagée, sans application ni estimateur. Activez
 `MIG_PACKAGE_SDK=ON`, utilisez `/usr` comme préfixe et désactivez applications
 et runtime natif. Renseignez votre identité réelle dans `MIG_PACKAGE_MAINTAINER`
@@ -118,10 +145,10 @@ sa sauvegarde hors du checkout. Créez/vérifiez cette clé manuellement, puis u
 son empreinte complète avec un dossier GPG existant :
 
 ```sh
-python tools/build-apt-repository.py build/releases/libmig-dev_1.0.0_amd64.deb \
-    build/releases/libmig-dev_1.0.0_arm64.deb --destination build/apt-candidate \
+python tools/build-apt-repository.py build/releases/motion-input-grid_1.0.0_amd64.deb \
+    build/releases/motion-input-grid_1.0.0_arm64.deb --destination build/apt-candidate \
     --signing-key EMPREINTE_COMPLÈTE --gnupg-home /dossier/gpg-sécurisé
-python tests/debian_package_tests.py build/releases/libmig-dev_1.0.0_*.deb
+python tests/debian_package_tests.py build/releases/motion-input-grid_1.0.0_*.deb
 ```
 
 Le générateur crée les index propres à chaque architecture, leurs versions
@@ -132,15 +159,15 @@ les deux signatures, actualise des index APT isolés et télécharge le vrai pac
 
 Servez `pool`, `dists` et le trousseau public par HTTPS. Vérifiez l'empreinte par
 un canal fiable et installez le trousseau public à
-`/usr/share/keyrings/mig-archive-keyring.gpg`. Exemple Deb822 dans
-`/etc/apt/sources.list.d/mig.sources` :
+`/usr/share/keyrings/motion-input-grid-archive-keyring.gpg`. Exemple Deb822 dans
+`/etc/apt/sources.list.d/motion-input-grid.sources` :
 
 ```text
 Types: deb
-URIs: https://VOTRE_HÔTE/mig/
+URIs: https://VOTRE_HÔTE/motion-input-grid/
 Suites: stable
 Components: main
-Signed-By: /usr/share/keyrings/mig-archive-keyring.gpg
+Signed-By: /usr/share/keyrings/motion-input-grid-archive-keyring.gpg
 ```
 
 Remplacez l'hôte : aucun dépôt APT hébergé n'est fourni. Actualisez et signez avant
@@ -192,7 +219,7 @@ Le [modèle npm](../../.github/workflow-templates/publish-npm.yml.disabled) est 
 désactivé. Configurer le Trusted Publisher du package pour `Robin-G0/MIG`,
 `publish-npm.yml` et l'environnement protégé `npm` avant de déplacer ce modèle.
 Il utilise un runner GitHub, Node 24, npm 11.11 et OIDC, puis publie le tarball
-validé avec provenance. Vérifier les droits sur `@mig-input/browser` et effectuer
+validé avec provenance. Vérifier les droits sur `motion-input-grid` et effectuer
 manuellement l'enregistrement initial si nécessaire. Les [règles npm](https://docs.npmjs.com/trusted-publishers/)
 décrivent les prérequis et limites de première publication. Aucune publication
 ni configuration du registre n'a été effectuée.

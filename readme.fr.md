@@ -11,6 +11,9 @@ Landmarks → grille proportionnelle aux épaules → contraintes de mouvement/s
 Toutes les intégrations utilisent le même moteur C++20. La sortie clavier du
 contrôleur propose Single press, Hold et Repeat et reste désactivée au démarrage.
 
+Motion Input Grid (MIG) utilise `motion-input-grid` comme identifiant de distribution.
+Python conserve `import mig` ; C++ conserve `find_package(MIG)` et `MIG::core`.
+
 ## Statut et packages
 
 MIG 1.0.0 est le candidat de première publication publique. Les contrats du moteur
@@ -22,8 +25,8 @@ séparées : voir la [matrice de support](docs/reference/support.fr.md).
 | --- | --- | --- |
 | C++ / C ABI | Archive SDK, `find_package(MIG)`, overlay vcpkg | Moteur Stable ; vcpkg Beta |
 | Python | Wheel autonome `motion-input-grid`, `from mig import Tracker` | Beta |
-| Navigateur / React / Vue / Next.js | `@mig-input/browser`, moteur C++ dans WASM | Beta |
-| Debian / APT | `libmig-dev`, outils de dépôt signé | Beta |
+| Navigateur / React / Vue / Next.js | `motion-input-grid`, moteur C++ dans WASM | Beta |
+| Debian / APT | `motion-input-grid`, outils de dépôt signé | Beta |
 | Godot / Unity / Unreal | Add-on ZIP / tarball UPM / Code Plugin ZIP | Preview |
 
 Les applications caméra natives ciblent Windows/Linux x64. Les packages Linux

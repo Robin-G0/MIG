@@ -1,10 +1,10 @@
-# Godot add-on
+# Motion Input Grid (MIG) Godot add-on
 
 [English](README.md) | [Français](README.fr.md)
 
 **Preview.** Editor/player export and live-provider validation remain required. See the [support matrix](../../docs/reference/support.md).
 
-Extract the matching `mig-<version>-<platform>-godot.zip` at the root of a Godot
+Extract the matching `motion-input-grid-<version>-<platform>-godot.zip` at the root of a Godot
 4.3+ project. The archive provides `addons/mig`, its GDExtension, the C ABI library
 and licenses. Keep native libraries outside the PCK when exporting. The add-on
 accepts landmarks from your observation provider; it does not open a camera.

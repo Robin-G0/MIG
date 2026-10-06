@@ -16,7 +16,7 @@ Linux release preparation calls `tools/build-examples.sh`, which builds, tests a
 packages both variants of each C++ demo. For packaging only, use
 `python3 tools/package-examples.py --platform linux-x64`.
 
-Outputs are separate `mig-1.0.0-*-examples` archives in `build/releases`, with
+Outputs are separate `motion-input-grid-1.0.0-*-examples` archives in `build/releases`, with
 file manifests and SHA256 sidecars. See [standalone instructions](../../examples/standalone.md)
 for bundled execution, source dependencies, installed-library fallback and limits.
 
@@ -30,7 +30,7 @@ Build, test and inspect the 1.0.0 artifacts before uploading them. These scripts
 | Windows ARM64 native ZIP | Same contents, when built on an ARM64 toolchain | Windows ARM64; ARM64 VC++ runtime; hardware verification required |
 | Linux x64 native TAR.GZ | Qt applications, SDK, bundled shared dependencies/models | glibc 2.35+, X11/XWayland, host graphics drivers |
 | Linux ARM64 SDK TAR.GZ | Positions SDK, hands algorithms, C ABI, examples | glibc 2.35+, libstdc++ from GCC 11+; host supplies landmarks |
-| `libmig-dev` amd64/arm64 DEB | Positions SDK headers/libraries and CMake exports | Ubuntu 22.04+/Debian 12+, C++20 compiler, CMake 3.25+ for consumers |
+| `motion-input-grid` amd64/arm64 DEB | Positions SDK headers/libraries and CMake exports | Ubuntu 22.04+/Debian 12+, C++20 compiler, CMake 3.25+ for consumers |
 | Python wheel/sdist | ctypes plus bundled C ABI; canonical source archive | Python 3.10+; matching platform wheel, or C++20/CMake for source builds |
 
 The pinned [MediaPipe 0.10.35 files](https://pypi.org/project/mediapipe/0.10.35/#files)
@@ -100,10 +100,10 @@ hand accuracy, mirroring and held/repeated keyboard release on real hardware.
 Review the [support and validation limits](../reference/support.md) and remaining limits.
 
 For npm, first follow [JavaScript preparation](../integrations/javascript.md), then run
-`npm pack --workspace @mig-input/browser --pack-destination build/releases`.
+`npm pack --workspace motion-input-grid --pack-destination build/releases`.
 Inspect the tarball, install it into a separate application, copy assets with
-`npx mig-copy-assets public/mig`, and test your camera before uploading manually.
-Publishing `@mig-input/browser` requires access to the `@mig-input` npm scope. React/Vue are optional peers; Next.js uses React. The package includes
+`npx --package motion-input-grid mig-copy-assets public/mig`, and test your camera before uploading manually.
+Publishing `motion-input-grid` requires ownership of that npm package name. React/Vue are optional peers; Next.js uses React. The package includes
 WASM and model files. `npm run package:examples` creates the separate portable
 JavaScript examples archive, SHA256 sidecar and file manifest.
 
@@ -114,8 +114,8 @@ auditwheel, install/test the generated wheel in isolation, and run
 See [ecosystem distribution](distribution.md) for SDK, PyPI, npm, vcpkg, signed
 APT hosting and runtime Godot/Unity/Unreal packages.
 
-For Debian/Ubuntu, test local installation with `sudo apt install ./libmig-dev_*.deb`.
-A `.deb` can be installed locally; `apt install libmig-dev` by name requires your
+For Debian/Ubuntu, test local installation with `sudo apt install ./motion-input-grid_*.deb`.
+A `.deb` can be installed locally; `apt install motion-input-grid` by name requires your
 own signed apt repository or distribution acceptance. Repository signing, hosting,
 distribution submission and uploads remain manual. The development package includes
 the ABI-1 shared library and static C++ libraries; no GUI or estimator is installed.

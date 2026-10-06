@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import re
 
-from release_metadata import release_version, file_hash
+from release_metadata import release_version, file_hash, PROJECT_NAME, PACKAGE_NAME, REPOSITORY
 
 
 def generate(directory, tag=None):
@@ -14,15 +14,18 @@ def generate(directory, tag=None):
         ignored = file.name in ("SHA256SUMS", "release-manifest.json") or file.suffix == ".sha256"
         if not file.is_file() or ignored:
             continue
+        if not file.name.startswith((PACKAGE_NAME + "-", PACKAGE_NAME + "_", "motion_input_grid-")):
+            raise ValueError(f"Unexpected package identifier: {file.name}")
         if not re.search(rf"(?<![0-9]){re.escape(version)}(?![0-9]|\.[0-9])", file.name):
             raise ValueError(f"Unversioned or stale artifact in candidate directory: {file.name}")
         entries.append({"name": file.name, "bytes": file.stat().st_size, "sha256": file_hash(file)})
     if not entries:
         raise ValueError("No release artifacts found")
     manifest = {
+        "project": PROJECT_NAME, "package": PACKAGE_NAME, "repository": REPOSITORY,
         "version": version, "tag": tag or f"v{version}", "artifacts": entries,
         "publication": "manual",
-        "support_matrix": f"https://github.com/Robin-G0/MIG/blob/v{version}/docs/reference/support.md",
+        "support_matrix": f"{REPOSITORY}/blob/v{version}/docs/reference/support.md",
     }
     (directory / "release-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     checksums = [(entry["name"], entry["sha256"]) for entry in entries]

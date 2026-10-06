@@ -1,4 +1,4 @@
-# Motion Input Grid
+# Motion Input Grid (MIG) Python package
 
 [English](README.md) | [Français](README.fr.md)
 

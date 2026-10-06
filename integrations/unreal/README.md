@@ -1,10 +1,10 @@
-# Unreal runtime plugin
+# Motion Input Grid (MIG) Unreal runtime plugin
 
 [English](README.md) | [Français](README.fr.md)
 
 **Preview.** Editor/player export and live-provider validation remain required. See the [support matrix](../../docs/reference/support.md).
 
-Extract the matching `mig-<version>-<platform>-unreal.zip` into your project's
+Extract the matching `motion-input-grid-<version>-<platform>-unreal.zip` into your project's
 `Plugins` directory. Enable **Motion Input Grid**, rebuild your C++ project, then
 add `UMIGTrackerComponent` to an actor. The plugin contains runtime wrapper
 sources, the C ABI header, its platform library/import library and licenses.

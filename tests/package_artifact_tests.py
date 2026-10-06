@@ -8,6 +8,7 @@ import tarfile
 import zipfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from distribution_policy import private_file
+from release_metadata import PACKAGE_NAME, PROJECT_NAME, REPOSITORY
 
 
 def archive_files(path):
@@ -25,6 +26,9 @@ def check_manifest(files):
         raise AssertionError("Missing package manifest")
     for name in manifests:
         manifest = json.loads(files[name])
+        assert manifest["project"] == PROJECT_NAME, name
+        assert manifest["package"] == PACKAGE_NAME, name
+        assert manifest["repository"] == REPOSITORY, name
         prefix = name.removesuffix("manifest.json")
         for relative, digest in manifest["sha256"].items():
             assert hashlib.sha256(files[prefix + relative]).hexdigest() == digest, relative
@@ -33,6 +37,9 @@ def check_manifest(files):
 def verify(path):
     files = archive_files(path)
     names = list(files)
+    assert path.name.startswith(("motion-input-grid-", "motion_input_grid-")), path
+    npm_package = ("package/package.json" in files and
+                   json.loads(files["package/package.json"])["name"] == "motion-input-grid")
     assert not any(".." in Path(name).parts or name.startswith("/") for name in names)
     assert not any("node_modules" in Path(name).parts or ".git" in Path(name).parts for name in names)
     assert not any(private_file(part) for name in names for part in Path(name).parts), path
@@ -40,17 +47,20 @@ def verify(path):
     if "vcpkg-overlay" in path.name:
         source = next(data.decode() for name, data in files.items() if name.endswith("source.cmake"))
         assert re.search(r'MIG_SOURCE_SHA512 "[0-9a-f]{128}"', source)
+        port = next(data for name, data in files.items() if name.endswith("motion-input-grid/vcpkg.json"))
+        assert json.loads(port)["name"] == PACKAGE_NAME
     elif path.name.startswith("motion_input_grid-") and path.name.endswith(".tar.gz"):
         assert any(name.endswith("_engine/vendor/include/nlohmann/json.hpp") for name in names)
         assert any(name.endswith("_engine/src/c-api/api.cpp") for name in names)
         assert any(name.endswith("native/CMakeLists.txt") for name in names)
-    elif "-source.tar.gz" not in path.name and path.suffix != ".whl" and "mig-input-browser" not in path.name:
+    elif "-source.tar.gz" not in path.name and path.suffix != ".whl" and not npm_package:
         check_manifest(files)
     if any(marker in path.name for marker in ("-unity.", "-unreal.", "-godot.")):
         assert any(name.endswith("nlohmann-LICENSE") for name in names)
         assert not any("mediapipe" in name.lower() or "/models/" in name or name.endswith(".a") for name in names)
         assert not any("mig-core.lib" in name or "mig-format.lib" in name for name in names)
         if "-unity." in path.name:
+            assert json.loads(files["package/package.json"])["name"] == "com.robin-g0.motion-input-grid"
             metadata = next(data.decode() for name, data in files.items()
                             if name.endswith((".dll.meta", ".so.meta")))
             metadata = metadata.replace("\r\n", "\n")

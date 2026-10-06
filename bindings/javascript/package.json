@@ -1,5 +1,5 @@
 {
-    "name": "@mig-input/browser",
+    "name": "motion-input-grid",
     "version": "1.0.0",
     "description": "Motion Input Grid browser sessions and React/Vue adapters",
     "type": "module",

@@ -12,7 +12,7 @@ from release_metadata import build_directory, ROOT, release_version, write_packa
 def package(args):
     args.destination.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="sdk-", dir=build_directory()) as temporary:
-        name = f"mig-{release_version()}-{args.platform}-sdk"
+        name = f"motion-input-grid-{release_version()}-{args.platform}-sdk"
         folder = Path(temporary) / name
         sdk = folder / "sdk"
         for directory in ("include", "lib", "share"):

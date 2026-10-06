@@ -1,8 +1,8 @@
-# Package navigateur MIG
+# Package navigateur Motion Input Grid (MIG)
 
 [English](README.md) | [Français](README.fr.md)
 
-`@mig-input/browser` fournit une session caméra, un hook React et un composable
+`motion-input-grid` fournit une session caméra, un hook React et un composable
 Vue utilisant le moteur C++/WASM. Next.js réutilise React.
 
 Après compilation WASM, depuis le dépôt complet :
@@ -10,14 +10,14 @@ Après compilation WASM, depuis le dépôt complet :
 ```sh
 npm ci
 npm run prepare:javascript
-npm pack --workspace @mig-input/browser --pack-destination build/releases
+npm pack --workspace motion-input-grid --pack-destination build/releases
 ```
 
 Dans votre application, installez l'archive locale puis copiez les ressources :
 
 ```sh
-npm install /chemin/mig-input-browser-1.0.0.tgz
-npx mig-copy-assets public/mig
+npm install /chemin/motion-input-grid-1.0.0.tgz
+npx --package motion-input-grid mig-copy-assets public/mig
 ```
 
 Le package contient WASM, modèles, modules, types et licences. `assetBase` indique
@@ -49,8 +49,7 @@ clavier système n'est injecté ; les callbacks sont des événements de votre a
 
 Consultez les exemples [React](../../examples/react/README.fr.md),
 [Vue](../../examples/vue/README.fr.md), [Next.js](../../examples/next/README.fr.md)
-et le [guide de démarrage](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.fr.md). Scope npm, métadonnées,
-publication et vérification avec une vraie caméra restent à votre charge.
+et le [guide de démarrage](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.fr.md). Publiez `motion-input-grid` manuellement après un test avec votre caméra.
 
 Le paquet inclut `runtime/vision` : MediaPipe JS/WASM est copié avec les modèles
 par mig-copy-assets. Start charge ces fichiers locaux, sans CDN.

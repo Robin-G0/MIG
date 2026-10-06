@@ -17,13 +17,13 @@ def verify(overlay, source, executable):
         folder = Path(temporary)
         with tarfile.open(overlay) as archive:
             archive.extractall(folder, filter="data")
-        (folder / "vcpkg.json").write_text('{"dependencies":[{"name":"mig","features":["c-api"]}]}\n')
+        (folder / "vcpkg.json").write_text('{"dependencies":[{"name":"motion-input-grid","features":["c-api"]}]}\n')
         downloads = folder / "downloads"
         downloads.mkdir()
         shutil.copy2(source, downloads / source.name)
         triplet = "x64-windows" if os.name == "nt" else "x64-linux-dynamic"
         command = [str(executable.resolve()), "install", f"--x-manifest-root={folder}",
-                   f"--triplet={triplet}", f"--overlay-ports={folder}/mig-vcpkg-overlay",
+                   f"--triplet={triplet}", f"--overlay-ports={folder}/motion-input-grid-vcpkg-overlay",
                    f"--x-install-root={folder}/installed", f"--x-buildtrees-root={folder}/buildtrees",
                    f"--x-packages-root={folder}/packages", f"--downloads-root={downloads}", "--binarysource=clear"]
         subprocess.run(command, cwd=folder, check=True)
