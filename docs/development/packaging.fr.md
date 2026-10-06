@@ -9,6 +9,21 @@ les prérequis et le [rapport actuel](../reference/support.fr.md) les limites.
 
 ## Variantes disponibles ou préparées
 
+`Prepare release candidates` reconstruit les paquets et lance leur validation à
+chaque exécution. Les caches conservent les archives et modèles épinglés ; les
+bootstraps vérifient toujours leurs checksums. Linux utilise ccache pour les
+résultats de compilation, y compris Godot, avec une limite de 500 Mo. Un changement
+de compilateur, source ou option invalide les résultats concernés. Le wheel ARM64
+se construit en parallèle de Linux ; ses tests d'intégration attendent les paquets
+Linux. Les uploads utilisent une compression rapide puisque les paquets sont déjà
+compressés. La première exécution sans cache conserve tout le travail initial.
+
+Utilisez les artefacts d'un run réussi dont le commit correspond au tag de release.
+Un push ne modifie pas un run existant, et relancer un ancien run conserve sa
+révision d'origine. Un changement limité aux performances de la CI ne nécessite
+pas de reconstruire les binaires déjà validés pour le commit précédent ; les
+archives sources et le tag doivent toujours correspondre à ce commit.
+
 | Artefact | Contenu et exigences |
 | --- | --- |
 | Windows x64 ZIP | Apps, SDK, MediaPipe/modèles ; Windows 10/11 et VC++ 2022 |

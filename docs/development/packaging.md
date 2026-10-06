@@ -24,6 +24,20 @@ Build, test and inspect the 1.0.0 artifacts before uploading them. These scripts
 
 ## Supported release variants
 
+`Prepare release candidates` rebuilds packages and runs their validation on every
+execution. Download caches keep the pinned archives and models; bootstraps still
+verify their checksums. Linux uses ccache for compiler results, including Godot,
+with a 500 MB limit. Compiler, source and option changes invalidate those results.
+The ARM64 wheel builds alongside Linux; its integration tests wait for the Linux
+packages. Uploads use fast compression because the package files are already
+compressed. The first execution with empty caches still does all the initial work.
+
+Use artifacts from a successful run whose commit matches the release tag.
+Pushing changes does not update an existing run, and re-running an old run keeps
+its original revision. Changing only CI performance settings does not require
+rebuilding binaries already validated for the earlier commit; source archives
+and the release tag must still correspond to that commit.
+
 | Archive/package | Contents | Requirements |
 | --- | --- | --- |
 | Windows x64 native ZIP | Controller, configurator, SDK, MediaPipe/models | Windows 10/11 x64; VC++ 2022 runtime |
