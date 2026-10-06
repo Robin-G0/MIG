@@ -1,0 +1,8 @@
+{
+  "name": "com.mig-input.engine",
+  "version": "1.0.0",
+  "displayName": "Motion Input Grid",
+  "description": "MIG C ABI recognition for caller-supplied landmark packets.",
+  "unity": "2021.3",
+  "license": "Apache-2.0"
+}

@@ -1,0 +1,7 @@
+if(WIN32)
+    file(COPY "${MIG_C_LIBRARY}" DESTINATION "${DESTINATION}")
+else()
+    configure_file("${MIG_C_LIBRARY}" "${DESTINATION}/libmig-c.so.1" COPYONLY)
+endif()
+file(MAKE_DIRECTORY "${PROJECT}/.godot")
+file(WRITE "${PROJECT}/.godot/extension_list.cfg" "res://addons/mig/mig.gdextension\n")

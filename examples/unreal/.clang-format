@@ -1,0 +1,7 @@
+BasedOnStyle: InheritParentConfig
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '".*\.generated\.h"'
+    Priority: 100
+  - Regex: '.*'
+    Priority: 1

@@ -1,0 +1,5 @@
+add_library(mig-controller-profiles STATIC profiles.cpp)
+target_link_libraries(mig-controller-profiles PUBLIC mig-format PRIVATE nlohmann_json::nlohmann_json)
+if(WIN32)
+    target_link_libraries(mig-controller-profiles PRIVATE shell32 ole32)
+endif()

@@ -1,0 +1,12 @@
+[configuration]
+entry_symbol = "mig_godot_init"
+compatibility_minimum = "4.3"
+
+[libraries]
+windows.x86_64 = "res://addons/mig/bin/mig-godot.dll"
+linux.x86_64 = "res://addons/mig/bin/mig-godot.so"
+linux.arm64 = "res://addons/mig/bin/mig-godot.so"
+
+[dependencies]
+windows = { "res://addons/mig/bin/mig-c.dll": "" }
+linux = { "res://addons/mig/bin/libmig-c.so.1": "" }

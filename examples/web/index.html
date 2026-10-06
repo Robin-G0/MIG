@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width" />
+    <title>MIG camera input example</title>
+    <link rel="stylesheet" href="style.css" />
+    <body data-mode="hands">
+    <h1>MIG raised hands</h1>
+    <p>
+        Lower your hands, then raise either wrist. <a href="profile.html">Import a profile instead</a>.
+    </p>
+    <input
+        id="config"
+        type="file"
+        accept=".json,application/json"
+        aria-label="Import configuration"
+        hidden
+    />
+    <button id="start">Start camera</button
+    ><button id="stop" disabled>Stop camera</button>
+    <button id="reset">Recalibrate</button>
+    <div class="view">
+        <video id="video" autoplay muted playsinline></video><canvas id="canvas"></canvas>
+        <div id="actions" role="status">Lower your hands, then raise either hand.</div>
+    </div>
+    <pre id="status" role="status">Camera is off. Import a profile or use the bundled example.</pre>
+    <script type="module" src="camera.mjs"></script>
+    </body>
+</html>

@@ -1,0 +1,168 @@
+{
+    "schema_version": 2,
+    "tracking": {
+        "hands": true
+    },
+    "inputs": [
+        {
+            "id": "left_raise",
+            "name": "Raise left hand",
+            "action": "left_raise",
+            "space": "body",
+            "cooldown_ms": 700,
+            "steps": [
+                {
+                    "constraints": [
+                        {
+                            "id": "left_row_5",
+                            "landmark": "left_wrist",
+                            "cell": [
+                                -9,
+                                5,
+                                27,
+                                1
+                            ],
+                            "type": "required",
+                            "priority": "high",
+                            "order": 1
+                        },
+                        {
+                            "id": "left_row_4",
+                            "landmark": "left_wrist",
+                            "cell": [
+                                -9,
+                                4,
+                                27,
+                                1
+                            ],
+                            "type": "required",
+                            "priority": "high",
+                            "order": 2
+                        },
+                        {
+                            "id": "left_row_3",
+                            "landmark": "left_wrist",
+                            "cell": [
+                                -9,
+                                3,
+                                27,
+                                1
+                            ],
+                            "type": "required",
+                            "priority": "high",
+                            "order": 3
+                        },
+                        {
+                            "id": "left_row_2",
+                            "landmark": "left_wrist",
+                            "cell": [
+                                -9,
+                                2,
+                                27,
+                                1
+                            ],
+                            "type": "required",
+                            "priority": "high",
+                            "order": 4
+                        },
+                        {
+                            "id": "left_row_1",
+                            "landmark": "left_wrist",
+                            "cell": [
+                                -9,
+                                1,
+                                27,
+                                1
+                            ],
+                            "type": "trigger",
+                            "priority": "high",
+                            "order": 5
+                        }
+                    ],
+                    "id": "raise",
+                    "mode": "ordered"
+                }
+            ]
+        },
+        {
+            "id": "right_raise",
+            "name": "Raise right hand",
+            "action": "right_raise",
+            "space": "body",
+            "cooldown_ms": 700,
+            "steps": [
+                {
+                    "constraints": [
+                        {
+                            "id": "right_row_5",
+                            "landmark": "right_wrist",
+                            "cell": [
+                                -9,
+                                5,
+                                27,
+                                1
+                            ],
+                            "type": "required",
+                            "priority": "high",
+                            "order": 1
+                        },
+                        {
+                            "id": "right_row_4",
+                            "landmark": "right_wrist",
+                            "cell": [
+                                -9,
+                                4,
+                                27,
+                                1
+                            ],
+                            "type": "required",
+                            "priority": "high",
+                            "order": 2
+                        },
+                        {
+                            "id": "right_row_3",
+                            "landmark": "right_wrist",
+                            "cell": [
+                                -9,
+                                3,
+                                27,
+                                1
+                            ],
+                            "type": "required",
+                            "priority": "high",
+                            "order": 3
+                        },
+                        {
+                            "id": "right_row_2",
+                            "landmark": "right_wrist",
+                            "cell": [
+                                -9,
+                                2,
+                                27,
+                                1
+                            ],
+                            "type": "required",
+                            "priority": "high",
+                            "order": 4
+                        },
+                        {
+                            "id": "right_row_1",
+                            "landmark": "right_wrist",
+                            "cell": [
+                                -9,
+                                1,
+                                27,
+                                1
+                            ],
+                            "type": "trigger",
+                            "priority": "high",
+                            "order": 5
+                        }
+                    ],
+                    "id": "raise",
+                    "mode": "ordered"
+                }
+            ]
+        }
+    ]
+}

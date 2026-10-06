@@ -1,0 +1,51 @@
+# Any self notes or text files
+*.txt
+NEXT.md
+!requirements.txt
+!CMakeLists.txt
+!examples/common/licenses/LICENSE.*.txt
+
+# Local build and Python environments
+/build/
+/build-*/
+/install/
+/distribution/
+/.venv/
+__pycache__/
+*.egg-info/
+/bindings/python/build/
+node_modules/
+dist/
+.next/
+out/
+/bindings/javascript/runtime/
+/bindings/javascript/LICENSE
+/examples/react/public/mig/
+/examples/vue/public/mig/
+/examples/next/public/mig/
+
+# Private preparation and editor state
+/archived-NEXT.md
+/placeholders.md
+/.codex/
+/.agents/
+/.vscode/
+
+# Generated binaries, archives and logs
+*.pyc
+*.log
+*.exe
+*.dll
+*.so
+*.so.*
+*.a
+*.lib
+*.pdb
+*.zip
+*.tar.gz
+*.tgz
+*.whl
+*.deb
+.godot/
+/Binaries/
+/Intermediate/

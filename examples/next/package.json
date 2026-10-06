@@ -1,0 +1,15 @@
+{
+    "name": "mig-next-example",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build"
+    },
+    "dependencies": {
+        "@mig-input/browser": "1.0.0",
+        "next": "16.3.8",
+        "react": "19.3.0",
+        "react-dom": "19.3.0"
+    }
+}

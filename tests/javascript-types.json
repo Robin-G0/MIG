@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "noEmit": true,
+        "strict": true,
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "target": "ES2022"
+    },
+    "files": ["javascript_types.ts"]
+}

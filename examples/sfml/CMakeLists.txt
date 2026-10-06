@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.25)
+project(MIGsfmlExample LANGUAGES CXX)
+include(../common/sdk.cmake)
+find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+foreach(target mig-sfml mig-sfml-profile)
+    add_executable(${target} main.cpp)
+    target_link_libraries(${target} PRIVATE MIG::native MIG::format MIG::hands
+        sfml-graphics sfml-window sfml-system)
+    target_compile_features(${target} PRIVATE cxx_std_20)
+    mig_example_assets(${target})
+endforeach()

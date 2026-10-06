@@ -1,0 +1,97 @@
+param(
+    [string]$Distribution = 'distribution/windows',
+    [ValidateSet('x64', 'arm64')][string]$Architecture = 'x64',
+    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version = (Get-Content "$PSScriptRoot/../VERSION" -Raw).Trim(),
+    [string]$Destination = 'build/releases'
+)
+$ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.IO.Compression
+function Write-ReleaseArchive([string]$folder, [string]$path) {
+    $stream = [IO.File]::Open($path, [IO.FileMode]::Create)
+    $zip = [IO.Compression.ZipArchive]::new($stream, [IO.Compression.ZipArchiveMode]::Create)
+    try {
+        $prefix = Split-Path $folder -Leaf
+        Get-ChildItem -LiteralPath $folder -Recurse -File | ForEach-Object {
+            $relative = $_.FullName.Substring($folder.Length + 1).Replace('\', '/')
+            $entry = $zip.CreateEntry("$prefix/$relative", [IO.Compression.CompressionLevel]::Optimal)
+            $inputStream = [IO.File]::OpenRead($_.FullName)
+            $outputStream = $entry.Open()
+            try { $inputStream.CopyTo($outputStream) }
+            finally { $outputStream.Dispose(); $inputStream.Dispose() }
+        }
+    } finally { $zip.Dispose(); $stream.Dispose() }
+}
+$projectRoot = [IO.Path]::GetFullPath("$PSScriptRoot/..")
+$source = [IO.Path]::GetFullPath((Join-Path $projectRoot $Distribution))
+$output = [IO.Path]::GetFullPath((Join-Path $projectRoot $Destination))
+foreach ($name in @('mig-controller.exe', 'mig-configurator.exe', 'libmediapipe.dll', 'mig-c.dll', 'sdk', 'models')) {
+    if (-not (Test-Path -LiteralPath (Join-Path $source $name))) {
+        throw "Release artifact missing: $name"
+    }
+}
+$expectedMachine = if ($Architecture -eq 'arm64') { 0xAA64 } else { 0x8664 }
+Get-ChildItem -LiteralPath $source -Recurse -File | Where-Object {
+    $_.Extension -in @('.exe', '.dll')
+} | ForEach-Object {
+    $binary = [IO.File]::ReadAllBytes($_.FullName)
+    $peOffset = [BitConverter]::ToInt32($binary, 0x3C)
+    if ([BitConverter]::ToUInt16($binary, $peOffset + 4) -ne $expectedMachine) {
+        throw "Architecture mismatch: $($_.Name)"
+    }
+}
+New-Item -ItemType Directory -Force -Path $output | Out-Null
+$staging = Join-Path $output ('staging-' + [guid]::NewGuid().ToString('N'))
+$name = "mig-$Version-windows-$Architecture-native"
+$package = Join-Path $staging $name
+try {
+    New-Item -ItemType Directory -Force -Path $package | Out-Null
+    Copy-Item -LiteralPath $source -Destination (Join-Path $package 'windows') -Recurse
+    foreach ($folder in @('docs', 'examples', 'bindings')) {
+        $prepared = Join-Path (Split-Path $source) $folder
+        Copy-Item -LiteralPath $prepared -Destination (Join-Path $package $folder) -Recurse
+    }
+    Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') -Destination $package
+    @"
+# MIG $Version - Windows $Architecture
+
+[English](README.md) | [Français](README.fr.md)
+
+Run windows/mig-controller.exe or windows/mig-configurator.exe.
+Install the matching Microsoft Visual C++ 2022 Redistributable first.
+Set CMAKE_PREFIX_PATH to windows/sdk for C++ consumers.
+
+See [release instructions](docs/development/packaging.md) and the
+[support matrix](docs/reference/support.md) for prerequisites and limitations.
+"@ | Set-Content -LiteralPath (Join-Path $package 'README.md') -Encoding UTF8
+    @"
+# MIG $Version - Windows $Architecture
+
+[English](README.md) | [Français](README.fr.md)
+
+Lancez windows/mig-controller.exe ou windows/mig-configurator.exe.
+Installez le Microsoft Visual C++ 2022 Redistributable correspondant.
+Utilisez windows/sdk comme CMAKE_PREFIX_PATH pour compiler un consommateur.
+
+[Publication](docs/development/packaging.fr.md) et [vérifications](docs/reference/support.fr.md).
+"@ | Set-Content -LiteralPath (Join-Path $package 'README.fr.md') -Encoding UTF8
+    $hashes = [ordered]@{}
+    Get-ChildItem -LiteralPath $package -Recurse -File | Sort-Object FullName | ForEach-Object {
+        $relative = $_.FullName.Substring($package.Length + 1).Replace('\', '/')
+        $hashes[$relative] = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
+    $manifest = [ordered]@{ version = $Version; architecture = $Architecture; sha256 = $hashes }
+    $manifest | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $package 'manifest.json') -Encoding UTF8
+    $archive = Join-Path $output "$name.zip"
+    Write-ReleaseArchive $package $archive
+    $digest = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+    "$digest  $name.zip" | Set-Content -LiteralPath "$archive.sha256" -Encoding ASCII
+    Write-Output $archive
+} finally {
+    $resolvedStaging = [IO.Path]::GetFullPath($staging)
+    if (-not $resolvedStaging.StartsWith($output + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'Refusing cleanup outside the release destination.'
+    }
+    if (Test-Path -LiteralPath $resolvedStaging) {
+        Remove-Item -LiteralPath $resolvedStaging -Recurse -Force
+    }
+}

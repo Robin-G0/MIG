@@ -1,0 +1,6 @@
+MIG provides CMake targets:
+    find_package(MIG CONFIG REQUIRED)
+    target_link_libraries(your_target PRIVATE MIG::core MIG::format MIG::hands)
+
+The optional c-api feature adds MIG::c and requires a dynamic triplet.
+The SDK consumes caller-supplied landmarks; it does not bundle a camera estimator.

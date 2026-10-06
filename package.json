@@ -1,0 +1,29 @@
+{
+    "name": "mig-javascript-workspace",
+    "private": true,
+    "engines": {
+        "node": ">=22.12.0"
+    },
+    "workspaces": [
+        "bindings/javascript",
+        "examples/react",
+        "examples/vue",
+        "examples/next"
+    ],
+    "scripts": {
+        "prepare:javascript": "node tools/prepare-javascript.mjs",
+        "test": "node --test tests/web_session_tests.mjs tests/framework_tests.mjs tests/javascript_server_tests.mjs tests/node_archive_tests.mjs",
+        "test:types": "tsc -p tests/javascript-types.json",
+        "test:browser": "node tests/framework_browser_tests.mjs",
+        "test:assets": "node tests/browser_assets_tests.mjs",
+        "build:examples": "npm run prepare:javascript && npm run build --workspaces --if-present",
+        "package:examples": "node tools/package-javascript-examples.mjs"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.63.0",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
+        "jsdom": "26.1.0",
+        "typescript": "^7.0.2"
+    }
+}

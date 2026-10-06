@@ -1,0 +1,29 @@
+# Helpers communs des exemples
+
+[English](README.md) | [Français](README.fr.md)
+
+Ces fichiers appartiennent aux exemples, pas au reconnaisseur. Ils utilisent
+le SDK public installé et partagent les variantes au lieu de dupliquer les boucles.
+
+| Fichier | Entrée / responsabilité |
+| --- | --- |
+| options.hpp | Options : choix runtime/profil/synthétique |
+| source.hpp | Source::sample : capture, modèles, observations |
+| synthetic.hpp | synthetic_frame : fixture déterministe |
+| recognition.hpp | consume : événements logiques |
+| drawing.hpp | draw : parcours renderer-indépendant |
+| profile.hpp | Import atomique, sélecteur, polices |
+| sdk.cmake | SDK installé ou dépôt, ressources de build |
+| python_source.py | Worker et take/close bornés |
+| python_runtime.py | Recherche bibliothèque/modèles, exécutable figé |
+| python_view.py | Géométrie partagée, aspect, miroir |
+| tk_view.py / pygame_view.py | Toolkit Tk et HUD Pygame |
+
+Imports Python sur le thread caméra, invalide conserve, valide redémarre.
+Les HUD C++ cachent les textes jusqu'au changement d'actions.
+licenses contient FreeType/HarfBuzz/zlib de SDL2_ttf2.24.0 officiel
+(SHA256 0b2bf1e7b6568adbdbc9bb924643f79d9dedafe061fa1ed687d1d9ac4e453bfd).
+DejaVuSans.ttf conserve DejaVuSans-LICENSE. Adaptez seulement les helpers utiles.
+En temps réel, un worker peut remplacer la capture C++ synchrone. Gardez moteur
+dans MIG, miroir dans le dessin, caméra sur un propriétaire.
+[Explication complète](../../docs/getting-started/examples.fr.md), [démarrage](../../docs/getting-started/bootstrap.fr.md).

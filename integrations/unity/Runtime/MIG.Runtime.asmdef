@@ -1,0 +1,6 @@
+{
+  "name": "MIG.Runtime",
+  "rootNamespace": "MotionInputGrid",
+  "autoReferenced": true,
+  "noEngineReferences": true
+}

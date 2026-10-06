@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.25)
+project(MIGNativeConsumer LANGUAGES CXX)
+if(NOT TARGET MIG::native)
+    find_package(MIG 1.0 CONFIG REQUIRED)
+endif()
+add_executable(mig-native-example main.cpp)
+target_link_libraries(mig-native-example PRIVATE MIG::native)
+target_compile_features(mig-native-example PRIVATE cxx_std_20)

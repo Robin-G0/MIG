@@ -1,0 +1,60 @@
+# Linux configurator and controller
+
+[English](linux.md) | [Français](linux.fr.md)
+
+Both `mig-configurator` and `mig-controller` build as native Qt6 applications,
+sharing the existing engine, estimator and schema-v2 profiles with Windows.
+
+The controller has a dedicated profile/bindings interface. See the
+[controller guide](../guides/controller.md) for import, remembered selection, compact mode
+and verification. The drawing tools described below belong to the configurator.
+
+```sh
+sudo apt-get install cmake ninja-build g++ python3 qt6-base-dev libxtst-dev libegl1 libgles2
+python3 tools/bootstrap-native-linux.py
+cmake -S . -B build/linux-apps -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build/linux-apps --parallel 3
+ctest --test-dir build/linux-apps --output-on-failure
+build/linux-apps/bin/mig-configurator --runtime "$PWD/build/native-linux-deps"
+build/linux-apps/bin/mig-controller --runtime "$PWD/build/native-linux-deps" --config configs/default.json
+```
+
+Use `bash tools/build-linux.sh [build-directory] [ON|OFF]` to bootstrap/build/test
+both applications after installing the prerequisites above.
+
+Source builds are tested on Ubuntu 22.04 and 24.04 x86-64. Official MediaPipe requires
+glibc >=2.28; packaged applications require glibc >=2.35. Source builds use system
+Qt/X11; release archives bundle their shared dependencies/plugins/fonts. See
+[release preparation](../development/packaging.md) for x64 archives and ARM64 positions SDKs.
+Use `--camera N` for `/dev/videoN`;
+single-plane YUYV V4L2 and camera permissions are required. Start explicitly opens
+capture; stop one application before starting the other.
+
+The sidebar has input settings, colored drawing, body selection, order,
+Interaction sign/0..60000 ms hold and explicit layer reassignment. Draw in Full grid;
+Body view fits the complete mirrored image. View toggles grid, dots/hands, logs and
+light/dark themes. Input settings edit keys/sequences, Mirror, Single/Hold/Repeat,
+repeat interval and cooldown. Save validates atomically. Pro edits all schema-v2
+fields through a complete-profile JSON editor, preserving scoped fingers, stages,
+tolerance, controls and recordings.
+
+The Linux visual frontend has fewer tools than Win32: advanced region/step/finger
+editing uses JSON; interactive recording/trace review, bucket/tolerance tools and
+Undo/Redo are not yet ported. Existing profiles keep all settings and recognition
+uses the same engine. Global Restart/Recalibrate signs work; RecordToggle needs
+the future recording UI. These are frontend limits, not removed profile fields.
+
+One worker owns camera/models/engine/controls. A mutex-protected latest snapshot
+transfers copied observations/image and at most 64 timestamped events. Profile
+changes stop/join before replacement; stale events/output are rejected after 250 ms.
+Shutdown joins the worker and releases keys. Widgets stay on the main thread per
+[Qt's threading contract](https://doc.qt.io/qt-6/threads-qobject.html).
+
+Keyboard is opt-in X11/XTest; native Wayland output is disabled. Letters/digits,
+function keys, modifiers/navigation and named key-editor keys are supported. Text
+uses characters present in the current X11 layout; unsupported/non-BMP characters
+disable output with an error. Full Windows Unicode delivery is not available on
+this backend. Hold/Repeat reuse the existing scheduler.
+
+Offscreen `--ui-test` checks both executables without camera access. Physical V4L2,
+keyboard delivery and human gesture accuracy still require desktop validation.

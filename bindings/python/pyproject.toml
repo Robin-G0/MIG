@@ -1,0 +1,29 @@
+[build-system]
+requires = ["scikit-build-core>=0.11,<0.12"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "motion-input-grid"
+version = "1.0.0"
+description = "Python access to the native MIG recognition engine"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Software Development :: Libraries",
+]
+
+[project.urls]
+Homepage = "https://github.com/Robin-G0/MIG"
+Issues = "https://github.com/Robin-G0/MIG/issues"
+
+[tool.scikit-build]
+cmake.source-dir = "native"
+wheel.packages = ["mig"]
+wheel.py-api = "py3"
+sdist.include = ["_engine/**", "native/**", "mig/**", "LICENSE", "README*.md"]

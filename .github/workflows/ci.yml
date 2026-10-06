@@ -1,0 +1,247 @@
+name: Build, test and format
+
+on:
+    push:
+    pull_request:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    format:
+        name: C++ formatting
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - name: Checkout
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+              with:
+                  persist-credentials: false
+            - name: Install clang-format 16
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install --no-install-recommends -y clang-format-16
+            - name: Check first-party C++ against .clang-format
+              shell: bash
+              run: |
+                  clang-format-16 --version
+                  find src tests examples integrations -type f \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) -print0 |
+                      xargs -0 -r clang-format-16 --dry-run --Werror
+            - name: Check bilingual documentation and links
+              run: python3 tools/check-docs.py
+            - name: Check release version consistency
+              run: |
+                  python3 tests/release_version_tests.py
+                  python3 tests/version_resolution_tests.py
+
+    windows:
+        name: Windows Release (hands ${{ matrix.hands }})
+        runs-on: windows-2022
+        timeout-minutes: 30
+        strategy:
+            fail-fast: false
+            matrix:
+                hands: ['ON', 'OFF']
+        defaults:
+            run:
+                shell: pwsh
+        steps:
+            - name: Checkout
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+              with:
+                  persist-credentials: false
+            - name: Bootstrap, compile both applications and run CTest
+              run: ./tools/build-windows.ps1 -Hands '${{ matrix.hands }}' -BuildDirectory build/ci-windows
+            - name: Install libraries and CMake package
+              run: cmake --install build/ci-windows --config Release --prefix build/ci-install
+            - name: Configure installed positions SDK consumer
+              run: cmake -S examples/sdk-consumer -B build/ci-sdk-consumer -G 'Visual Studio 17 2022' -A x64 "-DCMAKE_PREFIX_PATH=$PWD/build/ci-install"
+            - name: Build installed positions SDK consumer
+              run: cmake --build build/ci-sdk-consumer --config Release --parallel 2
+            - name: Run synthetic positions SDK consumer
+              run: ./build/ci-sdk-consumer/Release/mig-sdk-example.exe configs/default.json
+            - name: Configure installed native SDK consumer
+              run: cmake -S examples/native-consumer -B build/ci-native-consumer -G 'Visual Studio 17 2022' -A x64 "-DCMAKE_PREFIX_PATH=$PWD/build/ci-install"
+            - name: Build installed native SDK consumer
+              run: cmake --build build/ci-native-consumer --config Release --parallel 2
+            - name: Package accessible Windows distribution
+              run: ./tools/package-distribution.ps1 -WindowsBuild build/ci-windows
+            - name: Upload Windows distribution
+              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+              with:
+                  name: mig-windows-hands-${{ matrix.hands }}
+                  path: distribution/windows
+
+    portable:
+        name: Linux portable SDK
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        defaults:
+            run:
+                shell: bash
+        steps:
+            - name: Checkout
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+              with:
+                  persist-credentials: false
+            - name: Install portable build dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install --no-install-recommends -y ninja-build nlohmann-json3-dev
+            - name: Configure without Windows or MediaPipe
+              run: >-
+                  cmake -S . -B build/ci-portable -G Ninja
+                  -DCMAKE_BUILD_TYPE=Release -DMIG_DEPENDENCY_MODE=SYSTEM
+                  -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF
+                  -DMIG_BUILD_NATIVE_RUNTIME=OFF -DMIG_BUILD_TESTS=ON
+            - name: Compile libraries and tests
+              run: cmake --build build/ci-portable --parallel 2
+            - name: Run portable tests
+              run: ctest --test-dir build/ci-portable --output-on-failure --timeout 90
+            - name: Install portable SDK
+              run: cmake --install build/ci-portable --prefix build/ci-install
+            - name: Configure installed SDK consumer
+              run: cmake -S examples/sdk-consumer -B build/ci-sdk-consumer -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCMAKE_PREFIX_PATH=$PWD/build/ci-install"
+            - name: Build installed SDK consumer
+              run: cmake --build build/ci-sdk-consumer --parallel 2
+            - name: Run synthetic SDK consumer
+              run: ./build/ci-sdk-consumer/mig-sdk-example configs/default.json
+
+    linux-native:
+        name: Linux native SDK and graphics integrations
+        runs-on: ubuntu-24.04
+        timeout-minutes: 20
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+            - name: Install SDK and graphics build dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install --no-install-recommends -y cmake ninja-build g++ python3 libsdl2-dev libsdl2-ttf-dev libsfml-dev libegl1 libgles2 qt6-base-dev libxtst-dev python3-tk python3-pygame python3-pil python3-pil.imagetk xvfb xauth xdotool
+            - name: Bootstrap official Linux artifacts
+              run: python3 tools/bootstrap-native-linux.py
+            - name: Build and test native Linux runtime
+              run: |
+                  cmake -S . -B build/linux-native -G Ninja -DCMAKE_BUILD_TYPE=Release -DMIG_BUILD_NATIVE_RUNTIME=ON -DMIG_NATIVE_DEPS="$PWD/build/native-linux-deps"
+                  cmake --build build/linux-native --parallel 2
+                  ctest --test-dir build/linux-native --output-on-failure --timeout 90
+                  cmake --install build/linux-native --prefix "$PWD/distribution/linux/sdk"
+                  PYTHONPATH=bindings/python python3 tests/python_tests.py build/linux-native/src/c-api/libmig-c.so
+                  python3 tests/python_demo_tests.py build/linux-native/src/c-api/libmig-c.so
+                  MIG_LIBRARY="$PWD/build/linux-native/src/c-api/libmig-c.so" SDL_VIDEODRIVER=dummy python3 examples/pygame/main.py --smoke
+                  MIG_LIBRARY="$PWD/build/linux-native/src/c-api/libmig-c.so" xvfb-run -a python3 examples/python-tkinter/main.py --smoke
+                  MIG_LIBRARY="$PWD/build/linux-native/src/c-api/libmig-c.so" SDL_VIDEODRIVER=dummy python3 examples/pygame/profile.py --smoke
+                  MIG_LIBRARY="$PWD/build/linux-native/src/c-api/libmig-c.so" xvfb-run -a python3 examples/python-tkinter/profile.py --smoke
+                  python3 tests/python_viewer_tests.py build/linux-native/src/c-api/libmig-c.so
+            - name: Build and run installed SDL2/SFML consumers
+              run: |
+                  cmake -S examples -B build/graphics -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$PWD/distribution/linux/sdk"
+                  cmake --build build/graphics --parallel 2
+                  ctest --test-dir build/graphics --output-on-failure
+                  SDL_VIDEODRIVER=dummy build/graphics/sdl2/mig-sdl2 configs/default.json --smoke
+                  build/graphics/sfml/mig-sfml configs/default.json --smoke
+                  SDL_VIDEODRIVER=dummy build/graphics/sdl2/mig-sdl2-profile --smoke
+                  build/graphics/sfml/mig-sfml-profile --smoke
+                  xvfb-run -a python3 tests/example_picker_tests.py build/graphics/sfml/mig-sfml-profile
+            - name: Package native runtime and examples
+              run: |
+                  cp build/graphics/sdl2/mig-sdl2 build/graphics/sfml/mig-sfml build/linux-native/bin/mig-configurator build/linux-native/bin/mig-controller distribution/linux/
+                  cp build/linux-native/src/c-api/libmig-c.so distribution/linux/
+                  cp build/native-linux-deps/libmediapipe.so build/native-linux-deps/LICENSE build/native-linux-deps/nlohmann-LICENSE distribution/linux/
+                  cp -r build/native-linux-deps/models configs distribution/linux/
+                  cp -r examples bindings docs distribution/
+                  cp docs/integrations/overview.md distribution/README.md
+                  tar --exclude='*/__pycache__' --exclude='*.pyc' -czf build/mig-linux.tar.gz -C distribution linux examples bindings docs README.md
+            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+              with:
+                  name: mig-linux-native
+                  path: build/mig-linux.tar.gz
+
+    web:
+        name: WebAssembly browser SDK
+        runs-on: ubuntu-24.04
+        container: emscripten/emsdk:4.0.15
+        timeout-minutes: 15
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+            - name: Install compatible CMake
+              run: python3 -m pip install cmake==3.31.10
+            - name: Prepare checksummed browser assets
+              run: |
+                  cmake -P tools/bootstrap-web.cmake
+                  node tools/bootstrap-browser.mjs
+            - name: Build and test shared WebAssembly engine
+              run: |
+                  emcmake cmake -S . -B build/web -DMIG_BUILD_WEB=ON -DMIG_BUILD_TESTS=OFF -DMIG_BUILD_CONTROLLER=OFF -DMIG_BUILD_CONFIGURATOR=OFF
+                  cmake --build build/web --parallel 2
+                  node tests/web_tests.mjs
+                  node --experimental-vm-modules tests/web_camera_tests.mjs
+            - name: Package website integration
+              run: |
+                  mkdir -p distribution/web/models distribution/web/licenses
+                  cp build/web/web/mig.mjs build/web/web/mig.wasm examples/web/* distribution/web/
+                  cp examples/common/raised-hands.json distribution/web/default.json
+                  cp build/native-deps/models/*.task distribution/web/models/
+                  cp -r build/native-deps/vision distribution/web/
+                  cp build/native-deps/*-LICENSE distribution/web/licenses/
+                  cp LICENSE distribution/web/licenses/MIG-LICENSE
+                  cp docs/integrations/overview.md distribution/README.md
+            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+              with:
+                  name: mig-web
+                  path: distribution
+
+    javascript:
+        name: React, Vue and Next.js integrations
+        needs: web
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        env:
+            NEXT_TELEMETRY_DISABLED: '1'
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+            - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+              with:
+                  node-version: '24'
+                  cache: npm
+            - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+              with:
+                  name: mig-web
+                  path: build/web-artifact
+            - name: Prepare shared WASM assets
+              run: |
+                  mkdir -p build/web/web build/native-deps/models
+                  cp build/web-artifact/web/mig.mjs build/web-artifact/web/mig.wasm build/web/web/
+                  cp build/web-artifact/web/models/*.task build/native-deps/models/
+                  cp -r build/web-artifact/web/vision build/native-deps/
+                  cp build/web-artifact/web/licenses/* build/native-deps/
+            - name: Install, test and build all framework examples
+              run: |
+                  npm ci --ignore-scripts
+                  npm run prepare:javascript
+                  npm test
+                  npm run test:types
+                  npm run build:examples
+                  npx playwright install --with-deps chromium
+                  npm run test:browser
+                  node tests/browser_assets_tests.mjs
+            - name: Prepare npm and compiled examples archives
+              run: |
+                  mkdir -p build/releases
+                  node tools/bootstrap-node.mjs
+                  npm pack --workspace @mig-input/browser --pack-destination build/releases
+                  npm run package:examples
+            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+              with:
+                  name: mig-javascript
+                  path: build/releases

@@ -1,0 +1,143 @@
+# Intégrer MIG dans une application
+
+[English](overview.md) | [Français](overview.fr.md)
+
+distribution/windows/linux/web fournit apps, SDK CMake et assets de développement.
+build/releases contient les archives compressées. Windows conserve DLL/modèles/configs
+avec les apps. Linux possède Qt 6 et SDK ABI ; exemples graphiques distribués séparément.
+[Bootstrap](../getting-started/bootstrap.fr.md) donne les commandes simples, [Linux](../getting-started/linux.fr.md)
+les limites UI, [exemples](../../examples/README.fr.md) les deux variantes.
+
+## SDK et coordonnées
+
+MIG::core reçoit les points, format JSON, native capture/MediaPipe facultatif,
+hands21articulations. Un snapshot représente une acquisition/temps/séquence :
+utilisez sur son propriétaire ou copiez vers une boîte synchronisée.
+
+```cpp
+#include <mig/core/coordinates.hpp>
+#include <mig/core/engine.hpp>
+#include <mig/format/configuration.hpp>
+#include <mig/native/pose.hpp>
+
+auto configuration = mig::load_configuration("profile.json");
+mig::Engine engine(std::move(configuration));
+mig::native::Pose pose("runtime", engine.configuration().track_hands);
+auto frame = pose.infer(rgb_bytes, width, height, capture_ms, sequence);
+const auto events = engine.update(frame, capture_ms);
+for (const auto& event : events) {
+    game_action(engine.configuration().motions[event.motion].action);
+}
+```
+
+parse_configuration(json_text) importe le même schéma strict depuis HTTP/fichier/ressource.
+body_coordinate(frame,15) donne XYZ/confiance ; WorldHeightUp pour Y monde haut.
+
+| Espace | X/Y/Z | Origine |
+| --- | --- | --- |
+| Image corps | X droit,Y bas normalisés,Z modèle plus petit = plus près | Z relatif aux hanches |
+| Image main | Idem | Poignet |
+| Monde corps | Mètres X droit, Y bas, Z profondeur | Milieu des hanches |
+| Monde main | Mètres | Centre main, indépendant du corps |
+| WorldHeightUp | Monde avec Y inversé | Même origine |
+
+Estimations modèle, pas distance caméra mesurée. Ne combinez pas Z main/corps.
+Pour afficher reflété, screen_x=(1-x)*width ; Mirror reconnaissance est séparé.
+body_coordinate/hand_coordinate sont O(1), sans allocation, nullopt si absent/invalide.
+Validité image et monde indépendantes, monde facultatif ; hôtes2D restent reconnus.
+Head33 dérive oreilles ou nez ; confiance corps0.6. Score handedness n'invente pas
+confiance articulaire. body_coordinates/hand_coordinates empruntent des spans.
+Résolvez landmark_index une fois. Mains [0,count), label brut pas identité.
+hand_observations(hands,body) une fois par image donne hand_indices Left/Right
+ou -1 si l'association est ambiguë. Pose hand_frame expire à prochaine inférence/changement/destruction.
+Events update expirent à prochain update. action_active expose activation pour
+Hold/Repeat propre à l'hôte, sans injection clavier par le SDK.
+
+## SDL2/SFML et Linux natif
+
+Les viewers chargent JSON, dessinent corps/mains, déplacent les objets et affichent
+actions. SDL2>=2.0.10, SFML 2.5/2.6 ; SFML 3 exige ses propres appels de dessin.
+
+```sh
+cmake -S examples -B build/graphics -DCMAKE_PREFIX_PATH=/sdk
+cmake --build build/graphics
+build/graphics/sdl2/mig-sdl2
+build/graphics/sfml/mig-sfml
+```
+
+La découverte native fonctionne sans argument. --synthetic produit des points,
+--runtime choisit caméra, --hands force l'affichage mains, --smoke exécute 90 images sans caméra.
+SDL dummy et SFML headless vérifient sans écran. Capture/inférence synchrones pour
+lisibilité ; les jeux peuvent utiliser worker/boîte au dernier état.
+Le natif Linux dlopen MediaPipe C ABI 0.10.35 x64 ; les outils Python téléchargent,
+le runtime C++ n'utilise pas Python.
+
+```sh
+python3 tools/bootstrap-native-linux.py
+cmake -S . -B build/linux-native -DCMAKE_BUILD_TYPE=Release \
+    -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF \
+    -DMIG_BUILD_NATIVE_RUNTIME=ON -DMIG_NATIVE_DEPS="$PWD/build/native-linux-deps"
+cmake --build build/linux-native --parallel 3
+ctest --test-dir build/linux-native --output-on-failure
+cmake --install build/linux-native --prefix "$PWD/build/linux-install"
+```
+
+V4L2 single-plane streaming YUYV,1280x720 négocié, permission pour /dev/videoN.
+MJPEG seul/multiplane rejetés. shutdown demande arrêt, read poll de 100 ms borné.
+Même propriété Pose/Hands que Windows ; aucune preuve caméra physique par CI.
+
+## Navigateur
+
+Emscripten compile core/format/hands en mig.mjs+wasm, wrapper mig-tracker.
+MediaPipe Tasks Vision fournit image/monde ; copie en typedarrays fixes, sans JSON
+par image. Même validation/reconnaissance C++ locale.
+
+```js
+import {MIGTracker} from './mig-tracker.mjs';
+const tracker = await MIGTracker.create(await (await fetch('profile.json')).text());
+await tracker.importURL('another-profile.json');
+tracker.update(poseResult, handResult, Math.floor(performance.now()), width / height,
+  (action, inputId) => gameAction(action, inputId));
+const wrist = tracker.coordinate(15);
+const height = tracker.coordinate(15, 2);
+const indexTip = tracker.handCoordinate(0, 8, 0);
+tracker.recalibrate();
+tracker.dispose();
+```
+
+handCoordinate(side,joint,system) absent si anatomie inconnue/ambiguë. MediaPipe
+landmarks/worldLandmarks ou handBuffer basniveau sont aussi disponibles.
+gesture(0/1),active(index) pour logique hôte. Corps 33×8 : XYZ,confidence,worldXYZ,
+worldValid ; mains 2×21×6 image XYZ + world XYZ. Reprenez les vues empruntées après
+import/appel pouvant faire croître la mémoire WASM.
+Servez localhost/HTTPS, pas file://. Le serveur affiche index/profile, import,
+Start/Stop/recalibration, dessin, événements DOM mig-action. vision JS/WASM,
+modèles et moteur sont locaux, copiés lors du bootstrap/package. Aucun CDN au Start.
+Pas clavier OS navigateur. Inférence synchrone peut bloquer UI ; Worker en production
+si nécessaire. [Guide pose](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker/web_js),
+[guide main](https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker/web_js),
+[Emscripten](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html).
+
+## Construire les assets
+
+```sh
+cmake -P tools/bootstrap-web.cmake
+node tools/bootstrap-browser.mjs
+emcmake cmake -S . -B build/web -DMIG_BUILD_WEB=ON -DMIG_BUILD_TESTS=OFF \
+    -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF
+cmake --build build/web --parallel 3
+node tests/web_tests.mjs
+```
+
+CMake>=3.25 ; image Emscripten 4.0.15 utilise un CMake plus vieux : CI installe 3.31.10.
+tools/linux-sdk.Dockerfile pour Linux. package-distribution.ps1 copie SDK et assets
+disponibles sans effacer les fichiers étrangers. Binaires SDL2/SFML bruts peuvent
+nécessiter dépendances système ; archives release les fournissent. Gardez permissions
+et architecture/compilateur compatibles. WASM indépendant du système hôte.
+CI publie des artefacts workflow, jamais release/registre ; commit/push manuels.
+Godot propose des dossiers C# et GDScript ; ce dernier utilise une GDExtension.
+Python/Tk/Pygame et Unity/Godot/Unreal utilisent le même [ABI](../reference/c-abi.fr.md).
+Graphiques compilables séparément ou par examples/CMakeLists. Chaque UI a démo
+et importeur ; anciens dossiers Python/Tk fusionnés en python-tkinter.
+React/Vue sont adaptateurs minces, Next réutilise React avec un démarrage SSR sûr :
+[guide JavaScript](javascript.fr.md), [code complet](../getting-started/examples.fr.md).

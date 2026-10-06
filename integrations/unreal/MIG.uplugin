@@ -1,0 +1,10 @@
+{
+  "FileVersion": 3,
+  "Version": 10000,
+  "VersionName": "1.0.0",
+  "FriendlyName": "Motion Input Grid",
+  "Description": "Native MIG recognition for caller-supplied landmark packets.",
+  "Category": "Input",
+  "CanContainContent": false,
+  "Modules": [{"Name": "MIGRuntime", "Type": "Runtime", "LoadingPhase": "Default"}]
+}

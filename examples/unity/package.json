@@ -1,0 +1,15 @@
+{
+    "name": "com.mig-input.examples",
+    "version": "1.0.0",
+    "displayName": "MIG desktop input examples",
+    "description": "Supplied-pose MIG action and raised-wrist components. Requires the MIG C ABI desktop plugin.",
+    "license": "Apache-2.0",
+    "keywords": [
+        "input",
+        "motion",
+        "pose"
+    ],
+    "dependencies": {
+        "com.mig-input.engine": "1.0.0"
+    }
+}

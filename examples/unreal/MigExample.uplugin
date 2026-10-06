@@ -1,0 +1,8 @@
+{
+    "FileVersion": 3,
+    "Version": 1,
+    "VersionName": "1.0.0",
+    "FriendlyName": "MIG input example",
+    "Category": "Input",
+    "Modules": [{"Name": "MigExample", "Type": "Runtime", "LoadingPhase": "Default"}]
+}

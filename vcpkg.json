@@ -1,0 +1,17 @@
+{
+    "name": "motion-input-grid",
+    "version-string": "1.0.0",
+    "description": "Native C++ runtime and optional capture adapters for Motion Input Grid.",
+    "license": "Apache-2.0",
+    "dependencies": [
+        "nlohmann-json"
+    ],
+    "features": {
+        "opencv-adapter": {
+            "description": "Optional webcam acquisition and image pre-processing adapter.",
+            "dependencies": [
+                "opencv"
+            ]
+        }
+    }
+}

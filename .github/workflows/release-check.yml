@@ -1,0 +1,221 @@
+name: Prepare release candidates
+
+on:
+    push:
+        tags: ['v*.*.*']
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    metadata:
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - name: Propagate exact-tag package versions
+              run: python3 tools/release-version.py --sync
+            - name: Verify package versions and release tag
+              env:
+                  RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+              run: |
+                  python3 tools/release-version.py --sync ${RELEASE_TAG:+--tag "$RELEASE_TAG"}
+                  python3 tools/check-docs.py
+                  python3 tests/version_resolution_tests.py
+
+    linux:
+        needs: metadata
+        runs-on: ubuntu-24.04
+        timeout-minutes: 90
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - name: Propagate exact-tag package versions
+              run: python3 tools/release-version.py --sync
+            - name: Build baseline toolchain
+              run: docker build -f tools/linux-release.Dockerfile -t mig-linux-release:22.04 tools
+            - name: Build, test and package x64 and ARM64 SDKs
+              run: >-
+                  docker run --rm -v "$PWD:/src" -w /src mig-linux-release:22.04
+                  bash tools/build-linux-release.sh
+            - name: Generate SDK and runtime integration packages
+              run: >-
+                  docker run --rm -v "$PWD:/src" -w /src mig-linux-release:22.04
+                  bash tools/prepare-linux-packages.sh
+            - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+              with:
+                  dotnet-version: '8.0.x'
+            - name: Validate the extracted Linux Unity managed bridge
+              run: python3 tests/native_integration_package_tests.py build/releases/mig-*-linux-x64-unity.tgz
+            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+              with:
+                  name: mig-linux-and-python-candidates
+                  path: build/releases/
+
+    windows:
+        needs: metadata
+        runs-on: windows-2022
+        timeout-minutes: 60
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+              with:
+                  python-version: '3.12'
+            - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+              with:
+                  dotnet-version: '8.0.x'
+            - name: Propagate exact-tag package versions
+              run: python tools/release-version.py --sync
+            - name: Build and test Windows x64
+              shell: pwsh
+              run: ./tools/build-windows.ps1
+            - name: Package Windows x64
+              shell: pwsh
+              run: |
+                  ./tools/package-distribution.ps1
+                  ./tools/package-windows-release.ps1
+                  cmake --install build/windows --config Release --prefix build/examples-sdk/windows
+                  ./tools/build-examples.ps1
+                  python -m pip install pyinstaller==6.16.0 pillow==11.3.0 pygame==2.6.1
+                  python tools/freeze-python-examples.py
+                  python tools/package-examples.py --platform windows-x64
+            - name: Build and validate SDK, Python and engine integration artifacts
+              shell: pwsh
+              run: ./tools/prepare-windows-packages.ps1
+            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+              with:
+                  name: mig-windows-x64-candidate
+                  path: build/releases/
+
+    javascript:
+        needs: metadata
+        runs-on: ubuntu-24.04
+        container: emscripten/emsdk:4.0.15
+        timeout-minutes: 30
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - name: Propagate exact-tag package versions
+              run: python3 tools/release-version.py --sync
+            - name: Build and validate the npm artifact
+              run: |
+                  python3 -m pip install cmake==3.31.10
+                  cmake -P tools/bootstrap-web.cmake
+                  node tools/bootstrap-browser.mjs
+                  emcmake cmake -S . -B build/web -DMIG_BUILD_WEB=ON -DMIG_BUILD_TESTS=OFF -DMIG_BUILD_CONTROLLER=OFF -DMIG_BUILD_CONFIGURATOR=OFF
+                  cmake --build build/web --parallel 2
+                  node tests/web_tests.mjs
+                  npm ci --ignore-scripts
+                  npm run prepare:javascript
+                  npm test
+                  npm run test:types
+                  npm run build:examples
+                  mkdir -p build/releases
+                  npm pack --workspace @mig-input/browser --pack-destination build/releases
+                  node tests/npm_package_tests.mjs build/releases/mig-input-browser-*.tgz
+            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+              with:
+                  name: mig-npm-candidate
+                  path: build/releases/
+
+    source:
+        needs: metadata
+        runs-on: ubuntu-24.04
+        timeout-minutes: 20
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - name: Propagate exact-tag package versions
+              run: python3 tools/release-version.py --sync
+            - name: Generate and validate the pinned vcpkg artifact
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install --no-install-recommends -y ninja-build pkg-config zip unzip curl
+                  mkdir -p build
+                  python3 tools/package-source.py
+                  git clone https://github.com/microsoft/vcpkg.git build/vcpkg-release-tool
+                  git -C build/vcpkg-release-tool checkout 434307da09bc05b2c86996dccc8b2351fc0d5d37
+                  build/vcpkg-release-tool/bootstrap-vcpkg.sh -disableMetrics
+                  python3 tests/vcpkg_package_tests.py build/releases/mig-*-vcpkg-overlay.tar.gz build/releases/mig-*-source.tar.gz --vcpkg build/vcpkg-release-tool/vcpkg
+            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+              with:
+                  name: mig-source-and-vcpkg-candidates
+                  path: build/releases/
+
+    arm64:
+        needs: [metadata, linux]
+        runs-on: ubuntu-24.04-arm
+        container: ubuntu:22.04
+        timeout-minutes: 30
+        steps:
+            - name: Install ARM64 package validation tools
+              run: |
+                  apt-get update
+                  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y git ca-certificates g++ python3-pip python3-venv libfontconfig1 libx11-6 libxcursor1 libxinerama1 libxrandr2 libxi6 libgl1
+                  python3 -m pip install cmake==3.31.10 build twine auditwheel patchelf
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - name: Propagate exact-tag package versions
+              run: python3 tools/release-version.py --sync
+            - name: Build and install-test the ARM64 wheel
+              run: |
+                  cmake -P tools/bootstrap-web.cmake
+                  python3 tools/package-python.py --dependencies build/native-deps --destination build/python-arm64
+                  mkdir -p build/releases
+                  auditwheel repair --plat manylinux_2_35_aarch64 build/python-arm64/*-linux_aarch64.whl -w build/releases
+                  python3 tests/python_package_tests.py build/releases/*-manylinux_2_35_aarch64.whl
+                  python3 -m twine check build/releases/*.whl
+            - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+              with:
+                  name: mig-linux-and-python-candidates
+                  path: build/linux-candidates
+            - name: Validate the ARM64 Godot add-on on ARM64
+              run: |
+                  python3 tools/bootstrap-godot.py --editor
+                  python3 tests/godot_package_tests.py build/linux-candidates/mig-*-linux-arm64-godot.zip --godot build/godot-deps/Godot_v4.3-stable_linux.arm64
+                  python3 tests/native_integration_package_tests.py build/linux-candidates/mig-*-linux-arm64-unreal.zip
+            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+              with:
+                  name: mig-arm64-python-candidate
+                  path: build/releases/
+
+    manifest:
+        needs: [linux, windows, javascript, source, arm64]
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - name: Propagate exact-tag package versions
+              run: python3 tools/release-version.py --sync
+            - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+              with:
+                  pattern: mig-*-candidate*
+                  path: build/release-candidates
+                  merge-multiple: true
+            - name: Verify contents and write the release inventory
+              env:
+                  RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+              run: |
+                  python3 tests/package_artifact_tests.py build/release-candidates
+                  python3 tools/release-manifest.py build/release-candidates ${RELEASE_TAG:+--tag "$RELEASE_TAG"}
+                  python3 tools/release-checksums.py build/release-candidates --check
+            - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+              with:
+                  name: mig-release-candidates
+                  path: build/release-candidates/

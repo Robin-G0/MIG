@@ -1,0 +1,8 @@
+config_version=5
+
+[application]
+config/name="MIG GDScript examples"
+run/main_scene="res://raised_hands.tscn"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"

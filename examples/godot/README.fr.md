@@ -1,0 +1,21 @@
+# Exemples desktop Godot 4
+
+[English](README.md) | [Français](README.fr.md)
+
+Choisissez le dossier correspondant à votre projet :
+
+- [GDScript](gdscript/README.fr.md) : éditeur standard, pont GDExtension natif,
+  scènes prêtes à ouvrir pour levage des mains et import de profils.
+- [C#](csharp/README.fr.md) : éditeur Godot .NET, pont .NET partagé et composants Node3D.
+
+Les deux utilisent le moteur C++ de MIG via le même ABI C. Elles affichent les
+actions, émettent des signaux et acceptent les observations de votre fournisseur
+de points. Le mode synthétique montre le levage des poignets sans caméra.
+Un import invalide conserve la configuration courante.
+
+Windows et Linux desktop uniquement. Compilez les bibliothèques natives pour
+l'architecture de votre éditeur/export. Aucun estimateur ni export web n'est fourni.
+
+[Code](../../docs/getting-started/examples.fr.md) · [Démarrage](../../docs/getting-started/bootstrap.fr.md).
+
+[Package runtime séparé](../../integrations/godot/README.fr.md).

@@ -1,0 +1,58 @@
+{
+    "name": "@mig-input/browser",
+    "version": "1.0.0",
+    "description": "Motion Input Grid browser sessions and React/Vue adapters",
+    "type": "module",
+    "license": "Apache-2.0",
+    "bin": {
+        "mig-copy-assets": "./src/copy-assets.mjs"
+    },
+    "files": [
+        "src",
+        "runtime",
+        "LICENSE",
+        "README.md",
+        "README.fr.md"
+    ],
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.mjs"
+        },
+        "./react": {
+            "types": "./src/react.d.ts",
+            "import": "./src/react.mjs"
+        },
+        "./vue": {
+            "types": "./src/vue.d.ts",
+            "import": "./src/vue.mjs"
+        }
+    },
+    "peerDependencies": {
+        "react": "^18.2.0 || ^19.0.0",
+        "vue": "^3.3.0"
+    },
+    "peerDependenciesMeta": {
+        "react": {
+            "optional": true
+        },
+        "vue": {
+            "optional": true
+        }
+    },
+    "scripts": {
+        "prepack": "node src/validate-runtime.mjs"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Robin-G0/MIG.git",
+        "directory": "bindings/javascript"
+    },
+    "homepage": "https://github.com/Robin-G0/MIG",
+    "bugs": {
+        "url": "https://github.com/Robin-G0/MIG/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

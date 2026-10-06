@@ -1,0 +1,51 @@
+name: Publish npm (manual activation required)
+
+on:
+    workflow_dispatch:
+        inputs:
+            candidate_run_id:
+                description: Successful release-check run for the selected tag commit
+                required: true
+                type: number
+
+permissions:
+    contents: read
+
+jobs:
+    publish:
+        if: github.repository == 'Robin-G0/MIG' && startsWith(github.ref, 'refs/tags/v')
+        runs-on: ubuntu-24.04
+        environment: npm
+        permissions:
+            contents: read
+            actions: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - name: Validate selected tag and candidate run
+              env:
+                  RELEASE_TAG: ${{ github.ref_name }}
+                  CANDIDATE_RUN_ID: ${{ inputs.candidate_run_id }}
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  python3 tools/release-version.py --sync --tag "$RELEASE_TAG"
+                  python3 tools/check-release-run.py "$CANDIDATE_RUN_ID"
+            - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+              with:
+                  name: mig-release-candidates
+                  run-id: ${{ inputs.candidate_run_id }}
+                  github-token: ${{ github.token }}
+                  path: candidate
+            - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+              with:
+                  node-version: '24'
+                  package-manager-cache: false
+                  registry-url: https://registry.npmjs.org
+            - name: Verify checksums and publish the validated tarball
+              run: |
+                  python3 tools/release-checksums.py candidate --check
+                  npm install --global npm@11.11.0
+                  npm publish candidate/mig-input-browser-*.tgz --access public --provenance
