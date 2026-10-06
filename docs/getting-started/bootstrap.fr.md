@@ -97,6 +97,34 @@ Pour C#, utilisez [MigTracker](../../bindings/dotnet/README.fr.md).
 L'[API C](../reference/c-abi.fr.md) expose les contrats bas niveau Python/C#.
 Traitez des événements logiques, puis libérez les trackers et la caméra à la sortie.
 
+## Choisir un preset CMake
+
+Un preset enregistre les options de compilation et le dossier de sortie.
+L'extension CMake Tools de VS Code utilise ces mêmes presets. En choisir un
+configure le projet ; cela ne lance pas le programme.
+
+`CMakePresets.json` est partagé dans Git. Placez les réglages propres à votre
+machine, comme les chemins des outils locaux, dans `CMakeUserPresets.json`, ignoré
+par Git.
+
+- `release` : configurateur, contrôleur et moteur optimisés. Préparez d'abord les
+  dépendances natives ; voir [Windows](windows.fr.md) ou [Linux](linux.fr.md).
+- `debug` : les mêmes applications avec les informations de débogage.
+- `sdk-release` / `sdk-debug` : moteur et bindings seuls, sans applications caméra
+  ni MediaPipe. Un compilateur C++20 est nécessaire ; la première configuration
+  télécharge la dépendance JSON si elle n'est pas déjà installée.
+
+```sh
+cmake --preset sdk-release
+cmake --build --preset sdk-release
+ctest --preset sdk-release
+```
+
+Pour les applications, sélectionnez `release` après le bootstrap. Un clone neuf
+ne contient ni dépendances téléchargées ni binaires. Une erreur de bootstrap
+manquant se résout avec la commande de préparation de la plateforme ; changer
+le mode d'optimisation ne la résout pas.
+
 ## Vérifier
 
 `--smoke` produit des positions synthétiques et teste événements et affichage.

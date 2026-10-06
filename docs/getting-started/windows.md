@@ -22,6 +22,22 @@ powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1
 .\build\windows\bin\mig-controller.exe
 ```
 
+### VS Code and CMake presets
+
+For the `release` or `debug` preset, bootstrap from the repository root once:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/bootstrap-native.ps1
+cmake --preset release
+cmake --build --preset release
+ctest --preset release
+```
+
+In VS Code, select `release`, then run **CMake: Configure** and **CMake: Build**.
+The programs are under `build/release/bin`. If CMake is not on the terminal's
+PATH, use VS Code's CMake commands or the build script above. Choose
+`sdk-release` when you only need the portable libraries, without camera apps.
+
 Stop the first camera before starting another. Keep libmediapipe.dll, models and
 configs with the executables. Paths resolve relative to the executable, not cwd.
 --config path.json loads a profile; --camera N selects a device. Configurator startup

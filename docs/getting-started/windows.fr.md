@@ -23,6 +23,22 @@ powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1
 .\build\windows\bin\mig-controller.exe
 ```
 
+### VS Code et presets CMake
+
+Pour les presets `release` ou `debug`, lancez le bootstrap une fois à la racine :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/bootstrap-native.ps1
+cmake --preset release
+cmake --build --preset release
+ctest --preset release
+```
+
+Dans VS Code, choisissez `release`, puis **CMake: Configure** et **CMake: Build**.
+Les programmes se trouvent dans `build/release/bin`. Si CMake n'est pas dans le
+PATH du terminal, utilisez les commandes CMake de VS Code ou le script précédent.
+Choisissez `sdk-release` pour les bibliothèques seules, sans applications caméra.
+
 Arrêtez une caméra avant l'autre app. Gardez DLL/modèles/configs près du binaire,
 ressources relatives à l'exécutable. --config et --camera N choisissent profil et
 caméra. Le configurateur démarre vide, Right V Recalibrate inactive sans Hands. Le profil fourni

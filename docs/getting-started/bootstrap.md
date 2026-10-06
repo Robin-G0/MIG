@@ -98,6 +98,31 @@ For C# use [MigTracker](../../bindings/dotnet/README.md); for lower-level Python
 contracts read the [C API](../reference/c-abi.md). Handle logical events instead of forwarding
 keyboard injection from examples. Dispose trackers and stop capture on exit.
 
+## Choose a CMake preset
+
+A preset stores the build options and output directory. VS Code's CMake Tools
+uses these same presets; choosing one configures the project, it does not run it.
+
+`CMakePresets.json` is shared in Git. Keep machine-specific overrides in
+`CMakeUserPresets.json`, which is ignored, including local toolchain paths.
+
+- `release`: optimized configurator, controller and engine. Bootstrap the native
+  dependencies first; see [Windows](windows.md) or [Linux](linux.md).
+- `debug`: the same applications with debugging information.
+- `sdk-release` / `sdk-debug`: portable engine and bindings only, without camera
+  applications or MediaPipe. A C++20 toolchain is required; the first configuration
+  fetches the JSON dependency when it is not already installed.
+
+```sh
+cmake --preset sdk-release
+cmake --build --preset sdk-release
+ctest --preset sdk-release
+```
+
+For the desktop applications, select `release` after bootstrap. A fresh clone
+contains no downloaded dependencies or binaries; a missing-bootstrap error is
+resolved by the platform bootstrap command, not by changing optimization mode.
+
 ## Verify your changes
 
 Use each viewer's hidden `--smoke` for generated positions. It checks event/render

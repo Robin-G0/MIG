@@ -18,6 +18,7 @@
         {
             "name": "debug",
             "displayName": "MIG Debug",
+            "description": "Desktop applications and engine for debugging. Bootstrap native dependencies first.",
             "inherits": "base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
@@ -26,10 +27,32 @@
         {
             "name": "release",
             "displayName": "MIG Release",
+            "description": "Optimized desktop applications and engine. Bootstrap native dependencies first.",
             "inherits": "base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        },
+        {
+            "name": "sdk-base",
+            "hidden": true,
+            "cacheVariables": {
+                "MIG_BUILD_CONFIGURATOR": "OFF",
+                "MIG_BUILD_CONTROLLER": "OFF",
+                "MIG_BUILD_NATIVE_RUNTIME": "OFF"
+            }
+        },
+        {
+            "name": "sdk-debug",
+            "displayName": "MIG SDK Debug (no camera dependencies)",
+            "description": "Portable engine and bindings for debugging, without desktop applications or MediaPipe.",
+            "inherits": ["sdk-base", "debug"]
+        },
+        {
+            "name": "sdk-release",
+            "displayName": "MIG SDK Release (no camera dependencies)",
+            "description": "Optimized portable engine and bindings, without desktop applications or MediaPipe.",
+            "inherits": ["sdk-base", "release"]
         }
     ],
     "buildPresets": [
@@ -42,6 +65,42 @@
             "name": "release",
             "configurePreset": "release",
             "configuration": "Release"
+        },
+        {
+            "name": "sdk-debug",
+            "configurePreset": "sdk-debug",
+            "configuration": "Debug"
+        },
+        {
+            "name": "sdk-release",
+            "configurePreset": "sdk-release",
+            "configuration": "Release"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "debug",
+            "configuration": "Debug",
+            "output": {"outputOnFailure": true}
+        },
+        {
+            "name": "release",
+            "configurePreset": "release",
+            "configuration": "Release",
+            "output": {"outputOnFailure": true}
+        },
+        {
+            "name": "sdk-debug",
+            "configurePreset": "sdk-debug",
+            "configuration": "Debug",
+            "output": {"outputOnFailure": true}
+        },
+        {
+            "name": "sdk-release",
+            "configurePreset": "sdk-release",
+            "configuration": "Release",
+            "output": {"outputOnFailure": true}
         }
     ]
 }

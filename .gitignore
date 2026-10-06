@@ -30,6 +30,7 @@ out/
 /.codex/
 /.agents/
 /.vscode/
+/CMakeUserPresets.json
 
 # Generated binaries, archives and logs
 *.pyc
