@@ -2,6 +2,19 @@ import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { resolve, relative, extname, isAbsolute } from "node:path";
 
+async function pageFile(file) {
+    try {
+        const info = await stat(file);
+        if (!info.isDirectory()) return file;
+        const index = resolve(file, "index.html");
+        await stat(index);
+        return index;
+    } catch (error) {
+        if (error.code !== "ENOENT") throw error;
+        return file + ".html";
+    }
+}
+
 export function serve(directory, port = 8820) {
     const root = resolve(directory);
     const types = { ".html": "text/html", ".js": "text/javascript",
@@ -16,12 +29,7 @@ export function serve(directory, port = 8820) {
                 response.writeHead(403).end();
                 return;
             }
-            let info;
-            try { info = await stat(file); } catch {
-                file += ".html";
-                info = await stat(file);
-            }
-            if (info.isDirectory()) file = resolve(file, "index.html");
+            file = await pageFile(file);
             const content = await readFile(file);
             response.writeHead(200, { "Content-Type": types[extname(file)] ?? "application/octet-stream" });
             response.end(content);
