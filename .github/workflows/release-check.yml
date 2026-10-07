@@ -162,6 +162,9 @@ jobs:
                   mkdir -p build/releases
                   npm pack --workspace motion-input-grid --pack-destination build/releases
                   node tests/npm_package_tests.mjs build/releases/motion-input-grid-*.tgz
+                  npm run package:examples
+                  python3 tests/package_artifact_tests.py build/releases/motion-input-grid-*-javascript-examples.tar.gz
+                  python3 tests/release_archive_tests.py build/releases
             - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: motion-input-grid-npm-candidate

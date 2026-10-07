@@ -102,7 +102,8 @@ without GitHub access. The default expected version comes from the repository;
 
 The tool extracts into a fresh `build/release-upload/` folder and retains it for
 testing. It checks duplicate payloads, inventory completeness, versions, sizes,
-SHA-256 and the existing package-content/license tests. Before upload it requires
+SHA-256 and the existing package-content/license tests. It requires the standalone
+JavaScript examples archive and an intact inventory. Before upload it also requires
 an existing remote tag and a successful candidate run for that tag's commit.
 It uploads the actual release files, not the outer Actions ZIPs, and verifies the
 uploaded hashes. An absent release is created as a draft; review its notes and

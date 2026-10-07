@@ -106,6 +106,7 @@ sans renommer ni reversionner d'anciens artefacts.
 L'outil extrait dans un nouveau dossier `build/release-upload/`, conservé pour
 vos tests. Il contrôle les doublons, l'inventaire complet, les versions, tailles,
 SHA-256 et les tests existants de contenu/licences. Avant l'upload, il exige un
+inventaire intact et l'archive des exemples JavaScript autonomes, ainsi qu'un
 tag distant existant et un run de candidats réussi pour le commit de ce tag.
 Il envoie les vrais fichiers de release, pas les ZIP externes d'Actions, puis
 vérifie les hashes distants. Une release absente est créée en brouillon ; relisez

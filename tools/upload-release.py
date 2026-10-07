@@ -99,6 +99,9 @@ def verify_inventory(directory, version):
         files[name] = path
     if not files:
         raise ValueError("Release manifest contains no artifacts")
+    examples = f"{PACKAGE_NAME}-{version}-javascript-examples.tar.gz"
+    if examples not in files:
+        raise ValueError(f"Incomplete release: missing {examples}; run npm run package:examples")
     allowed = set(files) | METADATA | {name + ".sha256" for name in files}
     extra = {path.name for path in directory.iterdir()} - allowed
     if extra:

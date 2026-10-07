@@ -30,6 +30,23 @@ def fixture(directory):
                                "sha256": upload.file_hash(artifact)}]}
     (directory / "release-manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
     inventory = [artifact, directory / "release-manifest.json"]
+    examples = directory / "motion-input-grid-1.0.1-javascript-examples.tar.gz"
+    payload = {"LICENSE": b"Fixture license", "licenses/MediaPipe-LICENSE": b"MediaPipe license",
+               "licenses/nlohmann-LICENSE": b"JSON license"}
+    payload["manifest.json"] = json.dumps({
+        "project": upload.PROJECT_NAME, "package": upload.PACKAGE_NAME,
+        "repository": upload.REPOSITORY,
+        "sha256": {name: upload.streamed_hash(io.BytesIO(data)) for name, data in payload.items()}
+    }).encode()
+    with tarfile.open(examples, "w:gz") as archive:
+        for name, data in payload.items():
+            entry = tarfile.TarInfo("examples/" + name)
+            entry.size = len(data)
+            archive.addfile(entry, io.BytesIO(data))
+    manifest["artifacts"].append({"name": examples.name, "bytes": examples.stat().st_size,
+                                  "sha256": upload.file_hash(examples)})
+    inventory[1].write_text(json.dumps(manifest), encoding="utf-8")
+    inventory.append(examples)
     (directory / "SHA256SUMS").write_text("".join(
         f"{upload.file_hash(path)}  {path.name}\n" for path in inventory), encoding="utf-8")
     return inventory + [directory / "SHA256SUMS"]
@@ -69,6 +86,14 @@ class ReleaseUploadTests(unittest.TestCase):
         manifest["artifacts"].append(manifest["artifacts"][0])
         files[1].write_text(json.dumps(manifest))
         with self.assertRaisesRegex(ValueError, "duplicate"):
+            upload.verify_inventory(self.root, "1.0.1")
+
+    def test_missing_javascript_examples_is_an_incomplete_release(self):
+        files = fixture(self.root)
+        manifest = json.loads(files[1].read_text())
+        manifest["artifacts"] = manifest["artifacts"][:1]
+        files[1].write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError, "Incomplete release: missing.*javascript-examples"):
             upload.verify_inventory(self.root, "1.0.1")
 
     def test_duplicate_downloads_and_unsafe_paths(self):
@@ -120,7 +145,7 @@ class ReleaseUploadTests(unittest.TestCase):
         with patch.object(upload, "verify_remote_run"), patch.object(upload, "gh") as commands:
             with patch.object(upload, "remote_release", side_effect=[None, release]):
                 upload.upload_release("v1.0.1", files)
-            self.assertEqual(commands.call_count, 4)
+            self.assertEqual(commands.call_count, 5)
             self.assertIn("--draft", commands.call_args_list[0].args)
             self.assertIn("--verify-tag", commands.call_args_list[0].args)
             commands.reset_mock()
