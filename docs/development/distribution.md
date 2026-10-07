@@ -63,14 +63,19 @@ is separate from preparing these artifacts.
 
 An exact Git tag `vX.Y.Z` is the release version. Without an exact tag or `.git`,
 `VERSION` provides the development/source-archive fallback. CMake reports which
-source it used. Synchronize package manifests and workspace locks before packaging:
+source it used. To prepare a new release, first edit `VERSION` to the desired
+version (for example, `1.0.1`) on a commit without an exact release tag. Then
+synchronize package manifests and workspace locks before packaging:
 
 ```sh
-python tools/release-version.py --sync --tag v1.0.0
+python tools/release-version.py --sync
 ```
 
 The command propagates the resolved version to Python, npm, vcpkg and engine
 metadata; release jobs run it independently after checkout. No tag is created.
+Commit and push these changes, then create and push the matching tag, such as
+`v1.0.1`. `--tag v1.0.1` validates the resolved version; it does not change it.
+An exact tag on `HEAD` takes precedence over `VERSION`.
 
 [Prepare release candidates](../../.github/workflows/release-check.yml) runs on release
 tags or manually. It reuses the existing native build, SDK install and example

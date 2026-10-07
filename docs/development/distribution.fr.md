@@ -64,14 +64,19 @@ reste séparée de la préparation de ces artefacts.
 
 Un tag exact `vX.Y.Z` fournit la version de publication. Sans tag exact ou sans
 `.git`, `VERSION` fournit la version de développement/archive source. CMake indique
-la source utilisée. Synchroniser les métadonnées de tous les packages avec :
+la source utilisée. Pour préparer une nouvelle release, modifiez d'abord
+`VERSION` avec la version souhaitée (par exemple `1.0.1`), sur un commit sans
+tag de publication exact. Synchronisez ensuite les métadonnées avec :
 
 ```sh
-python tools/release-version.py --sync --tag v1.0.0
+python tools/release-version.py --sync
 ```
 
 La commande propage la version résolue vers Python, npm, vcpkg et les packages
 moteurs. Chaque job de publication la lance après checkout ; aucun tag n'est créé.
+Commitez et poussez ces changements, puis créez et poussez le tag correspondant,
+par exemple `v1.0.1`. `--tag v1.0.1` vérifie la version résolue sans la modifier.
+Un tag exact sur `HEAD` prend la priorité sur `VERSION`.
 
 [Prepare release candidates](../../.github/workflows/release-check.yml) s'exécute sur
 les tags de publication ou manuellement. Il réutilise les compilations natives,

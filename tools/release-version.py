@@ -7,7 +7,7 @@ from release_metadata import ROOT, release_version, synchronize_versions
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--tag")
+    parser.add_argument("--tag", help="Validate the resolved version against this tag; does not set it")
     parser.add_argument("--sync", action="store_true", help="Propagate the resolved tag/fallback version")
     args = parser.parse_args()
     release_version(args.tag)
