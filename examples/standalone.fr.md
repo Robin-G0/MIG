@@ -9,6 +9,11 @@ levée ou exécutent un profil importé, sans envoyer de touches à d'autres app
 
 ## Lancer une démo
 
+> [!NOTE]
+> Sur Debian, le configurateur, le contrôleur et certains exemples natifs sont
+> encore en cours de développement et de test. Ils peuvent ne pas fonctionner
+> entièrement pour le moment.
+
 Extrayez l'archive complète et lancez une seule caméra à la fois. Gardez les
 épaules visibles une seconde, baissez les mains puis levez un poignet à travers
 les lignes vertes vers la jaune. Les objets et os des mains suivent les poignets.

@@ -6,6 +6,11 @@ Cette page est la matrice canonique de MIG 1.0.0, schéma JSON 2 et C ABI 1.
 La maturité concerne les interfaces, pas la précision d’une webcam. Les tests
 synthétiques et les images vides ne prouvent pas une compatibilité matérielle.
 
+Sur Debian, le configurateur, le contrôleur et certains exemples natifs sont encore
+en cours de développement et de test et peuvent ne pas fonctionner entièrement.
+Les vérifications ci-dessous couvrent uniquement les cas indiqués. Le package
+Debian `.deb` fournit le SDK et l'ABI C, pas ces applications de bureau.
+
 | Composant | Maturité | Preuves | Cibles | Périmètre / limite |
 | --- | --- | --- | --- | --- |
 | Moteur / SDK C++ | Stable | Tested | Windows x64, Linux x64/ARM64 | CTest, consommateur CMake installé ; ARM64 émulé |

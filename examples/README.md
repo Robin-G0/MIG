@@ -8,6 +8,10 @@ identifying the accepted action. They report events without sending keyboard key
 
 ## Try a demo
 
+> [!NOTE]
+> On Debian, the configurator, controller and some native examples are still
+> being developed and tested. They may not yet work fully.
+
 Download a **`*-examples`** archive from
 [Releases](https://github.com/Robin-G0/MIG/releases), extract it completely and
 follow the [standalone launch instructions](standalone.md). Native x64 and browser

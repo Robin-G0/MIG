@@ -6,6 +6,11 @@ This is the canonical support matrix for MIG 1.0.0, JSON schema 2 and C ABI 1.
 A maturity label describes the interface, not the quality of a particular camera.
 Automated synthetic and blank-frame checks cannot establish hardware compatibility.
 
+On Debian, the configurator, controller and some native examples are still being
+developed and tested and may not yet work fully. The checks below cover only the
+stated test cases. The Debian `.deb` package supplies the SDK and C ABI, not these
+desktop applications.
+
 | Component | Maturity | Evidence | Targets | Scope / limit |
 | --- | --- | --- | --- | --- |
 | Core / C++ SDK | Stable | Tested | Windows x64, Linux x64/ARM64 | CTest, installed CMake consumer; ARM64 emulated |

@@ -9,6 +9,11 @@ transmettent des événements sans envoyer de touches clavier.
 
 ## Essayer une démo
 
+> [!NOTE]
+> Sur Debian, le configurateur, le contrôleur et certains exemples natifs sont
+> encore en cours de développement et de test. Ils peuvent ne pas fonctionner
+> entièrement pour le moment.
+
 Téléchargez une archive **`*-examples`** depuis les
 [Releases](https://github.com/Robin-G0/MIG/releases), extrayez-la entièrement et
 suivez les [instructions de lancement](standalone.fr.md). Les archives natives

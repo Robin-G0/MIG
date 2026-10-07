@@ -17,6 +17,11 @@ votre distance par rapport à la caméra.
 
 ## Utiliser MIG sur votre ordinateur
 
+> [!NOTE]
+> Sur Debian, le configurateur, le contrôleur et certains exemples natifs sont
+> encore en cours de développement et de test. Ils peuvent ne pas fonctionner
+> entièrement pour le moment.
+
 Aucun code n'est nécessaire pour créer et utiliser un profil de mouvements.
 
 1. Téléchargez l'**archive `*-native`** pour Windows x64 ou Linux x64 et extrayez-la entièrement.

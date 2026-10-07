@@ -19,6 +19,10 @@ Run the saved profile in the [controller](controller.md) or an application using
 
 ## Find and launch the application
 
+> [!NOTE]
+> On Debian, the configurator, controller and some native examples are still
+> being developed and tested. They may not yet work fully.
+
 In [Releases](https://github.com/Robin-G0/MIG/releases), choose a matching native
 archive when available:
 

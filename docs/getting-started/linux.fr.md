@@ -2,6 +2,11 @@
 
 [English](linux.md) | [Français](linux.fr.md)
 
+> [!NOTE]
+> Sur Debian, le configurateur, le contrôleur et certains exemples natifs sont
+> encore en cours de développement et de test. Ils peuvent ne pas fonctionner
+> entièrement pour le moment.
+
 Pour utiliser les applications précompilées, suivez les guides du
 [configurateur](../guides/configurator.fr.md) et du [contrôleur](../guides/controller.fr.md).
 Cette page décrit la compilation et les contrôles propres à la plateforme.

@@ -22,6 +22,11 @@ Utilisez le [configurateur](configurator.fr.md) pour dessiner ou modifier les mo
 
 ## Où trouver et lancer l'application
 
+> [!NOTE]
+> Sur Debian, le configurateur, le contrôleur et certains exemples natifs sont
+> encore en cours de développement et de test. Ils peuvent ne pas fonctionner
+> entièrement pour le moment.
+
 Dans les [Releases](https://github.com/Robin-G0/MIG/releases), choisissez une
 archive native correspondant à votre système, lorsqu'elle est disponible :
 

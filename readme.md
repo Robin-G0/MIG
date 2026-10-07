@@ -15,6 +15,10 @@ The grid follows shoulder spacing, so it scales as you move toward the camera.
 
 ## Use MIG on your desktop
 
+> [!NOTE]
+> On Debian, the configurator, controller and some native examples are still
+> being developed and tested. They may not yet work fully.
+
 No code is needed to create and run a movement profile.
 
 1. Download the **`*-native` archive** for Windows x64 or Linux x64 and extract it completely.

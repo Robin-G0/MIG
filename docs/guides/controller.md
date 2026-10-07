@@ -21,6 +21,10 @@ optional camera verification. Use the [configurator](configurator.md) to draw or
 
 ## Find and launch the application
 
+> [!NOTE]
+> On Debian, the configurator, controller and some native examples are still
+> being developed and tested. They may not yet work fully.
+
 In [Releases](https://github.com/Robin-G0/MIG/releases), choose a matching native
 archive when available:
 

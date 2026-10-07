@@ -2,6 +2,10 @@
 
 [English](linux.md) | [Français](linux.fr.md)
 
+> [!NOTE]
+> On Debian, the configurator, controller and some native examples are still
+> being developed and tested. They may not yet work fully.
+
 To use prebuilt applications, follow the [configurator](../guides/configurator.md)
 and [controller](../guides/controller.md) guides. This page covers source builds
 and platform-specific controls. For just a library, see the [C++ SDK / CMake](cpp.md),

@@ -9,6 +9,10 @@ profile without sending keys to other applications.
 
 ## Launch a demo
 
+> [!NOTE]
+> On Debian, the configurator, controller and some native examples are still
+> being developed and tested. They may not yet work fully.
+
 Extract the complete platform archive. Run one camera example at a time.
 Keep shoulders visible for a second, lower your hands, then raise either wrist
 through the green rows into the yellow row. The flying props and hand bones
