@@ -86,6 +86,34 @@ vcpkg, Debian et intégrations. L'artefact Actions final contient `SHA256SUMS` e
 ni aucun package n'est publié automatiquement. Le job Linux fournit le sdist
 canonique et Windows fournit sa wheel séparément.
 
+Pour envoyer les artefacts téléchargés, installez [GitHub CLI](https://cli.github.com/)
+et authentifiez-vous une fois avec `gh auth login`. Regroupez les téléchargements
+du même run réussi sur le tag, dont `motion-input-grid-release-candidates.zip`
+(l'inventaire final). Ce ZIP final suffit à lui seul ; les ZIP de candidats
+individuels sont des doublons facultatifs. Depuis le dépôt :
+
+```sh
+python tools/upload-release.py /chemin/vers/telechargements
+python tools/upload-release.py /chemin/vers/telechargements --version 1.0.1
+```
+
+Depuis le dossier des téléchargements, lancez plutôt
+`/chemin/vers/MIG/tools/upload-release.py` avec Python, sans argument de dossier.
+Ajoutez `--check-only` pour vérifier localement sans accès à GitHub. La version
+attendue par défaut vient du dépôt ; `--version` accepte `1.0.1` ou `v1.0.1`
+sans renommer ni reversionner d'anciens artefacts.
+
+L'outil extrait dans un nouveau dossier `build/release-upload/`, conservé pour
+vos tests. Il contrôle les doublons, l'inventaire complet, les versions, tailles,
+SHA-256 et les tests existants de contenu/licences. Avant l'upload, il exige un
+tag distant existant et un run de candidats réussi pour le commit de ce tag.
+Il envoie les vrais fichiers de release, pas les ZIP externes d'Actions, puis
+vérifie les hashes distants. Une release absente est créée en brouillon ; relisez
+ses notes puis publiez-la sur GitHub. Une release existante reçoit uniquement
+les fichiers manquants : les fichiers identiques sont ignorés et les conflits
+refusés. Relancez après une interruption pour reprendre. Aucun envoi n'est fait
+vers PyPI, npm ou d'autres registres.
+
 Pour une préparation locale, utilisez un dossier neuf tel que
 `build/release-candidates/1.0.0`. N'y mélangez pas les previews ou d'anciennes
 versions. Générez l'inventaire après validation :

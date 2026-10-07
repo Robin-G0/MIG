@@ -84,6 +84,32 @@ Its final Actions artifact contains `SHA256SUMS` and `release-manifest.json`.
 It has read-only repository permissions and performs no release or registry upload.
 The Linux job provides the canonical sdist; Windows provides its wheel separately.
 
+To upload downloaded Actions artifacts, install [GitHub CLI](https://cli.github.com/)
+and authenticate once with `gh auth login`. Keep downloads from the same successful
+tag run together, including `motion-input-grid-release-candidates.zip` (the final
+inventory). That final ZIP alone is sufficient; the individual candidate ZIPs
+are optional duplicates. Run this tool from the repository:
+
+```sh
+python tools/upload-release.py /path/to/downloads
+python tools/upload-release.py /path/to/downloads --version 1.0.1
+```
+
+Or, from the downloads folder, run `/path/to/MIG/tools/upload-release.py` with
+Python and omit the directory argument. Add `--check-only` to validate locally
+without GitHub access. The default expected version comes from the repository;
+`--version` accepts `1.0.1` or `v1.0.1` and never relabels older artifacts.
+
+The tool extracts into a fresh `build/release-upload/` folder and retains it for
+testing. It checks duplicate payloads, inventory completeness, versions, sizes,
+SHA-256 and the existing package-content/license tests. Before upload it requires
+an existing remote tag and a successful candidate run for that tag's commit.
+It uploads the actual release files, not the outer Actions ZIPs, and verifies the
+uploaded hashes. An absent release is created as a draft; review its notes and
+publish it on GitHub. An existing release receives missing assets only; identical
+assets are skipped, conflicting assets are rejected. Rerun after an interrupted
+upload to resume. Nothing is published to PyPI, npm or other registries.
+
 Use a fresh output directory for a local candidate, for example
 `build/release-candidates/1.0.0`. Keep previews and older versions out of that
 directory. Generate its inventory only after validation:
