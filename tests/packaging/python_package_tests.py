@@ -22,6 +22,12 @@ def verify(wheel):
         tests.mkdir()
         shutil.copytree(ROOT / "configs", folder / "configs")
         shutil.copytree(ROOT / "examples/common", folder / "examples/common")
+        # The binding tests import the tutorial's synthetic observations.
+        # Stage those fixtures locally without exposing checkout bindings.
+        example = folder / "examples/python-tkinter"
+        (example / "support").mkdir(parents=True)
+        shutil.copy2(ROOT / "examples/python-tkinter/example_usage.py", example)
+        shutil.copy2(ROOT / "examples/python-tkinter/support/python_runtime.py", example / "support")
         source = (ROOT / "tests/bindings/python/python_tests.py").read_text()
         source = source.replace('sys.path.insert(0, str(ROOT / "bindings/python"))', "")
         source = source.replace("run(sys.argv[1])", "run(None)")
