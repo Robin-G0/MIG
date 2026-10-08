@@ -14,7 +14,7 @@ function Get-ExampleDependency([string]$name, [string]$url, [string]$hash) {
     Expand-Archive -LiteralPath $archive -DestinationPath $dependencies -Force
 }
 Get-ExampleDependency 'sdl' 'https://www.libsdl.org/release/SDL2-devel-2.30.12-VC.zip' '1ca980f9964fb44cf94be235c9818fa1dc8e3f76b08096d751b2d689e5e37d02'
-Get-ExampleDependency 'sfml' 'https://www.sfml-dev.org/files/SFML-2.6.2-windows-vc17-64-bit.zip' 'f5995724604d74d06efe89544315d11ac2d3c2d348854c6be55a7a11fb7ecad8'
+Get-ExampleDependency 'sfml' 'https://github.com/SFML/SFML/releases/download/2.6.2/SFML-2.6.2-windows-vc17-64-bit.zip' 'f5995724604d74d06efe89544315d11ac2d3c2d348854c6be55a7a11fb7ecad8'
 Get-ExampleDependency 'sdl-ttf' 'https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.24.0/SDL2_ttf-devel-2.24.0-VC.zip' '2dea8ea01e04756ead27e196a681034ed71342562a75b512ea279fcdfde83307'
 $sdkPath = [IO.Path]::GetFullPath((Join-Path $projectRoot $Sdk))
 foreach ($example in @('sdl2', 'sfml')) {
