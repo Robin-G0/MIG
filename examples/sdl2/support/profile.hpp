@@ -9,8 +9,9 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <commdlg.h>
 #include <windows.h>
+
+#include <commdlg.h>
 #else
 #include <QApplication>
 #include <QFileDialog>
