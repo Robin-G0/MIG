@@ -84,7 +84,8 @@ with tempfile.TemporaryDirectory(dir=ROOT / 'build', prefix='example-package-tes
     (examples / 'bindings/javascript/package.json').write_text('{"name":"motion-input-grid"}')
     (examples / 'examples/web/licenses').mkdir(parents=True)
     (examples / 'examples/web/licenses/MediaPipe-LICENSE').write_text('license')
-    (examples / 'examples/web/README.md').write_text('# Browser\n')
+    (examples / 'examples/web/README.md').write_text(
+        '# Browser\n[API](../../bindings/javascript/README.md)\n')
     (examples / 'examples/web/README.fr.md').write_text('# Navigateur\n')
     small_browser = root / 'browser'
     browser.assemble(examples, small_browser, 'web')
@@ -93,11 +94,14 @@ with tempfile.TemporaryDirectory(dir=ROOT / 'build', prefix='example-package-tes
     package = json.loads((small_browser / 'package.json').read_text())
     assert (small_browser / package['dependencies']['motion-input-grid'].removeprefix('file:')).is_dir()
     assert '../../' not in (small_browser / 'run.sh').read_text()
+    assert '(dependencies/motion-input-grid/README.md)' in (small_browser / 'README.md').read_text()
     (examples / 'examples/next/out/mig').mkdir(parents=True)
     (examples / 'examples/next/out/index.html').write_text('compiled')
     (examples / 'examples/next/out/mig/mig.wasm').write_bytes(b'wasm')
     (examples / 'examples/next/package.json').write_text(
         '{"dependencies":{"motion-input-grid":"1.0.2"}}')
+    (examples / 'examples/next/README.md').write_text('# Next.js\n')
+    (examples / 'examples/next/README.fr.md').write_text('# Next.js\n')
     next_browser = root / 'next-browser'
     browser.assemble(examples, next_browser, 'next')
     assert (next_browser / 'out/index.html').read_text() == 'compiled'

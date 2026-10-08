@@ -34,6 +34,10 @@ def assemble(source, folder, example):
         '#!/bin/sh\nset -eu\nfolder=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)\n'
         'exec node "$folder/run.mjs"\n', newline='\n')
     (folder / 'run.sh').chmod(0o755)
+    for language in ('', '.fr'):
+        guide = folder / f'README{language}.md'
+        guide.write_text(guide.read_text(encoding='utf-8').replace(
+            '../../bindings/javascript/', 'dependencies/motion-input-grid/'), encoding='utf-8')
     rewrite_package_guides(folder)
     write_package_manifest(folder, example, 'browser')
 

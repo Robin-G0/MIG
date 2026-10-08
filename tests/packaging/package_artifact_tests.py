@@ -42,7 +42,21 @@ def verify(path):
                    json.loads(files["package/package.json"])["name"] == "motion-input-grid")
     assert not any(".." in Path(name).parts or name.startswith("/") for name in names)
     assert not any("node_modules" in Path(name).parts or ".git" in Path(name).parts for name in names)
-    assert not any(part in EXCLUDED_NAMES for name in names for part in Path(name).parts), path
+    for name in names:
+        parts = Path(name).parts
+        for index, part in enumerate(parts):
+            if part not in EXCLUDED_NAMES:
+                continue
+            # These exact directories are runnable framework output. Caches and
+            # build directories elsewhere remain excluded from release archives.
+            framework = {'react': 'dist', 'vue': 'dist', 'next': 'out'}
+            combined_output = (index == 3 and parts[1] == 'examples' and
+                               framework.get(parts[2]) == part and
+                               '-javascript-examples' in parts[0])
+            individual_output = (index == 1 and any(
+                f'-browser-{example}-standalone' in parts[0] and output == part
+                for example, output in framework.items()))
+            assert combined_output or individual_output, (path, name)
     assert any(name.endswith("LICENSE") for name in names), path
     if "-native." in path.name or "-examples." in path.name:
         assert any(name.endswith("licenses/MediaPipe-LICENSE") and files[name].strip()
