@@ -1,0 +1,5 @@
+add_executable(mig-engine-benchmark engine_benchmark.cpp)
+target_link_libraries(mig-engine-benchmark PRIVATE mig-core)
+if(WIN32)
+    target_compile_definitions(mig-engine-benchmark PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
+endif()

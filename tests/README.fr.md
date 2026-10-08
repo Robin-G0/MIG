@@ -1,0 +1,64 @@
+# Tests
+
+[English](README.md) | [Français](README.fr.md)
+
+Les tests sont classés selon le comportement vérifié. Chaque domaine C++ possède
+ses cibles CMake et ses déclarations CTest ; [CMakeLists.txt](CMakeLists.txt) les assemble.
+
+| Dossier | Couverture |
+| --- | --- |
+| `core/` | Reconnaissance, contraintes, sessions, coordonnées et mains |
+| `format/` | Validation JSON et aller-retour des configurations |
+| `native/` | Runtime caméra, observations, pixels et propriété des images |
+| `apps/` | Édition, profils, règles clavier et helpers de prévisualisation |
+| `ui/linux/`, `ui/windows/` | Interactions des applications, thèmes et widgets natifs |
+| `bindings/` | Consommateurs C ABI, Python, JavaScript/WASM et .NET |
+| `examples/` | Profils de démo, découverte du runtime, viewers et sélecteurs de fichiers |
+| `packaging/` | SDK installés, wheels, npm, packages de moteurs et archives de release |
+| `tooling/` | Téléchargements, résolution des versions et simulations de publication |
+| `benchmarks/` | Mesures synthétiques des performances du moteur |
+
+## Tests C++ et applications
+
+Exécutez ces commandes depuis la racine du dépôt :
+
+```sh
+cmake -S . -B build/sdk -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF
+cmake --build build/sdk --config Release --parallel 3
+ctest --test-dir build/sdk -C Release --output-on-failure
+```
+
+Pour les tests des applications, compilez-les selon le guide
+[Windows](../docs/getting-started/windows.fr.md) ou
+[Linux](../docs/getting-started/linux.fr.md), puis lancez CTest sur ce build.
+Les tests UI utilisent les applications réelles via `--ui-test` ; leur code vit
+ici et n'est compilé qu'avec `MIG_BUILD_TESTS=ON`. Linux utilise la plateforme
+offscreen de Qt. Les tests UI ont un délai de 30 secondes et s'exécutent en série.
+Les noms CTest existants sont conservés : les filtres tels que
+`ctest --test-dir build/linux-native -R '^linux-.*-ui$'` restent utilisables.
+
+`MIG_BUILD_TESTS=OFF` exclut les tests et les modes de diagnostic de test des applications.
+Activez `MIG_BUILD_BENCHMARKS=ON` pour compiler `mig-engine-benchmark` dans
+`build/<configuration>/tests/benchmarks/` (avec `Release/` pour Visual Studio).
+
+## Tests par scripts
+
+```sh
+python tests/tooling/release_version_tests.py
+python tests/tooling/version_resolution_tests.py
+python tests/tooling/release_upload_tests.py
+python tests/packaging/example_package_tests.py
+python tests/bindings/python/python_tests.py build/windows/src/c-api/Release/mig-c.dll
+npm test
+npm run test:types
+```
+
+Les tests du binding Python et des exemples demandent une bibliothèque C ABI compilée.
+Les tests navigateur et de packaging demandent aussi les assets préparés ou l'artefact
+passé en argument. Le [workflow CI](../.github/workflows/ci.yml) et le
+[workflow de validation des releases](../.github/workflows/release-check.yml)
+décrivent l'ordre complet de compilation et les commandes de chaque plateforme.
+
+La scène de régression Godot reste dans `examples/godot/gdscript/tests/` : elle accompagne
+le projet d'exemple utilisé pour valider l'add-on extrait et est exécutée par
+`packaging/godot_package_tests.py`.

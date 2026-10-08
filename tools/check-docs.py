@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def guides():
     paths = [ROOT / name for name in ("readme.md", "CONTRIBUTING.md", "SECURITY.md")]
-    for directory in ("docs", "examples", "bindings", "integrations", "ports"):
+    for directory in ("docs", "examples", "bindings", "integrations", "ports", "tests"):
         paths.extend((ROOT / directory).rglob("*.md"))
     return sorted(path for path in set(paths)
                   if not any(part in EXCLUDED_NAMES or part in ("licenses", "public")

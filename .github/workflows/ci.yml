@@ -42,10 +42,10 @@ jobs:
               run: python3 tools/check-docs.py
             - name: Check release version consistency
               run: |
-                  python3 tests/release_version_tests.py
-                  python3 tests/version_resolution_tests.py
-                  python3 tests/release_upload_tests.py
-                  python3 tests/example_package_tests.py
+                  python3 tests/tooling/release_version_tests.py
+                  python3 tests/tooling/version_resolution_tests.py
+                  python3 tests/tooling/release_upload_tests.py
+                  python3 tests/packaging/example_package_tests.py
 
     windows:
         name: Windows Release (hands ${{ matrix.hands }})
@@ -64,7 +64,7 @@ jobs:
               with:
                   persist-credentials: false
             - name: Test download recovery and integrity checks
-              run: ./tests/download_tests.ps1
+              run: ./tests/tooling/download_tests.ps1
             - name: Bootstrap, compile both applications and run CTest
               run: ./tools/build-windows.ps1 -Hands '${{ matrix.hands }}' -BuildDirectory build/ci-windows
             - name: Install libraries and CMake package
@@ -142,13 +142,13 @@ jobs:
                   cmake --build build/linux-native --parallel 2
                   ctest --test-dir build/linux-native --output-on-failure --timeout 90
                   cmake --install build/linux-native --prefix "$PWD/distribution/linux/sdk"
-                  PYTHONPATH=bindings/python python3 tests/python_tests.py build/linux-native/src/c-api/libmig-c.so
-                  python3 tests/python_demo_tests.py build/linux-native/src/c-api/libmig-c.so
+                  PYTHONPATH=bindings/python python3 tests/bindings/python/python_tests.py build/linux-native/src/c-api/libmig-c.so
+                  python3 tests/examples/python_demo_tests.py build/linux-native/src/c-api/libmig-c.so
                   MIG_LIBRARY="$PWD/build/linux-native/src/c-api/libmig-c.so" SDL_VIDEODRIVER=dummy python3 examples/pygame/main.py --smoke
                   MIG_LIBRARY="$PWD/build/linux-native/src/c-api/libmig-c.so" xvfb-run -a python3 examples/python-tkinter/main.py --smoke
                   MIG_LIBRARY="$PWD/build/linux-native/src/c-api/libmig-c.so" SDL_VIDEODRIVER=dummy python3 examples/pygame/profile.py --smoke
                   MIG_LIBRARY="$PWD/build/linux-native/src/c-api/libmig-c.so" xvfb-run -a python3 examples/python-tkinter/profile.py --smoke
-                  python3 tests/python_viewer_tests.py build/linux-native/src/c-api/libmig-c.so
+                  python3 tests/examples/python_viewer_tests.py build/linux-native/src/c-api/libmig-c.so
             - name: Build and run installed SDL2/SFML consumers
               run: |
                   cmake -S examples -B build/graphics -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$PWD/distribution/linux/sdk"
@@ -158,7 +158,7 @@ jobs:
                   build/graphics/sfml/mig-sfml configs/default.json --smoke
                   SDL_VIDEODRIVER=dummy build/graphics/sdl2/mig-sdl2-profile --smoke
                   build/graphics/sfml/mig-sfml-profile --smoke
-                  xvfb-run -a python3 tests/example_picker_tests.py build/graphics/sfml/mig-sfml-profile
+                  xvfb-run -a python3 tests/examples/example_picker_tests.py build/graphics/sfml/mig-sfml-profile
             - name: Package native runtime and examples
               run: |
                   cp build/graphics/sdl2/mig-sdl2 build/graphics/sfml/mig-sfml build/linux-native/bin/mig-configurator build/linux-native/bin/mig-controller distribution/linux/
@@ -192,8 +192,8 @@ jobs:
               run: |
                   emcmake cmake -S . -B build/web -DMIG_BUILD_WEB=ON -DMIG_BUILD_TESTS=OFF -DMIG_BUILD_CONTROLLER=OFF -DMIG_BUILD_CONFIGURATOR=OFF
                   cmake --build build/web --parallel 2
-                  node tests/web_tests.mjs
-                  node --experimental-vm-modules tests/web_camera_tests.mjs
+                  node tests/bindings/javascript/web_tests.mjs
+                  node --experimental-vm-modules tests/bindings/javascript/web_camera_tests.mjs
             - name: Package website integration
               run: |
                   mkdir -p distribution/web/models distribution/web/licenses
@@ -244,7 +244,7 @@ jobs:
                   npm run build:examples
                   npx playwright install --with-deps chromium
                   npm run test:browser
-                  node tests/browser_assets_tests.mjs
+                  node tests/bindings/javascript/browser_assets_tests.mjs
             - name: Prepare npm and compiled examples archives
               run: |
                   mkdir -p build/releases

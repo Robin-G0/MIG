@@ -207,7 +207,9 @@ struct App {
     void controller_file(bool saving);
     void controller_view(int command);
     void paint_controller_preview(HDC dc, RECT area);
+#ifdef MIG_APP_TESTS
     int controller_ui_test();
+#endif
     PaintBuffer preview_buffer, editor_buffer;
     HWND window{}, edit_window{}, log_window{}, control_window{}, key_window{}, details_window{};
     HFONT font{}, mono_font{};

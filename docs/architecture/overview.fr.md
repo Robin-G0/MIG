@@ -38,6 +38,13 @@ MIG/
   VERSION               Version commune du moteur et des archives
   examples/             Applications clientes et code de démonstration partagé
   tests/                Vérifications moteur, intégrations, interfaces et paquets
+    core/, format/      Contrats du moteur et des configurations
+    native/, apps/      Runtime caméra et règles des applications
+    ui/                 Tests des applications Linux et Windows
+    bindings/           Tests C ABI, Python, JavaScript et .NET
+    examples/           Comportement des démos et découverte du runtime
+    packaging/, tooling/  Validation des artefacts et outils de build/release
+    benchmarks/         Mesures synthétiques des performances du moteur
   configs/              Profils de mouvements d'exemple
   cmake/                Dépendances et configuration du SDK installé
   tools/                Préparation, compilation, vérification et packaging

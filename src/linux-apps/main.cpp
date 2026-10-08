@@ -15,10 +15,12 @@ int main(int argc, char** argv) {
         bool test = false;
         for (int index = 1; index < argc; ++index) {
             const std::string option = argv[index];
-            if (option == "--ui-test") {
-                test = true;
-            } else if (option == "--runtime" && index + 1 < argc) {
+            if (option == "--runtime" && index + 1 < argc) {
                 runtime = argv[++index];
+#ifdef MIG_APP_TESTS
+            } else if (option == "--ui-test") {
+                test = true;
+#endif
             } else if (option == "--config" && index + 1 < argc) {
                 config = argv[++index];
             } else if (option == "--camera" && index + 1 < argc) {
@@ -37,10 +39,12 @@ int main(int argc, char** argv) {
             window.load(config);
         }
         window.show();
+#ifdef MIG_APP_TESTS
         if (test) {
             application.processEvents();
             return window.ui_test() ? 0 : 1;
         }
+#endif
         return application.exec();
     } catch (const std::exception& error) {
         std::cerr << error.what() << '\n';

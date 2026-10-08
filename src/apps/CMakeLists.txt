@@ -8,13 +8,12 @@ foreach(app IN ITEMS configurator controller)
         continue()
     endif()
     set(app_sources main.cpp platform.cpp runtime.cpp capture.cpp inference.cpp
-        keyboard.cpp controls.cpp diagnostics.cpp theme.cpp scrollbars.cpp import_review.cpp)
+        keyboard.cpp controls.cpp theme.cpp scrollbars.cpp import_review.cpp)
     if(app STREQUAL "configurator")
         list(APPEND app_sources window.cpp renderer.cpp key_editor.cpp editor.cpp
             editor_navigation.cpp editor_settings.cpp editor_constraints.cpp editor_selection.cpp)
     else()
-        list(APPEND app_sources controller_window.cpp controller_profiles.cpp controller_preview.cpp
-            controller_diagnostics.cpp)
+        list(APPEND app_sources controller_window.cpp controller_profiles.cpp controller_preview.cpp)
     endif()
     add_executable(mig-${app} WIN32 ${app_sources})
     if(app STREQUAL "configurator")

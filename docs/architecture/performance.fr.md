@@ -29,14 +29,14 @@ préservés. Pas de fast-math, substitution du modèle ou réduction arbitraire 
 ```sh
 cmake -S . -B build/bench -G Ninja -DCMAKE_BUILD_TYPE=Release     -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF     -DMIG_BUILD_BENCHMARKS=ON
 cmake --build build/bench
-build/bench/tests/mig-engine-benchmark
+build/bench/tests/benchmarks/mig-engine-benchmark
 ```
 
 100000updates/cas, préparation des points comprise, sans caméra/inférence/UI.
 Ces cas incluent des phases inactives/verrouillées ; ils ne représentent pas un
 scan au pire cas de 4096 contraintes. Comparez événements
 acceptés et mesures intercalées sur même machine/compilateur.
-realtime_tests compare64 inputs espaces/miroirs aux moteurs isolés pendant calibrage,
+[Le test temps réel](../../tests/core/realtime_tests.cpp) compare64 inputs espaces/miroirs aux moteurs isolés pendant calibrage,
 mouvements, absences et données anciennes ; événements/progrès/activité et allocations
 ordinaires sont vérifiés. Autres tests : doigts, interactions, alternatives, balayage,
 maintien long, temps, sorties, ownership. ASan/UBSan portable ne prouve pas l'absence

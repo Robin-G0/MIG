@@ -67,7 +67,7 @@ MediaPipe JS/WASM and models are local; Start needs no CDN download. Browser ass
 the browser's WASM implementation, independently of the native camera SDK.
 To edit/rebuild extracted sources, run `npm ci` and `npm run build:examples` in
 the archive root. Its packaged runtime supplies the already compiled WASM/models.
-The low-level WASM test can use `node tests/web_tests.mjs
+The low-level WASM test can use `node tests/bindings/javascript/web_tests.mjs
 bindings/javascript/runtime/mig.mjs` there instead of the checkout build path.
 
 ## Add MIG to your application
@@ -141,7 +141,7 @@ runtime sources and checksummed models into the package and public folders;
 packaging includes sources alongside built output.
 
 Verification commands: `npm test`, `npm run build:examples`,
-`node tests/web_tests.mjs`, `node --experimental-vm-modules tests/web_camera_tests.mjs`
+`node tests/bindings/javascript/web_tests.mjs`, `node --experimental-vm-modules tests/bindings/javascript/web_camera_tests.mjs`
 and `npm run test:browser` after installing Playwright Chromium (`npx playwright
 install chromium`). Set `MIG_BROWSER` to an existing Chromium/Edge executable
 instead if desired. Browser tests use real WASM and synthetic observations/

@@ -12,7 +12,9 @@ class Window : public QMainWindow {
 public:
     Window(std::string runtime, unsigned camera);
     ~Window();
+#ifdef MIG_APP_TESTS
     bool ui_test();
+#endif
     void load(const std::string& path);
 
 private:

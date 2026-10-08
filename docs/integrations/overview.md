@@ -208,7 +208,7 @@ node tools/bootstrap-browser.mjs
 emcmake cmake -S . -B build/web -DMIG_BUILD_WEB=ON -DMIG_BUILD_TESTS=OFF \
   -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF
 cmake --build build/web --parallel 3
-node tests/web_tests.mjs
+node tests/bindings/javascript/web_tests.mjs
 ```
 
 Docker builds use `tools/linux-sdk.Dockerfile` for native Linux/examples, and the

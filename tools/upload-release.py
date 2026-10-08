@@ -116,7 +116,7 @@ def verify_inventory(directory, version):
         checksums[name] = digest
     if set(checksums) != set(files) | {"release-manifest.json"}:
         raise ValueError("SHA256SUMS does not cover the complete release inventory")
-    subprocess.run([sys.executable, "-B", str(ROOT / "tests/package_artifact_tests.py"),
+    subprocess.run([sys.executable, "-B", str(ROOT / "tests/packaging/package_artifact_tests.py"),
                     str(directory)], check=True)
     return [files[name] for name in sorted(files)] + [directory / name for name in sorted(METADATA)]
 

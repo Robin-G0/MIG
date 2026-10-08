@@ -13,4 +13,4 @@ if __name__ == "__main__":
     release_version(args.tag)
     if args.sync:
         synchronize_versions()
-    runpy.run_path(str(ROOT / "tests/release_version_tests.py"), run_name="__main__")
+    runpy.run_path(str(ROOT / "tests/tooling/release_version_tests.py"), run_name="__main__")

@@ -12,9 +12,9 @@ build_native() {
     cmake --build build/release-linux-x64 --parallel "$jobs"
     ctest --test-dir build/release-linux-x64 --output-on-failure
     cmake --install build/release-linux-x64 --prefix "$project_root/build/release-linux-x64-install"
-    PYTHONPATH=bindings/python python3 tests/python_tests.py \
+    PYTHONPATH=bindings/python python3 tests/bindings/python/python_tests.py \
         build/release-linux-x64/src/c-api/libmig-c.so
-    python3 tests/python_demo_tests.py build/release-linux-x64/src/c-api/libmig-c.so
+    python3 tests/examples/python_demo_tests.py build/release-linux-x64/src/c-api/libmig-c.so
 }
 
 build_sdk() {
@@ -66,4 +66,4 @@ python3 tools/package-linux.py --install build/release-linux-x64-install --nativ
 build_python
 bash tools/build-examples.sh
 python3 tools/release-checksums.py
-python3 tests/release_archive_tests.py
+python3 tests/packaging/release_archive_tests.py

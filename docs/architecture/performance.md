@@ -37,7 +37,7 @@ cmake -S . -B build/bench -G Ninja -DCMAKE_BUILD_TYPE=Release \
     -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF \
     -DMIG_BUILD_BENCHMARKS=ON
 cmake --build build/bench
-build/bench/tests/mig-engine-benchmark
+build/bench/tests/benchmarks/mig-engine-benchmark
 ```
 
 The synthetic benchmark performs 100,000 updates per case, including frame setup,
@@ -45,7 +45,7 @@ without camera, inference or UI costs. It includes inactive/latched periods and 
 4,096-constraint scan. Compare accepted event counts as well as timings, and take
 several interleaved samples on the same machine/compiler before drawing conclusions.
 
-`realtime_tests.cpp` compares 64 mixed-space/mirrored inputs against isolated engines
+[The realtime test](../../tests/core/realtime_tests.cpp) compares 64 mixed-space/mirrored inputs against isolated engines
 over calibration, movement, missing landmarks and stale frames. It checks progress,
 events and active outputs while counting ordinary C++ allocations during update.
 Other tests cover scoped fingers, interactions, alternative rows, sweep ordering,

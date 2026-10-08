@@ -1,5 +1,7 @@
 #include "app.hpp"
+#ifdef MIG_APP_TESTS
 #include "diagnostics.hpp"
+#endif
 #include <shellapi.h>
 
 using namespace mig::app;
@@ -8,22 +10,25 @@ using namespace mig;
 int run_application(int argc, wchar_t** argv) {
     try {
         const auto directory = executable_directory();
-        bool infer_test = false, camera_test = false, ui_test = false, session_test = false,
-             track_hands = false;
+        bool ui_test = false, session_test = false, track_hands = false;
+#ifdef MIG_APP_TESTS
+        bool infer_test = false, camera_test = false;
+#endif
         unsigned index = 0;
         PoseModel pose_model = PoseModel::Lite;
         auto profile = directory / L"configs/default.json";
         bool explicit_profile = false;
         for (int i = 1; i < argc; ++i) {
             const std::wstring arg = argv[i];
-            if (arg == L"--infer-test") {
-                infer_test = true;
-            } else if (arg == L"--hands") {
+            if (arg == L"--hands") {
                 track_hands = true;
             } else if (arg == L"--pose-full") {
                 pose_model = PoseModel::Full;
             } else if (arg == L"--pose-lite") {
                 pose_model = PoseModel::Lite;
+#ifdef MIG_APP_TESTS
+            } else if (arg == L"--infer-test") {
+                infer_test = true;
             } else if (arg == L"--hands-test") {
                 track_hands = true;
                 infer_test = true;
@@ -33,6 +38,7 @@ int run_application(int argc, wchar_t** argv) {
                 ui_test = true;
             } else if (arg == L"--session-test") {
                 session_test = true;
+#endif
             } else if (arg == L"--config" && i + 1 < argc) {
                 profile = argv[++i];
                 explicit_profile = true;
@@ -47,14 +53,19 @@ int run_application(int argc, wchar_t** argv) {
                 index = static_cast<unsigned>(std::stoul(camera_number));
             } else {
                 std::cout << "Usage: mig-[configurator|controller] [--config file.json] [--camera "
-                             "index] [--hands] [--pose-lite|--pose-full] "
-                             "[--infer-test|--hands-test|--camera-test|--ui-test|--session-test]\n";
+                             "index] [--hands] [--pose-lite|--pose-full]"
+#ifdef MIG_APP_TESTS
+                             " [--infer-test|--hands-test|--camera-test|--ui-test|--session-test]"
+#endif
+                             "\n";
                 return arg == L"--help" ? 0 : 1;
             }
         }
+#ifdef MIG_APP_TESTS
         if (infer_test) {
             return run_inference_test(directory, track_hands, pose_model);
         }
+#endif
         const HRESULT com = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
         if (FAILED(com)) {
             throw std::runtime_error("Cannot initialise COM");
@@ -72,9 +83,11 @@ int run_application(int argc, wchar_t** argv) {
                 MFShutdown();
             }
         } mf_cleanup;
+#ifdef MIG_APP_TESTS
         if (camera_test) {
             return run_camera_test(directory, index, track_hands, pose_model);
         }
+#endif
         App app;
         app.diagnostic_mode = ui_test;
         app.directory = directory;
@@ -140,12 +153,14 @@ int run_application(int argc, wchar_t** argv) {
         if (!window) {
             throw std::runtime_error("Cannot create window");
         }
+#ifdef MIG_APP_TESTS
         if (session_test) {
             return run_session_test(app, window);
         }
         if (ui_test) {
             return run_ui_test(app, window);
         }
+#endif
         ShowWindow(window, SW_SHOW);
         if (explicit_profile) {
             if (app.review_import(app.config)) {

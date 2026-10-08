@@ -7,16 +7,16 @@ for architecture in x64 arm64; do
     sdk="build/release-sdk-$architecture-install"
     python3 tools/package-sdk.py --sdk "$sdk" --dependencies "$dependencies" --platform "linux-$architecture"
     if [[ "$architecture" == arm64 ]]; then
-        python3 tests/sdk_package_tests.py "build/releases/motion-input-grid-$version-linux-arm64-sdk.tar.gz" --arm64
+        python3 tests/packaging/sdk_package_tests.py "build/releases/motion-input-grid-$version-linux-arm64-sdk.tar.gz" --arm64
     else
-        python3 tests/sdk_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-sdk.tar.gz"
+        python3 tests/packaging/sdk_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-sdk.tar.gz"
     fi
     python3 tools/package-integrations.py --ecosystem unreal --sdk "$sdk" --dependencies "$dependencies" --platform "linux-$architecture"
 done
 python3 tools/package-integrations.py --ecosystem unity --sdk build/release-sdk-x64-install --dependencies "$dependencies" --platform linux-x64
-python3 tests/native_integration_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-unreal.zip"
-python3 tests/python_package_tests.py build/releases/*-manylinux_2_35_x86_64.whl
-python3 tests/debian_package_tests.py build/releases/motion-input-grid_*.deb
+python3 tests/packaging/native_integration_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-unreal.zip"
+python3 tests/packaging/python_package_tests.py build/releases/*-manylinux_2_35_x86_64.whl
+python3 tests/packaging/debian_package_tests.py build/releases/motion-input-grid_*.deb
 python3 tools/bootstrap-godot.py --editor
 for architecture in x64 arm64; do
     toolchain=()
@@ -32,5 +32,5 @@ for architecture in x64 arm64; do
         --dependencies "$dependencies" --platform "linux-$architecture" --godot-bridge "$build/mig-godot.so" \
         --godot-cpp build/godot-deps/godot-cpp-godot-4.3-stable
 done
-python3 tests/godot_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-godot.zip" \
+python3 tests/packaging/godot_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-godot.zip" \
     --godot build/godot-deps/Godot_v4.3-stable_linux.x86_64

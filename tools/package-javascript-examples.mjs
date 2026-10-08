@@ -65,12 +65,13 @@ for (const tool of ["serve-javascript.mjs", "prepare-javascript.mjs", "bootstrap
     "package-javascript-examples.mjs"]) {
     await copyFile(join(root, "tools", tool), join(destination, "tools", tool));
 }
-await mkdir(join(destination, "tests"), { recursive: true });
+const javascriptTests = "tests/bindings/javascript";
+await mkdir(join(destination, javascriptTests), { recursive: true });
 for (const file of ["web_tests.mjs", "web_camera_tests.mjs", "web_session_tests.mjs",
     "framework_tests.mjs", "framework_browser_tests.mjs", "browser_assets_tests.mjs",
     "javascript_server_tests.mjs", "node_archive_tests.mjs", "javascript_types.ts",
     "javascript-types.json"]) {
-    await copyFile(join(root, "tests", file), join(destination, "tests", file));
+    await copyFile(join(root, javascriptTests, file), join(destination, javascriptTests, file));
 }
 await mkdir(join(destination, "configs"), { recursive: true });
 await copyFile(join(root, "configs/default.json"), join(destination, "configs/default.json"));

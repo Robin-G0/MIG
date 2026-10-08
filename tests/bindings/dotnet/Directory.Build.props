@@ -1,0 +1,6 @@
+<Project>
+    <PropertyGroup>
+        <BaseIntermediateOutputPath>../../../build/dotnet-tests/obj/</BaseIntermediateOutputPath>
+        <OutputPath>../../../build/dotnet-tests/bin/</OutputPath>
+    </PropertyGroup>
+</Project>

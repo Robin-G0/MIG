@@ -16,7 +16,9 @@ public:
     ControllerWindow(std::string runtime, unsigned camera, bool diagnostic = false);
     ~ControllerWindow();
     void load(const std::string& path);
+#ifdef MIG_APP_TESTS
     bool ui_test();
+#endif
 
 protected:
     void changeEvent(QEvent* event) override;

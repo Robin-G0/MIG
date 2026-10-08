@@ -1,0 +1,5 @@
+if(MIG_BUILD_FORMAT)
+    add_executable(mig-configuration-tests configuration_tests.cpp)
+    target_link_libraries(mig-configuration-tests PRIVATE mig-format)
+    add_test(NAME configuration COMMAND mig-configuration-tests "${CMAKE_CURRENT_BINARY_DIR}/roundtrip.json")
+endif()

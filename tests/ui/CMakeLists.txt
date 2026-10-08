@@ -1,0 +1,5 @@
+if(WIN32)
+    add_subdirectory(windows)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND (TARGET mig-controller OR TARGET mig-configurator))
+    add_subdirectory(linux)
+endif()

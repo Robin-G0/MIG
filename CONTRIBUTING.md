@@ -20,6 +20,9 @@ For native applications follow the [Windows](docs/getting-started/windows.md) or
 [Linux](docs/getting-started/linux.md) guide. Test hands ON/OFF when changing optional
 tracking. Camera accuracy, real key delivery and engine exports require manual checks.
 
+The [test guide](tests/README.md) maps each domain to its directory and explains
+CTest, application UI tests and script checks.
+
 `src/core` owns recognition; `src/format` owns JSON; C ABI/WASM and `bindings`
 expose the same engine. Runtime editor packages live in `integrations`, demos in
 `examples`, artifact builders in `tools`. See [architecture](docs/architecture/overview.md).

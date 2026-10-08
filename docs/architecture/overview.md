@@ -39,6 +39,13 @@ MIG/
   VERSION               Shared engine and archive version
   examples/             Consumer applications and shared demonstration code
   tests/                Recognition, integration, UI and packaging checks
+    core/, format/      Engine and configuration contracts
+    native/, apps/      Camera runtime and application policies
+    ui/                 Linux and Windows application tests
+    bindings/           C ABI, Python, JavaScript and .NET tests
+    examples/           Demo behavior and runtime discovery
+    packaging/, tooling/  Artifact validation and build/release helpers
+    benchmarks/         Synthetic engine performance measurements
   configs/              Example motion profiles
   cmake/                Dependency resolution and installed SDK configuration
   tools/                Bootstrap, builds, validation and packaging

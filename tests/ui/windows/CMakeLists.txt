@@ -1,0 +1,18 @@
+add_executable(mig-scrollbar-tests scrollbar_tests.cpp "${PROJECT_SOURCE_DIR}/src/apps/scrollbars.cpp")
+target_link_libraries(mig-scrollbar-tests PRIVATE gdi32 user32 comctl32)
+add_test(NAME scrollbars COMMAND mig-scrollbar-tests)
+add_executable(mig-paint-buffer-tests paint_buffer_tests.cpp)
+target_link_libraries(mig-paint-buffer-tests PRIVATE gdi32 user32)
+add_test(NAME paint-buffer COMMAND mig-paint-buffer-tests)
+foreach(application configurator controller)
+    if(TARGET mig-${application})
+        target_sources(mig-${application} PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/session_ui_tests.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/${application}_ui_tests.cpp")
+        target_include_directories(mig-${application} PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}/src/apps")
+        target_compile_definitions(mig-${application} PRIVATE MIG_APP_TESTS)
+        add_test(NAME ${application}-ui COMMAND mig-${application} --ui-test)
+        set_tests_properties(${application}-ui PROPERTIES TIMEOUT 30 RUN_SERIAL TRUE)
+    endif()
+endforeach()

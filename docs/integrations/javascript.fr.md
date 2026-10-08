@@ -59,7 +59,7 @@ JS/WASM et moteur sont locaux, sans CDN ni installation npm.
 Le WASM fonctionne sur x64/ARM64 selon le navigateur, indépendamment du SDK natif.
 Pour modifier/recompiler les sources extraites, lancez `npm ci`, puis
 `npm run build:examples` à la racine de l'archive. Le runtime fourni contient
-déjà WASM et modèles. Le test WASM utilise alors `node tests/web_tests.mjs
+déjà WASM et modèles. Le test WASM utilise alors `node tests/bindings/javascript/web_tests.mjs
 bindings/javascript/runtime/mig.mjs` à la place du chemin de compilation du dépôt.
 
 ## Dans votre projet
@@ -111,8 +111,8 @@ le miroir et suit le thème système. `run.mjs` lance un serveur local minimal.
 La préparation copie les sources canoniques et ressources vérifiées vers package
 et dossiers publics ; l'archive garde sources et résultats compilés ensemble.
 
-Vérifications : `npm test`, `npm run build:examples`, `node tests/web_tests.mjs`,
-`node --experimental-vm-modules tests/web_camera_tests.mjs`, puis
+Vérifications : `npm test`, `npm run build:examples`, `node tests/bindings/javascript/web_tests.mjs`,
+`node --experimental-vm-modules tests/bindings/javascript/web_camera_tests.mjs`, puis
 `npm run test:browser` après `npx playwright install chromium`. `MIG_BROWSER`
 permet de choisir un exécutable Chromium/Edge existant. Ces tests utilisent le
 vrai WASM et des observations/flux synthétiques ; ils ne vérifient pas la caméra

@@ -20,6 +20,9 @@ Pour les applications natives, suivre les guides [Windows](../getting-started/wi
 ou [Linux](../getting-started/linux.fr.md). Tester les mains ON/OFF si le suivi change.
 La précision caméra, la sortie clavier réelle et les exports de jeux exigent des tests manuels.
 
+Le [guide des tests](../../tests/README.fr.md) décrit les dossiers par domaine,
+CTest, les tests UI des applications et les vérifications par scripts.
+
 `src/core` contient la reconnaissance ; `src/format`, le JSON ; C ABI/WASM et les
 `bindings` exposent ce même moteur. `integrations` contient les packages éditeur,
 `examples` les démos, `tools` les générateurs. Voir l'[architecture](../architecture/overview.fr.md).

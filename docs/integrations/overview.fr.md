@@ -156,7 +156,7 @@ node tools/bootstrap-browser.mjs
 emcmake cmake -S . -B build/web -DMIG_BUILD_WEB=ON -DMIG_BUILD_TESTS=OFF \
     -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF
 cmake --build build/web --parallel 3
-node tests/web_tests.mjs
+node tests/bindings/javascript/web_tests.mjs
 ```
 
 CMake>=3.25 ; image Emscripten 4.0.15 utilise un CMake plus vieux : CI installe 3.31.10.
