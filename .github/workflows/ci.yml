@@ -44,7 +44,6 @@ jobs:
               run: |
                   python3 tests/tooling/release_version_tests.py
                   python3 tests/tooling/version_resolution_tests.py
-                  python3 tests/tooling/release_upload_tests.py
                   python3 tests/packaging/example_package_tests.py
 
     windows:

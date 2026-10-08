@@ -3,7 +3,7 @@
 [English](packages.md) | [Français](packages.fr.md)
 
 Téléchargez les packages correspondant à votre système et à votre architecture
-depuis les [releases GitHub](https://github.com/Robin-G0/MIG/releases).
+depuis les [tableaux de la dernière release](https://github.com/Robin-G0/MIG/releases/latest#user-content-downloads).
 Conservez l’archive complète après extraction. La [matrice de support](../reference/support.fr.md)
 précise les prérequis et la maturité des intégrations.
 
@@ -12,8 +12,8 @@ précise les prérequis et la maturité des intégrations.
 - Les archives `*-native` contiennent le configurateur, le contrôleur, le runtime
   caméra et les modèles. Consultez le [configurateur](../guides/configurator.fr.md)
   ou le [contrôleur](../guides/controller.fr.md).
-- Les archives `*-examples` contiennent les démos exécutables et leurs sources.
-  Consultez les [exemples autonomes](../../examples/README.fr.md).
+- Chaque exemple possède son téléchargement `*-standalone` ; choisissez la
+  technologie et la plateforme dans le [guide des exemples](../../examples/README.fr.md).
 - Les archives `*-standalone` contiennent un tutoriel natif, navigateur ou moteur
   à la racine avec ses dépendances. Suivez son README et conservez tout le contenu.
   Node 22.12+ est externe pour les tutoriels navigateur individuels ; les ponts

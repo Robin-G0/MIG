@@ -15,7 +15,7 @@ targets and CTest registrations; [CMakeLists.txt](CMakeLists.txt) assembles them
 | `bindings/` | C ABI, Python, JavaScript/WASM and .NET consumers |
 | `examples/` | Demo profiles, runtime discovery, viewers and file pickers |
 | `packaging/` | Installed SDKs, wheels, npm, engine packages and release archives |
-| `tooling/` | Downloads, version resolution and release upload fixtures |
+| `tooling/` | Downloads and version resolution |
 | `benchmarks/` | Synthetic engine performance measurements |
 
 ## C++ and desktop tests
@@ -45,7 +45,6 @@ Enable `MIG_BUILD_BENCHMARKS=ON` to build `mig-engine-benchmark` under
 ```sh
 python tests/tooling/release_version_tests.py
 python tests/tooling/version_resolution_tests.py
-python tests/tooling/release_upload_tests.py
 python tests/packaging/example_package_tests.py
 python tests/bindings/python/python_tests.py build/windows/src/c-api/Release/mig-c.dll
 npm test

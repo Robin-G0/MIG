@@ -6,20 +6,6 @@
 > MIG est en cours de développement et vient de commencer à publier ses premières versions.
 > Tous les [retours et suggestions](https://github.com/Robin-G0/MIG/issues) sont les bienvenus.
 
-## Essayer MIG maintenant
-
-Choisissez une archive dans la catégorie indiquée, extrayez-la entièrement et suivez son README pour trouver le dossier de lancement.
-Les durées supposent les prérequis installés ; le chargement initial des modèles dépend du matériel.
-
-| Exemple | Préparation après extraction | Plateforme / prérequis | Essayez-moi |
-| --- | --- | --- | --- |
-| [Navigateur](../../examples/web/README.fr.md) | Environ 30–60 secondes | Navigateur moderne ; Node 22.12+ pour les archives individuelles ; assets locaux inclus | [Télécharger la dernière version](https://github.com/Robin-G0/MIG/releases/latest#user-content-browser-examples). Lancez `run.cmd` / `sh run.sh`, ouvrez localhost, autorisez la caméra et levez une main |
-| [Python/Tk](../../examples/python-tkinter/README.fr.md) | Environ 30–60 secondes | Windows x64 : runtime VC++ ; Linux x64 : glibc 2.35+ | [Télécharger la dernière version](https://github.com/Robin-G0/MIG/releases/latest#user-content-python-tkinter-examples). Lancez `main.exe` / `./main` ; Python est fourni |
-| [SDL2](../../examples/sdl2/README.fr.md) | Environ 30–60 secondes | Mêmes prérequis natifs | [Télécharger la dernière version](https://github.com/Robin-G0/MIG/releases/latest#user-content-sdl2-examples). Lancez `mig-sdl2.exe` / `./mig-sdl2` ; levez un poignet du vert vers le jaune |
-
-Les intégrations Godot, Unity et Unreal restent en preview : éditeur et fournisseur
-de pose sont nécessaires, avec une préparation initiale supérieure à une minute.
-
 **Transformez un mouvement en action.** Dessinez le trajet d'un poignet ou d'une
 autre partie du corps, puis utilisez une caméra pour le reconnaître. MIG peut
 envoyer un raccourci clavier à votre application ou transmettre une action à
@@ -32,6 +18,37 @@ votre distance par rapport à la caméra.
 
 [**Télécharger**](https://github.com/Robin-G0/MIG/releases/latest#user-content-downloads) ·
 [**Documentation**](../index.fr.md) · [**Exemples**](../../examples/README.fr.md)
+
+[Essayer](#essayer-mig-maintenant) · [Téléchargements](#téléchargements) · [Applications](#utiliser-mig-sur-votre-ordinateur) · [Intégrer MIG](#intégrer-mig-dans-votre-application) · [Architecture](#explorer-le-moteur)
+
+## Essayer MIG maintenant
+
+Chaque téléchargement contient un seul tutoriel, ses sources et ses dépendances.
+Extrayez toute l'archive et suivez son README. Comptez environ 30–60 secondes avec
+les prérequis installés ; le chargement des modèles dépend du matériel.
+
+| Exemple | Essayez-moi | Lancement |
+| --- | --- | --- |
+| [Navigateur](../../examples/web/README.fr.md) | [Télécharger](https://github.com/Robin-G0/MIG/releases/latest#user-content-web-examples) | `run.cmd` / `sh run.sh`, puis ouvrez localhost et autorisez la caméra |
+| [Python/Tk](../../examples/python-tkinter/README.fr.md) | [Windows / Linux](https://github.com/Robin-G0/MIG/releases/latest#user-content-python-tkinter-examples) | `main.exe` / `./main` ; Python est fourni |
+| [SDL2](../../examples/sdl2/README.fr.md) | [Windows / Linux](https://github.com/Robin-G0/MIG/releases/latest#user-content-sdl2-examples) | `mig-sdl2.exe` / `./mig-sdl2` ; levez un poignet du vert vers le jaune |
+
+Navigateur : Node 22.12+ et navigateur moderne. Viewers natifs : runtime Visual C++
+2022 x64 sous Windows, glibc 2.35+ sous Linux. Les tutoriels des moteurs de jeu
+demandent leur éditeur et un fournisseur de suivi ; ils restent **Preview**.
+
+## Téléchargements
+
+Choisissez votre usage, puis un exemple et votre plateforme dans le tableau de la release.
+
+| Votre besoin | Téléchargements de la dernière release |
+| --- | --- |
+| Créer un profil et piloter une application | [Applications de bureau](https://github.com/Robin-G0/MIG/releases/latest#user-content-desktop-applications) |
+| Essayer Python, SDL2, SFML ou un consumer C++ | [Exemples natifs indépendants](https://github.com/Robin-G0/MIG/releases/latest#user-content-native-examples) |
+| Essayer HTML, React, Vue ou Next.js | [Exemples navigateur indépendants](https://github.com/Robin-G0/MIG/releases/latest#user-content-browser-examples) |
+| Utiliser Godot, Unity ou Unreal | [Tutoriels et intégrations des moteurs](https://github.com/Robin-G0/MIG/releases/latest#user-content-game-engines) |
+| Intégrer MIG dans votre projet | [SDK et packages Python/npm/Debian](https://github.com/Robin-G0/MIG/releases/latest#user-content-sdks-and-language-packages) |
+| Compiler ou vérifier un téléchargement | [Sources et empreintes](https://github.com/Robin-G0/MIG/releases/latest#user-content-source-and-integrity-files) |
 
 ## Utiliser MIG sur votre ordinateur
 

@@ -14,10 +14,15 @@ transmettent des événements sans envoyer de touches clavier.
 > encore en cours de développement et de test. Ils peuvent ne pas fonctionner
 > entièrement pour le moment.
 
-Téléchargez l'archive **`*-examples`** correspondant à votre système depuis les
-[Releases](https://github.com/Robin-G0/MIG/releases) et extrayez-la entièrement.
-Les archives natives x64 et navigateur incluent les applications compilées, leurs
-sources et leurs dépendances ; aucune compilation n'est nécessaire.
+Téléchargez un seul tutoriel **`*-standalone`** et extrayez-le entièrement.
+Son README et ses lanceurs sont à la racine. Les modèles et bibliothèques natives
+sont inclus ; les exemples navigateur demandent Node 22.12+ et un navigateur moderne.
+
+| Type d'exemple | Choisir un tutoriel et sa plateforme |
+| --- | --- |
+| Python, SDL2, SFML et consumers C++ | [Exemples natifs](https://github.com/Robin-G0/MIG/releases/latest#user-content-native-examples) |
+| HTML, React, Vue et Next.js | [Exemples navigateur](https://github.com/Robin-G0/MIG/releases/latest#user-content-browser-examples) |
+| Godot, Unity et Unreal | [Projets et intégrations des moteurs](https://github.com/Robin-G0/MIG/releases/latest#user-content-game-engines) |
 
 1. Lancez un viewer du tableau ci-dessous et autorisez la caméra.
 2. Gardez les deux épaules visibles une seconde pour le calibrage, puis baissez les mains.
@@ -33,11 +38,11 @@ les actions restent anatomiques.
 
 | Plateforme | Démo de levée | Import de profil |
 | --- | --- | --- |
-| Windows x64 Tk/Pygame | `examples/python-tkinter/main.exe`, `examples/pygame/main.exe` | `profile.exe` dans le même dossier |
-| Linux x64 Tk/Pygame | `./examples/python-tkinter/main`, `./examples/pygame/main` | `./profile` correspondant |
-| Windows x64 SDL2/SFML | `examples/sdl2/mig-sdl2.exe`, `examples/sfml/mig-sfml.exe` | Exécutable `-profile.exe` |
-| Linux x64 SDL2/SFML | `./examples/sdl2/mig-sdl2`, `./examples/sfml/mig-sfml` | Lanceur `-profile` |
-| Archive JavaScript | `run.cmd` Windows x64 ou `sh run.sh` Linux x64/ARM64 dans web/react/vue/next | `/profile.html` ou `/profile` pour Next |
+| Windows x64 Tk/Pygame | `main.exe` | `profile.exe` dans le même dossier |
+| Linux x64 Tk/Pygame | `./main` | `./profile` correspondant |
+| Windows x64 SDL2/SFML | `mig-sdl2.exe` / `mig-sfml.exe` | Exécutable `-profile.exe` |
+| Linux x64 SDL2/SFML | `./mig-sdl2` / `./mig-sfml` | Lanceur `-profile` |
+| Archive JavaScript | `run.cmd` Windows x64 ou `sh run.sh` Linux x64/ARM64 à la racine de l'archive | `/profile.html` ou `/profile` pour Next |
 
 ### Prérequis natifs
 
@@ -50,11 +55,11 @@ le système. Le SDK ARM64 accepte les positions fournies ; le runtime caméra
 
 ### Lanceurs navigateur
 
-L'archive JavaScript inclut Node portable, pages compilées, sources, modèles,
-MediaPipe et WASM. Les lanceurs servent localhost:8820 ; ouvrez cette URL puis
-Start dans un navigateur moderne. Aucun npm install, Node installé ou CDN n'est
-nécessaire. Arrêtez le serveur avant un autre exemple. Les pages web simples
-doivent également être servies, jamais ouvertes via file://.
+Les archives navigateur incluent pages compilées, sources, modèles, MediaPipe
+et WASM. Installez Node 22.12+, puis lancez `run.cmd` ou `sh run.sh` à la racine.
+Ouvrez localhost:8820 et cliquez sur Start. Aucun npm install ni CDN n'est requis
+pour exécuter les pages compilées. Arrêtez le serveur avant de lancer un autre viewer.
+Les fichiers HTML doivent être servis, jamais ouverts via file://.
 
 ### Importer un profil
 

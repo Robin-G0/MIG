@@ -15,7 +15,7 @@ commandes depuis la racine du dépôt. Les fichiers générés vont dans `build/
 | `build/` | Configurer, compiler et tester applications et tutoriels. | [Windows](build/build-windows.ps1), [Linux](build/build-linux.sh), [exemples Windows](build/build-examples.ps1), [exemples Linux](build/build-examples.sh), [builds Linux de distribution](build/build-linux-release.sh) |
 | `web/` | Préparer les ressources navigateur et servir les fichiers sur localhost. | [Préparation](web/prepare-javascript.mjs), [serveur HTTP](web/serve-javascript.mjs) |
 | `packaging/` | Assembler bibliothèques, applications et tutoriels distribuables. | Voir le tableau ci-dessous. |
-| `release/` | Résoudre les versions, calculer les empreintes, créer un dépôt APT ou transférer des artefacts préparés. | [Version](release/release-version.py), [manifeste](release/release-manifest.py), [empreintes](release/release-checksums.py), [APT](release/build-apt-repository.py), [transfert](release/upload-release.py), [vérification des candidats](release/check-release-run.py) |
+| `release/` | Vérifier les versions, créer les inventaires et contrôler les empreintes des packages. | [Version](release/release-version.py), [manifeste](release/release-manifest.py), [empreintes](release/release-checksums.py) |
 | `dev/` | Vérifier liens/traductions et formater le C++. | [Documentation](dev/check-docs.py), [formatage](dev/format-code.ps1) |
 | `lib/` | Utilitaires Python/PowerShell partagés par les commandes. | [Assemblage des archives/runtimes](lib/package_linux.py), [métadonnées](lib/release_metadata.py), [exclusions](lib/distribution_policy.py), [téléchargements](lib/download.ps1) |
 | `docker/` | Environnements Linux de compilation et runtime minimal pour tester les téléchargements. | [Développement natif](docker/linux-sdk.Dockerfile), [distribution](docker/linux-release.Dockerfile), [test isolé](docker/linux-example-test.Dockerfile) |
@@ -84,16 +84,3 @@ mais ne prouve pas l'identité de l'éditeur.
 Le [guide des tests](../tests/README.fr.md) décrit CTest, bindings et archives extraites.
 La [matrice de support](../docs/reference/support.fr.md) distingue validation automatique,
 compatibilité caméra et support des éditeurs/exports.
-
-Pour préparer une page de téléchargements classés à partir d'un inventaire existant,
-utilisez [release-notes.py](release/release-notes.py) :
-
-```sh
-python tools/release/release-notes.py build/releases/release-manifest.json --output build/release-notes.md
-```
-
-La page regroupe applications, tutoriels, intégrations des moteurs, SDK et
-sources/fichiers de vérification, avec les plateformes correspondantes.
-[upload-release.py](release/upload-release.py) ajoute ces tableaux à la description
-de la release en préservant ses notes existantes. Le README principal pointe vers
-ces catégories dans la dernière release.

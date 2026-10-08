@@ -32,6 +32,15 @@ out/
 /.vscode/
 /CMakeUserPresets.json
 
+# Local release administration (not part of the user-facing toolkit)
+/tools/release/upload-release.py
+/tools/release/check-release-run.py
+/tools/release/release-notes.py
+/tools/release/select-release-assets.py
+/tools/release/build-apt-repository.py
+/tools/lib/release_notes.py
+/tests/tooling/release_upload_tests.py
+
 # Generated binaries, archives and logs
 *.pyc
 *.log

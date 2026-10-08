@@ -3,7 +3,7 @@
 [English](packages.md) | [Français](packages.fr.md)
 
 Download packages for your operating system and architecture from
-[GitHub Releases](https://github.com/Robin-G0/MIG/releases). Keep the complete
+[latest release tables](https://github.com/Robin-G0/MIG/releases/latest#user-content-downloads). Keep the complete
 archive together after extraction. See the [support matrix](../reference/support.md)
 for platform requirements and integration maturity.
 
@@ -11,8 +11,8 @@ for platform requirements and integration maturity.
 
 - `*-native` archives contain the configurator, controller, camera runtime and models.
   Follow the [configurator](../guides/configurator.md) or [controller](../guides/controller.md) guide.
-- `*-examples` archives contain runnable demos and their sources. Follow the
-  [standalone examples guide](../../examples/README.md).
+- Each example is a separate `*-standalone` download; choose your technology and
+  platform in the [examples guide](../../examples/README.md).
 - `*-standalone` archives contain one native, browser or editor tutorial.
   The example is the archive root; keep its contents together and follow its README.
   Individual browser archives require Node 22.12+; native libraries and editor
@@ -23,7 +23,7 @@ for platform requirements and integration maturity.
 ## Archive layout and source builds
 
 An individual tutorial places its README, application, integration source and
-required runtime files in one folder. Combined examples archives place tutorials
+required runtime files in one folder. Combined archives from older releases or local builds place tutorials
 under `examples/` and share dependencies at the archive root. Moving just one
 subfolder from a combined archive can lose those dependencies; choose its
 `*-standalone` archive when you want to copy only that tutorial.

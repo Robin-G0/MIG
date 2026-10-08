@@ -15,7 +15,7 @@ ses cibles CMake et ses déclarations CTest ; [CMakeLists.txt](CMakeLists.txt) l
 | `bindings/` | Consommateurs C ABI, Python, JavaScript/WASM et .NET |
 | `examples/` | Profils de démo, découverte du runtime, viewers et sélecteurs de fichiers |
 | `packaging/` | SDK installés, wheels, npm, packages de moteurs et archives de release |
-| `tooling/` | Téléchargements, résolution des versions et simulations de publication |
+| `tooling/` | Téléchargements et résolution des versions |
 | `benchmarks/` | Mesures synthétiques des performances du moteur |
 
 ## Tests C++ et applications
@@ -50,7 +50,6 @@ Unity/Unreal et les exports nécessitent encore leurs éditeurs installés.
 ```sh
 python tests/tooling/release_version_tests.py
 python tests/tooling/version_resolution_tests.py
-python tests/tooling/release_upload_tests.py
 python tests/packaging/example_package_tests.py
 python tests/bindings/python/python_tests.py build/windows/src/c-api/Release/mig-c.dll
 npm test

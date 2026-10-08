@@ -4,6 +4,12 @@
 
 ## 1.0.2
 
+- Chaque tutoriel natif, navigateur ou moteur possède son téléchargement autonome,
+  avec sources, instructions de lancement et runtime nécessaire. Les tableaux de
+  release séparent les exemples par technologie et plateforme ; les collections
+  regroupant tous les exemples ne sont pas publiées.
+- Outils et tests sont classés par usage. Les guides bilingues décrivent le contenu
+  des packages, l'installation et les cycles de vie, avec les derniers téléchargements.
 - L’import desktop présente toutes les commandes clavier avant acceptation et exige
   une activation séparée. Le moteur et le parseur valident les touches et les limites
   des séquences de manière cohérente.

@@ -17,21 +17,36 @@ The grid follows shoulder spacing, so it scales as you move toward the camera.
 [**Download**](https://github.com/Robin-G0/MIG/releases/latest#user-content-downloads) ·
 [**Documentation**](docs/index.md) · [**Examples**](examples/README.md)
 
+[Try MIG](#try-mig-now) · [Downloads](#downloads) · [Desktop](#use-mig-on-your-desktop) · [Integrate MIG](#add-mig-to-your-application) · [Architecture](#explore-the-engine)
+
 ## Try MIG now
 
-Choose an archive from the linked category, extract it completely and follow its README to find the launch folder. Setup estimates
-assume the platform prerequisites are installed; first model loading depends on hardware.
+Each download contains one tutorial, its sources and its dependencies. Extract the
+complete archive and follow its README. Allow about 30–60 seconds with prerequisites
+installed; initial model loading depends on your hardware.
 
-| Example | Setup after extraction | Platform / requirements | Try me |
-| --- | --- | --- | --- |
-| [Browser](examples/web/README.md) | About 30–60 seconds | Modern browser; Node 22.12+ for individual archives; local assets included | [Download latest](https://github.com/Robin-G0/MIG/releases/latest#user-content-browser-examples). Run `run.cmd` / `sh run.sh`, open localhost, grant camera permission, raise a hand |
-| [Python/Tk](examples/python-tkinter/README.md) | About 30–60 seconds | Windows x64 VC++ runtime; Linux x64 glibc 2.35+ | [Download latest](https://github.com/Robin-G0/MIG/releases/latest#user-content-python-tkinter-examples). Run frozen `main.exe` / `./main`; Python is bundled |
-| [SDL2](examples/sdl2/README.md) | About 30–60 seconds | Same native prerequisites | [Download latest](https://github.com/Robin-G0/MIG/releases/latest#user-content-sdl2-examples). Run `mig-sdl2.exe` / `./mig-sdl2`; raise a wrist from green into yellow |
+| Example | Try me | Launch |
+| --- | --- | --- |
+| [Browser](examples/web/README.md) | [Download](https://github.com/Robin-G0/MIG/releases/latest#user-content-web-examples) | `run.cmd` / `sh run.sh`, then open localhost and grant camera permission |
+| [Python/Tk](examples/python-tkinter/README.md) | [Windows / Linux](https://github.com/Robin-G0/MIG/releases/latest#user-content-python-tkinter-examples) | `main.exe` / `./main`; Python is bundled |
+| [SDL2](examples/sdl2/README.md) | [Windows / Linux](https://github.com/Robin-G0/MIG/releases/latest#user-content-sdl2-examples) | `mig-sdl2.exe` / `./mig-sdl2`; raise a wrist from green into yellow |
 
-Built viewers are the quickest trial. Source builds require a toolchain and dependencies.
-[Godot](examples/godot/README.md), [Unity](examples/unity/README.md) and
-[Unreal](examples/unreal/README.md) remain **preview integrations** with editor setup
-and host-provided tracking. Their initial setup exceeds one minute.
+Browser: Node 22.12+ and a modern browser. Native viewers: Visual C++ 2022 x64
+runtime on Windows, glibc 2.35+ on Linux. Engine tutorials require their editor
+and a tracking provider; they remain **Preview**.
+
+## Downloads
+
+Choose your use case, then an example and platform in the release table.
+
+| Your goal | Latest release downloads |
+| --- | --- |
+| Create a profile and control an application | [Desktop applications](https://github.com/Robin-G0/MIG/releases/latest#user-content-desktop-applications) |
+| Try Python, SDL2, SFML or a C++ consumer | [Independent native examples](https://github.com/Robin-G0/MIG/releases/latest#user-content-native-examples) |
+| Try HTML, React, Vue or Next.js | [Independent browser examples](https://github.com/Robin-G0/MIG/releases/latest#user-content-browser-examples) |
+| Use Godot, Unity or Unreal | [Engine tutorials and integrations](https://github.com/Robin-G0/MIG/releases/latest#user-content-game-engines) |
+| Integrate MIG into your project | [SDKs and Python/npm/Debian packages](https://github.com/Robin-G0/MIG/releases/latest#user-content-sdks-and-language-packages) |
+| Build from source or verify a download | [Source and checksums](https://github.com/Robin-G0/MIG/releases/latest#user-content-source-and-integrity-files) |
 
 ## Use MIG on your desktop
 

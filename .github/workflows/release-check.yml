@@ -293,6 +293,11 @@ jobs:
               env:
                   RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
               run: |
+                  version=$(cat VERSION)
+                  for suffix in javascript-examples.tar.gz windows-x64-examples.zip linux-x64-examples.tar.gz; do
+                      collection="build/release-candidates/motion-input-grid-$version-$suffix"
+                      rm -f "$collection" "$collection.sha256"
+                  done
                   python3 tests/packaging/package_artifact_tests.py build/release-candidates
                   python3 tools/release/release-manifest.py build/release-candidates ${RELEASE_TAG:+--tag "$RELEASE_TAG"}
                   python3 tools/release/release-checksums.py build/release-candidates --check

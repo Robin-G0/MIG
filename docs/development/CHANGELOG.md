@@ -4,6 +4,11 @@
 
 ## 1.0.2
 
+- Each native, browser and engine tutorial has its own standalone download, with
+  source, launch instructions and required runtime files. Release tables separate
+  examples by technology and platform; bulk example collections are not published.
+- Build tools and tests are grouped by purpose. Bilingual guides describe package
+  contents, installation and integration lifecycles, with links to latest downloads.
 - Desktop profile imports show the complete keyboard mapping before acceptance and
   require separate keyboard activation. Keyboard definitions and automation sizes
   are validated consistently across the engine and profile parser.

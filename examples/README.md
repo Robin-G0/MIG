@@ -12,12 +12,15 @@ identifying the accepted action. They report events without sending keyboard key
 > On Debian, the configurator, controller and some native examples are still
 > being developed and tested. They may not yet work fully.
 
-Download one **`*-standalone`** tutorial or the combined **`*-examples`** archive from
-[Releases](https://github.com/Robin-G0/MIG/releases) and extract it completely.
-Individual archives launch from their root; the table below gives combined-archive
-paths. Native x64 archives bundle runtime libraries/models. Individual browser
-archives require Node 22.12+; the combined JavaScript archive bundles Node.
-Both include compiled pages, source and local browser assets.
+Download one **`*-standalone`** tutorial and extract it completely.
+Its README and launchers are at the archive root. Native libraries/models are
+included; browser examples require Node 22.12+ and a modern browser.
+
+| Example type | Choose a tutorial and platform |
+| --- | --- |
+| Python, SDL2, SFML and C++ consumers | [Native examples](https://github.com/Robin-G0/MIG/releases/latest#user-content-native-examples) |
+| HTML, React, Vue and Next.js | [Browser examples](https://github.com/Robin-G0/MIG/releases/latest#user-content-browser-examples) |
+| Godot, Unity and Unreal | [Engine projects and integrations](https://github.com/Robin-G0/MIG/releases/latest#user-content-game-engines) |
 
 1. Start one viewer from the table below and allow camera access.
 2. Keep both shoulders visible for a second to calibrate, then lower your hands.
@@ -33,11 +36,11 @@ feedback is anatomical.
 
 | Platform | Raised-hands viewer | Import your profile |
 | --- | --- | --- |
-| Windows x64 Tk/Pygame | `examples/python-tkinter/main.exe`, `examples/pygame/main.exe` | Corresponding `profile.exe` |
-| Linux x64 Tk/Pygame | `./examples/python-tkinter/main`, `./examples/pygame/main` | Corresponding `./profile` |
-| Windows x64 SDL2/SFML | `examples/sdl2/mig-sdl2.exe`, `examples/sfml/mig-sfml.exe` | `mig-sdl2-profile.exe`, `mig-sfml-profile.exe` |
-| Linux x64 SDL2/SFML | `./examples/sdl2/mig-sdl2`, `./examples/sfml/mig-sfml` | Corresponding `-profile` launcher |
-| JavaScript archive | `run.cmd` on Windows x64, `sh run.sh` on Linux x64/ARM64 inside web/react/vue/next | `/profile.html` (web/React/Vue), `/profile` (Next) |
+| Windows x64 Tk/Pygame | `main.exe` | Corresponding `profile.exe` |
+| Linux x64 Tk/Pygame | `./main` | Corresponding `./profile` |
+| Windows x64 SDL2/SFML | `mig-sdl2.exe` / `mig-sfml.exe` | `mig-sdl2-profile.exe`, `mig-sfml-profile.exe` |
+| Linux x64 SDL2/SFML | `./mig-sdl2` / `./mig-sfml` | Corresponding `-profile` launcher |
+| JavaScript archive | `run.cmd` on Windows x64, `sh run.sh` on Linux x64/ARM64 at the archive root | `/profile.html` (web/React/Vue), `/profile` (Next) |
 
 ### Native prerequisites
 
@@ -51,11 +54,11 @@ native executables have not been built.
 
 ### Browser launchers
 
-The JavaScript archive includes portable Node runtimes, compiled pages, sources,
-models, MediaPipe and WASM. The launchers serve localhost:8820. Open that URL and
-click Start; a modern browser with camera support is required. No npm install,
-Node installation or CDN download is needed for execution. Stop the server before
-starting another viewer. Plain web files must also be served, never opened via file://.
+Browser archives include compiled pages, sources, models, MediaPipe and WASM.
+Install Node 22.12+, then run `run.cmd` or `sh run.sh` at the archive root.
+Open localhost:8820 and click Start. No npm install or CDN download is needed
+to run compiled pages. Stop the server before starting another viewer.
+Plain HTML files must be served, never opened via file://.
 
 ### Import a profile
 

@@ -15,7 +15,7 @@ the repository root. Generated files belong in `build/` or `distribution/`.
 | `build/` | Configure, compile and test applications or tutorial executables. | [Windows](build/build-windows.ps1), [Linux](build/build-linux.sh), [Windows examples](build/build-examples.ps1), [Linux examples](build/build-examples.sh), [Linux release builds](build/build-linux-release.sh) |
 | `web/` | Stage browser resources or serve files over localhost. | [Prepare assets](web/prepare-javascript.mjs), [HTTP server](web/serve-javascript.mjs) |
 | `packaging/` | Assemble libraries, applications and tutorials into distributable archives. | See the package table below. |
-| `release/` | Resolve versions, hash artifacts, build an APT repository or upload prepared release assets. | [Version](release/release-version.py), [manifest](release/release-manifest.py), [checksums](release/release-checksums.py), [APT](release/build-apt-repository.py), [upload](release/upload-release.py), [candidate verification](release/check-release-run.py) |
+| `release/` | Verify versions, write package inventories and check download hashes. | [Version](release/release-version.py), [manifest](release/release-manifest.py), [checksums](release/release-checksums.py) |
 | `dev/` | Check documentation links/translations and format C++ source. | [Documentation](dev/check-docs.py), [formatting](dev/format-code.ps1) |
 | `lib/` | Shared Python and PowerShell helpers used by the entry points. | [Archive/runtime assembly](lib/package_linux.py), [metadata](lib/release_metadata.py), [file exclusions](lib/distribution_policy.py), [downloads](lib/download.ps1) |
 | `docker/` | Reproducible Linux build environments and a minimal runtime for testing downloads. | [Native development](docker/linux-sdk.Dockerfile), [release build](docker/linux-release.Dockerfile), [isolated example test](docker/linux-example-test.Dockerfile) |
@@ -85,15 +85,3 @@ hashes detect corruption but do not establish publisher identity.
 The [tests guide](../tests/README.md) explains CTest, binding tests and extracted
 tutorial checks. The [support matrix](../docs/reference/support.md) distinguishes
 automated validation from camera, editor and export support.
-
-To prepare a categorized download page from an existing release inventory, use
-[release-notes.py](release/release-notes.py):
-
-```sh
-python tools/release/release-notes.py build/releases/release-manifest.json --output build/release-notes.md
-```
-
-The page groups desktop applications, tutorials, engine integrations, SDKs and
-source/integrity files by platform. [upload-release.py](release/upload-release.py)
-adds these tables to the release description while preserving its existing notes.
-The main README links to those categories in the latest release.
