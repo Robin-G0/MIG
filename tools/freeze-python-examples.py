@@ -43,6 +43,11 @@ def freeze(technology, variant, platform):
         "--add-data", f"{ROOT / 'examples' / technology / 'configuration'}{os.pathsep}configuration",
         str(ROOT / "examples" / technology / f"{variant}.py"),
     ]
+    if technology == "pygame":
+        # Pygame supports loading its bundled fonts directly from files. Its
+        # optional legacy pkg_resources path can pull distro-specific modules
+        # into a frozen build that are absent on the recipient's machine.
+        command[3:3] = ["--exclude-module", "pkg_resources"]
     if os.name != "nt" and technology == "pygame":
         for name in ("egl.so.1", "client.so.0", "cursor.so.0", "server.so.0"):
             library = Path("/usr/lib/x86_64-linux-gnu") / f"libwayland-{name}"

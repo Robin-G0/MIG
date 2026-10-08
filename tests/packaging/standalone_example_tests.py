@@ -56,7 +56,12 @@ def verify(archive, source_python=None):
                     'left_raise (input left_raise)', 'right_raise (input right_raise)')
                 assert all(message in completed.stdout for message in expected), completed.stdout
             elif example in ('sdl2', 'sfml'):
-                assert 'actions=2' in completed.stdout, completed.stdout
+                if 'actions=2' not in completed.stdout:
+                    # SFML's actual window loop reports each action; its
+                    # display-free branch reports a summary instead.
+                    expected = ('left_raise (input left_raise)', 'right_raise (input right_raise)') if (
+                        '-profile' in Path(command[0]).name) else ('Left hand raised!', 'Right hand raised!')
+                    assert all(completed.stdout.count(message) == 1 for message in expected), completed.stdout
             elif example == 'sdk-consumer':
                 assert 'Game event: left_raise' in completed.stdout
             else:
