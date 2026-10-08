@@ -1,0 +1,5 @@
+{
+    "name": "MIG.Examples",
+    "references": ["MIG.Runtime"],
+    "autoReferenced": true
+}

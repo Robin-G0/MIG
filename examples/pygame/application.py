@@ -4,7 +4,8 @@ from pathlib import Path
 
 import pygame
 
-from example_usage import InputSource, announce, hand_lines, parse_options, visible_points, wrists
+from example_usage import InputSource, handle_detected_actions, parse_options
+from python_view import hand_lines, visible_points, wrists
 from python_view import COLORS, grid_lines, prop_points, viewport
 from pygame_view import ActionHud
 
@@ -67,7 +68,7 @@ def run(options):
                 packet, events, image, error = latest
                 if error:
                     raise RuntimeError(error)
-                status = announce(events, options.profile_mode) or status
+                status = handle_detected_actions(events, options.profile_mode) or status
                 if options.smoke and packet and packet.sequence >= 90:
                     running = False
             draw_frame(screen, packet, image, status, hud)

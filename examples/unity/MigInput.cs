@@ -28,6 +28,7 @@ public class MigInput : MonoBehaviour
             {
                 throw new InvalidOperationException("Copy Resources/MIG/raised-hands.json into Assets.");
             }
+            // Construct once: the tracker validates JSON and owns recognition state.
             tracker = new MigTracker(profile != null ? profile.text :
                 "{\"schema_version\":2,\"tracking\":{\"hands\":true},\"inputs\":[]}");
             status = RaisedHands ? "Lower your hands, then raise either wrist." : status;

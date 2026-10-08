@@ -1,5 +1,9 @@
 # Shared example helpers
 
+Each runnable tutorial owns `example_usage` and its local `support/` files.
+This directory keeps canonical profile/font assets and fixtures used by
+repository builds/tests. It is not needed beside a copied standalone tutorial.
+
 [English](README.md) | [Français](README.fr.md)
 
 To use the libraries without compiling them, install
@@ -20,10 +24,8 @@ Each has one responsibility and uses the installed public SDK.
 | runtime.hpp | `find_runtime()`: bundled or checkout runtime with platform library and models |
 | source.hpp | `Source::sample()`: camera/model ownership and copied observations |
 | synthetic.hpp | `synthetic_frame()`: deterministic default-profile body/hand fixture |
-| recognition.hpp | `consume()`: logical action callback |
 | drawing.hpp | `draw(source, line, dot)`: renderer-independent overlay traversal |
 | profile.hpp | Atomic profile replacement, file picker and portable font assets |
-| python_source.py | `InputSource.take()/close()`: bounded worker mailbox for GUI hosts |
 
 Python profile imports are queued to the camera owner thread. Failed validation
 preserves the running profile; successful import restarts capture/calibration.

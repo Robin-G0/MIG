@@ -20,6 +20,7 @@ func is_raised_hands() -> bool:
 
 func _ready() -> void:
     create_interface()
+    # Own one native tracker for this node; release it in _exit_tree().
     tracker = MigTrackerNative.new()
     if not tracker.open('{"schema_version":2,"tracking":{"hands":true},"inputs":[]}'):
         show_error(tracker.get_error())

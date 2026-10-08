@@ -13,6 +13,9 @@ UCLASS(ClassGroup = Input, meta = (BlueprintSpawnableComponent))
 class MIGEXAMPLE_API UMigInputComponent : public UActorComponent {
     GENERATED_BODY()
 public:
+    UMigInputComponent();
+    UPROPERTY(EditAnywhere, Category = "MIG")
+    bool UseSyntheticDemo{};
     UPROPERTY(EditAnywhere, Category = "MIG")
     FString ProfilePath;
     UPROPERTY(BlueprintAssignable, Category = "MIG")
@@ -31,8 +34,12 @@ protected:
     bool RaisedHands{};
     void BeginPlay() override;
     void EndPlay(const EEndPlayReason::Type Reason) override;
+    void TickComponent(float DeltaTime, ELevelTick TickType,
+                       FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+    unsigned DemoSequence{};
+    float DemoTime{};
     void SetDisplayAction(const FString& Action);
     mig_tracker* Tracker{};
     UPROPERTY()

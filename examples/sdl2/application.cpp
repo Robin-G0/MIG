@@ -1,7 +1,7 @@
-#include "support/drawing.hpp"
 #include "example_usage.hpp"
-#include "support/source.hpp"
 #include "hud.hpp"
+#include "support/drawing.hpp"
+#include "support/source.hpp"
 #include <SDL.h>
 
 class CameraTexture {
@@ -147,7 +147,8 @@ int run_application(int argc, char** argv) {
                 continue;
             }
             ++frames;
-            accepted += tutorial::process_tracking_frame(engine, source.body, &status, !demo::profile_mode);
+            accepted +=
+                tutorial::process_tracking_frame(engine, source.body, &status, !demo::profile_mode);
             draw_frame(renderer.get(), camera, source, engine, hud, status);
             if (!options.smoke && options.synthetic) {
                 SDL_Delay(20);

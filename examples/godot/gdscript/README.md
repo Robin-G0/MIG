@@ -1,130 +1,88 @@
-# Godot 4 GDScript
+# Godot 4 GDScript input tutorial
 
 [English](README.md) | [Français](README.fr.md)
 
-## Quick Start
-
-1. Extract this example’s **standalone archive**; keep its contents together.
-2. Build/install the matching GDExtension as described below, open the staged project, run `raised_hands.tscn` and enable **Use Synthetic Demo** on its node.
-3. Keep shoulders visible for calibration, lower your hands into the green region, then raise either wrist into yellow. Expect **Left/Right hand raised** once per wrist.
-
-**Prerequisites:** Preview integration; Godot 4.3+ desktop editor and matching native bridge. Initial C++/godot-cpp setup exceeds one minute; no camera provider is bundled.
-
-Desktop/browser built viewers target about **30–60 seconds after extraction**, with prerequisites installed; cold model loading depends on hardware. Editor and source builds have the longer setup described below. A source-only folder is not the prebuilt package.
-
 ## What this example demonstrates
 
-Use the standard Godot 4.3+ desktop editor. `MigTrackerNative` is a GDExtension
-wrapping MIG's C ABI; recognition stays in C++. No .NET installation is needed.
+One logical action per raised wrist, an on-screen panel and a profile-import
+variant. The editor components accept supplied pose observations. Synthetic
+mode demonstrates action wiring without a camera or claims about tracking accuracy.
+All editor integrations remain preview integrations.
 
-## Build and open
+## Quick Start
 
-Install CMake 3.25+, a C++20 compiler and Python 3 for godot-cpp's generator:
+1. Extract `*-godot-gdscript-standalone` for your platform.
+2. Import `project.godot` in Godot 4.3+ desktop. Open `raised_hands.tscn`,
+   enable **use_synthetic_demo** on its node, and Run. Open `profile.tscn` for JSON import.
+3. Expect `left_raise` and `right_raise` in the panel; connect the action event
+   to your game. Disable synthetic mode when connecting a real provider.
 
-```sh
-git clone --depth 1 --branch godot-4.3-stable https://github.com/godotengine/godot-cpp build/godot-cpp
-cmake -S examples/godot/gdscript/native -B build/godot-gdscript -DGODOT_CPP_DIR=/absolute/build/godot-cpp -DCMAKE_PREFIX_PATH=/absolute/mig-sdk
-cmake --build build/godot-gdscript --config Release --parallel
-```
-
-Without an installed SDK, CMake builds the supplied-landmarks C API from a complete
-MIG checkout, using its usual JSON dependency. No camera models are downloaded.
-In an editor-source archive, use `-S gdscript/native` and its `sdk` folder.
-
-Open `build/godot-gdscript/project/project.godot`. Run `raised_hands.tscn` for the
-demo or `profile.tscn` for the importer. Enable **Use Synthetic Demo** on the
-raised-hands node for one event per wrist without a camera. The importer starts
-empty unless **Profile Path** is assigned. Its button opens a JSON picker.
-Connect `motion_action(action, input_id)` for game actions. Invalid imports preserve
-the current profile; successful imports recalibrate.
-
-The generated `addons/mig/bin` contains the bridge and C API. Runtime packages
-use the positions-only SDK and contain no MediaPipe models or camera provider.
-Export native dependencies as loose files outside the PCK. Build matching
-Windows/Linux x64 or ARM64 binaries. No estimator or web export is provided here.
-
-## Supply observations
-
-Call `submit_frame` on the main thread with reusable buffers:
-
-```gdscript
-var body := PackedFloat32Array()
-var hands := PackedFloat32Array()
-body.resize(264)
-hands.resize(252)
-body[15 * 8] = wrist_x
-body[15 * 8 + 1] = wrist_y
-body[15 * 8 + 3] = confidence
-node.submit_frame(monotonic_ms, frame_number, camera_aspect, body, hands)
-```
-
-Supply shoulders and all points required by the profile, not just the wrist.
-Body points use 33 groups of eight floats; hands use two groups of 21 points with
-six floats each. See the [C ABI layout](../../../docs/reference/c-abi.md). Pass hand count
-and world mask when supplying hand points. Coordinates remain anatomical and
-unmirrored; mirror only your preview. Timestamps and sequences must advance.
-World Y-up wrist coordinates move the node using Godot's negative-Z-forward axes;
-missing world points never move it. Disable synthetic mode with a real provider.
-
-`tracker.active(index)` exposes held conditions. Signals are accepted logical
-events, not OS key presses. Import/update/reset/close belong to one owning thread;
-`_exit_tree()` closes the tracker.
-
-`mig_input.gd` owns UI/lifecycle; derived scripts select the two variants.
-`mig_synthetic_frames.gd` supplies the fixture; `native/` delegates the build to
-`integrations/godot/native`. The generated `addons/mig/mig.gdextension` declares
-the library paths. See the separate [runtime add-on](../../../integrations/godot/README.md).
-
-Headless regression checks after building:
-
-```sh
-godot --headless --path build/godot-gdscript/project --editor --import
-godot --headless --path build/godot-gdscript/project --script res://tests/regression.gd
-```
-
-[Godot GDExtension setup](https://docs.godotengine.org/en/4.3/tutorials/scripting/gdextension/gdextension_cpp_example.html)
-· [Source walkthrough](../../../docs/getting-started/examples.md).
+Godot 4.3+ desktop editor matching the archive’s Windows/Linux platform and
+architecture. With the editor installed, import-and-run is a short trial; first
+editor installation/export setup can exceed one minute. No camera estimator is bundled.
 
 ## Folder walkthrough
 
-`mig_input.gd`: MIG lifecycle and game UI. `mig_raised_hands.gd`: initial mode. Native `MigTrackerNative` bridge calls the C ABI; scene files configure nodes.
-
-Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
+| File/directory | Purpose |
+| --- | --- |
+| `project.godot / raised_hands.tscn / profile.tscn` | Complete project, demo scene and import scene. |
+| `mig_input.gd` | Actual tracker initialization, frames, signals and cleanup. |
+| `mig_raised_hands.gd / mig_profile_input.gd` | Initial mode selection. |
+| `mig_synthetic_frames.gd` | Camera-free observation provider. |
+| `raised-hands.json` | Local schema-v2 two-wrist profile. |
+| `addons/mig/` | Release: native GDExtension, platform descriptor, C ABI and licenses. |
+| `native/ / dependencies/godot/` | Optional bridge rebuild entry and local bridge sources in the release. |
+| `tests/regression.gd` | Deterministic bridge/scene/import/teardown checks. |
+| `licenses/`, `LICENSE`, `manifest.json` | Release notices and checksums. |
 
 ## Code walkthrough
 
-1. `_ready()` creates `MigTrackerNative` and opens a validated empty profile; `import_profile()` loads the selected JSON with `import_json()`.
-2. `submit_frame()` accepts unmirrored body/hand buffers, timestamps, sequence and aspect. `_process()` optionally supplies synthetic packets.
-3. The native bridge calls `mig_update()` and copies its action strings. The node emits `motion_action(action, input_id)` and updates status.
-4. Connect that signal to your game command. Import failures display `get_error()` and retain the active configuration.
-5. `_exit_tree()` closes the tracker; the native reference also owns the C handle. Keep calls on the main thread.
+1. `mig_input.gd` → `_ready()` constructs `MigTrackerNative`, calls `open(json)` and imports the local profile.
+2. `mig_input.gd` → `_process()` optionally obtains demo landmarks from MigSyntheticFrames.
+3. `mig_input.gd` → `submit_frame()` calls tracker.update(timestamp, sequence, aspect, body, hands, count, mask) once.
+4. `mig_input.gd` → `motion_action.emit()` delivers copied action/input strings after querying event_action/event_id.
+5. `mig_input.gd` → `import_profile()` validates JSON atomically and displays failures without losing the old rules.
+6. `mig_input.gd` → `_exit_tree()` closes the native tracker before the scene is destroyed.
 
-## MIG API used
+## Dependencies and runtime placement
 
-`MigTrackerNative.new()`, `open()`, `import_json()`, `update()`, `close()`.
+`addons/mig/bin/` contains `mig-godot.dll` / `.so` and the C ABI;
+`mig.gdextension` selects a matching platform/architecture. Keep the addon inside
+the project. Recognition takes supplied MediaPipe-indexed positions and needs no
+MediaPipe models. World coordinates use metres, Y up; the example explicitly maps
+world Z into Godot’s negative-Z-forward convention. Missing world data does not move the node.
 
-## Configuration used
+The editor/toolchain is external; native libraries, configuration, bridge and
+licenses are bundled in the individual release. A real camera pose provider is
+optional and must call submit_frame() on the owning game/main thread.
 
-The raised-hand demo uses `raised-hands.json` (served as `default.json` in browser assets): one broad Required zone `[-9,3,27,3]`, then a Trigger zone `[-9,1,27,2]` for each wrist. Import mode starts empty and validates schema-v2 JSON before replacement. Step order retains the upward movement; an isolated pose in yellow cannot fire.
+## Source setup outside the repository
 
-## Reuse this in your project
+For a copied source-only folder, install the matching MIG Godot addon release
+into its `addons/` directory, then import `project.godot`. Optional native rebuilding
+requires CMake 3.25+, C++20, the installed C ABI SDK, godot-cpp godot-4.3-stable,
+and integration bridge sources. In an individual archive, those sources are in
+`dependencies/godot/`; configure `native/` with GODOT_CPP_DIR and CMAKE_PREFIX_PATH.
+The repository fallback is only for checkout builds. Export with the matching native addon.
 
-Install the matching MIG package/SDK and retain the integration calls in the walkthrough. Copy the profile and required runtime assets with their licenses; use supplied tracking observations or the native camera adapter, as this example does. Replace the displayed/logged action with your application callback. Keep observations unmirrored, preserve camera aspect, submit one update per fresh frame, and provide missing observations when tracking is lost. Keep the tracker on one owner thread and preserve its cleanup hook. The application window, props and HUD are optional.
+## Reuse and troubleshooting
 
-## Troubleshooting
+Start with `mig_input.gd` and the profile. Keep its lifecycle and replace
+the named action callback/signal with application commands. The panel and prop
+movement only illustrate feedback. Submit unmirrored MediaPipe-indexed body/hand
+observations, original aspect, monotonic milliseconds and increasing sequence.
+Send absent observations when tracking is lost; never update a disposed tracker.
+Callbacks are logical actions, not OS keyboard injection. Use Active/active or
+the C ABI’s mig_active for continuous game input where appropriate.
 
-- Missing native library/model or WASM: extract the whole built package and retain its runtime/assets folders. Check the prerequisite list; a source checkout needs the documented build.
-- Camera unavailable: close other camera users; grant permission. Browser capture needs localhost or HTTPS. Engine previews need your own pose provider.
-- No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
-- Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
-- Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+- DLL/SO not found: keep the documented native placement and matching architecture.
+- Import fails: fix the displayed schema error; invalid profiles retain prior rules.
+- No action: calibrate with both shoulders visible, start in the Required region,
+  then move into Trigger. Standing in Trigger alone cannot fire; sample gaps over
+  180 ms require profiling. Synthetic mode is intended for this demo profile.
+- The raised-hands JSON contains two broad Required/Trigger wrist paths; valid
+  imports clear previous recognition progress and restart calibration.
+- First editor build/export can exceed one minute. Preview exports and real camera
+  providers need validation on your target editor/platform.
 
-## Standalone project dependencies
-
-`project.godot` selects `raised_hands.tscn`; `profile.tscn` is the import variant.
-The archive includes `addons/mig/` with the native GDExtension and C ABI,
-its platform descriptor and licenses. Import the project in Godot 4 desktop,
-enable `use_synthetic_demo` on the scene node, and press Run.
-A copied source folder needs the matching MIG Godot addon installed in `addons/`.
-These preview projects accept supplied observations; a live camera provider
-is your responsibility. First editor/.NET setup can exceed one minute.
+[Configuration reference](../../../docs/reference/configuration.md).

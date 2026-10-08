@@ -42,7 +42,7 @@ dépend du matériel. Dans l'archive groupée, utilisez le dossier de l'exemple.
 4. `process_tracking_frame()` appelle `poll_camera()`, puis `events()`. La caméra
    effectue déjà la reconnaissance ; les paquets synthétiques utilisent `update(packet)`.
 5. `_publish()` copie image et actions dans une boîte bornée. L'interface appelle
-   `handle_detected_actions()` (alias `announce`) pour afficher les tuples logiques.
+   `handle_detected_actions()` pour afficher les tuples logiques.
 6. `_import_pending()` traite les imports sur ce même worker, avec une limite de 1 Mio.
 7. `InputSource.close()` signale l'arrêt et rejoint le worker. La sortie du contexte
    ferme MIG, même après une erreur, avant la destruction de la fenêtre.

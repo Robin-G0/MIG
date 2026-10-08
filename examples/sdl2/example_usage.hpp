@@ -18,11 +18,8 @@ inline mig::Engine initialize_mig(const demo::Options& options) {
     return mig::Engine(load_configuration(options));
 }
 
-inline unsigned process_tracking_frame(mig::Engine& engine, const mig::Frame& body, std::string* status = nullptr,
-                        bool hand_messages = true) {
-    // Submit one fresh, unmirrored observation. The returned span is borrowed
-    // until the next update/reset, so consume its action IDs immediately.
-    const auto events = engine.update(body, body.timestamp_ms);
+inline void handle_detected_actions(const mig::Engine& engine, std::span<const mig::Event> events,
+                                    std::string* status, bool hand_messages) {
     if (!events.empty() && status) {
         status->clear();
     }
@@ -42,6 +39,14 @@ inline unsigned process_tracking_frame(mig::Engine& engine, const mig::Frame& bo
             *status += message;
         }
     }
-    return unsigned(events.size());
+}
+
+inline unsigned process_tracking_frame(mig::Engine& engine, const mig::Frame& tracking_frame,
+                                       std::string* status = nullptr, bool hand_messages = true) {
+    // Give MIG one fresh, unmirrored observation and its monotonic time.
+    // The event span is borrowed until the next update/reset, so dispatch now.
+    const auto detected_actions = engine.update(tracking_frame, tracking_frame.timestamp_ms);
+    handle_detected_actions(engine, detected_actions, status, hand_messages);
+    return unsigned(detected_actions.size());
 }
 } // namespace tutorial

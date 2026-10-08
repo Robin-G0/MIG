@@ -115,3 +115,14 @@ l'inférence avant le toolkit. MediaPipe peut écrire des avertissements de
 télémétrie ; seuls, ils ne prouvent pas un crash. Une exécution sans téléchargement
 ne garantit pas le silence de la télémétrie upstream. Les vérifications et
 exigences restantes figurent dans la [préparation](../docs/reference/support.fr.md).
+
+## Dossiers autonomes et recompilation
+
+Téléchargez une archive `*-standalone` pour un seul tutoriel ou `*-examples` pour
+les comparer. Dans l’archive individuelle, le tutoriel est directement à la racine :
+README, point d’entrée, intégration, profil, runtime et licences. Les natives
+contiennent leurs modèles/bibliothèques ; les individuelles navigateur nécessitent
+Node 22.12+ (la groupée fournit Node). Les guides distinguent essai rapide et
+compilation des sources hors dépôt. `example_usage.py`/`.hpp` ou `.mjs` expose
+les appels MIG ; `support/` local contient les utilitaires visuels et ressources.
+Les exemples d’éditeur fournissent le bridge natif et une démo synthétique.

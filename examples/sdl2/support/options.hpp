@@ -19,7 +19,9 @@ struct Options {
             const auto root = std::filesystem::path(MIG_EXAMPLE_ROOT);
             config = (directory / "configuration/raised-hands.json").lexically_normal().string();
             if (!std::filesystem::exists(config)) {
-                config = (std::filesystem::path(MIG_EXAMPLE_COMMON) / "../configuration/raised-hands.json").string();
+                config = (std::filesystem::path(MIG_EXAMPLE_COMMON) /
+                          "../configuration/raised-hands.json")
+                             .string();
             }
             if (argc < 2) {
                 runtime = find_runtime(directory, root).string();

@@ -12,10 +12,12 @@ identifying the accepted action. They report events without sending keyboard key
 > On Debian, the configurator, controller and some native examples are still
 > being developed and tested. They may not yet work fully.
 
-Download the **`*-examples`** archive matching your system from
+Download one **`*-standalone`** tutorial or the combined **`*-examples`** archive from
 [Releases](https://github.com/Robin-G0/MIG/releases) and extract it completely.
-Native x64 and browser archives include built applications, sources and dependencies;
-no build is needed to try them.
+Individual archives launch from their root; the table below gives combined-archive
+paths. Native x64 archives bundle runtime libraries/models. Individual browser
+archives require Node 22.12+; the combined JavaScript archive bundles Node.
+Both include compiled pages, source and local browser assets.
 
 1. Start one viewer from the table below and allow camera access.
 2. Keep both shoulders visible for a second to calibrate, then lower your hands.
@@ -75,7 +77,7 @@ Hand bones only appear when the profile requests hand inference.
 
 Each visual integration offers a raised-wrist demo and an initially empty profile
 importer. They share [raised-hands.json](common/raised-hands.json) and the C++ engine.
-Game engine samples require their editor and observation provider; they are not
+Game engine samples require their editor and include synthetic provider trials; they are not
 standalone camera exports. SDK consumers are console contract samples rather
 than camera UIs. See the [support matrix](../docs/reference/support.md).
 
@@ -88,7 +90,9 @@ Per-example guides explain installed-library use and full-checkout fallback.
 
 [Bootstrap](../docs/getting-started/bootstrap.md) connects a profile to action
 feedback. The [source walkthrough](../docs/getting-started/examples.md) explains
-the modules and lifecycle; [shared helpers](common/README.md) covers camera
+the modules and lifecycle. Python/C++ folders expose `example_usage.py`/`.hpp`;
+framework folders expose `example_usage.mjs`, and editor guides name their
+component lifecycle. Local `support/` files cover camera
 discovery, coordinates and drawing. Start by replacing the action callback with
 your application's command.
 
@@ -113,3 +117,12 @@ before toolkit shutdown. Upstream MediaPipe can log internal telemetry warnings;
 those alone do not prove a crash, and offline execution does not promise upstream
 telemetry silence. Read [release preparation](../docs/reference/support.md)
 for platform support and verification results.
+
+## Archive layout and rebuilding
+
+Each individual tutorial is its own archive root with a README, entry point,
+integration file, configuration, dependencies and licenses. Copy that complete
+folder. The guides separately document source-only prerequisites and commands
+for rebuilding outside this repository. Combined archives keep larger runtimes
+shared inside the archive. They are useful to compare viewers; individual
+archives are the portable unit for one tutorial.

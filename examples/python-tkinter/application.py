@@ -2,7 +2,8 @@
 import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
-from example_usage import InputSource, announce, hand_lines, parse_options, visible_points, wrists
+from example_usage import InputSource, handle_detected_actions, parse_options
+from python_view import hand_lines, visible_points, wrists
 from python_view import COLORS, grid_lines, prop_points, viewport
 
 
@@ -81,7 +82,7 @@ class Application:
                     self.close()
                 return
             self.draw_frame(packet, image)
-            if message := announce(events, self.options.profile_mode):
+            if message := handle_detected_actions(events, self.options.profile_mode):
                 self.status.set(message)
             if self.options.smoke and packet and packet.sequence >= 90:
                 self.close()

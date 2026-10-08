@@ -42,7 +42,7 @@ on hardware. These commands also work inside the combined archive's example fold
 4. `process_tracking_frame()` calls `poll_camera()` then `events()`. Camera polling
    already performs recognition; host/synthetic packets instead use `update(packet)`.
 5. `_publish()` copies images/actions into a one-frame mailbox. The GUI calls
-   `handle_detected_actions()` (named `announce` in the view) to display logical tuples.
+   `handle_detected_actions()` to display logical tuples.
 6. `_import_pending()` validates imports on the same worker, with a 1 MiB limit.
 7. `InputSource.close()` signals and joins the worker. Exiting the tracker context
    calls `close()` even on errors, before the application destroys its window.

@@ -49,6 +49,7 @@ public partial class MigInput : Node3D
         try
         {
             InitializeNativeLibrary();
+            // One tracker per node; configuration is validated before tracking.
             tracker = new MigTracker("{\"schema_version\":2,\"tracking\":{\"hands\":true},\"inputs\":[]}");
             var path = RaisedHands ? "res://raised-hands.json" : ProfilePath;
             if (path.Length > 0)

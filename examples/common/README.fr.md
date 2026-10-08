@@ -1,5 +1,9 @@
 # Helpers communs des exemples
 
+Chaque tutoriel possède son fichier `example_usage` et ses utilitaires
+locaux dans `support/`. Ce dossier conserve profils, polices et fixtures
+des compilations/tests du dépôt ; un tutoriel autonome ne dépend pas de lui.
+
 [English](README.md) | [Français](README.fr.md)
 
 Pour utiliser les bibliothèques sans les compiler, installez
@@ -20,14 +24,11 @@ le SDK public installé et partagent les variantes au lieu de dupliquer les bouc
 | runtime.hpp | `find_runtime()` : runtime embarqué ou du checkout, bibliothèque et modèles vérifiés |
 | source.hpp | Source::sample : capture, modèles, observations |
 | synthetic.hpp | synthetic_frame : fixture déterministe |
-| recognition.hpp | consume : événements logiques |
 | drawing.hpp | draw : parcours renderer-indépendant |
 | profile.hpp | Import atomique, sélecteur, polices |
 | sdk.cmake | SDK installé ou dépôt, ressources de build |
-| python_source.py | Worker et take/close bornés |
 | python_runtime.py | Recherche bibliothèque/modèles, exécutable figé |
 | python_view.py | Géométrie partagée, aspect, miroir |
-| tk_view.py / pygame_view.py | Toolkit Tk et HUD Pygame |
 
 Imports Python sur le thread caméra, invalide conserve, valide redémarre.
 Les HUD C++ cachent les textes jusqu'au changement d'actions.

@@ -1,94 +1,87 @@
-# Intégration desktop Unreal 5
+# Tutoriel d’entrée Unreal 5 desktop
 
 [English](README.md) | [Français](README.fr.md)
 
-## Essayer maintenant
-
-Extrayez le **package compilé complet** et conservez ses dossiers voisins. Le lancement rapide correspondant est :
-
-Installez le plugin et son SDK dans un projet Unreal desktop, compilez, attachez **MigRaisedHandsComponent** et fournissez vos points de tracking à **SubmitFrame**.
-
-Prérequis et limites : Intégration en aperçu ; éditeur Unreal 5, compilateur C++ et bibliothèque ABI correspondante. La préparation dépasse une minute ; aucun estimateur caméra ni démo automatique n’est inclus.
-
-Les viewers compilés visent **30–60 secondes après extraction**, hors installation des prérequis et chargement initial du modèle. Les projets de moteur et les compilations source nécessitent davantage de préparation, décrite ci-dessous.
-
-Avec votre fournisseur de pose, baissez puis levez un poignet : l'action apparaît dans le panneau UMG.
-
 ## Ce que démontre cet exemple
 
-Copiez ce dossier vers YourProject/Plugins/MigExample. SDK installé sous ThirdParty
-près du .uplugin : include/mig/c/api.h, lib/mig-c.lib et bin/mig-c.dll Windows,
-ou lib/libmig-c.so Linux. Régénérez le projet et compilez. Build.cs lie l'ABI
-et prépare la bibliothèque près de l'exécutable empaqueté.
+Une action logique par poignet levé, un panneau de retour et un mode import JSON.
+Les composants reçoivent des observations fournies. La démo synthétique vérifie
+le câblage sans caméra et sans prétendre mesurer la précision. Ces intégrations
+d’éditeur restent en preview.
 
-MigRaisedHandsComponent utilise le JSON Content libre ; MigProfileInputComponent
-importe arbitrairement. Panneau UMG des actions aussi en Shipping, champ et bouton
-Import JSON profile ou Blueprint ImportProfile(Path). Invalide conserve, valide
-recalibre. ProfilePath précharge, OnMotion reçoit actions. Votre fournisseur
-caméra envoie sur le thread jeu :
+## Démarrage rapide
 
-```cpp
-mig_packet packet{};
-packet.timestamp_ms = monotonic_ms;
-packet.sequence = camera_sequence;
-packet.aspect = width / float(height);
-packet.body[15 * 8] = wrist_x;
-packet.body[15 * 8 + 1] = wrist_y;
-packet.body[15 * 8 + 3] = confidence;
-component->SubmitFrame(packet);
-```
+1. Extrayez `*-unreal-standalone` pour votre plateforme.
+2. Copiez ce dossier dans `YourProject/Plugins/MigExample` d’un projet Unreal C++.
+   Régénérez les fichiers et compilez. Ajoutez **MigRaisedHandsComponent** à un acteur,
+   activez **UseSyntheticDemo**, puis Play.
+3. Observez `left_raise` et `right_raise` dans le panneau ; connectez le signal
+   au jeu. Désactivez le mode synthétique pour un fournisseur réel.
 
-BeginPlay initialise/import ; SubmitFrame copie les chaînes avant Blueprint ;
-EndPlay détruit. Paquets non reflétés et observations d'absence à fournir.
-Aucun estimateur caméra Unreal embarqué. mig_coordinate/mig_active permettent
-contrôles continus ; mètres vers centimètres ×100 et axes explicites selon votre
-jeu. JSON libre NonUFS requis pour FFileHelper. Windows/Linux seulement.
-[Epic staging](https://dev.epicgames.com/documentation/en-us/unreal-engine/integrating-third-party-libraries-into-unreal-engine).
-[Code complet](../../docs/getting-started/examples.fr.md), [démarrage](../../docs/getting-started/bootstrap.fr.md).
+Éditeur Unreal 5 desktop et compilateur C++, Windows/Linux. Installation du
+projet et compilation dépassent une minute. La démo synthétique émet deux actions
+sans caméra ; aucun fournisseur caméra n’est inclus.
 
-[Package runtime séparé](../../integrations/unreal/README.fr.md).
+## Organisation du dossier
 
-## Structure et intégration MIG
+| Fichier/dossier | Rôle |
+| --- | --- |
+| `MigExample.uplugin` | Descripteur du plugin. |
+| `Source/MigExample/Public/MigInputComponent.h` | Provider packet API, Blueprint OnMotion and synthetic toggle. |
+| `Source/MigExample/Private/MigInputComponent.cpp` | Direct C ABI integration and component lifecycle. |
+| `Source/MigExample/Public/MigRaisedHandsComponent.h / MigProfileInputComponent.h` | Initial mode selection. |
+| `Source/MigExample/Private/MigExamplePanel.cpp` | UMG feedback, file path and import button. |
+| `Source/MigExample/MigExample.Build.cs` | Links/stages native library and loose JSON. |
+| `Content/raised-hands.json` | Two-wrist profile, staged NonUFS. |
+| `ThirdParty/` | Release: C ABI headers and platform native/import libraries. |
+| `licenses/`, `LICENSE`, `manifest.json` | Notices et sommes de contrôle de l’archive. |
 
-`Source/MigExample/Private/MigInputComponent.cpp`: C ABI integration. Public component header: packet/event API. `MigExamplePanel.cpp`: UMG UI. `MigExample.Build.cs`: native linking/staging.
+## Parcours du code
 
-Le framework gère la fenêtre et le rendu. Le fichier d'intégration indiqué gère le profil, les observations, les appels MIG, les actions et leur libération.
+1. `Source/MigExample/Private/MigInputComponent.cpp` → `BeginPlay()` : initialise le propriétaire MIG et charge/valide la configuration locale.
+2. `Source/MigExample/Private/MigInputComponent.cpp` → `TickComponent()` : fournit éventuellement les observations synthétiques, séquence et temps croissants.
+3. `Source/MigExample/Private/MigInputComponent.cpp` → `SubmitFrame(Packet)` : soumet chaque nouvelle observation une seule fois à MIG et récupère les actions.
+4. `Source/MigExample/Private/MigInputComponent.cpp` → `OnMotion.Broadcast()` : transmet les chaînes action/identifiant copiées au jeu et actualise le panneau.
+5. `Source/MigExample/Private/MigInputComponent.cpp` → `ImportProfile(Path)` : valide un JSON avant remplacement ; un échec conserve les anciennes règles.
+6. `Source/MigExample/Private/MigInputComponent.cpp` → `EndPlay()` : libère le tracker et ses ressources avant la destruction du composant/nœud.
 
-## Parcours de l'intégration
+## Dépendances et placement des ressources
 
-1. Repérez l'import MIG et la création du tracker dans le fichier indiqué.
-2. Chargez et validez le JSON avant de traiter les observations.
-3. Fournissez des points non miroités, le rapport d'aspect, des timestamps monotones et une séquence croissante.
-4. Appelez le traitement une fois par frame nouvelle. Un poll de caméra natif reconnaît déjà les observations ; récupérez ensuite les événements sans doubler update.
-5. Utilisez les actions logiques pour votre application. Les exemples n'injectent pas de touches système.
-6. Conservez le hook de fermeture du framework et libérez le tracker sur son thread propriétaire.
+Les bibliothèques natives, profil, bridge et licences sont fournis dans l’archive
+individuelle ; l’éditeur et ses outils sont externes. Aucun modèle MediaPipe n’est
+nécessaire pour reconnaître des positions fournies. Le fournisseur caméra réel
+est facultatif et appelle SubmitFrame() sur le thread principal du jeu.
 
-## API MIG utilisée
+Conservez `ThirdParty/include/mig/c/api.h`, `lib/mig-c.lib` et `bin/mig-c.dll`
+sous Windows, ou `lib/libmig-c.so.1` sous Linux. Build.cs place la bibliothèque
+auprès du jeu et le JSON en fichier libre NonUFS, requis par FFileHelper.
+Aucun plugin MIGRuntime séparé n’est requis. `mig_coordinate()` et `mig_active()`
+permettent des commandes continues ; convertissez les mètres en centimètres
+(×100) et adaptez explicitement les axes à votre caméra.
 
-`mig_create()`, `mig_load()`, `mig_update()`, `mig_event_action()`, `mig_event_id()`, `mig_destroy()`.
+## Sources hors du dépôt
 
-## Configuration
+Pour les sources seules, installez le SDK ABI MIG dans `ThirdParty/` (include,
+lib, et bin sous Windows), puis régénérez/compilez. Aucun chemin parent caché.
+MigProfileInputComponent importe un profil via chemin absolu dans son panneau ou
+la fonction Blueprint ImportProfile(Path). Connectez OnMotion aux commandes du jeu.
 
-Le profil raised-hands.json utilise, pour chaque poignet, une grande zone Required `[-9,3,27,3]`, puis une zone Trigger `[-9,1,27,2]`. Un poignet directement dans Trigger ne suffit pas. L'import valide le schéma 2 avant remplacement.
+## Réutilisation et dépannage
 
-## Réutiliser dans votre projet
+Étudiez `Source/MigExample/Private/MigInputComponent.cpp` et le profil. Gardez le cycle de vie, remplacez
+le callback/signal par vos commandes. Panneau et déplacement sont illustratifs.
+Fournissez anatomie MediaPipe non miroir, aspect original, temps monotone et
+séquence croissante. Envoyez des observations absentes en cas de perte de suivi.
+Ne réutilisez jamais un tracker fermé. Les actions n’injectent pas de touches système.
 
-Installez le package ou SDK MIG correspondant et conservez les appels du fichier d'intégration indiqué. Copiez profil, assets et licences ; branchez votre fournisseur de points ou l'adaptateur caméra natif. Remplacez les messages affichés par vos actions applicatives. Gardez le ratio caméra, un update par frame, les observations de perte de tracking et la fermeture sur le thread propriétaire. Fenêtre, props et HUD restent facultatifs.
+- Bibliothèque absente : conservez le placement et l’architecture documentés.
+- Import refusé : corrigez l’erreur ; les règles précédentes restent actives.
+- Aucune action : calibrez les deux épaules, commencez dans Required puis passez
+  dans Trigger. Une pose Trigger isolée ne déclenche rien ; au-delà de 180 ms entre
+  images, profilez le matériel. Le mode synthétique illustre le profil de démo.
+- Le profil contient deux chemins larges Required/Trigger. Un import valide
+  recommence la calibration et vide la progression précédente.
+- Le premier build/export peut dépasser une minute. Validez exports preview et
+  fournisseurs caméra sur votre éditeur/plateforme.
 
-## Résoudre les problèmes
-
-- Runtime/modèles/WASM absents : extrayez le package complet ; un dossier de sources seul ne suffit pas.
-- Caméra indisponible : fermez les autres utilisateurs et autorisez l'accès ; le navigateur nécessite HTTPS ou localhost. Les moteurs nécessitent votre fournisseur de pose.
-- Pas d'action : gardez les épaules visibles, calibrez, partez de Required et atteignez Trigger. Les chemins nécessitent un intervalle maximal de 180 ms ; profilez une inférence très lente.
-- Import invalide : corrigez l'action ou le schéma indiqué par l'erreur ; le profil précédent est conservé.
-- Une inférence native en cours doit terminer avant la jointure du worker lors de l'arrêt.
-
-## Standalone plugin dependencies
-
-The individual archive contains `ThirdParty/include/mig/c`, the platform native
-library (and Windows import library), the plugin descriptor, Source, Content
-profile and licenses. Copy this folder to `YourProject/Plugins/MigExample`;
-regenerate project files and build. An Unreal 5 desktop C++ project/compiler and
-your own pose provider are external prerequisites. Editor compilation takes
-longer than one minute; no camera estimator or models are bundled.
-For a copied raw source folder, install the SDK into `ThirdParty/` as above.
+[Référence configuration](../../docs/reference/configuration.fr.md).

@@ -33,3 +33,36 @@ def grid_lines(packet):
             dx, dy = (column - 4.5) * scale, (y - 3.5) * scale
             points.append((1 - (cx + ax * dx - ay * dy) / aspect, cy + ay * dx + ax * dy))
         yield row, points
+
+
+def visible_points(packet):
+    """Image points mirrored exactly once for display; saved anatomy is unchanged."""
+    if packet is None:
+        return
+    for joint in range(33):
+        offset = joint * 8
+        if packet.body[offset + 3] >= 0.6:
+            yield 1 - packet.body[offset], packet.body[offset + 1]
+
+
+def wrists(packet):
+    if packet is None:
+        return
+    for side, joint in (("left", 15), ("right", 16)):
+        offset = joint * 8
+        if packet.body[offset + 3] >= 0.6:
+            yield side, 1 - packet.body[offset], packet.body[offset + 1]
+
+
+def hand_lines(packet):
+    if packet is None:
+        return
+    for hand in range(packet.hand_count):
+        for base in (1, 5, 9, 13, 17):
+            previous = hand * 126
+            for joint in range(base, base + 4):
+                current = hand * 126 + joint * 6
+                yield (1 - packet.hands[previous], packet.hands[previous + 1],
+                       1 - packet.hands[current], packet.hands[current + 1])
+                previous = current
+

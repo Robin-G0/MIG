@@ -23,9 +23,9 @@ inline std::filesystem::path find_runtime(const std::filesystem::path& directory
         return installed;
     }
     for (const auto& candidate :
-         {directory / "runtime", directory, directory / "../../runtime", directory / "../runtime", root / "runtime",
-          root / "build/windows/bin", root / "build/release/bin", root / "build/debug/bin",
-          root / "build/native-linux-deps", root / "distribution/windows",
+         {directory / "runtime", directory, directory / "../../runtime", directory / "../runtime",
+          root / "runtime", root / "build/windows/bin", root / "build/release/bin",
+          root / "build/debug/bin", root / "build/native-linux-deps", root / "distribution/windows",
           root / "distribution/linux"}) {
         if (has_runtime(candidate)) {
             return candidate.lexically_normal();

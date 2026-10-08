@@ -1,8 +1,8 @@
+#include "example_usage.hpp"
+#include "hud.hpp"
 #include "support/drawing.hpp"
 #include "support/profile.hpp"
-#include "example_usage.hpp"
 #include "support/source.hpp"
-#include "hud.hpp"
 #include <SFML/Graphics.hpp>
 
 class CameraTexture {
@@ -91,7 +91,8 @@ int run_application(int argc, char** argv) {
             unsigned accepted = 0;
             for (int i = 0; i < 90; ++i) {
                 source.sample();
-                accepted += tutorial::process_tracking_frame(engine, source.body, nullptr, !demo::profile_mode);
+                accepted += tutorial::process_tracking_frame(engine, source.body, nullptr,
+                                                             !demo::profile_mode);
             }
             std::cout << "SFML host input frames=90 actions=" << accepted << '\n';
             return 0;

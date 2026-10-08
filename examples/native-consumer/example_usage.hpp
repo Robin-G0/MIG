@@ -16,4 +16,3 @@ inline void demonstrate_inference(const std::string& runtime, bool hands) {
     estimator.set_hands_enabled(false);
     // Scope exit destroys inference tasks before unloading the native library.
 }
-

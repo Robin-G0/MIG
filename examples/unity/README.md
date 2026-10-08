@@ -1,101 +1,86 @@
-# Unity desktop integration
+# Unity desktop input tutorial
 
 [English](README.md) | [Français](README.fr.md)
 
-## Quick Start
-
-1. Extract this example’s **standalone archive**; keep its contents together.
-2. Add this standalone package via Package Manager’s **Add package from disk** (`package.json`), add its component to a Unity desktop project, attach **MigRaisedHands** and enable **UseSyntheticDemo**, then press Play.
-3. Keep shoulders visible for calibration, lower your hands into the green region, then raise either wrist into yellow. Expect **Left/Right hand raised** once per wrist.
-
-**Prerequisites:** Preview integration; Unity desktop editor and matching native plugin. Initial editor/package setup takes longer than one minute; no camera estimator is bundled.
-
-Desktop/browser built viewers target about **30–60 seconds after extraction**, with prerequisites installed; cold model loading depends on hardware. Editor and source builds have the longer setup described below. A source-only folder is not the prebuilt package.
-
 ## What this example demonstrates
 
-Requires a Unity C# desktop project. Install the matching [runtime UPM tarball](../../integrations/unity/README.md)
-in Package Manager first. Copy `bindings/dotnet/SyntheticFrames.cs` and the three
-example scripts into `Assets/Scripts`; the runtime package supplies `MigTracker`. Copy `Resources/MIG/raised-hands.json` into
-`Assets/Resources/MIG/raised-hands.json`.
-The runtime package supplies the platform-filtered native plugin. The positions-only build needs no MediaPipe models.
-Assign a schema-v2 JSON TextAsset to the component's Profile field and connect OnAction.
+One logical action per raised wrist, an on-screen panel and a profile-import
+variant. The editor components accept supplied pose observations. Synthetic
+mode demonstrates action wiring without a camera or claims about tracking accuracy.
+All editor integrations remain preview integrations.
 
-Attach **MigRaisedHands** for the two-wrist demo, or **MigProfileInput** for arbitrary
-profiles. Both show accepted actions in an on-screen panel. The profile variant
-starts empty unless Profile is assigned; type a JSON file path into its panel and
-click **Import JSON profile**, or call `ImportProfile(path)` from your own UI.
-Failed validation preserves the old configuration; successful import recalibrates.
+## Quick Start
 
-```csharp
-var packet = MigTracker.Packet.Empty();
-packet.TimestampMs = monotonicMilliseconds;
-packet.Sequence = frameNumber;
-packet.Aspect = cameraWidth / (float)cameraHeight;
-packet.Body[15 * 8] = wristX;
-packet.Body[15 * 8 + 1] = wristY;
-packet.Body[15 * 8 + 3] = confidence;
-component.SubmitFrame(packet);
-```
+1. Extract `*-unity-standalone` for your platform.
+2. Add this folder’s `package.json` through Package Manager → **Add package from disk**.
+   Attach **MigRaisedHands** to a GameObject, enable **UseSyntheticDemo**, and press Play.
+3. Expect `left_raise` and `right_raise` in the panel; connect the action event
+   to your game. Disable synthetic mode when connecting a real provider.
 
-Connect your estimator to `SubmitFrame()` on the main thread, once per new frame.
-The example does not ship a Unity camera pose estimator; it accepts the provider's
-unmirrored MediaPipe-style body/hand packets. `HandleAction()` invokes UnityEvent;
-`OnDisable()` disposes the native engine. Optional world coordinates move the object
-relative to the user's hips. `tracker.Active(index)` supports continuous Hold/Repeat
-game semantics; OS keys are not injected. Windows/Linux desktop only, not IL2CPP
-mobile/WebGL. See [Unity native plugin documentation](https://docs.unity3d.com/Manual/NativePlugins.html).
-
-For a camera-free demonstration, also copy bindings/dotnet/SyntheticFrames.cs,
-enable UseSyntheticDemo on MigRaisedHands. It produces one event per wrist.
-The generic component's synthetic fixture remains intended for configs/default.json.
-Disable synthetic mode when connecting your real estimator.
-
-[Complete source walkthrough](../../docs/getting-started/examples.md) · [Bootstrap](../../docs/getting-started/bootstrap.md).
-
-[Separate runtime package](../../integrations/unity/README.md).
+Unity desktop editor and a Windows/Linux x64 project. Initial project/package
+setup can exceed one minute. No camera estimator is bundled; synthetic mode needs no camera.
 
 ## Folder walkthrough
 
-`MigInput.cs`: direct MIG integration and Unity lifecycle. `MigRaisedHands.cs` / `MigProfileInput.cs`: initial mode selection. `Resources/MIG/raised-hands.json`: profile.
-
-Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
+| File/directory | Purpose |
+| --- | --- |
+| `MigInput.cs` | Tracker owner, configuration, frames, actions and teardown. |
+| `MigRaisedHands.cs / MigProfileInput.cs` | Demo/import component selection. |
+| `Resources/MIG/raised-hands.json` | Two-wrist profile loaded as a TextAsset. |
+| `SyntheticFrames.cs` | Release: camera-free provider fixture. |
+| `MIG.Examples.asmdef` | Example assembly references the native binding assembly. |
+| `package.json` | UPM descriptor; standalone package has no second UPM dependency. |
+| `Runtime/` | Release: MIG.Runtime assembly, managed bridge and filtered native plugins. |
+| `licenses/`, `LICENSE`, `manifest.json` | Release notices and checksums. |
 
 ## Code walkthrough
 
-1. `MigInput.cs` imports `MotionInputGrid`; `OnEnable()` constructs `MigTracker` from the assigned TextAsset or Resources profile.
-2. `SubmitFrame(packet)` accepts unmirrored body/hand observations with valid shoulders, monotonically increasing timestamps and sequences. Synthetic mode supplies demo packets in `Update()`.
-3. `tracker.Update(ref packet, actionHandler)` recognizes and copies logical actions before callbacks. `HandleAction()` raises `OnAction` and updates the display.
-4. `ImportProfile(path)` uses `ImportJson` for atomic validation/replacement. Bind `OnAction` to your game rather than desktop keyboard injection.
-5. `OnDisable()` calls `tracker.Dispose()`. Do not call a disposed tracker or share it between threads.
+1. `MigInput.cs` → `OnEnable()` loads the assigned TextAsset or Resources profile and constructs `MigTracker(json)` once.
+2. `MigInput.cs` → `Update()` generates 90 deterministic packets when UseSyntheticDemo is enabled.
+3. `MigInput.cs` → `SubmitFrame(packet)` calls `tracker.Update(ref packet, actionHandler)` once per fresh observation.
+4. `MigInput.cs` → `HandleAction()` updates the panel and invokes `OnAction`; connect this UnityEvent to a game command.
+5. `MigInput.cs` → `ImportProfile(path)` uses `ImportJson()` to validate before replacing the current rules.
+6. `MigInput.cs` → `OnDisable()` calls `tracker.Dispose()` before ownership ends.
 
-## MIG API used
+## Dependencies and runtime placement
 
-`MigTracker`, `Packet.Empty()`, `Update()`, `ImportJson()`, `TryCoordinate()`, `Dispose()`.
+Release: `Runtime/Plugins/<platform>/mig-c.dll` or `libmig-c.so` and importer
+metadata are bundled with `Runtime/Bridge/MigTracker.cs`. Do not change the
+platform filters. Recognition consumes supplied positions; no MediaPipe models
+are needed. Supported: desktop Windows/Linux x64. Mobile, WebGL and IL2CPP
+mobile are not validated. World coordinates are metres, Y up, relative to hips;
+`TryCoordinate()` can move the object, while missing world data leaves it still.
 
-## Configuration used
+The editor/toolchain is external; native libraries, configuration, bridge and
+licenses are bundled in the individual release. A real camera pose provider is
+optional and must call SubmitFrame() on the owning game/main thread.
 
-The raised-hand demo uses `raised-hands.json` (served as `default.json` in browser assets): one broad Required zone `[-9,3,27,3]`, then a Trigger zone `[-9,1,27,2]` for each wrist. Import mode starts empty and validates schema-v2 JSON before replacement. Step order retains the upward movement; an isolated pose in yellow cannot fire.
+## Source setup outside the repository
 
-## Reuse this in your project
+For a copied source-only folder, install the matching runtime UPM package
+first, then copy `SyntheticFrames.cs` from the managed binding release into this
+folder. The source UPM descriptor declares that runtime dependency. The standalone
+archive already supplies both and removes the extra dependency. Assign a schema-v2
+TextAsset to Profile for preload; MigProfileInput starts empty otherwise.
 
-Install the matching MIG package/SDK and retain the integration calls in the walkthrough. Copy the profile and required runtime assets with their licenses; use supplied tracking observations or the native camera adapter, as this example does. Replace the displayed/logged action with your application callback. Keep observations unmirrored, preserve camera aspect, submit one update per fresh frame, and provide missing observations when tracking is lost. Keep the tracker on one owner thread and preserve its cleanup hook. The application window, props and HUD are optional.
+## Reuse and troubleshooting
 
-## Troubleshooting
+Start with `MigInput.cs` and the profile. Keep its lifecycle and replace
+the named action callback/signal with application commands. The panel and prop
+movement only illustrate feedback. Submit unmirrored MediaPipe-indexed body/hand
+observations, original aspect, monotonic milliseconds and increasing sequence.
+Send absent observations when tracking is lost; never update a disposed tracker.
+Callbacks are logical actions, not OS keyboard injection. Use Active/active or
+the C ABI’s mig_active for continuous game input where appropriate.
 
-- Missing native library/model or WASM: extract the whole built package and retain its runtime/assets folders. Check the prerequisite list; a source checkout needs the documented build.
-- Camera unavailable: close other camera users; grant permission. Browser capture needs localhost or HTTPS. Engine previews need your own pose provider.
-- No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
-- Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
-- Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+- DLL/SO not found: keep the documented native placement and matching architecture.
+- Import fails: fix the displayed schema error; invalid profiles retain prior rules.
+- No action: calibrate with both shoulders visible, start in the Required region,
+  then move into Trigger. Standing in Trigger alone cannot fire; sample gaps over
+  180 ms require profiling. Synthetic mode is intended for this demo profile.
+- The raised-hands JSON contains two broad Required/Trigger wrist paths; valid
+  imports clear previous recognition progress and restart calibration.
+- First editor build/export can exceed one minute. Preview exports and real camera
+  providers need validation on your target editor/platform.
 
-## Standalone package dependencies
-
-The individual package contains `Runtime/Bridge/MigTracker.cs`, the
-`MIG.Runtime` assembly, `Runtime/Plugins/<platform>/` with importer metadata,
-`SyntheticFrames.cs`, components, Resources profile and licenses. It has no
-dependency on a second UPM package. Add its `package.json` from disk and attach
-`MigRaisedHands` to a GameObject; enable `UseSyntheticDemo` and press Play.
-The editor is external. No MediaPipe models are needed for supplied observations.
-For the raw source folder, install the separate MIG runtime UPM package first
-and copy `SyntheticFrames.cs` from the matching managed binding release.
+[Configuration reference](../../docs/reference/configuration.md).

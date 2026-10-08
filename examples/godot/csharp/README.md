@@ -1,100 +1,90 @@
-# Godot 4 .NET desktop integration
+# Godot 4 .NET input tutorial
 
 [English](README.md) | [Français](README.fr.md)
 
-## Quick Start
-
-1. Extract this example’s **standalone archive**; keep its contents together.
-2. Import `project.godot` into Godot 4.4 .NET, build the C# project and run its scene. Synthetic mode is enabled in the supplied scene.
-3. Keep shoulders visible for calibration, lower your hands into the green region, then raise either wrist into yellow. Expect **Left/Right hand raised** once per wrist.
-
-**Prerequisites:** Preview integration; Godot .NET, .NET SDK and a matching loose native ABI library. Initial setup exceeds one minute; no camera provider is bundled.
-
-Desktop/browser built viewers target about **30–60 seconds after extraction**, with prerequisites installed; cold model loading depends on hardware. Editor and source builds have the longer setup described below. A source-only folder is not the prebuilt package.
-
 ## What this example demonstrates
 
-Copy the scripts and profile from this csharp folder.
-Use the Godot .NET editor and its supported .NET SDK. Copy
-`../../../bindings/dotnet/MigTracker.cs`, `SyntheticFrames.cs` and the three example scripts
-into your project. Copy `raised-hands.json` to `res://raised-hands.json`.
-Attach **MigRaisedHands** for the demo or **MigProfileInput** to import arbitrary
-profiles. Both add an on-screen action panel; the importer has a JSON file picker
-and starts empty unless ProfilePath is assigned. Connect the MotionAction signal.
-Failed imports preserve the previous configuration; successful imports recalibrate.
-Editor-source archives already include the two shared bridge files in this folder.
-Place `mig-c.dll` / `libmig-c.so` beside the executable or in the OS library search
-path. For Linux development, launch with `LD_LIBRARY_PATH=/absolute/sdk/lib godot`.
-Include the library as a loose file when exporting, not only inside the PCK.
+One logical action per raised wrist, an on-screen panel and a profile-import
+variant. The editor components accept supplied pose observations. Synthetic
+mode demonstrates action wiring without a camera or claims about tracking accuracy.
+All editor integrations remain preview integrations.
 
-```csharp
-var packet = MigTracker.Packet.Empty();
-packet.TimestampMs = monotonicMilliseconds;
-packet.Sequence = cameraFrameNumber;
-packet.Aspect = cameraWidth / (float)cameraHeight;
-packet.Body[15 * 8] = wristX;
-packet.Body[15 * 8 + 1] = wristY;
-packet.Body[15 * 8 + 3] = confidence;
-node.SubmitFrame(packet);
-```
+## Quick Start
 
-Supply packets from your own pose provider on the main thread; no estimator is
-bundled in this game example. `_Ready()` imports JSON, `SubmitFrame()` dispatches
-signals and optionally maps world Y-up XYZ into Godot's negative-Z-forward axes,
-and `_ExitTree()` disposes the engine. Missing world data never moves the node.
-Host actions are logical; use `Active(index)` for held game commands.
-Desktop Windows/Linux only; Godot 4 C# web export is not supported.
-See [Godot C# setup](https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/c_sharp_basics.html).
+1. Extract `*-godot-csharp-standalone` for your platform.
+2. Import `project.godot` in Godot 4.4 .NET, Build its C# project, then Run.
+   The supplied `raised_hands.tscn` already enables **UseSyntheticDemo**.
+   Open `profile.tscn` to import arbitrary JSON.
+3. Expect `left_raise` and `right_raise` in the panel; connect the action event
+   to your game. Disable synthetic mode when connecting a real provider.
 
-For a camera-free demonstration, also copy ../../../bindings/dotnet/SyntheticFrames.cs,
-enable UseSyntheticDemo on MigRaisedHands. It produces one event per wrist.
-The generic component's synthetic fixture remains intended for configs/default.json.
-Disable synthetic mode when connecting your real estimator.
-
-[Complete source walkthrough](../../../docs/getting-started/examples.md) · [Bootstrap](../../../docs/getting-started/bootstrap.md).
+Godot 4.4 .NET desktop editor, its .NET 8 SDK and matching Windows/Linux x64
+native library. Initial .NET restore/build or editor setup can exceed one minute.
+No camera provider is bundled; the demo uses supplied synthetic observations.
 
 ## Folder walkthrough
 
-`MigInput.cs`: direct MIG calls and Godot lifecycle. `MigRaisedHands.cs` / `MigProfileInput.cs`: mode selection. Shared `MigTracker.cs`: C ABI signatures/ownership.
-
-Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
+| File/directory | Purpose |
+| --- | --- |
+| `project.godot / MigExample.csproj` | Complete Godot project and pinned .NET build configuration. |
+| `raised_hands.tscn / profile.tscn` | Synthetic demo and arbitrary-profile scenes. |
+| `MigInput.cs` | Tracker lifecycle, native resolver, packets and signals. |
+| `MigRaisedHands.cs / MigProfileInput.cs` | Initial mode selection. |
+| `raised-hands.json` | Local schema-v2 two-wrist profile. |
+| `MigTracker.cs / SyntheticFrames.cs` | Release: managed bridge and camera-free provider fixture. |
+| `mig-c.dll / libmig-c.so` | Release: loose native C ABI at the project root. |
+| `licenses/`, `LICENSE`, `manifest.json` | Release notices and checksums. |
 
 ## Code walkthrough
 
-1. `_Ready()` creates `MigTracker` and calls `ImportProfile()` for the requested JSON. The empty profile starts without actions.
-2. `SubmitFrame(packet)` accepts provider observations on the main thread; `_Process()` optionally supplies synthetic demo packets.
-3. `tracker.Update(ref packet, actionHandler)` runs recognition and copies actions before calling the handler.
-4. The handler emits `MotionAction` and updates the Godot display. Connect the signal to a game action; `ImportJson()` validates atomically.
-5. `_ExitTree()` disposes the native tracker. Ship the native library as a loose file outside the PCK.
+1. `MigInput.cs` → `_Ready()` calls InitializeNativeLibrary(), creates `MigTracker(json)` and imports the selected local profile.
+2. `MigInput.cs` → `_Process()` optionally generates synthetic packets with increasing sequence and timestamp.
+3. `MigInput.cs` → `SubmitFrame(packet)` calls `tracker.Update(ref packet, actionHandler)` once for each observation.
+4. `MigInput.cs` → `HandleAction()` updates the panel and emits MotionAction with copied action/input strings.
+5. `MigInput.cs` → `ImportProfile(path)` reads JSON through Godot.FileAccess and calls ImportJson() before replacement.
+6. `MigInput.cs` → `_ExitTree()` calls `tracker.Dispose()` before node teardown.
 
-## MIG API used
+## Dependencies and runtime placement
 
-`MigTracker`, `Packet.Empty()`, `Update()`, `ImportJson()`, `Dispose()`.
+The project-root `mig-c.dll` / `libmig-c.so` is a loose file, not only a
+PCK entry. `InitializeNativeLibrary()` installs a .NET resolver using
+`ProjectSettings.GlobalizePath("res://...")`; Godot’s generated assembly location
+and the working directory are irrelevant. Include this loose library when
+exporting and match the editor/export architecture. No MediaPipe/models needed
+for supplied positions. World coordinates use metres, Y up, relative to hips;
+Godot’s world Z mapping is explicit and missing coordinates do not move the node.
 
-## Configuration used
+The editor/toolchain is external; native libraries, configuration, bridge and
+licenses are bundled in the individual release. A real camera pose provider is
+optional and must call SubmitFrame() on the owning game/main thread.
 
-The raised-hand demo uses `raised-hands.json` (served as `default.json` in browser assets): one broad Required zone `[-9,3,27,3]`, then a Trigger zone `[-9,1,27,2]` for each wrist. Import mode starts empty and validates schema-v2 JSON before replacement. Step order retains the upward movement; an isolated pose in yellow cannot fire.
+## Source setup outside the repository
 
-## Reuse this in your project
+For a copied source-only folder, copy `MigTracker.cs` and `SyntheticFrames.cs`
+from the matching managed binding release, plus the SDK’s native C ABI library,
+into the project root. The standalone archive already supplies these files.
+Use Godot’s Build button or `dotnet build MigExample.csproj`; normal NuGet restore
+provides Godot.NET.Sdk 4.4.1. Set ProfilePath for preload in the generic component.
+The preview currently targets desktop, not mobile/browser exports.
 
-Install the matching MIG package/SDK and retain the integration calls in the walkthrough. Copy the profile and required runtime assets with their licenses; use supplied tracking observations or the native camera adapter, as this example does. Replace the displayed/logged action with your application callback. Keep observations unmirrored, preserve camera aspect, submit one update per fresh frame, and provide missing observations when tracking is lost. Keep the tracker on one owner thread and preserve its cleanup hook. The application window, props and HUD are optional.
+## Reuse and troubleshooting
 
-## Troubleshooting
+Start with `MigInput.cs` and the profile. Keep its lifecycle and replace
+the named action callback/signal with application commands. The panel and prop
+movement only illustrate feedback. Submit unmirrored MediaPipe-indexed body/hand
+observations, original aspect, monotonic milliseconds and increasing sequence.
+Send absent observations when tracking is lost; never update a disposed tracker.
+Callbacks are logical actions, not OS keyboard injection. Use Active/active or
+the C ABI’s mig_active for continuous game input where appropriate.
 
-- Missing native library/model or WASM: extract the whole built package and retain its runtime/assets folders. Check the prerequisite list; a source checkout needs the documented build.
-- Camera unavailable: close other camera users; grant permission. Browser capture needs localhost or HTTPS. Engine previews need your own pose provider.
-- No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
-- Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
-- Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+- DLL/SO not found: keep the documented native placement and matching architecture.
+- Import fails: fix the displayed schema error; invalid profiles retain prior rules.
+- No action: calibrate with both shoulders visible, start in the Required region,
+  then move into Trigger. Standing in Trigger alone cannot fire; sample gaps over
+  180 ms require profiling. Synthetic mode is intended for this demo profile.
+- The raised-hands JSON contains two broad Required/Trigger wrist paths; valid
+  imports clear previous recognition progress and restart calibration.
+- First editor build/export can exceed one minute. Preview exports and real camera
+  providers need validation on your target editor/platform.
 
-## Standalone project dependencies
-
-`project.godot` selects `raised_hands.tscn`; `profile.tscn` is the import variant.
-The archive includes `MigExample.csproj`, `MigTracker.cs`, `SyntheticFrames.cs`,
-the native C ABI library at project root and licenses. Godot 4.4 .NET and its
-.NET 8 SDK are external. Import the project, Build, then Run (synthetic mode).
-The C# native resolver uses the project path, independently of the working directory.
-A copied source folder needs the two bridge files and matching native library
-from the managed binding/SDK release placed at project root.
-These preview projects accept supplied observations; a live camera provider
-is your responsibility. First editor/.NET setup can exceed one minute.
+[Configuration reference](../../../docs/reference/configuration.md).
