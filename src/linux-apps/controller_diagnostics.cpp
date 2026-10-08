@@ -1,8 +1,12 @@
 #include "controller_window.hpp"
 #include <QAction>
 #include <QApplication>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QMouseEvent>
+#include <QPushButton>
 #include <QTemporaryDir>
+#include <QTimer>
 #include <mig/format/configuration.hpp>
 
 namespace mig::linux_ui {
@@ -25,9 +29,35 @@ bool ControllerWindow::ui_test() {
     sample.motions.push_back(motion);
     const auto source = temporary.path().toStdString() + "/test.json";
     save_configuration(sample, source);
-    load(source);
-    load(source);
+    const auto import_profile = [&](bool accept) {
+        bool answered = false;
+        QTimer reply;
+        reply.setSingleShot(true);
+        connect(&reply, &QTimer::timeout, this, [&] {
+            auto* dialog = qobject_cast<QDialog*>(QApplication::activeModalWidget());
+            if (!dialog || dialog->windowTitle() != "Review imported movement mappings") {
+                return;
+            }
+            auto* buttons = dialog->findChild<QDialogButtonBox*>();
+            if (!buttons) {
+                dialog->reject();
+                return;
+            }
+            answered = true;
+            buttons->button(accept ? QDialogButtonBox::Ok : QDialogButtonBox::Cancel)->click();
+        });
+        reply.start(0);
+        load(source);
+        return answered;
+    };
+    if (!import_profile(true) || !import_profile(true)) {
+        return false;
+    }
     activate_profile(0);
+    const auto profile_count = profiles_.entries().size();
+    if (!import_profile(false) || profiles_.entries().size() != profile_count || config_ != sample) {
+        return false;
+    }
     if (profiles_.selected() != 0 || bindings_->count() != 1 ||
         !bindings_->item(0)->text().contains("test")) {
         return false;
