@@ -8,7 +8,7 @@ import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'tools'))
+sys.path.insert(0, str(ROOT / 'tools/lib'))
 
 
 def load(name, file):
@@ -25,7 +25,7 @@ with tempfile.TemporaryDirectory(dir=ROOT / 'build', prefix='example-package-tes
     source.mkdir()
     (source / 'python.dll').write_bytes(b'python')
     destination = root / 'destination'
-    merger = load('examples_package', 'package-examples.py').merge_runtime
+    merger = load('examples_package', 'packaging/package-examples.py').merge_runtime
     merger(source, destination)
     merger(source, destination)
     (source / 'python.dll').write_bytes(b'incompatible')
@@ -35,7 +35,7 @@ with tempfile.TemporaryDirectory(dir=ROOT / 'build', prefix='example-package-tes
         pass
     else:
         raise AssertionError('Conflicting runtimes cannot be silently merged')
-    freezer = load('freeze_examples', 'freeze-python-examples.py')
+    freezer = load('freeze_examples', 'packaging/freeze-python-examples.py')
     copies = [root / 'first.zip', root / 'second.zip']
     for year, copy in zip((2000, 2020), copies):
         with zipfile.ZipFile(copy, 'w') as output:
@@ -44,7 +44,7 @@ with tempfile.TemporaryDirectory(dir=ROOT / 'build', prefix='example-package-tes
     assert copies[0].read_bytes() == copies[1].read_bytes()
     with zipfile.ZipFile(copies[0]) as archive:
         assert archive.read('module.pyc') == b'module'
-    packager = load('sdk_staging', 'package-examples.py')
+    packager = load('sdk_staging', 'packaging/package-examples.py')
     sdk = root / 'sdk'
     (sdk / 'include').mkdir(parents=True)
     (sdk / 'include/header.hpp').write_text('header')
@@ -57,7 +57,7 @@ with tempfile.TemporaryDirectory(dir=ROOT / 'build', prefix='example-package-tes
     assert (staged / 'bin/mig-c.dll').read_bytes() == b'abi'
     assert not (staged / 'bin/mig-controller.exe').exists()
     assert not (staged / 'bin/models').exists()
-    single = load('single_tutorial', 'package-single-example.py')
+    single = load('single_tutorial', 'packaging/package-single-example.py')
     examples = root / 'prepared'
     (examples / 'examples').mkdir(parents=True)
     (examples / 'licenses').mkdir()
@@ -77,7 +77,7 @@ with tempfile.TemporaryDirectory(dir=ROOT / 'build', prefix='example-package-tes
     assert not (isolated / 'runtime/models/pose_landmarker_full.task').exists()
     assert (isolated / 'runtime/models/pose_landmarker_lite.task').is_file()
     assert not (isolated / 'sdk').exists(), 'Python tutorial does not need C++ development libraries'
-    browser = load('browser_tutorial', 'package-browser-example.py')
+    browser = load('browser_tutorial', 'packaging/package-browser-example.py')
     (examples / 'licenses/javascript').mkdir()
     (examples / 'licenses/javascript/react-LICENSE').write_text('license')
     (examples / 'bindings/javascript').mkdir()

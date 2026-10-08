@@ -3,7 +3,7 @@ import { once } from "node:events";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { serve } from "../../../tools/serve-javascript.mjs";
+import { serve } from "../../../tools/web/serve-javascript.mjs";
 
 const server = serve("bindings/javascript/runtime", 0);
 await once(server, "listening");

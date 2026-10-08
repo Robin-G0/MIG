@@ -1,5 +1,5 @@
 $ErrorActionPreference = 'Stop'
-. "$PSScriptRoot/../../tools/download.ps1"
+. "$PSScriptRoot/../../tools/lib/download.ps1"
 
 function Assert-Download([bool]$condition, [string]$message) {
     if (-not $condition) { throw $message }

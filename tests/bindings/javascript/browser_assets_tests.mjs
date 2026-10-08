@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { once } from "node:events";
 import { chromium } from "@playwright/test";
-import { serve } from "../../../tools/serve-javascript.mjs";
+import { serve } from "../../../tools/web/serve-javascript.mjs";
 
 const server = serve("bindings/javascript/runtime", 0);
 await once(server, "listening");

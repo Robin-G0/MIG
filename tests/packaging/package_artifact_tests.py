@@ -6,7 +6,7 @@ import re
 import sys
 import tarfile
 import zipfile
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools/lib"))
 from distribution_policy import EXCLUDED_NAMES
 from release_metadata import PACKAGE_NAME, PROJECT_NAME, REPOSITORY
 

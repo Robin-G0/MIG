@@ -11,8 +11,8 @@ from unittest.mock import patch
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "tools"))
-spec = importlib.util.spec_from_file_location("release_upload", ROOT / "tools/upload-release.py")
+sys.path.insert(0, str(ROOT / "tools/lib"))
+spec = importlib.util.spec_from_file_location("release_upload", ROOT / "tools/release/upload-release.py")
 upload = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(upload)
 

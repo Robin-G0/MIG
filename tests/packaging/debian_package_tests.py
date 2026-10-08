@@ -26,7 +26,7 @@ def verify(packages):
             listing = subprocess.check_output([*gpg, "--with-colons", "--list-secret-keys"], text=True)
             fingerprint = next(line.split(":")[9] for line in listing.splitlines() if line.startswith("fpr:"))
             repo = folder / "repository"
-            run(sys.executable, str(ROOT / "tools/build-apt-repository.py"),
+            run(sys.executable, str(ROOT / "tools/release/build-apt-repository.py"),
                 *[str(path.resolve()) for path in packages], "--destination", str(repo),
                 "--signing-key", fingerprint, "--gnupg-home", str(home))
             run("gpgv", "--keyring", str(repo / "motion-input-grid-archive-keyring.gpg"),

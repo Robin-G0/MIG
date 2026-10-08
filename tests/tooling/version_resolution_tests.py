@@ -7,7 +7,7 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "tools"))
+sys.path.insert(0, str(ROOT / "tools/lib"))
 from release_metadata import release_version, synchronize_versions
 
 

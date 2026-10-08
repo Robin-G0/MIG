@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { extractNodeArchive } from "../../../tools/node-archive.mjs";
+import { extractNodeArchive } from "../../../tools/bootstrap/node-archive.mjs";
 
 test("portable Node ZIP and tar.xz archives extract on the build host", async () => {
     const folder = await mkdtemp(join(tmpdir(), "mig node archives "));

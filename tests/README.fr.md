@@ -73,5 +73,5 @@ Playwright) et `packaging/godot_package_tests.py` (addon ou projet autonome).
 Les tests d’intégration acceptent aussi Unity/Unreal autonomes. La CI release
 les exécute après packaging.
 
-La release Linux teste aussi les archives natives dans `tools/linux-example-test.Dockerfile` :
+La release Linux teste aussi les archives natives dans `tools/docker/linux-example-test.Dockerfile` :
 seuls les archives et le script de test sont montés, sans checkout ni bibliothèques de développement.
