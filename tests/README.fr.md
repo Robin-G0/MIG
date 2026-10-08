@@ -34,8 +34,8 @@ Pour les tests des applications, compilez-les selon le guide
 Les tests UI utilisent les applications réelles via `--ui-test` ; leur code vit
 ici et n'est compilé qu'avec `MIG_BUILD_TESTS=ON`. Linux utilise la plateforme
 offscreen de Qt. Les tests UI ont un délai de 30 secondes et s'exécutent en série.
-Les noms CTest existants sont conservés : les filtres tels que
-`ctest --test-dir build/linux-native -R '^linux-.*-ui$'` restent utilisables.
+Sélectionnez les tests UI Linux avec
+`ctest --test-dir build/linux-native -R '^linux-.*-ui$'`.
 
 `MIG_BUILD_TESTS=OFF` exclut les tests et les modes de diagnostic de test des applications.
 Activez `MIG_BUILD_BENCHMARKS=ON` pour compiler `mig-engine-benchmark` dans
@@ -59,9 +59,8 @@ npm run test:types
 
 Les tests du binding Python et des exemples demandent une bibliothèque C ABI compilée.
 Les tests navigateur et de packaging demandent aussi les assets préparés ou l'artefact
-passé en argument. Le [workflow CI](../.github/workflows/ci.yml) et le
-[workflow de validation des releases](../.github/workflows/release-check.yml)
-décrivent l'ordre complet de compilation et les commandes de chaque plateforme.
+passé en argument. Le [guide des outils](../tools/README.fr.md) décrit la préparation
+des binaires et packages nécessaires à chaque vérification.
 
 La scène de régression Godot reste dans `examples/godot/gdscript/tests/` : elle accompagne
 le projet d'exemple utilisé pour valider l'add-on extrait et est exécutée par

@@ -64,7 +64,7 @@ n'envoient pas de touches aux autres applications.
 | Unity | Ajouter le `package.json` du tutoriel autonome via Package Manager | UnityEvent `OnAction`, `SubmitFrame(packet)` |
 | Godot C# | Ouvrir le projet .NET autonome et `raised_hands.tscn` | Signal `MotionAction`, `SubmitFrame` |
 | Godot GDScript | Ouvrir `project.godot` autonome et `raised_hands.tscn` | Signal `motion_action`, `submit_frame` |
-| Unreal | Copier le dossier autonome dans `Plugins/MigExample` du projet | `OnMotionAction`, `SubmitFrame` |
+| Unreal | Copier le dossier autonome dans `Plugins/MigExample` du projet | `OnMotion`, `SubmitFrame` |
 
 Le tableau utilise les chemins de l’archive commune ; un tutoriel individuel
 commence directement dans son dossier. Son README précise les prérequis.
@@ -84,7 +84,8 @@ python examples/python-tkinter/main.py
 python examples/pygame/profile.py
 ```
 
-L'import `mig` installé est préféré, avec repli sur `bindings/python` du dépôt.
+L'import `mig` installé est préféré, avec repli sur `bindings/python` fourni
+dans le package ou un dépôt complet vérifié.
 La wheel pip inclut l’ABI C de positions. Les exemples caméra demandent aussi
 un SDK natif avec caméra ; `MIG_LIBRARY` désigne sa bibliothèque ABI C et
 `MIG_RUNTIME` son dossier MediaPipe/modèles pour remplacer la découverte. Les exécutables figés

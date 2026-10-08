@@ -31,7 +31,3 @@ Every parser/runtime validates action definitions and rejects unsupported/reserv
 keyboard codes and mouse/gamepad codes in keyboard actions. One input is limited to
 256 serialized actions, 1,024 chord-key entries and 16,384 UTF-8 text bytes. Actions
 are rejected rather than truncated. See [configuration review](docs/reference/configuration.md#import-review).
-
-Repository administrators can enable private reporting, secret scanning, push
-protection and required CI checks in GitHub settings. Those settings are not
-enabled by committing this policy. See [GitHub private reporting](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/configuring-private-vulnerability-reporting-for-a-repository).

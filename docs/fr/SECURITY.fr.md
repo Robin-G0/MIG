@@ -25,4 +25,3 @@ active : les profils peuvent configurer des séquences de touches volontaires.
 Les corrections ciblent la branche 1.x actuelle. Les intégrations Preview et
 les dépendances caméra/modèles ont leurs propres limites de validation ; voir la
 [matrice de support](../reference/support.fr.md). Aucun délai de réponse n'est garanti.
-

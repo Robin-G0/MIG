@@ -15,8 +15,7 @@ test("portable Node ZIP and tar.xz archives extract on the build host", async ()
         await writeFile(join(source, "LICENSE"), "Runtime license fixture\n");
         await writeFile(join(source, "unused.txt"), "Not needed in the runtime bundle.\n");
         const zip = join(folder, "windows runtime.zip");
-        const python = process.platform === "win32" ? "py" : "python3";
-        const options = process.platform === "win32" ? ["-3"] : [];
+        const python = process.env.MIG_PYTHON ?? (process.platform === "win32" ? "python" : "python3");
         const script = [
             "import pathlib, sys, zipfile",
             "source = pathlib.Path(sys.argv[1])",
@@ -24,7 +23,7 @@ test("portable Node ZIP and tar.xz archives extract on the build host", async ()
             "    for file in source.iterdir():",
             "        archive.write(file, 'node-fixture/' + file.name)",
         ].join("\n");
-        execFileSync(python, [...options, "-c", script, source, zip]);
+        execFileSync(python, ["-c", script, source, zip]);
         const tar = join(folder, "linux runtime.tar.xz");
         execFileSync("tar", ["-cJf", tar, "-C", folder, "node-fixture"]);
         for (const archive of [zip, tar]) {

@@ -143,3 +143,5 @@ folder. Start with its README, then `example_usage.py`/`.hpp` or the named
 framework/editor integration file. The browser individual archives need Node
 22.12+; the combined JavaScript archive bundles Node. Native individual archives
 include their own libraries/models. [Choose a tutorial](examples/README.md).
+
+[Build tools and package contents](tools/README.md) · [Verify an integration](tests/README.md)

@@ -20,6 +20,24 @@ for platform requirements and integration maturity.
 - JavaScript examples include local browser assets and Node launchers. Run
   `run.cmd` or `sh run.sh` in the chosen example folder and open the displayed URL.
 
+## Archive layout and source builds
+
+An individual tutorial places its README, application, integration source and
+required runtime files in one folder. Combined examples archives place tutorials
+under `examples/` and share dependencies at the archive root. Moving just one
+subfolder from a combined archive can lose those dependencies; choose its
+`*-standalone` archive when you want to copy only that tutorial.
+
+The source checkout contains editable code, not prebuilt runtimes. For source
+builds, install the dependencies listed in that tutorial's README. Native viewers
+bundle shared libraries/models, Python viewers also bundle the interpreter, and
+browser viewers bundle compiled pages/WASM/MediaPipe/models. Individual browser
+archives require Node; the combined JavaScript archive bundles it. Engine
+tutorials bundle native bridges but still require their editor and your tracking provider.
+
+The [tools guide](../../tools/README.md) maps each package builder to its inputs
+and payload; the [tests guide](../../tests/README.md) explains download validation.
+
 ## C++ SDK and vcpkg
 
 Extract the matching `*-sdk` archive and pass its SDK directory to CMake:

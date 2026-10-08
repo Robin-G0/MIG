@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
+const python = process.env.MIG_PYTHON ?? (process.platform === "win32" ? "python" : "python3");
 const version = (await readFile(join(root, "VERSION"), "utf8")).trim();
 const name = `motion-input-grid-${version}-javascript-examples`;
 const destination = join(root, "build/examples", name);
@@ -111,7 +112,7 @@ Un navigateur moderne reste nécessaire ; MediaPipe, WASM et modèles sont locau
 Sources, pages compilées, documentation et licences sont incluses.
 [Guide complet](docs/integrations/javascript.fr.md).
 `);
-const privateNames = new Set(execFileSync(process.platform === "win32" ? "python" : "python3",
+const privateNames = new Set(execFileSync(python,
     [join(root, "tools/lib/distribution_policy.py"), "--excluded-names"], { encoding: "utf8" })
     .trim().split(/\r?\n/));
 await cp(join(root, "docs"), join(destination, "docs"), {
@@ -153,11 +154,9 @@ await writeFile(join(destination, "manifest.json"), JSON.stringify({
     repository: "https://github.com/Robin-G0/MIG", version, sha256: hashes
 }, null, 2) + "\n");
 const archive = join(releases, `${name}.tar.gz`);
-const python = process.env.MIG_PYTHON ?? (process.platform === "win32" ? "python" : "python3");
-const pythonOptions = [];
-execFileSync(python, [...pythonOptions, join(root, "tools/packaging/archive-examples.py"), destination, archive]);
+execFileSync(python, [join(root, "tools/packaging/archive-examples.py"), destination, archive]);
 for (const example of ["web", "react", "vue", "next"]) {
-    execFileSync(python, [...pythonOptions, join(root, "tools/packaging/package-browser-example.py"),
+    execFileSync(python, [join(root, "tools/packaging/package-browser-example.py"),
         "--source", destination, "--example", example], { stdio: "inherit" });
 }
 const digest = createHash("sha256").update(await readFile(archive)).digest("hex");

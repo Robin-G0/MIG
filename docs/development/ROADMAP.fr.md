@@ -7,19 +7,22 @@ Godot, Unity et Unreal restent **Preview** jusqu'à validation suffisante dans l
 éditeurs et les jeux exportés, sur plusieurs versions/plateformes. Les preuves
 actuelles figurent dans la [matrice de support](../reference/support.fr.md).
 
-- [ ] Tester webcams intégrées/USB sur plusieurs machines, CPU/GPU, résolutions et
-  cadences, avec perte du suivi et relâchement des touches maintenues.
-- [ ] Vérifier les installations neuves depuis SDK CMake publié, téléchargement vcpkg,
-  PyPI, npm, Debian et dépôt APT HTTPS signé après les premiers uploads.
-- [ ] Valider imports, UI éditeur, exports et plusieurs versions Godot.
-- [ ] Valider UPM Unity local/Git/tarball, mode éditeur/play et builds player.
-- [ ] Compiler les modules Unreal, tester événements Blueprint, jeux packagés et versions moteur.
-- [ ] Tester les packages Linux ARM64 sur matériel physique ; évaluer séparément les autres plateformes.
-- [ ] Recueillir les retours débutants/game-jam et d'intégration ; simplifier le premier usage.
-- [ ] Améliorer les diagnostics : observations manquantes, calibrage, mismatch package/runtime.
-- [ ] Ajouter des régressions pour les défauts signalés en préservant les contrats de cycle de vie/coordonnées.
-- [ ] Profiler les usages temps réel représentatifs avant de nouvelles optimisations.
-- [ ] Améliorer l'expérience développeur et l'édition Linux sans recopier le moteur.
+Les améliorations prévues portent sur :
+
+- Une compatibilité webcam plus large : caméras intégrées et USB, résolutions
+  et cadences variées, avec reprise fiable après une perte du suivi.
+- Une installation plus simple via SDK CMake, vcpkg, PyPI, npm, paquets Debian
+  et dépôt APT HTTPS signé.
+- Un support Godot, Unity et Unreal plus étendu, dans les éditeurs et les jeux
+  exportés, sur plusieurs versions des moteurs. Les [guides d'intégration](../integrations/overview.fr.md)
+  décrivent les capacités et prérequis disponibles aujourd'hui.
+- Un support Linux ARM64 éprouvé sur matériel physique, et l'évaluation
+  de plateformes supplémentaires.
+- Des tutoriels de premier usage plus clairs et de meilleurs diagnostics pour
+  les observations manquantes, le calibrage et les versions package/runtime incompatibles.
+- Des performances temps réel plus prévisibles en préservant les contrats
+  documentés de cycle de vie et de coordonnées.
+- Des outils d'édition Linux plus complets, aux côtés du parcours Windows.
 
 Le suivi du visage et les nouveaux fournisseurs/sorties demandent une conception
 et une validation propres avant de devenir des produits supportés.

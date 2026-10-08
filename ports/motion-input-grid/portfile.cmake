@@ -1,5 +1,5 @@
 if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/source.cmake")
-    message(FATAL_ERROR "Generate the pinned release overlay with tools/package-source.py first.")
+    message(FATAL_ERROR "Generate the pinned release overlay with tools/packaging/package-source.py first.")
 endif()
 include("${CMAKE_CURRENT_LIST_DIR}/source.cmake")
 vcpkg_download_distfile(ARCHIVE URLS "${MIG_SOURCE_URL}"

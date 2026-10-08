@@ -33,9 +33,8 @@ For desktop tests, build the applications using the
 [Linux](../docs/getting-started/linux.md) guide, then run CTest on that build.
 UI tests exercise the real applications through `--ui-test`; their implementations
 live here and are compiled only with `MIG_BUILD_TESTS=ON`. Linux uses Qt's offscreen
-platform. UI tests have a 30-second timeout and run serially. Existing CTest names
-are preserved, so filters such as `ctest --test-dir build/linux-native -R '^linux-.*-ui$'`
-still work.
+platform. UI tests have a 30-second timeout and run serially. Select the Linux UI
+checks with `ctest --test-dir build/linux-native -R '^linux-.*-ui$'`.
 
 `MIG_BUILD_TESTS=OFF` excludes the test tree and application diagnostic test modes.
 Enable `MIG_BUILD_BENCHMARKS=ON` to build `mig-engine-benchmark` under
@@ -55,9 +54,8 @@ npm run test:types
 
 Python binding and example tests need a compiled C ABI library. Browser and
 package tests additionally need the prepared assets or artifact passed on their
-command line. The [CI workflow](../.github/workflows/ci.yml) and
-[release validation workflow](../.github/workflows/release-check.yml) show the
-complete build order and platform-specific invocations.
+command line. The [tools guide](../tools/README.md) explains how to prepare the
+binaries and packages each check needs.
 
 `packaging/standalone_editor_tests.py --build-csharp` validates isolated editor
 dependencies and compiles the packaged Godot .NET project. Unity/Unreal editor

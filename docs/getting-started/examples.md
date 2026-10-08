@@ -35,8 +35,9 @@ Required regions are green; the terminal Trigger is yellow. Numeric orders
 group alternatives for one wrist, not additional simultaneous visits.
 Shoulder calibration maps the image to the grid; current shoulder width changes
 scale as the user approaches. The full camera frame is fitted without cropping.
-Image coordinates are normalized, Y down. World coordinates are meters relative
-to hips, Y up; they are not camera position. Mirror only presentation X (`1-x`).
+Image coordinates are normalized, Y down. Raw body world coordinates are meters
+relative to hips, Y down; `WorldHeightUp` access negates Y for upward height.
+They are not camera position. Mirror only presentation X (`1-x`).
 MIG input mirroring separately swaps anatomy and rules. Never mirror packets.
 
 ## Python/Tk and Pygame

@@ -35,7 +35,8 @@ Required vert puis Trigger jaune. Un même numéro regroupe des alternatives pou
 un poignet. Le calibrage des épaules projette vers la grille ; la largeur actuelle
 des épaules ajuste l'échelle quand l'utilisateur s'approche. L'image complète est
 ajustée sans découpe. Les points image sont normalisés, Y vers le bas ; les points
-monde sont en mètres relatifs aux hanches, Y vers le haut, sans origine caméra.
+monde bruts sont en mètres relatifs aux hanches, Y vers le bas, sans origine caméra.
+L’accès `WorldHeightUp` inverse Y pour une hauteur croissante vers le haut.
 L'affichage reflète seulement X (`1-x`). Le miroir du moteur échange séparément
 anatomie et règles. Ne reflétez jamais les paquets d'entrée.
 

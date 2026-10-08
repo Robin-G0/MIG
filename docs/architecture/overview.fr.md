@@ -36,7 +36,7 @@ MIG/
   integrations/         Add-ons/packages runtime Godot, Unity et Unreal
   ports/                Modèle du port vcpkg motion-input-grid
   VERSION               Version commune du moteur et des archives
-  examples/             Applications clientes et code de démonstration partagé
+  examples/             Tutoriels autonomes et assets canoniques
   tests/                Vérifications moteur, intégrations, interfaces et paquets
     core/, format/      Contrats du moteur et des configurations
     native/, apps/      Runtime caméra et règles des applications
@@ -79,7 +79,7 @@ sont générés localement. Modifiez les sources, pas leurs copies dans ces doss
 | src/apps | UI Win32, brouillons/historique, workers et consentement |
 | src/linux-apps | UI Qt, worker propriétaire de capture/moteur, ordonnanceur partagé |
 | bindings | ctypes Python, pont C#, session npm et adaptateurs |
-| examples | Consommateurs et sources/profil communs |
+| examples | Application, intégration, profil et utilitaires locaux à chaque tutoriel |
 | tests | Régressions CTest, vérifications des langages/interfaces/navigateurs et archives |
 | tools, cmake, workflows | Compilation, dépendances épinglées, contrôles et paquets locaux |
 | configs, docs | Données d'exemple et contrats |

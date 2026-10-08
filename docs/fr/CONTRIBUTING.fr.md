@@ -25,15 +25,14 @@ CTest, les tests UI des applications et les vérifications par scripts.
 
 `src/core` contient la reconnaissance ; `src/format`, le JSON ; C ABI/WASM et les
 `bindings` exposent ce même moteur. `integrations` contient les packages éditeur,
-`examples` les démos, `tools` les générateurs. Voir l'[architecture](../architecture/overview.fr.md).
+`examples` les tutoriels, les [outils](../../tools/README.fr.md) les générateurs.
+Voir l'[architecture](../architecture/overview.fr.md).
 
-## Changements et pull requests
+## Adapter les sources correctement
 
 Choisir des noms descriptifs, une propriété explicite et une responsabilité par fonction.
 Garder les buffers/files temps réel bornés et le moteur indépendant des UI/caméras.
 Utiliser quatre espaces et clang-format 16 selon `.clang-format`.
-Les commits utilisent `[ADD]`, `[FIX]` ou `[DEL]`. Décrire le comportement modifié,
-les contrats concernés, les validations et les limites dans la pull request.
 
 Exécuter les tests concernés, `python tools/dev/check-docs.py` et
 `tools/dev/format-code.ps1 -Check`. Pour un binding ou un package, installer l’artefact

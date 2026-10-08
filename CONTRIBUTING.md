@@ -25,18 +25,16 @@ CTest, application UI tests and script checks.
 
 `src/core` owns recognition; `src/format` owns JSON; C ABI/WASM and `bindings`
 expose the same engine. Runtime editor packages live in `integrations`, demos in
-`examples`, artifact builders in `tools`. See [architecture](docs/architecture/overview.md).
+`examples`, artifact builders in [tools](tools/README.md). See [architecture](docs/architecture/overview.md).
 
-## Changes and pull requests
+## Adapt the source safely
 
 Use descriptive names, explicit ownership and one responsibility per function.
 Keep realtime buffers/queues bounded and recognition independent of UI/cameras.
 Use four spaces and clang-format 16; `.clang-format` is authoritative.
-Commit subjects use `[ADD]`, `[FIX]` or `[DEL]`. Explain the observable change,
-contracts affected, validation run and remaining limitations in the pull request.
 
-Run the tests affected by your change, `python tools/check-docs.py` and
-`tools/format-code.ps1 -Check`. For a binding or package change, install the
+Run the tests affected by your change, `python tools/dev/check-docs.py` and
+`tools/dev/format-code.ps1 -Check`. For a binding or package change, install the
 generated artifact in a separate consumer using the
 [installation guide](docs/getting-started/packages.md).
 Update the relevant English/French guide and add a meaningful regression test

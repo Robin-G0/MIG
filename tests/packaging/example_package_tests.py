@@ -106,4 +106,13 @@ with tempfile.TemporaryDirectory(dir=ROOT / 'build', prefix='example-package-tes
     browser.assemble(examples, next_browser, 'next')
     assert (next_browser / 'out/index.html').read_text() == 'compiled'
     assert (next_browser / 'out/mig/mig.wasm').read_bytes() == b'wasm'
+    archiver = load('combined_archiver', 'packaging/archive-examples.py')
+    (small_browser / 'README.md').write_text('[Build](tools/build/build-windows.ps1)\n')
+    # Removed optional source links resolve to matching-version documentation;
+    # the manifest must describe the rewritten files, not their earlier bytes.
+    archiver.archive_examples(small_browser, root / 'tutorial.tar.gz')
+    assert 'https://github.com/Robin-G0/MIG/blob/v' in (small_browser / 'README.md').read_text()
+    import hashlib
+    manifest = json.loads((small_browser / 'manifest.json').read_text())
+    assert manifest['sha256']['README.md'] == hashlib.sha256((small_browser / 'README.md').read_bytes()).hexdigest()
 print('Shared-runtime conflicts, deterministic libraries and example SDK staging passed')

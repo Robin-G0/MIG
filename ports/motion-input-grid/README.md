@@ -5,7 +5,7 @@
 This directory is the port for MIG itself. The root `vcpkg.json` is the separate
 dependency manifest used to build MIG.
 
-Run `python tools/package-source.py` to create the engine source archive and the
+Run `python tools/packaging/package-source.py` to create the engine source archive and the
 overlay archive in `build/releases`. Extract the overlay and pass its root to
 `vcpkg install motion-input-grid --overlay-ports=/path/to/motion-input-grid-vcpkg-overlay`. The generated
 `motion-input-grid/source.cmake` pins the release URL and the source archive's actual SHA512.

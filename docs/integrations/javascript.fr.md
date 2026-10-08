@@ -39,8 +39,9 @@ recalibre ; un fichier invalide garde la configuration précédente.
 
 ## Archive compilée
 
-La préparation demande Python 3 (`py -3` sous Windows, `python3` sous Linux)
-pour extraire les ZIP Windows et écrire l'archive finale.
+La préparation demande Python 3 (`python` sous Windows, `python3` sous Linux)
+pour extraire les ZIP Node et écrire l'archive. `MIG_PYTHON` choisit un autre
+exécutable Python ; les pages navigateur compilées ne nécessitent pas Python.
 
 ```sh
 node tools/bootstrap/bootstrap-browser.mjs

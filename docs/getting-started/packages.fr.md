@@ -21,6 +21,23 @@ précise les prérequis et la maturité des intégrations.
 - Les exemples JavaScript incluent les assets navigateur et les lanceurs Node.
   Lancez `run.cmd` ou `sh run.sh` dans le dossier choisi, puis ouvrez l’URL affichée.
 
+## Structure des archives et compilation des sources
+
+Un tutoriel individuel place README, application, intégration et ressources
+runtime dans un seul dossier. Une archive commune les range sous `examples/`
+et partage ses dépendances à la racine. Déplacer seulement un sous-dossier peut
+perdre ces dépendances ; choisissez son archive `*-standalone` pour le copier seul.
+
+Le dépôt source contient du code modifiable, pas les runtimes précompilés.
+Installez les dépendances du README pour recompiler. Les viewers natifs fournissent
+bibliothèques/modèles ; Python fournit aussi l'interpréteur ; les viewers navigateur
+fournissent pages compilées/WASM/MediaPipe/modèles. Node reste externe aux archives
+navigateur individuelles et est fourni dans l'archive JavaScript commune. Les
+tutoriels moteurs fournissent les ponts natifs, mais exigent l'éditeur et votre fournisseur de tracking.
+
+Le [guide des outils](../../tools/README.fr.md) relie chaque packager à ses entrées
+et à son contenu ; le [guide des tests](../../tests/README.fr.md) décrit la validation des téléchargements.
+
 ## SDK C++ et vcpkg
 
 Extrayez l’archive `*-sdk` adaptée et fournissez son dossier SDK à CMake :
@@ -87,4 +104,3 @@ Choisissez le package adapté à votre plateforme et à votre version du moteur 
 Ces intégrations sont en Preview et utilisent votre fournisseur de tracking.
 Leurs README décrivent l’installation, les dépendances natives et les limites
 de l’éditeur et des exports.
-

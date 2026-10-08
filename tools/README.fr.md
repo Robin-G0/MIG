@@ -45,6 +45,8 @@ dépend pas de ce dossier dans un dépôt voisin. Voir l'[index des tutoriels](.
 La plupart des commandes Python décrivent leurs arguments avec `--help`.
 Le packaging suit la compilation sur le système cible : il ne convertit pas un
 binaire Windows en binaire Linux. La sortie par défaut est `build/releases/` lorsque prévue.
+Le bootstrap/packaging JavaScript utilise `python` sous Windows et `python3` sous Linux ;
+`MIG_PYTHON` choisit un autre interpréteur. Les pages compilées ne nécessitent pas Python.
 
 | Commande dans `packaging/` | Entrée et résultat |
 | --- | --- |

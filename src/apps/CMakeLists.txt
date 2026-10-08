@@ -1,6 +1,6 @@
 if((MIG_BUILD_CONFIGURATOR OR MIG_BUILD_CONTROLLER) AND
    NOT EXISTS "${MIG_NATIVE_DEPS}/models/pose_landmarker_lite.task")
-    message(FATAL_ERROR "Lite pose model missing: rerun tools/bootstrap-native.ps1")
+    message(FATAL_ERROR "Lite pose model missing: rerun tools/bootstrap/bootstrap-native.ps1")
 endif()
 foreach(app IN ITEMS configurator controller)
     string(TOUPPER "${app}" APP_UPPER)

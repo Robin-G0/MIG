@@ -39,7 +39,7 @@ jobs:
                   find src tests examples integrations -type f \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) -print0 |
                       xargs -0 -r clang-format-16 --dry-run --Werror
             - name: Check bilingual documentation and links
-              run: python3 tools/check-docs.py
+              run: python3 tools/dev/check-docs.py
             - name: Check release version consistency
               run: |
                   python3 tests/tooling/release_version_tests.py
@@ -66,7 +66,7 @@ jobs:
             - name: Test download recovery and integrity checks
               run: ./tests/tooling/download_tests.ps1
             - name: Bootstrap, compile both applications and run CTest
-              run: ./tools/build-windows.ps1 -Hands '${{ matrix.hands }}' -BuildDirectory build/ci-windows
+              run: ./tools/build/build-windows.ps1 -Hands '${{ matrix.hands }}' -BuildDirectory build/ci-windows
             - name: Install libraries and CMake package
               run: cmake --install build/ci-windows --config Release --prefix build/ci-install
             - name: Configure installed positions SDK consumer
@@ -80,7 +80,7 @@ jobs:
             - name: Build installed native SDK consumer
               run: cmake --build build/ci-native-consumer --config Release --parallel 2
             - name: Package accessible Windows distribution
-              run: ./tools/package-distribution.ps1 -WindowsBuild build/ci-windows
+              run: ./tools/packaging/package-distribution.ps1 -WindowsBuild build/ci-windows
             - name: Upload Windows distribution
               uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
@@ -135,7 +135,7 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install --no-install-recommends -y cmake ninja-build g++ python3 libsdl2-dev libsdl2-ttf-dev libsfml-dev libegl1 libgles2 qt6-base-dev libxtst-dev python3-tk python3-pygame python3-pil python3-pil.imagetk xvfb xauth xdotool
             - name: Bootstrap official Linux artifacts
-              run: python3 tools/bootstrap-native-linux.py
+              run: python3 tools/bootstrap/bootstrap-native-linux.py
             - name: Build and test native Linux runtime
               run: |
                   cmake -S . -B build/linux-native -G Ninja -DCMAKE_BUILD_TYPE=Release -DMIG_BUILD_NATIVE_RUNTIME=ON -DMIG_NATIVE_DEPS="$PWD/build/native-linux-deps"
@@ -186,8 +186,8 @@ jobs:
               run: python3 -m pip install cmake==3.31.10
             - name: Prepare checksummed browser assets
               run: |
-                  cmake -P tools/bootstrap-web.cmake
-                  node tools/bootstrap-browser.mjs
+                  cmake -P tools/bootstrap/bootstrap-web.cmake
+                  node tools/bootstrap/bootstrap-browser.mjs
             - name: Build and test shared WebAssembly engine
               run: |
                   emcmake cmake -S . -B build/web -DMIG_BUILD_WEB=ON -DMIG_BUILD_TESTS=OFF -DMIG_BUILD_CONTROLLER=OFF -DMIG_BUILD_CONFIGURATOR=OFF
@@ -248,7 +248,7 @@ jobs:
             - name: Prepare npm and compiled examples archives
               run: |
                   mkdir -p build/releases
-                  node tools/bootstrap-node.mjs
+                  node tools/bootstrap/bootstrap-node.mjs
                   npm pack --workspace motion-input-grid --pack-destination build/releases
                   npm run package:examples
                   python3 tests/packaging/standalone_browser_tests.py 'build/releases/*-browser-*-standalone.tar.gz'

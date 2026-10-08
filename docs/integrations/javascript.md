@@ -42,8 +42,9 @@ invalid imports show an error while preserving the previous configuration.
 
 ## Built examples archive
 
-Archive preparation needs Python 3 (`py -3` on Windows, `python3` on Linux)
-for Windows ZIP extraction and the final archive writer.
+Archive preparation needs Python 3 (`python` on Windows, `python3` on Linux)
+for Node ZIP extraction and the archive writer. Set `MIG_PYTHON` to choose another
+Python executable; no Python installation is needed to run compiled browser pages.
 
 ```sh
 node tools/bootstrap/bootstrap-browser.mjs
