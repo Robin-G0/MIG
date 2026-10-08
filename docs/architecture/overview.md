@@ -37,7 +37,7 @@ MIG/
   integrations/         Runtime Godot, Unity and Unreal packages
   ports/                motion-input-grid vcpkg port template
   VERSION               Shared engine and archive version
-  examples/             Consumer applications and shared demonstration code
+  examples/             Self-contained integration tutorials and canonical assets
   tests/                Recognition, integration, UI and packaging checks
     core/, format/      Engine and configuration contracts
     native/, apps/      Camera runtime and application policies
@@ -48,7 +48,7 @@ MIG/
     benchmarks/         Synthetic engine performance measurements
   configs/              Example motion profiles
   cmake/                Dependency resolution and installed SDK configuration
-  tools/                Bootstrap, builds, validation and packaging
+  tools/                bootstrap/, build/, packaging/, release/, web/, dev/, lib/, docker/
   .github/workflows/    Automated build and validation jobs
   docs/                 Guides and implementation contracts
     fr/                 French translations of root README/community policies
@@ -80,7 +80,7 @@ generated locally. Edit the source directories, not copies in those folders.
 | `src/apps` | Win32 presentation, drafts/history, capture/inference workers and output consent |
 | `src/linux-apps` | Qt presentation and worker-owned capture/engine; shared output scheduler |
 | `bindings` | Python ctypes, C# bridge and npm session/framework adapters |
-| `examples` | Small application consumers and shared demo sources/profile |
+| `examples` | Local application/integration/support files, profiles and reusable tutorials |
 | `tests` | Portable CTest regressions, language/GUI/browser checks and archive validation |
 | `tools`, `cmake`, `.github/workflows` | Reproducible build, pinned bootstrap, validation and local packaging |
 | `configs`, `docs` | Sample data and documented contracts |
@@ -127,7 +127,7 @@ in `examples/godot/csharp`. Unity uses the .NET bridge; Unreal consumes the C AB
 
 `examples/web/session.mjs` owns the shared browser session. The plain HTML viewer
 and `bindings/javascript` React/Vue adapters consume it. Next.js reuses the React
-component locally inside a client boundary; it does not depend on a sibling example. `tools/prepare-javascript.mjs` stages canonical
+component locally inside a client boundary; it does not depend on a sibling example. `tools/web/prepare-javascript.mjs` stages canonical
 session sources, WASM and assets into the npm runtime; generated copies are not
 independent implementations. See [JavaScript](../integrations/javascript.md).
 
@@ -146,7 +146,7 @@ camera or MediaPipe runtime. Native apps add platform capture and model/runtime
 dependencies; Linux apps also require Qt6 and X11/XTest. Browser estimation uses
 MediaPipe Tasks Vision, then passes observations to the same compiled engine.
 
-`tools/build-windows.ps1` and `tools/build-linux.sh` bootstrap/build/test native
+`tools/build/build-windows.ps1` and `tools/build/build-linux.sh` bootstrap/build/test native
 targets. `cmake/` exports installed `MIG::` targets so external consumers can use
 `find_package(MIG)`. JavaScript workspaces share the browser package; individual
 Python/.NET/example guides describe their installation and build paths.
@@ -154,8 +154,8 @@ Python/.NET/example guides describe their installation and build paths.
 CTest verifies engine semantics, configuration, coordinate conversion, native
 ownership and desktop UI. Separate Python, .NET, Node/browser and Godot checks
 exercise language boundaries and examples. Archive checks verify manifests and
-checksums. `.github/workflows/ci.yml` combines these build families; release
-workflows prepare artifacts. Publication remains a separate manual operation.
+checksums. See the [tests guide](../../tests/README.md) to run these checks and
+the [tools guide](../../tools/README.md) to build or package your integration.
 
 Packaging tools stage libraries, binaries, model assets, licenses and sources
 under `build` or `distribution`, then create files in `build/releases`: native

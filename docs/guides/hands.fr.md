@@ -8,7 +8,7 @@ Les angles des articulations alimentent doigts/scopes et commandes/signes :
 Rebootstrap une fois pour modèle/headers, puis -SkipBootstrap :
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1
+powershell -ExecutionPolicy Bypass -File tools/build/build-windows.ps1
 .\build\windows\bin\mig-configurator.exe --hands
 .\build\windows\bin\mig-controller.exe --config profile.json
 ```

@@ -46,8 +46,8 @@ Archive preparation needs Python 3 (`py -3` on Windows, `python3` on Linux)
 for Windows ZIP extraction and the final archive writer.
 
 ```sh
-node tools/bootstrap-browser.mjs
-node tools/bootstrap-node.mjs
+node tools/bootstrap/bootstrap-browser.mjs
+node tools/bootstrap/bootstrap-node.mjs
 npm run build:examples
 npm run package:examples
 ```

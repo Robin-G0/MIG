@@ -142,7 +142,7 @@ Après compilation depuis les sources :
 | Méthode | Fichier depuis la racine du dépôt |
 | --- | --- |
 | Preset Windows `release` | `build/release/bin/mig-controller.exe` |
-| Script `tools/build-windows.ps1` par défaut | `build/windows/bin/mig-controller.exe` |
+| Script `tools/build/build-windows.ps1` par défaut | `build/windows/bin/mig-controller.exe` |
 | Compilation du guide Linux | `build/linux-apps/bin/mig-controller` |
 
 Suivez les guides [Windows](../getting-started/windows.fr.md) ou

@@ -22,7 +22,7 @@ Rerun the build script without `-SkipBootstrap` once to obtain the hand model an
 matching headers. Subsequent builds may skip bootstrap.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1
+powershell -ExecutionPolicy Bypass -File tools/build/build-windows.ps1
 .\build\windows\bin\mig-configurator.exe --hands
 # Stop the first application's camera before starting the other:
 .\build\windows\bin\mig-controller.exe --config profile.json

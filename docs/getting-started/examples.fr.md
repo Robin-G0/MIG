@@ -153,8 +153,8 @@ sa scène. Le pont C# copie les chaînes empruntées avant le code managé.
 Unreal crée/détruit l'handle C dans BeginPlay/EndPlay ; Build.cs prépare le SDK,
 les événements sont copiés avant Blueprint et UMG crée import/statut.
 Le header déclare événements et contrat SubmitFrame. Les bibliothèques doivent
-correspondre à l'architecture de l'éditeur/export. Aucun export d'éditeur n'a été
-vérifié ici ; consultez le README de chaque moteur.
+correspondre à l'architecture de l'éditeur/export. Les exports restent Preview :
+vérifiez votre version du moteur et votre plateforme, et suivez son README.
 
 ## Personnaliser
 

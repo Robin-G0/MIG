@@ -36,8 +36,9 @@ The distributable packages are in `distribution/windows`, `distribution/linux` a
 `distribution/web`. Windows has directly accessible `mig-configurator.exe` and
 `mig-controller.exe`; keep their `libmediapipe.dll`, models and configs beside them.
 Each native package also has an installed CMake SDK under `sdk/`.
-The Linux package contains both Qt6 applications, the native SDK/shared C ABI,
-and SDL2/SFML examples. See [Linux build and frontend limits](../getting-started/linux.md).
+The native Linux archive contains the Qt6 applications and camera runtime.
+Runnable SDL2/SFML tutorials are in the separate examples archives; the
+positions-only SDK has its own package. See [Linux build and frontend limits](../getting-started/linux.md).
 
 ## Coordinate access and custom motion logic
 
@@ -123,7 +124,7 @@ Windows SDK prefix; runtime directory is `distribution/windows`.
 `--synthetic` explicitly uses generated sample coordinates; `--runtime` opens a real
 camera. `--hands` enables drawing complete hands even for a body-only profile.
 `--smoke` runs 90 synthetic frames for deterministic validation (SDL2 supports
-`SDL_VIDEODRIVER=dummy`; SFML smoke validates host input without creating a window).
+`SDL_VIDEODRIVER=dummy`; SFML uses its window loop when a display is available and a supplied-input loop otherwise).
 The examples keep capture/inference on the loop thread for clarity; production
 games can use a worker and a latest-frame mailbox to avoid blocking rendering.
 
@@ -135,7 +136,7 @@ the official 0.10.35 shared library, and models. Build tools use Python only to
 download/extract/checksum artifacts; the executable runtime does not use Python.
 
 ```sh
-python3 tools/bootstrap-native-linux.py
+python3 tools/bootstrap/bootstrap-native-linux.py
 cmake -S . -B build/linux-native -DCMAKE_BUILD_TYPE=Release \
   -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF \
   -DMIG_BUILD_NATIVE_RUNTIME=ON -DMIG_NATIVE_DEPS="$PWD/build/native-linux-deps"
@@ -149,7 +150,7 @@ V4L2 currently requires a single-plane streaming camera supporting YUYV. It requ
 multi-plane cameras report an error. Camera access requires permission for
 `/dev/videoN`. `shutdown()` requests stop; `read()` polls in bounded 100 ms intervals.
 Pose/hands inference and capture ownership/lifetimes follow the Windows SDK contract.
-Physical V4L2-camera capture is not validated by the synthetic CI tests.
+Synthetic checks do not establish physical V4L2-camera compatibility; verify your device and capture format.
 
 ## Website library and camera example
 
@@ -186,7 +187,7 @@ Serve `distribution/web` with HTTP on localhost or HTTPS, then open its `index.h
 It has JSON upload, Start/Stop camera, recalibration, hand/body drawing and
 `mig-action` DOM events. A static file opened as `file://` cannot load the module
 reliably. MediaPipe 0.10.35 JS/WASM, models and MIG WASM are packaged locally.
-Run `node tools/bootstrap-browser.mjs` during setup and keep the `vision/` folder
+Run `node tools/bootstrap/bootstrap-browser.mjs` during setup and keep the `vision/` folder
 with the browser assets. Start needs no CDN download; inference stays on-device.
 Browser applications handle their own DOM/game input; operating-system keyboard
 injection is unavailable. Synchronous MediaPipe inference can block the demo's UI;
@@ -203,46 +204,47 @@ Official references: [MediaPipe pose web guide](https://ai.google.dev/edge/media
 With Emscripten and CMake >=3.25:
 
 ```sh
-cmake -P tools/bootstrap-web.cmake
-node tools/bootstrap-browser.mjs
+cmake -P tools/bootstrap/bootstrap-web.cmake
+node tools/bootstrap/bootstrap-browser.mjs
 emcmake cmake -S . -B build/web -DMIG_BUILD_WEB=ON -DMIG_BUILD_TESTS=OFF \
   -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF
 cmake --build build/web --parallel 3
 node tests/bindings/javascript/web_tests.mjs
 ```
 
-Docker builds use `tools/linux-sdk.Dockerfile` for native Linux/examples, and the
+Docker builds use `tools/docker/linux-sdk.Dockerfile` for native Linux/examples, and the
 official `emscripten/emsdk:4.0.15` image for web. That image's bundled CMake is older
 than 3.25; install a newer CMake in the container or supply one explicitly to
-`emcmake`. CI installs CMake 3.31.10 with pip. Build directories are not part of the source package.
+`emcmake`. You can install CMake 3.31.10 with pip. Build directories are not part of the source package.
 
 After building on Windows, run:
 
 ```powershell
-./tools/package-distribution.ps1 -CMakePath 'C:/path/to/cmake.exe'
+./tools/packaging/package-distribution.ps1 -CMakePath 'C:/path/to/cmake.exe'
 ```
 
 This installs the Windows SDK and copies available Windows/Linux/web artifacts into
 `distribution/`, alongside required models and licenses. It never removes unrelated
-destination files. Linux example binaries require SDL2/SFML system libraries; if a
-transfer loses executable permissions, run `chmod +x mig-sdl2 mig-sfml`. Native C++
+destination files. Raw development binaries require SDL2/SFML system libraries;
+release tutorial archives bundle these dependencies. Preserve executable permissions. Native C++
 consumers must match the package architecture/toolchain. Browser WASM is independent
-of the host operating system. GitHub CI builds/tests these targets and publishes
-artifacts; uploading this local work still requires your manual commit/push.
+of the host operating system. The [tools guide](../../tools/README.md) explains
+which inputs each packager expects and which runtime files it includes.
 
 ## Linux applications and additional integrations
 
-Both Linux GUI executables are now available in the native build and distribution.
+Both Linux GUI executables are available in the native build and distribution.
 See [Linux setup and frontend limits](../getting-started/linux.md). Python/Tkinter, Pygame,
 Unity, Godot GDScript / C# and Unreal examples each have their own folder/README in the
 [example index](../../examples/README.md). The language ports use the installed shared
 [C ABI](../reference/c-abi.md), with the same strict profiles and recognition engine.
-The graphics consumers now build independently from examples/sdl2 and examples/sfml,
+The graphics consumers build independently from examples/sdl2 and examples/sfml,
 or together using the aggregate examples/CMakeLists.txt.
 
 Each visual integration has raised-hands and profile-import variants, with accepted
 actions displayed on screen. See the [entry point table](../../examples/README.md).
-The duplicate Python and Tkinter folders are merged into `examples/python-tkinter`.
+The Python/Tk tutorial lives in `examples/python-tkinter`; Pygame has its own
+application, integration, profile and support files.
 
 ## React, Vue and Next.js
 

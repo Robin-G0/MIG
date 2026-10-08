@@ -47,7 +47,7 @@ MIG/
     benchmarks/         Mesures synthétiques des performances du moteur
   configs/              Profils de mouvements d'exemple
   cmake/                Dépendances et configuration du SDK installé
-  tools/                Préparation, compilation, vérification et packaging
+  tools/                bootstrap/, build/, packaging/, release/, web/, dev/, lib/, docker/
   .github/workflows/    Tâches automatisées de compilation et validation
   docs/                 Guides, contrats et revues historiques
     fr/                 Traductions françaises du README et des politiques racine
@@ -129,7 +129,7 @@ utilise directement l'ABI C.
 
 `examples/web/session.mjs` gère la session navigateur commune. L'interface HTML
 et les adaptateurs React/Vue de `bindings/javascript` l'utilisent. Next.js reprend
-son propre composant React côté client, sans dossier d’exemple voisin. `tools/prepare-javascript.mjs` copie les sources
+son propre composant React côté client, sans dossier d’exemple voisin. `tools/web/prepare-javascript.mjs` copie les sources
 canoniques de la session, WASM et assets dans le runtime npm ; ces copies générées
 ne sont pas des implémentations indépendantes. Voir [JavaScript](../integrations/javascript.fr.md).
 
@@ -147,7 +147,7 @@ n'exige ni caméra ni runtime MediaPipe. Les applications natives ajoutent captu
 et modèles ; les applications Linux demandent aussi Qt6 et X11/XTest. Le navigateur
 utilise MediaPipe Tasks Vision pour estimer les points, puis le même moteur compilé.
 
-`tools/build-windows.ps1` et `tools/build-linux.sh` préparent, compilent et testent
+`tools/build/build-windows.ps1` et `tools/build/build-linux.sh` préparent, compilent et testent
 les cibles natives. `cmake/` exporte les cibles `MIG::` pour les consommateurs avec
 `find_package(MIG)`. Les workspaces JavaScript partagent le paquet navigateur ;
 les guides Python/.NET et les README des exemples décrivent leurs autres points
@@ -156,9 +156,9 @@ d'installation et de compilation.
 CTest vérifie reconnaissance, configuration, coordonnées, ressources natives et
 interfaces desktop. Des tests Python, .NET, Node/navigateur et Godot vérifient les
 frontières des langages et les exemples. Les contrôles d'archives vérifient
-manifestes et sommes de contrôle. `.github/workflows/ci.yml` assemble ces familles
-de builds ; les workflows de release préparent les artefacts. La publication
-reste une opération manuelle distincte.
+manifestes et sommes de contrôle. Le [guide des tests](../../tests/README.fr.md)
+décrit leur exécution ; le [guide des outils](../../tools/README.fr.md) explique
+comment compiler et distribuer votre intégration.
 
 Les outils de packaging rassemblent bibliothèques, binaires, modèles, licences et
 sources dans `build` ou `distribution`, puis produisent dans `build/releases` les
@@ -178,7 +178,7 @@ dépendances natives ; elles ne sont pas des jeux exportés. Voir
 | Création desktop ou vues du contrôleur | `src/apps` / `src/linux-apps`, profils partagés dans `src/controller` |
 | API publique d'un langage | `src/c-api`, `src/web` ou `bindings`, tests des consommateurs |
 | Session navigateur et frameworks | `examples/web/session.mjs`, `bindings/javascript`, tests frameworks |
-| Comportement d'un exemple | Dossier de la technologie et `examples/common`, tests des exemples |
+| Comportement d'un exemple | Dossier de la technologie et ses fichiers locaux `example_usage`/`support`, tests des exemples |
 | Compilation ou contenu d'archive | `cmake`, `tools`, workflows, tests des paquets/manifestes |
 
 Conservez la gestion des données d'exécution dans les couches décrites ci-dessous.

@@ -20,7 +20,7 @@ and verification. The drawing tools described below belong to the configurator.
 
 ```sh
 sudo apt-get install cmake ninja-build g++ python3 qt6-base-dev libxtst-dev libegl1 libgles2
-python3 tools/bootstrap-native-linux.py
+python3 tools/bootstrap/bootstrap-native-linux.py
 cmake -S . -B build/linux-apps -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build/linux-apps --parallel 3
 ctest --test-dir build/linux-apps --output-on-failure
@@ -28,7 +28,7 @@ build/linux-apps/bin/mig-configurator --runtime "$PWD/build/native-linux-deps"
 build/linux-apps/bin/mig-controller --runtime "$PWD/build/native-linux-deps" --config configs/default.json
 ```
 
-Use `bash tools/build-linux.sh [build-directory] [ON|OFF]` to bootstrap/build/test
+Use `bash tools/build/build-linux.sh [build-directory] [ON|OFF]` to bootstrap/build/test
 both applications after installing the prerequisites above.
 
 Source builds are tested on Ubuntu 22.04 and 24.04 x86-64. Official MediaPipe requires

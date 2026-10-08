@@ -43,8 +43,8 @@ La préparation demande Python 3 (`py -3` sous Windows, `python3` sous Linux)
 pour extraire les ZIP Windows et écrire l'archive finale.
 
 ```sh
-node tools/bootstrap-browser.mjs
-node tools/bootstrap-node.mjs
+node tools/bootstrap/bootstrap-browser.mjs
+node tools/bootstrap/bootstrap-node.mjs
 npm run build:examples
 npm run package:examples
 ```

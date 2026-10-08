@@ -145,3 +145,5 @@ Commencez par son README, puis `example_usage.py`/`.hpp` ou le fichier
 d’intégration framework/éditeur indiqué. Les individuelles navigateur nécessitent
 Node 22.12+ ; la groupée JavaScript fournit Node. Les individuelles natives
 fournissent leurs bibliothèques/modèles. [Choisir un tutoriel](../../examples/README.fr.md).
+
+[Outils et contenu des packages](../../tools/README.fr.md) · [Vérifier une intégration](../../tests/README.fr.md)

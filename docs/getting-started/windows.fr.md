@@ -34,7 +34,7 @@ Bootstrap utilise le réseau une fois, -SkipBootstrap réutilise. Microsoft Visu
 C++ 2022 Redistributable correspondant est requis sur la machine de destination.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1
+powershell -ExecutionPolicy Bypass -File tools/build/build-windows.ps1
 .\build\windows\bin\mig-configurator.exe
 .\build\windows\bin\mig-controller.exe
 ```
@@ -44,7 +44,7 @@ powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1
 Pour les presets `release` ou `debug`, lancez le bootstrap une fois à la racine :
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/bootstrap-native.ps1
+powershell -ExecutionPolicy Bypass -File tools/bootstrap/bootstrap-native.ps1
 cmake --preset release
 cmake --build --preset release
 ctest --preset release
@@ -62,8 +62,8 @@ est ouvert explicitement et n'impose aucun dessin. Le contrôleur restaure son d
 profil sélectionné, avec la caméra et la sortie clavier désactivées.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1 -SkipBootstrap
-powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1 -Hands OFF -BuildDirectory build/windows-no-hands
+powershell -ExecutionPolicy Bypass -File tools/build/build-windows.ps1 -SkipBootstrap
+powershell -ExecutionPolicy Bypass -File tools/build/build-windows.ps1 -Hands OFF -BuildDirectory build/windows-no-hands
 cmake --install build/windows --config Release --prefix install
 ```
 

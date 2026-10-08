@@ -140,7 +140,7 @@ Après compilation depuis les sources :
 | Méthode | Fichier depuis la racine du dépôt |
 | --- | --- |
 | Preset Windows `release` | `build/release/bin/mig-configurator.exe` |
-| Script `tools/build-windows.ps1` par défaut | `build/windows/bin/mig-configurator.exe` |
+| Script `tools/build/build-windows.ps1` par défaut | `build/windows/bin/mig-configurator.exe` |
 | Compilation du guide Linux | `build/linux-apps/bin/mig-configurator` |
 
 Suivez les guides [Windows](../getting-started/windows.fr.md) ou

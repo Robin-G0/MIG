@@ -26,6 +26,3 @@ Les corrections ciblent la branche 1.x actuelle. Les intégrations Preview et
 les dépendances caméra/modèles ont leurs propres limites de validation ; voir la
 [matrice de support](../reference/support.fr.md). Aucun délai de réponse n'est garanti.
 
-Les administrateurs peuvent activer signalement privé, secret scanning, push
-protection et contrôles CI requis dans GitHub. Cette politique ne les active pas.
-Voir le [signalement privé GitHub](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/configuring-private-vulnerability-reporting-for-a-repository).

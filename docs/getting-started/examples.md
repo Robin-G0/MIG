@@ -158,7 +158,8 @@ before invoking managed code. Unreal creates/destroys its C handle in BeginPlay/
 EndPlay, stages SDK paths in Build.cs, copies events before Blueprint callbacks,
 and builds its import/status panel with UMG. Its header declares the Blueprint
 event and SubmitFrame contract. Native libraries must match editor/export architecture.
-Read each engine README; no editor export has been validated in this workspace.
+Read each engine README for setup. Editor exports remain Preview and require
+validation with your engine version and target platform.
 
 ## Safe customization
 

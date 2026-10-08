@@ -32,7 +32,7 @@ are required to build. Bootstrap needs network once; -SkipBootstrap reuses asset
 The matching Visual C++ 2022 Redistributable is needed on deployment machines.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1
+powershell -ExecutionPolicy Bypass -File tools/build/build-windows.ps1
 .\build\windows\bin\mig-configurator.exe
 .\build\windows\bin\mig-controller.exe
 ```
@@ -42,7 +42,7 @@ powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1
 For the `release` or `debug` preset, bootstrap from the repository root once:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/bootstrap-native.ps1
+powershell -ExecutionPolicy Bypass -File tools/bootstrap/bootstrap-native.ps1
 cmake --preset release
 cmake --build --preset release
 ctest --preset release
@@ -61,8 +61,8 @@ default profile must be opened explicitly and is not a forced drawing. The contr
 restores its last selected profile and starts with camera and keyboard output off.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1 -SkipBootstrap
-powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1 -Hands OFF -BuildDirectory build/windows-no-hands
+powershell -ExecutionPolicy Bypass -File tools/build/build-windows.ps1 -SkipBootstrap
+powershell -ExecutionPolicy Bypass -File tools/build/build-windows.ps1 -Hands OFF -BuildDirectory build/windows-no-hands
 cmake --install build/windows --config Release --prefix install
 ```
 

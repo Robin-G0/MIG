@@ -133,7 +133,7 @@ After building from source:
 | Method | File relative to the repository root |
 | --- | --- |
 | Windows `release` preset | `build/release/bin/mig-configurator.exe` |
-| Default `tools/build-windows.ps1` script | `build/windows/bin/mig-configurator.exe` |
+| Default `tools/build/build-windows.ps1` script | `build/windows/bin/mig-configurator.exe` |
 | Linux guide's build | `build/linux-apps/bin/mig-configurator` |
 
 Follow the [Windows](../getting-started/windows.md) or

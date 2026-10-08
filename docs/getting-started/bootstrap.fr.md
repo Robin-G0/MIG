@@ -26,10 +26,10 @@ Pour utiliser les bibliothèques sans les compiler, installez
 Les applications de bureau et le runtime caméra Python restent des
 archives natives séparées ; les exemples précompilés incluent leurs dépendances.
 
-Téléchargez l'archive complète d'exemples de votre plateforme pour obtenir
-rapidement un retour caméra. Extrayez-la entièrement : `runtime`, `bindings`,
-`examples/common` et les licences sont partagés. Le code accompagne les binaires
-ou pages compilées. Les [instructions autonomes](../../examples/README.fr.md)
+Choisissez un tutoriel individuel `*-standalone` ou une archive `*-examples` pour
+plusieurs technologies. Extrayez tout le contenu : le tutoriel individuel possède
+ses ressources ; l’archive commune partage runtime, bindings et licences. Le
+code accompagne les exécutables ou pages compilées. Les [instructions autonomes](../../examples/README.fr.md)
 précisent les exigences du système.
 
 ## Configurer une action
@@ -51,20 +51,23 @@ n'envoient pas de touches aux autres applications.
 
 | Technologie | Lancement depuis l'archive | Retour à connecter |
 | --- | --- | --- |
-| Python/Tk | `examples/python-tkinter/main.exe` sous Windows, `./examples/python-tkinter/main` sous Linux | `announce` ou événements de `InputSource.take()` |
-| Pygame | Mêmes noms dans `examples/pygame` | `announce(events, ...)` dans la boucle |
-| SDL2 | `examples/sdl2/mig-sdl2.exe` ou `./examples/sdl2/mig-sdl2` | Événements dans `demo::consume` |
-| SFML | Exécutable `mig-sfml` correspondant | Même fonction partagée |
+| Python/Tk | `examples/python-tkinter/main.exe` sous Windows, `./examples/python-tkinter/main` sous Linux | `handle_detected_actions()` dans son `example_usage.py` |
+| Pygame | Mêmes noms dans `examples/pygame` | `handle_detected_actions()` dans son `example_usage.py` |
+| SDL2 | `examples/sdl2/mig-sdl2.exe` ou `./examples/sdl2/mig-sdl2` | `tutorial::handle_detected_actions()` dans son `example_usage.hpp` |
+| SFML | Exécutable `mig-sfml` correspondant | Même fonction nommée dans son propre `example_usage.hpp` |
 | Navigateur simple | `run.cmd` ou `sh run.sh` dans `examples/web` | `MIGSession.onAction` |
 | React | Lanceur dans `examples/react`, `/` ou `/profile.html` | `useMIG({onAction})` |
 | Vue | Lanceur dans `examples/vue`, mêmes routes | Composable `useMIG({onAction})` |
 | Next.js | Lanceur dans `examples/next`, `/` ou `/profile` | `onAction` du composant client |
-| C++ positions fournies | Compiler sdk-consumer, lancer `mig-sdk-example configs/default.json` | Événements du résultat de `engine.update(frame)` |
+| C++ positions fournies | `run.cmd` / `sh run.sh` dans le tutoriel SDK | Événements du résultat de `engine.update(frame)` |
 | Estimateur C++ natif | Compiler native-consumer ; arguments dans son README | Fournir RGB, mettre à jour le moteur, lire les événements |
-| Unity | Copier composant, pont C# et profil Resource dans un projet | UnityEvent `OnAction`, `SubmitFrame(packet)` |
-| Godot C# | Attacher `csharp/MigRaisedHands` à Node3D, copier pont/profil/bibliothèque | Signal `MotionAction`, `SubmitFrame` |
-| Godot GDScript | Compiler `gdscript/native`, ouvrir le projet généré et choisir une scène | Signal `motion_action`, `submit_frame` |
-| Unreal | Installer MigExample sous Plugins et configurer le SDK | `OnMotionAction`, `SubmitFrame` |
+| Unity | Ajouter le `package.json` du tutoriel autonome via Package Manager | UnityEvent `OnAction`, `SubmitFrame(packet)` |
+| Godot C# | Ouvrir le projet .NET autonome et `raised_hands.tscn` | Signal `MotionAction`, `SubmitFrame` |
+| Godot GDScript | Ouvrir `project.godot` autonome et `raised_hands.tscn` | Signal `motion_action`, `submit_frame` |
+| Unreal | Copier le dossier autonome dans `Plugins/MigExample` du projet | `OnMotionAction`, `SubmitFrame` |
+
+Le tableau utilise les chemins de l’archive commune ; un tutoriel individuel
+commence directement dans son dossier. Son README précise les prérequis.
 
 Les variantes d'import utilisent `profile.exe`/`profile` en Python et
 `mig-*-profile` en C++. Les composants des moteurs ont une démo et une variante
@@ -104,8 +107,8 @@ les observations fournies.
 Les workspaces JavaScript utilisent le même nom de paquet que les applications :
 
 ```sh
-cmake -P tools/bootstrap-web.cmake
-node tools/bootstrap-browser.mjs
+cmake -P tools/bootstrap/bootstrap-web.cmake
+node tools/bootstrap/bootstrap-browser.mjs
 npm ci
 npm run prepare:javascript
 npm run build:examples

@@ -103,7 +103,7 @@ Le natif Linux dlopen MediaPipe C ABI 0.10.35 x64 ; les outils Python téléchar
 le runtime C++ n'utilise pas Python.
 
 ```sh
-python3 tools/bootstrap-native-linux.py
+python3 tools/bootstrap/bootstrap-native-linux.py
 cmake -S . -B build/linux-native -DCMAKE_BUILD_TYPE=Release \
     -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF \
     -DMIG_BUILD_NATIVE_RUNTIME=ON -DMIG_NATIVE_DEPS="$PWD/build/native-linux-deps"
@@ -114,7 +114,8 @@ cmake --install build/linux-native --prefix "$PWD/build/linux-install"
 
 V4L2 single-plane streaming YUYV,1280x720 négocié, permission pour /dev/videoN.
 MJPEG seul/multiplane rejetés. shutdown demande arrêt, read poll de 100 ms borné.
-Même propriété Pose/Hands que Windows ; aucune preuve caméra physique par CI.
+Même propriété Pose/Hands que Windows ; les tests synthétiques ne prouvent pas
+la compatibilité d’une caméra physique. Vérifiez votre appareil et son format.
 
 ## Navigateur
 
@@ -151,23 +152,26 @@ si nécessaire. [Guide pose](https://ai.google.dev/edge/mediapipe/solutions/visi
 ## Construire les assets
 
 ```sh
-cmake -P tools/bootstrap-web.cmake
-node tools/bootstrap-browser.mjs
+cmake -P tools/bootstrap/bootstrap-web.cmake
+node tools/bootstrap/bootstrap-browser.mjs
 emcmake cmake -S . -B build/web -DMIG_BUILD_WEB=ON -DMIG_BUILD_TESTS=OFF \
     -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_CONTROLLER=OFF
 cmake --build build/web --parallel 3
 node tests/bindings/javascript/web_tests.mjs
 ```
 
-CMake>=3.25 ; image Emscripten 4.0.15 utilise un CMake plus vieux : CI installe 3.31.10.
-tools/linux-sdk.Dockerfile pour Linux. package-distribution.ps1 copie SDK et assets
+CMake>=3.25 ; l’image Emscripten 4.0.15 utilise un CMake plus vieux :
+vous pouvez installer CMake 3.31.10 avec pip.
+tools/docker/linux-sdk.Dockerfile pour Linux. package-distribution.ps1 copie SDK et assets
 disponibles sans effacer les fichiers étrangers. Binaires SDL2/SFML bruts peuvent
 nécessiter dépendances système ; archives release les fournissent. Gardez permissions
 et architecture/compilateur compatibles. WASM indépendant du système hôte.
-CI publie des artefacts workflow, jamais release/registre ; commit/push manuels.
+Le [guide des outils](../../tools/README.fr.md) précise les entrées des packagers
+et les ressources incluses dans chaque archive.
 Godot propose des dossiers C# et GDScript ; ce dernier utilise une GDExtension.
 Python/Tk/Pygame et Unity/Godot/Unreal utilisent le même [ABI](../reference/c-abi.fr.md).
 Graphiques compilables séparément ou par examples/CMakeLists. Chaque UI a démo
-et importeur ; anciens dossiers Python/Tk fusionnés en python-tkinter.
+et importeur. Python/Tk est dans `examples/python-tkinter` ; Pygame possède
+sa propre application, intégration, configuration et ses utilitaires locaux.
 React/Vue sont adaptateurs minces, Next réutilise React avec un démarrage SSR sûr :
 [guide JavaScript](javascript.fr.md), [code complet](../getting-started/examples.fr.md).

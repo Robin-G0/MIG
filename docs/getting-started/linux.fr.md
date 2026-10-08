@@ -23,7 +23,7 @@ le configurateur.
 
 ```sh
 sudo apt-get install cmake ninja-build g++ python3 qt6-base-dev libxtst-dev libegl1 libgles2
-python3 tools/bootstrap-native-linux.py
+python3 tools/bootstrap/bootstrap-native-linux.py
 cmake -S . -B build/linux-apps -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build/linux-apps --parallel 3
 ctest --test-dir build/linux-apps --output-on-failure
@@ -31,7 +31,7 @@ build/linux-apps/bin/mig-configurator --runtime "$PWD/build/native-linux-deps"
 build/linux-apps/bin/mig-controller --runtime "$PWD/build/native-linux-deps" --config configs/default.json
 ```
 
-bash tools/build-linux.sh [dossier] [ON|OFF] automatise bootstrap/build/tests
+bash tools/build/build-linux.sh [dossier] [ON|OFF] automatise bootstrap/build/tests
 après installation. Sources testées sur Ubuntu 22.04/24.04 x64 ; MediaPipe exige
 glibc2.28+, archives apps glibc2.35+. Sources utilisent Qt/X11 système ; archives
 fournissent dépendances/plugins/polices. [Installation](packages.fr.md).

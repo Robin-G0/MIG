@@ -14,8 +14,10 @@ précise les prérequis et la maturité des intégrations.
   ou le [contrôleur](../guides/controller.fr.md).
 - Les archives `*-examples` contiennent les démos exécutables et leurs sources.
   Consultez les [exemples autonomes](../../examples/README.fr.md).
-- Les archives `*-standalone` contiennent un exemple natif et ses dépendances.
-  Suivez le README à la racine et conservez les dossiers voisins.
+- Les archives `*-standalone` contiennent un tutoriel natif, navigateur ou moteur
+  à la racine avec ses dépendances. Suivez son README et conservez tout le contenu.
+  Node 22.12+ est externe pour les tutoriels navigateur individuels ; les ponts
+  natifs sont fournis, tandis que les éditeurs/compilateurs restent externes.
 - Les exemples JavaScript incluent les assets navigateur et les lanceurs Node.
   Lancez `run.cmd` ou `sh run.sh` dans le dossier choisi, puis ouvrez l’URL affichée.
 
@@ -86,7 +88,3 @@ Ces intégrations sont en Preview et utilisent votre fournisseur de tracking.
 Leurs README décrivent l’installation, les dépendances natives et les limites
 de l’éditeur et des exports.
 
-Les archives `*-standalone` couvrent aussi navigateur/framework et éditeurs.
-L’exemple est leur racine, avec son README et ses dépendances. Node 22.12+ est
-externe pour les individuelles navigateur ; runtimes natifs et bridges d’éditeur
-sont fournis. Les éditeurs/compilateurs restent des prérequis externes.
