@@ -72,6 +72,8 @@ jobs:
               run: |
                   python3 tests/packaging/native_integration_package_tests.py build/releases/motion-input-grid-*-linux-x64-unity.tgz
                   python3 tests/packaging/native_integration_package_tests.py build/releases/motion-input-grid-*-linux-x64-unity-standalone.zip
+                  python3 tests/packaging/standalone_editor_tests.py build/releases/motion-input-grid-*-linux-x64-unity-standalone.zip
+                  python3 tests/packaging/standalone_editor_tests.py --build-csharp build/releases/motion-input-grid-*-linux-x64-godot-csharp-standalone.zip
             - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: motion-input-grid-linux-and-python-candidates
@@ -127,7 +129,7 @@ jobs:
                   python -m pip install pyinstaller==6.16.0 pillow==11.3.0 pygame==2.6.1
                   python tools/freeze-python-examples.py
                   python tools/package-examples.py --platform windows-x64 --standalone
-                  python tests/packaging/standalone_example_tests.py build/releases/*-windows-x64-*-standalone.zip
+                  python tests/packaging/standalone_example_tests.py --source-python python build/releases/*-windows-x64-*-standalone.zip
             - name: Build and validate SDK, Python and engine integration artifacts
               shell: pwsh
               run: ./tools/prepare-windows-packages.ps1

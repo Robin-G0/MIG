@@ -214,7 +214,7 @@ def verify_windows(root):
 
 def write_manifest(root, platform, dependencies):
     hashes = {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
-              for path in sorted(root.rglob("*")) if path.is_file()}
+              for path in sorted(root.rglob("*")) if path.is_file() and path.name != "manifest.json"}
     (root / "manifest.json").write_text(json.dumps(
         {"project": PROJECT_NAME, "package": PACKAGE_NAME, "repository": REPOSITORY,
          "version": release_version(), "platform": platform, "dependencies": dependencies, "sha256": hashes},

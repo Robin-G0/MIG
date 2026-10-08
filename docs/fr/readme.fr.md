@@ -137,3 +137,11 @@ Compiler depuis les sources : [Windows](../getting-started/windows.fr.md) ·
 [Roadmap](../development/ROADMAP.fr.md) · [Installation des packages](../getting-started/packages.fr.md)
 
 Licence [Apache-2.0](../../LICENSE). Les dépendances redistribuées conservent leurs notices.
+
+## Tutoriels à copier
+
+Les archives `*-standalone` placent un exemple et ses dépendances dans un dossier.
+Commencez par son README, puis `example_usage.py`/`.hpp` ou le fichier
+d’intégration framework/éditeur indiqué. Les individuelles navigateur nécessitent
+Node 22.12+ ; la groupée JavaScript fournit Node. Les individuelles natives
+fournissent leurs bibliothèques/modèles. [Choisir un tutoriel](../../examples/README.fr.md).

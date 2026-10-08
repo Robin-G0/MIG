@@ -135,3 +135,11 @@ Build from source: [Windows](docs/getting-started/windows.md) ·
 [Roadmap](docs/development/ROADMAP.md) · [Package installation](docs/getting-started/packages.md)
 
 Licensed under [Apache-2.0](LICENSE). Redistributed dependencies retain their notices.
+
+## Tutorials you can copy
+
+Individual `*-standalone` archives put one example and its dependencies in one
+folder. Start with its README, then `example_usage.py`/`.hpp` or the named
+framework/editor integration file. The browser individual archives need Node
+22.12+; the combined JavaScript archive bundles Node. Native individual archives
+include their own libraries/models. [Choose a tutorial](examples/README.md).

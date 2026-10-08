@@ -99,7 +99,9 @@ def write_package_manifest(folder, ecosystem, platform):
 def rewrite_package_guides(folder):
     prefix = f"https://github.com/Robin-G0/MIG/blob/v{release_version()}/"
     package_root = folder.resolve()
-    for guide in folder.rglob("README*.md"):
+    for guide in folder.rglob("*.md"):
+        if 'licenses' in guide.relative_to(folder).parts:
+            continue
         content = guide.read_text(encoding="utf-8")
         content = re.sub(r"\]\((?:\.\./)+(docs|examples)/",
                          lambda match: f"]({prefix}{match[1]}/", content)

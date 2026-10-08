@@ -85,3 +85,8 @@ Choisissez le package adapté à votre plateforme et à votre version du moteur 
 Ces intégrations sont en Preview et utilisent votre fournisseur de tracking.
 Leurs README décrivent l’installation, les dépendances natives et les limites
 de l’éditeur et des exports.
+
+Les archives `*-standalone` couvrent aussi navigateur/framework et éditeurs.
+L’exemple est leur racine, avec son README et ses dépendances. Node 22.12+ est
+externe pour les individuelles navigateur ; runtimes natifs et bridges d’éditeur
+sont fournis. Les éditeurs/compilateurs restent des prérequis externes.

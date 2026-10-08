@@ -42,8 +42,10 @@ MIG input mirroring separately swaps anatomy and rules. Never mirror packets.
 ## Python/Tk and Pygame
 
 `main.py` is the raised-hands entry; `profile.py` calls the same viewer with
-`profile_mode=True`. Both prepend the shared example directory; `python_source.py`
-prefers installed `mig`, then the checkout binding. `python_runtime.py` resolves
+`profile_mode=True`. Each folder owns `application.py`, `example_usage.py` and
+local `support/` display/resource helpers. `example_usage.py` explicitly imports
+installed `mig`, then the packaged binding (checkout fallback only in the repository).
+`support/python_runtime.py` resolves
 native libraries/models and optional environment overrides. Frozen executables
 resolve from their executable's archive folder; Linux restarts once with bundled
 library search paths. Bundled Linux fonts use a temporary configuration with
@@ -60,7 +62,7 @@ invalid imports keep the previous profile. Fatal capture errors reach the UI.
 
 `python_view.py` supplies aspect fitting, shoulder-scaled row outlines, colors
 and prop geometry. `visible_points`, `hand_lines` and `wrists` mirror image points
-for presentation. `announce` prints all accepted action/ID pairs, including
+for presentation. `handle_detected_actions()` prints all accepted action/ID pairs, including
 simultaneous actions, and returns a status string. Change that consumer to invoke
 your app; keep the observation conversion intact.
 
@@ -74,11 +76,14 @@ it even on errors. `finally` closes the source before `pygame.quit()`.
 
 ## SDL2 and SFML
 
-Both C++ viewers include shared `options.hpp`/`source.hpp` helpers.
+Both C++ viewers own their local `support/options.hpp` and `support/source.hpp`.
+`main.cpp` calls the visual loop in `application.cpp`; actual MIG calls are in
+`example_usage.hpp`, with `load_configuration()`, `initialize_mig()`,
+`process_tracking_frame()` and `handle_detected_actions()`.
 `demo::Options` resolves runtime/profile with no mandatory launch arguments.
 `demo::Source` owns camera/estimator, or generated data for smoke, and keeps
-reusable image buffers. `initial_configuration` loads the demo or creates the
-empty profile variant. `demo::consume` updates the engine once, then reports
+reusable image buffers. `tutorial::load_configuration()` loads the demo or creates the
+empty profile variant. `tutorial::process_tracking_frame()` updates the engine once, then reports
 every accepted event. `demo::import_profile` validates before replacement and
 updates hand capability. File errors leave the running profile unchanged.
 
@@ -114,17 +119,19 @@ reactive state. `coordinate`/`onFrame` provide imperative coordinate access.
 
 Plain HTML uses `camera.mjs` to connect DOM controls/status to that session.
 `index.html` loads the demo, `profile.html` starts empty. React's `src/main.jsx`
-mounts `CameraExample.jsx` in StrictMode; `useMIG` owns refs/session cleanup and
+mounts `CameraExample.jsx` in StrictMode; `src/example_usage.mjs` imports the public `useMIG` hook, which owns refs/session cleanup and
 the latest callback. Vue's `main.mjs` mounts `CameraExample.vue`; its composable
 uses shallow state and lifecycle cleanup. Both file inputs pass text to
 `importJSON`, show errors and preserve the previous profile. Shared CSS applies
 system light/dark and rounded controls; text stays unmirrored.
 
 Next's server routes `/` and `/profile` render the client `CameraExample.jsx`
-boundary, which reuses React's component. Browser URLs are guarded in prerender;
+boundary, which uses its local `app/CameraView.jsx` and styles. Browser URLs are guarded in prerender;
 camera/model/WASM work does not execute on the server. `next.config.mjs` exports
 static pages. Vite builds both React/Vue entry pages. The small `run.mjs` servers
-serve built files on localhost; archive launchers choose a bundled Node runtime.
+serve built files on localhost; combined-archive launchers choose bundled Node. Individual browser archives
+require installed Node 22.12+ and contain their own `server.mjs`, compiled pages
+and local binding dependency for rebuilds.
 Replace `onAction` with your application command; do not run inference in renders.
 See [adapter setup](../integrations/javascript.md) for complete API snippets.
 
@@ -136,7 +143,8 @@ GDExtension wraps the same C ABI; its scenes use `submit_frame` and `motion_acti
 Both versions keep recognition in C++ and use supplied landmarks.
 
 All engine components consume supplied packets, not a hidden background camera.
-`UseSyntheticDemo` generates a deterministic raise for wiring checks. The generic
+`UseSyntheticDemo` (GDScript: `use_synthetic_demo`) generates a deterministic
+raise for wiring checks, including Unreal’s raised-hands component. The generic
 component starts empty and imports a profile; the raised-hands subclass loads
 the shared sample. `SubmitFrame` updates once, reports every action and optionally
 uses wrist world coordinates to move the attached prop. The packet timestamp
@@ -160,3 +168,20 @@ polls, and preserve stop/join/dispose ordering. UI import should stay transactio
 The [C API](../reference/c-abi.md), [configuration](../reference/configuration.md) and
 [pipeline](../architecture/lifecycle.md) define limits beyond these examples. Synthetic tests do
 not prove real-hand accuracy, camera speed or downstream key delivery.
+
+## Individual packages and isolation checks
+
+An individual `*-standalone` archive puts its application, integration source,
+configuration, README, runtime and licenses in one folder. Copy that complete
+folder outside the repository. Native packages have their own runtime; combined
+archives share models and frozen Python dependencies to avoid large duplication.
+Browser individual packages require installed Node and include the local npm
+binding for optional source rebuilds. Editor archives supply native ABI/bridge
+files; Godot archives are complete projects, Unity is a self-contained UPM package,
+and Unreal is a plugin for an external C++ project.
+
+Release validation extracts packages into system temporary directories, launches
+from their own and unrelated working directories, and checks actions/imports and
+cleanup. Browser tests use real WASM with generated observations; they do not
+prove camera accuracy. Editor installation/build/export and real hardware still
+need the platform verification described in each tutorial.

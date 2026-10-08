@@ -127,12 +127,13 @@ in `examples/godot/csharp`. Unity uses the .NET bridge; Unreal consumes the C AB
 
 `examples/web/session.mjs` owns the shared browser session. The plain HTML viewer
 and `bindings/javascript` React/Vue adapters consume it. Next.js reuses the React
-component inside a client boundary. `tools/prepare-javascript.mjs` stages canonical
+component locally inside a client boundary; it does not depend on a sibling example. `tools/prepare-javascript.mjs` stages canonical
 session sources, WASM and assets into the npm runtime; generated copies are not
 independent implementations. See [JavaScript](../integrations/javascript.md).
 
-`examples/common` shares profiles, input sources and presentation helpers for the
-Python/C++ viewers. SDL2/SFML use the C++ libraries; Tkinter/Pygame use Python's
+Python/C++ tutorials own their integration in `example_usage` and their display
+helpers in local `support/`. `examples/common` keeps canonical profiles, fonts and
+repository fixtures rather than hiding the tutorial lifecycle. SDL2/SFML use the C++ libraries; Tkinter/Pygame use Python's
 ABI wrapper. The supplied-landmarks and native-estimator console consumers show
 the two lower-level entry points. Visual integrations have demo/import examples and
 setup instructions in the [example index](../../examples/README.md).
@@ -174,7 +175,7 @@ exported games. See [package installation](../getting-started/packages.md) and
 | Desktop authoring or controller views | `src/apps` / `src/linux-apps`; shared profiles in `src/controller` |
 | Public language API | `src/c-api`, `src/web` or `bindings`; matching consumer tests |
 | Browser lifecycle/framework integration | `examples/web/session.mjs`, `bindings/javascript`, framework tests |
-| Example behavior | Technology folder and shared `examples/common`; example tests |
+| Example behavior | Technology folder, local `example_usage`/`support`; example and package tests |
 | Build or archive contents | `cmake`, `tools`, workflows and package/manifest tests |
 
 Keep runtime data ownership in the layers described below. A presentation change

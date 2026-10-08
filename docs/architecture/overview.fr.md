@@ -129,12 +129,12 @@ utilise directement l'ABI C.
 
 `examples/web/session.mjs` gère la session navigateur commune. L'interface HTML
 et les adaptateurs React/Vue de `bindings/javascript` l'utilisent. Next.js reprend
-le composant React côté client. `tools/prepare-javascript.mjs` copie les sources
+son propre composant React côté client, sans dossier d’exemple voisin. `tools/prepare-javascript.mjs` copie les sources
 canoniques de la session, WASM et assets dans le runtime npm ; ces copies générées
 ne sont pas des implémentations indépendantes. Voir [JavaScript](../integrations/javascript.fr.md).
 
-`examples/common` partage profils, sources d'observations et utilitaires des
-interfaces Python/C++. SDL2/SFML utilisent les bibliothèques C++ ; Tkinter/Pygame
+`example_usage` expose l’intégration Python/C++, avec utilitaires locaux
+`support/`. `examples/common` conserve profils/polices/fixtures du dépôt. SDL2/SFML utilisent les bibliothèques C++ ; Tkinter/Pygame
 utilisent le pont ABI Python. Les consommateurs console montrent les points
 d'entrée avec observations fournies ou estimateur natif. Les variantes et leur
 installation figurent dans l'[index des exemples](../../examples/README.fr.md).
@@ -227,3 +227,8 @@ Voir le [contrôleur](../guides/controller.fr.md).
 
 Les [packages distribuables](../getting-started/packages.fr.md) utilisent ces mêmes modules ;
 les projets de démonstration restent dans `examples`.
+
+Les tutoriels Python/C++ possèdent leur intégration `example_usage` et leurs
+utilitaires `support/` locaux. `examples/common` conserve profils, polices et
+fixtures du dépôt. Next possède sa propre vue/styles ; les packages individuels
+ne dépendent pas d’un dossier d’exemple voisin.

@@ -13,8 +13,10 @@ for platform requirements and integration maturity.
   Follow the [configurator](../guides/configurator.md) or [controller](../guides/controller.md) guide.
 - `*-examples` archives contain runnable demos and their sources. Follow the
   [standalone examples guide](../../examples/README.md).
-- `*-standalone` archives contain one native example and its required dependencies.
-  Start with the README at the archive root; keep its sibling folders together.
+- `*-standalone` archives contain one native, browser or editor tutorial.
+  The example is the archive root; keep its contents together and follow its README.
+  Individual browser archives require Node 22.12+; native libraries and editor
+  bridges are bundled. Editors/toolchains remain external prerequisites.
 - JavaScript examples include local browser assets and Node launchers. Run
   `run.cmd` or `sh run.sh` in the chosen example folder and open the displayed URL.
 

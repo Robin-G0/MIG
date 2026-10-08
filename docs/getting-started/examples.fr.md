@@ -42,8 +42,10 @@ anatomie et règles. Ne reflétez jamais les paquets d'entrée.
 ## Python/Tk et Pygame
 
 `main.py` lance la démo, `profile.py` la même vue avec `profile_mode=True`.
-Ils ajoutent le dossier commun au chemin Python. `python_source.py` préfère
-`mig` installé puis le pont du dépôt. `python_runtime.py` trouve bibliothèques,
+Chaque dossier possède `application.py`, `example_usage.py` et ses utilitaires
+locaux dans `support/`. `example_usage.py` importe explicitement MIG et préfère
+`mig` installé puis le binding fourni (repli vers le dépôt seulement en checkout).
+`support/python_runtime.py` trouve bibliothèques,
 modèles et remplacements d'environnement. En exécutable figé, il utilise le
 dossier de l'archive ; sous Linux, il redémarre une fois avec le chemin des
 bibliothèques fournies. Les polices Linux utilisent une configuration temporaire
@@ -61,7 +63,7 @@ le worker avant la fermeture du toolkit.
 
 `python_view.py` fournit ajustement d'aspect, lignes suivant les épaules,
 couleurs et forme des objets. `visible_points`, `hand_lines`, `wrists`
-reflètent l'affichage. `announce` imprime tous les couples action/ID, même
+reflètent l'affichage. `handle_detected_actions()` imprime tous les couples action/ID, même
 simultanés, et retourne le texte de statut. Remplacez ce consommateur pour
 commander votre application en conservant la conversion des observations.
 
@@ -75,11 +77,13 @@ toujours détruit. Le bloc `finally` ferme la source avant `pygame.quit()`.
 
 ## SDL2 et SFML
 
-Les deux utilisent `camera_example.hpp` et `native_source.hpp`.
+Les deux possèdent leurs utilitaires `support/options.hpp` et `support/source.hpp`.
+`main.cpp` appelle `application.cpp` ; `example_usage.hpp` montre les appels MIG
+avec load_configuration, initialize_mig, process_tracking_frame et handle_detected_actions.
 `demo::Options` trouve profil et runtime sans argument obligatoire.
 `demo::Source` possède caméra/estimateur ou données synthétiques et réutilise
-les images. `initial_configuration` charge la démo ou le profil vide.
-`demo::consume` met le moteur à jour une fois puis traite tous les événements.
+les images. `tutorial::load_configuration()` charge la démo ou le profil vide.
+`tutorial::process_tracking_frame()` met le moteur à jour une fois puis traite tous les événements.
 `demo::import_profile` valide avant remplacement et ajuste Hands ; les erreurs
 conservent le profil actif.
 
@@ -160,3 +164,18 @@ empruntés entre polls. Préservez stop/join/dispose et l'import atomique.
 Les contrats détaillés sont dans [API C](../reference/c-abi.fr.md), [JSON](../reference/configuration.fr.md)
 et [pipeline](../architecture/lifecycle.fr.md). Les tests synthétiques ne prouvent pas la précision
 des mains, le débit caméra ni la livraison des touches aux autres logiciels.
+
+## Archives individuelles et isolation
+
+Chaque archive `*-standalone` place application, intégration, profil, README,
+runtime et licences dans un seul dossier copiable hors du dépôt. Les archives
+groupées partagent les modèles et dépendances Python volumineuses ; les archives
+natives individuelles contiennent leur runtime. Les individuelles navigateur
+nécessitent Node 22.12+ et fournissent le binding npm local pour recompiler.
+Godot fournit des projets complets, Unity un paquet UPM autonome, et Unreal un
+plugin pour un projet C++ externe. Next possède désormais ses composants/styles.
+
+Les validations de release extraient dans le dossier temporaire système, testent
+les lancements depuis le dossier propre et un autre dossier, puis actions/imports
+et nettoyage. Les tests navigateur utilisent le vrai WASM avec des observations
+générées. Éditeurs, exports et caméras réelles restent à valider selon chaque guide.
