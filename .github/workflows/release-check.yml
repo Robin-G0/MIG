@@ -59,6 +59,14 @@ jobs:
                   -e CCACHE_DIR=/src/build/ccache-linux -e CCACHE_MAXSIZE=500M
                   -e CMAKE_CXX_COMPILER_LAUNCHER=ccache mig-linux-release:22.04
                   bash tools/build-linux-release.sh
+            - name: Validate native tutorials without the repository or development libraries
+              run: |
+                  docker build -f tools/linux-example-test.Dockerfile -t mig-example-test:22.04 tools
+                  docker run --rm --init \
+                      -v "$PWD/build/releases:/archives:ro" \
+                      -v "$PWD/tests/packaging/standalone_example_tests.py:/tests/standalone_example_tests.py:ro" \
+                      mig-example-test:22.04 xvfb-run -a python3 -u /tests/standalone_example_tests.py \
+                      '/archives/*-linux-x64-*-standalone.tar.gz'
             - name: Generate SDK and runtime integration packages
               run: >-
                   docker run --rm -v "$PWD:/src" -w /src

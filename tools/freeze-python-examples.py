@@ -82,6 +82,12 @@ def collect_notices(platform):
 
 
 def main():
+    # Freeze the same wheels on both platforms. Distro Pygame can import
+    # pkg_resources through undeclared dynamic dependencies (for example jaraco),
+    # producing executables that only work on the original build machine.
+    for package, required in (("pyinstaller", "6.16.0"), ("pillow", "11.3.0"), ("pygame", "2.6.1")):
+        if distribution(package).version != required:
+            raise RuntimeError(f"Freezing requires {package}=={required}; install the pinned release first")
     platform = "windows-x64" if os.name == "nt" else "linux-x64"
     for technology in ("python-tkinter", "pygame"):
         for variant in ("main", "profile"):

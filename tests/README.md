@@ -72,3 +72,6 @@ The extracted tutorial checks are `packaging/standalone_example_tests.py`
 archives with Playwright), and `packaging/godot_package_tests.py` (addon or
 standalone project). Native integration checks accept standalone Unity/Unreal
 archives as well. Release CI runs these after packaging.
+
+The Linux release also runs the native archives in `tools/linux-example-test.Dockerfile`:
+only the archives and test runner are mounted, with no checkout or development libraries.

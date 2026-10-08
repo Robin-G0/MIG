@@ -11,7 +11,7 @@ struct Options {
     std::filesystem::path assets;
     Options(int argc, char** argv) {
         assets = std::filesystem::absolute(argv[0]).parent_path() / "support";
-        if (!std::filesystem::exists(assets / "raised-hands.json")) {
+        if (!std::filesystem::exists(assets / "DejaVuSans.ttf")) {
             assets = std::filesystem::path(MIG_EXAMPLE_COMMON);
         }
         if (argc < 2 || std::string(argv[1]) == "--smoke") {

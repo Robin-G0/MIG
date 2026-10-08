@@ -1,4 +1,6 @@
-#include "../../examples/sdl2/support/runtime.hpp"
+#define MIG_EXAMPLE_COMMON "missing-build-support"
+#define MIG_EXAMPLE_ROOT "missing-build-repository"
+#include "../../examples/sdl2/support/options.hpp"
 #include <chrono>
 #include <fstream>
 
@@ -49,5 +51,23 @@ int main(int argc, char** argv) {
     }
     const auto individual = executable / "runtime";
     create_runtime(individual, library);
-    return demo::find_runtime(executable, root) == individual ? 0 : 7;
+    if (demo::find_runtime(executable, root) != individual) {
+        return 7;
+    }
+    // A packaged font lives in support; configuration has its own directory.
+    // Neither resource may fall back to paths from the unavailable build tree.
+    std::filesystem::create_directories(executable / "support");
+    std::filesystem::create_directories(executable / "configuration");
+    std::ofstream(executable / "support/DejaVuSans.ttf") << "font";
+    std::ofstream(executable / "configuration/raised-hands.json") << "{}";
+    auto program = (executable / "viewer").string();
+    char smoke[] = "--smoke";
+    char* arguments[] = {program.data(), smoke};
+    const demo::Options options(2, arguments);
+    return options.assets == std::filesystem::absolute(executable / "support") &&
+                   options.config ==
+                       std::filesystem::absolute(executable / "configuration/raised-hands.json")
+                           .string()
+               ? 0
+               : 8;
 }
