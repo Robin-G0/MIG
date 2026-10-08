@@ -61,13 +61,18 @@ def check_tar(path):
 def check_zip(path):
     with zipfile.ZipFile(path) as archive:
         manifest_name = next(name for name in archive.namelist()
-                             if name.endswith("/manifest.json"))
-        root = manifest_name.removesuffix("/manifest.json")
+                             if name == "manifest.json" or name.endswith("/manifest.json"))
+        prefix = manifest_name.removesuffix("manifest.json")
+        root = prefix.rstrip('/')
         manifest = json.loads(archive.read(manifest_name).decode("utf-8-sig"))
         for name, expected in manifest["sha256"].items():
-            assert hashlib.sha256(archive.read(f"{root}/{name}")).hexdigest() == expected, name
-        assert archive.read(f"{root}/LICENSE")
-        assert archive.read(f"{root}/README.fr.md")
+            assert hashlib.sha256(archive.read(f"{prefix}{name}")).hexdigest() == expected, name
+        guide_folder = prefix + ('addons/mig/' if manifest.get('ecosystem') == 'godot' else '')
+        assert archive.read(f"{guide_folder}LICENSE")
+        assert archive.read(f"{guide_folder}README.fr.md")
+        if '-standalone.' in path.name:
+            assert manifest['ecosystem']
+            assert not any('/examples/' in name for name in archive.namelist())
         if "-examples." in path.name:
             check_example_contents(path, archive.namelist(), root, ".exe")
 
