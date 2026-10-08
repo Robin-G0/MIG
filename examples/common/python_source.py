@@ -78,6 +78,8 @@ class InputSource:
                 configuration["inputs"] = []
                 configuration["tracking"]["hands"] = False
                 profile = json.dumps(configuration)
+            # Creating Tracker validates JSON and owns one C ABI engine. Keep all
+            # calls here on the worker; the context closes tasks/handle on errors too.
             with Tracker(self.options.library, profile) as tracker:
                 if not self.options.synthetic:
                     if self.options.runtime is None:
@@ -90,6 +92,8 @@ class InputSource:
                     sequence += 1
                     packet = (demo_packet(sequence) if self.options.synthetic
                               else tracker.poll_camera())
+                    # A native poll already updates MIG. Synthetic/provider frames
+                    # require update(); copy logical events before the next native call.
                     events = tracker.update(packet) if self.options.synthetic else tracker.events()
                     image = (synthetic_image if self.options.synthetic else
                              tracker.camera_image() if packet else None)

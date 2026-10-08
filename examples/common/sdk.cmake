@@ -32,6 +32,10 @@ function(mig_example_assets target)
     target_compile_definitions(${target} PRIVATE MIG_EXAMPLE_ROOT="${repository}")
     target_compile_definitions(${target} PRIVATE MIG_EXAMPLE_COMMON="${common}")
     if(target MATCHES "-profile$")
+        # Both variants stage into the same output/common directories. Serialize
+        # their post-build copies so parallel MSBuild/Ninja cannot race on files.
+        string(REGEX REPLACE "-profile$" "" demo_target "${target}")
+        add_dependencies(${target} ${demo_target})
         target_compile_definitions(${target} PRIVATE MIG_PROFILE_EXAMPLE)
         if(WIN32)
             target_link_libraries(${target} PRIVATE comdlg32)

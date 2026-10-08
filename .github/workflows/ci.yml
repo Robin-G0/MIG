@@ -45,6 +45,7 @@ jobs:
                   python3 tests/release_version_tests.py
                   python3 tests/version_resolution_tests.py
                   python3 tests/release_upload_tests.py
+                  python3 tests/example_package_tests.py
 
     windows:
         name: Windows Release (hands ${{ matrix.hands }})

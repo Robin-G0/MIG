@@ -27,7 +27,7 @@ async function importProfile(event) {
 <template>
     <main>
         <h1>{{ props.profileMode ? "Run your MIG profile" : "Raise either hand" }}</h1>
-        <p>Keep shoulders visible. Lower hands, then raise a wrist through the rows.</p>
+        <p>Keep shoulders visible. Lower hands, then raise a wrist from green into yellow.</p>
         <nav aria-label="Examples">
             <a href="./index.html">Raised hands</a><a href="./profile.html">Import profile</a>
         </nav>

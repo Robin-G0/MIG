@@ -60,7 +60,7 @@ Run windows/mig-controller.exe or windows/mig-configurator.exe.
 Install the matching Microsoft Visual C++ 2022 Redistributable first.
 Set CMAKE_PREFIX_PATH to windows/sdk for C++ consumers.
 
-See [release instructions](docs/development/packaging.md) and the
+See [package installation](docs/getting-started/packages.md) and the
 [support matrix](docs/reference/support.md) for prerequisites and limitations.
 "@ | Set-Content -LiteralPath (Join-Path $package 'README.md') -Encoding UTF8
     @"
@@ -72,7 +72,7 @@ Lancez windows/mig-controller.exe ou windows/mig-configurator.exe.
 Installez le Microsoft Visual C++ 2022 Redistributable correspondant.
 Utilisez windows/sdk comme CMAKE_PREFIX_PATH pour compiler un consommateur.
 
-[Publication](docs/development/packaging.fr.md) et [vérifications](docs/reference/support.fr.md).
+[Installation](docs/getting-started/packages.fr.md) et [support](docs/reference/support.fr.md).
 "@ | Set-Content -LiteralPath (Join-Path $package 'README.fr.md') -Encoding UTF8
     $hashes = [ordered]@{}
     Get-ChildItem -LiteralPath $package -Recurse -File | Sort-Object FullName | ForEach-Object {

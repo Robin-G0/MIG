@@ -19,7 +19,7 @@ archives include their runtimes and sources; no build is needed to try them.
 
 1. Start one viewer and allow camera access.
 2. Keep both shoulders visible for calibration, then lower your hands.
-3. Raise either wrist through the green rows into the yellow row.
+3. Raise either wrist through the green region into the yellow row.
 4. Open the profile variant to import a JSON file saved by the configurator.
 
 > [!TIP]
@@ -46,7 +46,7 @@ standalone camera exports. See the [support matrix](../docs/reference/support.md
 
 Install **`motion-input-grid`** through [pip](../bindings/python/README.md),
 [npm](../bindings/javascript/README.md), or use the [C++ SDK / CMake guide](../docs/getting-started/cpp.md).
-[Other packages](../docs/development/distribution.md) cover vcpkg, Debian and editor integrations.
+[Other packages](../docs/getting-started/packages.md) cover vcpkg, Debian and editor integrations.
 Per-example guides explain installed-library use and full-checkout fallback.
 
 [Bootstrap](../docs/getting-started/bootstrap.md) connects a profile to action

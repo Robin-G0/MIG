@@ -2,7 +2,7 @@
 
 [English](support.md) | [Français](support.fr.md)
 
-Cette page est la matrice canonique de MIG 1.0.0, schéma JSON 2 et C ABI 1.
+Cette page est la matrice canonique de MIG 1.0.2, schéma JSON 2 et C ABI 1.
 La maturité concerne les interfaces, pas la précision d’une webcam. Les tests
 synthétiques et les images vides ne prouvent pas une compatibilité matérielle.
 
@@ -47,6 +47,6 @@ aucun runtime caméra Linux ARM64 ni binaire Windows ARM64 n’est fourni. Les p
 éditeur ne contiennent pas de fournisseur caméra.
 
 Voir le [démarrage](../getting-started/bootstrap.fr.md), l’[architecture](../architecture/overview.fr.md)
-et le [contenu des paquets](../development/distribution.fr.md). Les validations
+et le [contenu des paquets](../getting-started/packages.fr.md). Les validations
 matérielles doivent couvrir webcams intégrées/USB, résolutions et cadences,
 CPU/GPU, démarrage/arrêt, observations périmées/perdues et relâchement des touches.

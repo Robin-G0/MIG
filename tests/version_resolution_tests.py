@@ -56,7 +56,19 @@ def verify():
         git(root, "-c", "user.name=Version fixture", "-c", "user.email=fixture@example.invalid",
             "commit", "-am", "advance")
         assert release_version(root=root) == "2.3.4"
-    print("Exact tag, metadata propagation, mismatched tag and development fallback passed")
+        (root / "CMakeLists.txt").write_text(
+            'cmake_minimum_required(VERSION 3.25)\n'
+            'project(VersionFixture LANGUAGES NONE)\n'
+            'include(cmake/MIGVersion.cmake)\n'
+            'file(WRITE "${CMAKE_BINARY_DIR}/version.txt" "${MIG_VERSION}")\n')
+        build = root / "build"
+        subprocess.run(["cmake", "-S", str(root), "-B", str(build)],
+                       check=True, capture_output=True)
+        assert (build / "version.txt").read_text() == "2.3.4"
+        (root / "VERSION").write_text("2.3.5\n")
+        subprocess.run(["cmake", "--build", str(build)], check=True, capture_output=True)
+        assert (build / "version.txt").read_text() == "2.3.5", "VERSION changes must trigger reconfiguration"
+    print("Exact tag, metadata propagation, mismatched tag, fallback and rebuild version passed")
 
 
 if __name__ == "__main__":

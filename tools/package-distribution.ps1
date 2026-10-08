@@ -9,7 +9,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $projectRoot = [IO.Path]::GetFullPath("$PSScriptRoot/..")
-$privateNames = @(python "$PSScriptRoot/distribution_policy.py" --excluded-names)
+$excludedNames = @(python "$PSScriptRoot/distribution_policy.py" --excluded-names)
 if ($LASTEXITCODE) { throw 'Distribution policy query failed.' }
 $targetRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot $Destination))
 New-Item -ItemType Directory -Force -Path $targetRoot | Out-Null
@@ -17,7 +17,7 @@ function Copy-Artifact([string]$source, [string]$target) {
     if ((Get-Item -LiteralPath $source).PSIsContainer) {
         New-Item -ItemType Directory -Force -Path $target | Out-Null
         Get-ChildItem -LiteralPath $source | Where-Object {
-            $_.Name -notin $privateNames -and $_.Name -ne '__pycache__' -and $_.Extension -ne '.pyc' -and
+            $_.Name -notin $excludedNames -and $_.Name -ne '__pycache__' -and $_.Extension -ne '.pyc' -and
                 $_.Name -notin @('node_modules', '.next', 'dist', 'out', 'public', 'runtime') -and
                 $_.Name -ne 'build' -and -not $_.Name.EndsWith('.egg-info')
         } | ForEach-Object {

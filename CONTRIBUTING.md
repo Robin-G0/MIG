@@ -32,9 +32,9 @@ Use four spaces and clang-format 16; `.clang-format` is authoritative.
 Commit subjects use `[ADD]`, `[FIX]` or `[DEL]`. Explain the observable change,
 contracts affected, validation run and remaining limitations in the pull request.
 
-Run the tests affected by your change, `python tools/check-docs.py` and the C++
-format check in [coding guidelines](docs/development/contributing.md). For a binding
-or package change, install the generated artifact in a separate consumer; the
-[distribution guide](docs/development/distribution.md) lists those commands.
+Run the tests affected by your change, `python tools/check-docs.py` and
+`tools/format-code.ps1 -Check`. For a binding or package change, install the
+generated artifact in a separate consumer using the
+[installation guide](docs/getting-started/packages.md).
 Update the relevant English/French guide and add a meaningful regression test
 for changed behavior. Do not edit generated copies or redistribute credentials.

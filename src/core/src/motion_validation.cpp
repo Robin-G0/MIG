@@ -104,7 +104,11 @@ void validate(const Configuration& config) {
                     input.cooldown_ms >= 0 && input.cooldown_ms <= 10000 && int(input.space) >= 0 &&
                     int(input.space) < 2,
                 "Invalid input parameters");
-        validate_keyboard(input.keyboard);
+        try {
+            validate_keyboard(input.keyboard);
+        } catch (const std::exception& error) {
+            throw std::runtime_error("Input " + input.id + ": " + error.what());
+        }
         require(int(input.action_mode) >= 0 && int(input.action_mode) <= 2 &&
                     input.repeat_interval_ms >= 20 && input.repeat_interval_ms <= 60000,
                 "Invalid action mode or repeat interval (20..60000 ms)");

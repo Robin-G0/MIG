@@ -8,7 +8,7 @@ foreach(app IN ITEMS configurator controller)
         continue()
     endif()
     set(app_sources main.cpp platform.cpp runtime.cpp capture.cpp inference.cpp
-        keyboard.cpp controls.cpp diagnostics.cpp theme.cpp scrollbars.cpp)
+        keyboard.cpp controls.cpp diagnostics.cpp theme.cpp scrollbars.cpp import_review.cpp)
     if(app STREQUAL "configurator")
         list(APPEND app_sources window.cpp renderer.cpp key_editor.cpp editor.cpp
             editor_navigation.cpp editor_settings.cpp editor_constraints.cpp editor_selection.cpp)

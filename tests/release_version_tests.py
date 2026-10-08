@@ -32,8 +32,6 @@ def verify_identity():
     for workspace in ("examples/react", "examples/vue", "examples/next"):
         assert identifier in json.loads(document(f"{workspace}/package.json"))["dependencies"]
         assert identifier in lock[workspace]["dependencies"]
-    assert 'candidate/motion-input-grid-${package_version}.tgz' in document(
-        ".github/workflow-templates/publish-npm.yml.disabled")
 
 
 def verify_versions():

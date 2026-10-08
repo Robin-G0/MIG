@@ -2,6 +2,19 @@
 
 [English](recognition.md) | [Français](recognition.fr.md)
 
+## Faible fréquence et exemples
+
+Le moteur teste le segment entre deux positions visibles. Il n'exige pas une
+frame dans chaque cellule intermédiaire. Le sweep nécessite un intervalle maximal de
+180 ms ; au-delà, le chemin actif échoue plutôt que d'inventer un trajet. Interaction
+autorise 500 ms mais exige occupation et signe réels. Une observation âgée de plus de
+250 ms est rejetée. Les exemples utilisent de larges régions départ/arrivée.
+Le test example-motion couvre deux poignets, 33/100/160/180 ms, sens inverse, pose
+terminale seule et rupture à 181 ms.
+Le viewer Python reconstruit ses outlines depuis les épaules brutes ; l'échelle MIG
+étant lissée, des déplacements d'épaules peuvent créer un décalage temporaire.
+Prenez ce décalage en compte lors du diagnostic d’un mouvement non reconnu.
+
 ## Grille et espaces
 
 L'image utilise des points anatomiques normalisés non reflétés. La correction

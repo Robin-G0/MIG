@@ -159,7 +159,7 @@ archives natives, SDK/paquets Debian, wheel/sdist Python, paquet npm, exemples
 exécutables et bundles de sources pour éditeurs. Les wrappers Python/npm ne
 remplacent pas le moteur compilé. Les sources pour éditeurs exigent éditeur et
 dépendances natives ; elles ne sont pas des jeux exportés. Voir
-[publication](../development/packaging.fr.md) et [validation des plateformes](../reference/support.fr.md).
+[package installation](../getting-started/packages.fr.md) et [validation des plateformes](../reference/support.fr.md).
 
 ## Où modifier une fonctionnalité
 
@@ -218,5 +218,5 @@ BGRX sous Windows et la copie QImage sous Linux. La vérification lit la progres
 de l’action sélectionnée sans isoler le moteur et suspend les sorties clavier.
 Voir le [contrôleur](../guides/controller.fr.md).
 
-Les [packages distribuables](../development/distribution.fr.md) utilisent ces mêmes modules ;
+Les [packages distribuables](../getting-started/packages.fr.md) utilisent ces mêmes modules ;
 les projets de démonstration restent dans `examples`.

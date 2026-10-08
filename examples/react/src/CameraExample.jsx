@@ -25,7 +25,7 @@ export function CameraExample({ profileMode = false,
 
     return <main>
         <h1>{profileMode ? "Run your MIG profile" : "Raise either hand"}</h1>
-        <p>Keep your shoulders visible. Lower your hands, then raise a wrist through the rows.</p>
+        <p>Keep your shoulders visible. Lower your hands, then raise a wrist from green into yellow.</p>
         <nav aria-label="Examples">
             <a href={handsHref}>Raised hands</a><a href={profileHref}>Import profile</a>
         </nav>

@@ -27,7 +27,7 @@ Les guides des applications indiquent les fichiers à lancer et les prérequis.
 | Python | [pip et envoi de frames](../bindings/python/README.fr.md), [Tkinter](../examples/python-tkinter/README.fr.md), [Pygame](../examples/pygame/README.fr.md) |
 | Navigateur / React / Vue / Next.js | [Package npm](../bindings/javascript/README.fr.md), [Installation des frameworks](integrations/javascript.fr.md) |
 | Godot / Unity / Unreal | [Add-on Godot](../integrations/godot/README.fr.md), [UPM Unity](../integrations/unity/README.fr.md), [Plugin Unreal](../integrations/unreal/README.fr.md) |
-| vcpkg / Debian / APT | [Distribution des packages](development/distribution.fr.md) |
+| vcpkg / Debian | [Installation des packages](getting-started/packages.fr.md) |
 
 Le [guide de démarrage](getting-started/bootstrap.fr.md) relie profil, suivi et
 retour d'action. Le [catalogue des exemples](../examples/README.fr.md) et le
@@ -47,11 +47,10 @@ décrit les points fournis et les adaptateurs caméra natifs.
 | Travail temps réel, mesures et limites | [Performances](architecture/performance.fr.md) |
 | Plateformes et couverture des tests | [Matrice de support](reference/support.fr.md) |
 
-## Compiler, contribuer et publier
+## Compiler et contribuer
 
 [Compilation Windows](getting-started/windows.fr.md) · [Compilation Linux](getting-started/linux.fr.md) ·
-[Style et vérifications](development/contributing.fr.md) · [Packaging](development/packaging.fr.md) ·
-[Distribution et hébergement APT signé](development/distribution.fr.md) ·
+[Contribution](fr/CONTRIBUTING.fr.md) · [Installation des packages](getting-started/packages.fr.md) ·
 [Historique](development/CHANGELOG.fr.md) · [Roadmap](development/ROADMAP.fr.md)
 
 Chaque guide possède un lien English/Français en tête. Les noms d'API, champs

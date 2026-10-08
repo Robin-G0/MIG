@@ -23,6 +23,21 @@ int App::controller_ui_test() {
     trigger.cell = {4, 3, 1, 1};
     input.steps[0].constraints.push_back(trigger);
     sample.motions.push_back(input);
+    for (const auto button : {IDCANCEL, IDOK}) {
+        keyboard_enabled = true;
+        std::jthread responder([button] {
+            // Exercise the real modal window without user interaction or keys.
+            for (int attempt = 0; attempt < 200; ++attempt) {
+                if (const auto dialog = FindWindowW(L"MIGImportReview", nullptr)) {
+                    PostMessageW(dialog, WM_COMMAND, button, 0);
+                    return;
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            }
+        });
+        check(review_import(sample) == (button == IDOK) && !keyboard_enabled,
+              "Import review must require acceptance and reset keyboard consent.");
+    }
     const auto first = profiles->import(sample, "First game");
     const auto second = profiles->import(sample, "Second game");
     activate_profile(first);

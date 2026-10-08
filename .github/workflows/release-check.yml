@@ -124,7 +124,8 @@ jobs:
                   ./tools/build-examples.ps1
                   python -m pip install pyinstaller==6.16.0 pillow==11.3.0 pygame==2.6.1
                   python tools/freeze-python-examples.py
-                  python tools/package-examples.py --platform windows-x64
+                  python tools/package-examples.py --platform windows-x64 --standalone
+                  python tests/standalone_example_tests.py build/releases/*-windows-x64-*-standalone.zip
             - name: Build and validate SDK, Python and engine integration artifacts
               shell: pwsh
               run: ./tools/prepare-windows-packages.ps1

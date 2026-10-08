@@ -63,7 +63,7 @@ profil sélectionné, avec la caméra et la sortie clavier désactivées.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1 -SkipBootstrap
-powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1 -Hands OFF -BuildDirectory build/next-no-hands
+powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1 -Hands OFF -BuildDirectory build/windows-no-hands
 cmake --install build/windows --config Release --prefix install
 ```
 
@@ -130,7 +130,7 @@ Pas de vidéo sauvée ni règle implicite. Apply/Save, undo/Ctrl+Z/Y et copie/du
 
 ```powershell
 ctest --test-dir build/windows -C Release --output-on-failure
-ctest --test-dir build/next-no-hands -C Release --output-on-failure
+ctest --test-dir build/windows-no-hands -C Release --output-on-failure
 ```
 
 UI synthétique sans caméra, infer/hands-test sur images vides, camera/session-test

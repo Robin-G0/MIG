@@ -49,7 +49,7 @@ npm run build:examples
 npm run package:examples
 ```
 
-`build/releases/motion-input-grid-1.0.0-javascript-examples.tar.gz` contient sources, docs,
+`build/releases/motion-input-grid-1.0.2-javascript-examples.tar.gz` contient sources, docs,
 pages compilées, export statique Next.js, modèles, WASM, licences et manifeste
 SHA256. Après extraction : `node examples/react/run.mjs` (ou Vue/Next).
 Ouvrez `http://localhost:8820`, fermez avec Ctrl+C avant de lancer un autre exemple.
@@ -72,7 +72,7 @@ npx mig-copy-assets public/mig
 ```
 
 WASM et modèles sont inclus, sans compilation Emscripten. Alternative hors ligne :
-`npm install /chemin/motion-input-grid-1.0.0.tgz`, puis la même commande de copie
+`npm install /chemin/motion-input-grid-1.0.2.tgz`, puis la même commande de copie
 des ressources. Voir le [guide npm](../../bindings/javascript/README.fr.md). React expose `useMIG` dans `motion-input-grid/react`,
 Vue dans `motion-input-grid/vue`. Reliez leurs refs vidéo/canvas, méthodes
 `start`, `stop`, `recalibrate`, `importJSON` et état aux contrôles de l'interface.

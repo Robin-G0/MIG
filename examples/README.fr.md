@@ -49,7 +49,7 @@ Consultez la [matrice de support](../docs/reference/support.fr.md).
 
 Installez **`motion-input-grid`** avec [pip](../bindings/python/README.fr.md),
 [npm](../bindings/javascript/README.fr.md), ou suivez le [guide SDK C++ / CMake](../docs/getting-started/cpp.fr.md).
-Les [autres packages](../docs/development/distribution.fr.md) couvrent vcpkg, Debian
+Les [autres packages](../docs/getting-started/packages.fr.md) couvrent vcpkg, Debian
 et les éditeurs. Chaque guide d'exemple décrit l'utilisation d'une bibliothèque
 installée et le repli vers le dépôt complet.
 

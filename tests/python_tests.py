@@ -28,6 +28,18 @@ def run(library):
         except RuntimeError:
             pass
         assert tracker.export_json() == original
+        for keyboard in ([{'keys': [1]}], [{'keys': [17, 17]}],
+                         [{'text': 'x' * 16385}], [{'keys': [32]}] * 257,
+                         [{'keys': [65, 66, 67, 68]}] * 255 + [{'keys': [65, 66, 67, 68, 69]}]):
+            invalid = json.loads(profile)
+            invalid['inputs'][0]['keyboard'] = keyboard
+            try:
+                tracker.import_json(json.dumps(invalid))
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError('Invalid/oversized keyboard import accepted')
+            assert tracker.export_json() == original, 'Failed import partially replaced the profile'
         packet = Packet()
         packet.aspect = float("nan")
         try:

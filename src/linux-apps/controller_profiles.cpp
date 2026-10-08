@@ -1,5 +1,6 @@
 #include "../apps/authoring.hpp"
 #include "controller_window.hpp"
+#include "import_review.hpp"
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QSignalBlocker>
@@ -83,6 +84,11 @@ void ControllerWindow::load(const std::string& path) {
     const auto proposed = load_configuration(source);
     validate_profile(proposed);
     const auto utf8_name = source.stem().u8string();
+    keyboard_switch_->setChecked(false);
+    release_keys();
+    if (!review_import(this, proposed)) {
+        return;
+    }
     const std::string name(utf8_name.begin(), utf8_name.end());
     const auto index = profiles_.import(proposed, name);
     activate_profile(index);

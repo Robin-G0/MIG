@@ -15,7 +15,7 @@ profile without sending keys to other applications.
 
 Extract the complete platform archive. Run one camera example at a time.
 Keep shoulders visible for a second, lower your hands, then raise either wrist
-through the green rows into the yellow row. The flying props and hand bones
+through the green region into the yellow row. The flying props and hand bones
 follow your wrists. The image is mirrored once; feedback is anatomical.
 
 | Platform | Raised-hands viewer | Import your profile |

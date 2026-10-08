@@ -5,17 +5,17 @@ import re
 from urllib.parse import unquote, urlsplit
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from distribution_policy import private_file, GENERATED_DIRECTORIES
+from distribution_policy import EXCLUDED_NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def guides():
-    paths = list(ROOT.glob("*.md"))
+    paths = [ROOT / name for name in ("readme.md", "CONTRIBUTING.md", "SECURITY.md")]
     for directory in ("docs", "examples", "bindings", "integrations", "ports"):
         paths.extend((ROOT / directory).rglob("*.md"))
-    return sorted(path for path in set(paths) if not private_file(path.name)
-                  and not any(part in GENERATED_DIRECTORIES or part in ("licenses", "public")
+    return sorted(path for path in set(paths)
+                  if not any(part in EXCLUDED_NAMES or part in ("licenses", "public")
                               for part in path.relative_to(ROOT).parts)
                   and not path.name.startswith("LICENSE"))
 
@@ -61,7 +61,7 @@ def check(path):
         if address.scheme or target.startswith("//"):
             continue
         destination = path.parent / unquote(address.path) if address.path else path
-        if not destination.exists() or private_file(destination.name):
+        if not destination.exists():
             errors.append(f"missing/publicly excluded link target: {target}")
         elif address.fragment and destination.suffix == ".md":
             if unquote(address.fragment) not in anchors(destination):

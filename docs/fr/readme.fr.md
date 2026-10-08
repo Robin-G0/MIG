@@ -2,6 +2,17 @@
 
 [English](../../readme.md) | [Français](readme.fr.md)
 
+## Essayer MIG maintenant
+
+Extrayez le package d'exemples compilé complet et conservez ses dossiers.
+Avec les prérequis installés, le [navigateur](../../examples/web/README.fr.md),
+[Python/Tk](../../examples/python-tkinter/README.fr.md) et
+[SDL2](../../examples/sdl2/README.fr.md) visent environ 30–60 secondes après extraction.
+Le chargement initial des modèles dépend du matériel. Le package navigateur fournit
+Node et les assets ; les viewers Python fournissent l'interpréteur.
+Les intégrations Godot, Unity et Unreal restent en preview : éditeur et fournisseur
+de pose sont nécessaires, avec une préparation initiale supérieure à une minute.
+
 **Transformez un mouvement en action.** Dessinez le trajet d'un poignet ou d'une
 autre partie du corps, puis utilisez une caméra pour le reconnaître. MIG peut
 envoyer un raccourci clavier à votre application ou transmettre une action à
@@ -87,7 +98,7 @@ Servez les fichiers depuis votre application et démarrez le suivi après un cli
 | --- | --- |
 | C++ / CMake / Make | [Installer le SDK et lier `MIG::core`](../getting-started/cpp.fr.md) |
 | vcpkg | [Installer avec l'overlay de la release](../../ports/motion-input-grid/README.fr.md) |
-| Debian / Ubuntu | [Installer un `.deb` ou configurer un dépôt APT signé](../development/distribution.fr.md#debian-et-hébergement-apt-signé) |
+| Debian / Ubuntu | [Installer un `.deb` téléchargé](../getting-started/packages.fr.md#debianubuntu) |
 | Godot | [Add-on GDScript et exemples C#](../../integrations/godot/README.fr.md) |
 | Unity | [Package UPM .NET / C ABI](../../integrations/unity/README.fr.md) |
 | Unreal | [Plugin natif C ABI](../../integrations/unreal/README.fr.md) |
@@ -112,7 +123,7 @@ responsabilités. Le [format de configuration](../reference/configuration.fr.md)
 l'[API C++](../reference/cpp.fr.md) et l'[ABI C](../reference/c-abi.fr.md)
 décrivent la reconnaissance, l'état actif d'une action et les cycles de vie.
 
-MIG 1.0.0 fournit des applications Windows/Linux x64 et des SDK Linux ARM64
+MIG 1.0.2 fournit des applications Windows/Linux x64 et des SDK Linux ARM64
 pour les positions fournies. Les intégrations des moteurs de jeu sont Preview.
 Les tests automatisés couvrent la reconnaissance et les packages ; les caméras
 physiques, l'envoi de touches au jeu visé et les exports des éditeurs demandent
@@ -123,6 +134,6 @@ Compiler depuis les sources : [Windows](../getting-started/windows.fr.md) ·
 [Linux](../getting-started/linux.fr.md) · [SDK portable](../getting-started/cpp.fr.md).
 
 [Contribuer](CONTRIBUTING.fr.md) · [Historique](../development/CHANGELOG.fr.md) ·
-[Roadmap](../development/ROADMAP.fr.md) · [Packages et releases](../development/distribution.fr.md)
+[Roadmap](../development/ROADMAP.fr.md) · [Installation des packages](../getting-started/packages.fr.md)
 
 Licence [Apache-2.0](../../LICENSE). Les dépendances redistribuées conservent leurs notices.

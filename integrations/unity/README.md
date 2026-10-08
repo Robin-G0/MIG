@@ -31,4 +31,4 @@ The canonical managed source remains `bindings/dotnet/MigTracker.cs`; the builde
 copies it into the generated package. No second binding is maintained here.
 The [Unity demos](../../examples/unity/README.md) remain separate from this package.
 
-[Distribution](../../docs/development/distribution.md) · [C ABI](../../docs/reference/c-abi.md).
+[Distribution](../../docs/getting-started/packages.md) · [C ABI](../../docs/reference/c-abi.md).

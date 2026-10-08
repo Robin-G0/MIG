@@ -44,3 +44,23 @@ Interaction. A matching Interaction reserves its hand from global commands.
 Restart/Recalibrate/RecordToggle are separate controls with validation, a deliberate
 release latch and fixed 1000 ms recovery; loss of tracking is not a deliberate release.
 
+## Low frame rates and demo paths
+
+The engine tests the segment between consecutive visible positions against
+regions in `constraints.cpp::crossing()`, with ordered contact positions per anatomical
+lane. A fresh sample need not land in every intermediate cell. Sweeps require valid
+tracking with at most 180 ms between observations; larger gaps end an active path
+rather than drawing a trajectory through unknown movement. Interaction holds allow
+500 ms gaps but require actual occupancy/sign, so swept transit cannot satisfy dwell.
+Packets older than 250 ms are rejected even if their sampling interval is small.
+
+The example profiles use broad start/finish regions and preserve upward order.
+`example-motion` exercises both wrists at 33/100/160/180 ms intervals, skips intermediate
+rows and checks isolated terminal poses, reverse motion, rearm and 181 ms discontinuity.
+
+For missed actions, distinguish inference age from sampling gap, check shoulder/wrist
+confidence, and verify aspect and single display mirroring. C++ overlays use the actual
+engine grid. Python `grid_lines()` reconstructs a display grid from raw shoulders,
+while engine scale is smoothed: changing shoulder spacing can briefly offset those
+outlines. Account for this display difference when diagnosing missed actions.
+

@@ -1,30 +1,12 @@
-"""Files excluded from public source and generated distribution payloads."""
-PRIVATE_GUIDES = {
-    "project-history", "prototype-review", "release-review", "ui-requirements",
-    "motion-format", "distribution-validation",
-}
-PRIVATE_FILES = {"NEXT.md", "archived-NEXT.md", "placeholders.md", "CONTEXT.txt"}
-GENERATED_DIRECTORIES = {
+"""Generated directories excluded when assembling release archives."""
+EXCLUDED_NAMES = {
     ".git", ".codex", ".agents", ".vscode", ".venv", "__pycache__", "node_modules",
     ".next", "build", "install", "distribution", "dist", "out",
 }
 
-GENERATED_PATHS = {
-    "bindings/javascript/runtime", "bindings/javascript/LICENSE",
-    "examples/react/public/mig", "examples/vue/public/mig", "examples/next/public/mig",
-}
-
-
-def private_file(name):
-    stem = name.removesuffix(".md").removesuffix(".fr")
-    return name in PRIVATE_FILES or stem in PRIVATE_GUIDES
-
 
 def excluded_names():
-    names = set(PRIVATE_FILES) | GENERATED_DIRECTORIES
-    for stem in PRIVATE_GUIDES:
-        names.update((stem + '.md', stem + '.fr.md'))
-    return names
+    return EXCLUDED_NAMES
 
 
 if __name__ == '__main__':

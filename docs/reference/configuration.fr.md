@@ -2,6 +2,26 @@
 
 [English](configuration.md) | [Français](configuration.fr.md)
 
+## Revue d'import
+
+L'import desktop valide le profil et affiche tous ses mouvements et actions dans
+une revue défilante. Les touches d'un accord sont simultanées ; les actions numérotées
+sont successives ; le texte est cité avec ses caractères de contrôle échappés.
+Hold exécute le préfixe une fois puis maintient l'accord final ; Repeat affiche son
+intervalle. Accepter importe le profil avec sortie clavier désactivée ; activez-la
+séparément. Annuler conserve le profil précédent.
+
+**System interaction** couvre Windows/Super, les principaux raccourcis de fenêtres
+et de session, Sleep et les touches de lancement. L'effet dépend du système et de
+l'application active : ce label n'est pas une garantie de sécurité. X11 et l'OS
+peuvent ne pas émettre certaines touches pourtant valides dans le format.
+
+Limites centralisées dans `mig/core/input.hpp` : 256 actions, 1 024 touches sérialisées
+et 16 384 octets UTF-8 de texte par input. Les exemples utilisent au plus une action.
+Touches dupliquées, réservées, indéfinies, souris/gamepad et Unicode-packet sont rejetées,
+ainsi que l'UTF-8 invalide, sans troncature. Le SDK valide le même format ; la revue
+est une responsabilité de l'interface desktop. MIG n'exécute pas directement de shell.
+
 <details>
 <summary>Dans cette page</summary>
 

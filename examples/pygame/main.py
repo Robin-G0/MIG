@@ -48,7 +48,7 @@ def run(options):
         packet = None
         image = None
         status = ("Import a JSON profile, then keep shoulders visible." if options.profile_mode
-                  else "Lower your hands, then raise either hand through the green rows.")
+                  else "Lower your hands, then raise either hand through the green region.")
         running = True
         while running:
             for event in pygame.event.get():

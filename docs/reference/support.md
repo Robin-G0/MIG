@@ -2,7 +2,7 @@
 
 [English](support.md) | [Français](support.fr.md)
 
-This is the canonical support matrix for MIG 1.0.0, JSON schema 2 and C ABI 1.
+This is the canonical support matrix for MIG 1.0.2, JSON schema 2 and C ABI 1.
 A maturity label describes the interface, not the quality of a particular camera.
 Automated synthetic and blank-frame checks cannot establish hardware compatibility.
 
@@ -48,6 +48,6 @@ there is no Linux ARM64 camera runtime or Windows ARM64 binary in this release.
 Editor packages do not include a camera provider.
 
 See [quick start](../getting-started/bootstrap.md), [architecture](../architecture/overview.md)
-and [package contents](../development/distribution.md). Hardware validation should
+and [package contents](../getting-started/packages.md). Hardware validation should
 cover integrated/USB webcams, resolutions and frame rates, CPUs/GPUs, camera
 start/stop, missing/stale frames and held-key release on each target system.

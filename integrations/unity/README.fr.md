@@ -32,4 +32,4 @@ La source canonique reste `bindings/dotnet/MigTracker.cs` ; le générateur la c
 dans le package. Aucun second pont n'est maintenu ici. Les
 [démos Unity](../../examples/unity/README.fr.md) restent séparées.
 
-[Distribution](../../docs/development/distribution.fr.md) · [ABI C](../../docs/reference/c-abi.fr.md).
+[Distribution](../../docs/getting-started/packages.fr.md) · [ABI C](../../docs/reference/c-abi.fr.md).

@@ -30,4 +30,4 @@ Compilez `native/` avec `GODOT_CPP_DIR` vers godot-cpp `godot-4.3-stable` et
 de compiler le SDK comme dépendance. Les sources du pont vivent ici ; les projets
 de démonstration restent dans [examples/godot](../../examples/godot/README.fr.md).
 
-[Distribution](../../docs/development/distribution.fr.md) · [ABI C](../../docs/reference/c-abi.fr.md).
+[Distribution](../../docs/getting-started/packages.fr.md) · [ABI C](../../docs/reference/c-abi.fr.md).

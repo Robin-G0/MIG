@@ -1,3 +1,4 @@
+#include "../src/apps/import_review.hpp"
 #include "../src/apps/keybindings.hpp"
 #include <iostream>
 #include <stdexcept>
@@ -130,6 +131,60 @@ int main() {
             invalid_utf8 = true;
         }
         check(invalid_utf8, "Overlong UTF-8 rejected");
+        for (auto source : {"VK:1", "VK:7", "VK:58", "VK:136", "VK:195", "VK:231", "VK:255"}) {
+            bool bad = false;
+            try {
+                parse_binding(source);
+            } catch (const std::exception&) {
+                bad = true;
+            }
+            check(bad, "Mouse, gamepad, reserved and Unicode-packet keys rejected");
+        }
+        check(mig::system_keyboard_action(parse_binding("Win+R")[0]) &&
+                  mig::system_keyboard_action(parse_binding("Alt+F4")[0]) &&
+                  mig::system_keyboard_action(parse_binding("VK:163+VK:165+Delete")[0]) &&
+                  !mig::system_keyboard_action(parse_binding("Ctrl+C")[0]) &&
+                  !mig::system_keyboard_action(parse_binding("Space")[0]),
+              "System shortcut heuristic handles sided modifiers and ordinary game keys");
+        mig::Motion reviewed;
+        reviewed.id = reviewed.name = "Right wrist";
+        reviewed.keyboard = parse_binding("Win+R _ \"hello\\nworld\" _ Enter");
+        reviewed.action_mode = mig::ActionMode::Repeat;
+        reviewed.repeat_interval_ms = 400;
+        const auto summary = configuration_review(mig::Configuration{{reviewed}});
+        check(review_text(std::string("a\0b", 3)) == "\"a\\u0000b\"" &&
+                  review_text(std::string("\x1b", 1)) == "\"\\u001b\"",
+              "Control characters in names/text cannot truncate or disguise the review");
+        check(summary.find("System interaction: Chord: Win+R") != std::string::npos &&
+                  summary.find(
+                      "2. Keyboard input / Standard keyboard input: Type: \"hello\\nworld\"") !=
+                      std::string::npos &&
+                  summary.find("Repeat every 400 ms") != std::string::npos,
+              "Review preserves full event order, escaped text, classification and repeat mode");
+        const auto reject_sequence = [](const auto& actions) {
+            try {
+                mig::validate_keyboard(actions);
+            } catch (const std::exception&) {
+                return true;
+            }
+            return false;
+        };
+        std::vector<mig::KeyboardAction> bounded(mig::maximum_keyboard_actions,
+                                                 parse_binding("Space")[0]);
+        mig::validate_keyboard(bounded);
+        bounded.push_back(bounded.front());
+        check(reject_sequence(bounded), "Action count bound applies to serialized actions");
+        auto text_action = parse_binding("\"x\"")[0];
+        text_action.text.assign(mig::maximum_keyboard_text_bytes, 'x');
+        mig::validate_keyboard({text_action});
+        text_action.text += 'x';
+        check(reject_sequence(std::vector{text_action}),
+              "Text byte bound rejects without truncating");
+        std::vector<mig::KeyboardAction> chords(256, parse_binding("A+B+C+D")[0]);
+        mig::validate_keyboard(chords);
+        chords[0].keys.push_back('E');
+        check(reject_sequence(chords),
+              "Total serialized key count bounded independently of action count");
     } catch (const std::exception& error) {
         std::cerr << error.what() << '\n';
         return 1;

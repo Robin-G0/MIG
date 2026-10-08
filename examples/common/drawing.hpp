@@ -7,11 +7,13 @@ void draw_regions(const mig::Engine& engine, float aspect, Polygon polygon) {
     if (!grid.valid) {
         return;
     }
-    for (int row = 1; row <= 5; ++row) {
+    // These zones match raised-hands.json: a broad start and a broad finish.
+    for (const auto [row, height] : {std::pair{1, 2}, std::pair{3, 3}}) {
         std::array<mig::Vec2, 4> points;
         unsigned index = 0;
-        for (const auto local : {mig::Vec2{-9, float(row)}, mig::Vec2{18, float(row)},
-                                 mig::Vec2{18, float(row + 1)}, mig::Vec2{-9, float(row + 1)}}) {
+        for (const auto local :
+             {mig::Vec2{-9, float(row)}, mig::Vec2{18, float(row)},
+              mig::Vec2{18, float(row + height)}, mig::Vec2{-9, float(row + height)}}) {
             const auto metric = grid.metric(local);
             points[index++] = {1 - metric.x / aspect, metric.y};
         }

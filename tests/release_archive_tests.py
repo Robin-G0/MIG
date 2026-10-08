@@ -36,7 +36,7 @@ def check_tar(path):
             content = archive.extractfile(f"{root}/{name}").read()
             assert hashlib.sha256(content).hexdigest() == expected, name
         required = ("LICENSE", "README.md") if "-examples." in path.name else (
-            "LICENSE", "README.md", "docs/reference/support.md", "docs/development/packaging.md")
+            "LICENSE", "README.md", "docs/reference/support.md", "docs/getting-started/packages.md")
         for name in required:
             assert f"{root}/{name}" in entries, name
         if "-examples." not in path.name:

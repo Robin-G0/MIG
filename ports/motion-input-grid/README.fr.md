@@ -21,4 +21,4 @@ Avant l'upload, le test d'artefact place l'archive générée dans le cache vcpk
 vérifie son hash. Après l'upload manuel, testez aussi l'URL publique sans ce cache.
 La publication dans un registre ou la proposition à vcpkg restent manuelles.
 
-[Guide de distribution](../../docs/development/distribution.fr.md).
+[Guide de distribution](../../docs/getting-started/packages.fr.md).

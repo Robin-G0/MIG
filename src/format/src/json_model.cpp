@@ -183,7 +183,7 @@ Configuration read_v2(const Json& document) {
         input.name = item.at("name").get<std::string>();
         input.action = item.at("action").get<std::string>();
         if (item.contains("keyboard")) {
-            array(item["keyboard"], 256);
+            array(item["keyboard"], maximum_keyboard_actions);
             for (const auto& action : item["keyboard"]) {
                 fields(action, {"keys", "text"});
                 if (action.contains("keys") == action.contains("text")) {

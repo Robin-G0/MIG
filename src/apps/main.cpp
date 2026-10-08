@@ -102,9 +102,8 @@ int run_application(int argc, wchar_t** argv) {
                             "This profile needs the hands-enabled controller.");
                     }
 #endif
-                    const auto selected =
-                        app.profiles->import(std::move(proposed), narrow(profile.stem().wstring()));
-                    app.config = app.profiles->load(selected);
+                    // Review after window creation, before persisting an external profile.
+                    app.config = std::move(proposed);
                 }
             }
         }
@@ -148,6 +147,21 @@ int run_application(int argc, wchar_t** argv) {
             return run_ui_test(app, window);
         }
         ShowWindow(window, SW_SHOW);
+        if (explicit_profile) {
+            if (app.review_import(app.config)) {
+                if constexpr (!editor) {
+                    const auto selected =
+                        app.profiles->import(app.config, narrow(profile.stem().wstring()));
+                    app.activate_profile(selected);
+                }
+            } else if constexpr (editor) {
+                app.change_document(Configuration{});
+            } else {
+                app.config = Configuration{};
+                app.restore_profiles();
+                app.refresh_list();
+            }
+        }
         MSG msg{};
         while (GetMessageW(&msg, nullptr, 0, 0) > 0) {
 #ifdef MIG_CONFIGURATOR

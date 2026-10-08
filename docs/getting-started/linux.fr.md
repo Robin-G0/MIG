@@ -34,7 +34,7 @@ build/linux-apps/bin/mig-controller --runtime "$PWD/build/native-linux-deps" --c
 bash tools/build-linux.sh [dossier] [ON|OFF] automatise bootstrap/build/tests
 après installation. Sources testées sur Ubuntu 22.04/24.04 x64 ; MediaPipe exige
 glibc2.28+, archives apps glibc2.35+. Sources utilisent Qt/X11 système ; archives
-fournissent dépendances/plugins/polices. [Publication](../development/packaging.fr.md).
+fournissent dépendances/plugins/polices. [Installation](packages.fr.md).
 --camera N sélectionne /dev/videoN, capture V4L2 YUYV single-plane et permissions
 requises. Start ouvre explicitement ; arrêtez une app avant l'autre.
 

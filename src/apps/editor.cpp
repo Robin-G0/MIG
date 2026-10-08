@@ -706,6 +706,9 @@ void App::file_dialog(bool saving) {
         message("Saved schema-v2 configuration.");
     } else {
         auto loaded = load_configuration(file);
+        if (!review_import(loaded)) {
+            return;
+        }
         change_document(std::move(loaded));
         if (edit_window) {
             DestroyWindow(edit_window);

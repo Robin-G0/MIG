@@ -23,4 +23,4 @@ matching VC++ runtime. Supply your own landmark provider. Use the archive matchi
 your target; combine separately built platform payloads before a multi-platform
 game export. The [Unreal demos](../../examples/unreal/README.md) remain separate.
 
-[Distribution](../../docs/development/distribution.md) · [C ABI packet layout](../../docs/reference/c-abi.md).
+[Distribution](../../docs/getting-started/packages.md) · [C ABI packet layout](../../docs/reference/c-abi.md).

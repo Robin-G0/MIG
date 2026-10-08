@@ -7,8 +7,7 @@
         "steps": [{
             "id": "raise", "mode": "ordered",
             "constraints": [
-                {"id": "start", "landmark": "left_wrist", "cell": [6,5], "type": "required", "priority": "high"},
-                {"id": "prepare", "landmark": "left_wrist", "cell": [6,4], "type": "required", "priority": "high"},
+                {"id": "start", "landmark": "left_wrist", "cell": [6,4,1,2], "type": "required", "priority": "high"},
                 {"id": "fire", "landmark": "left_wrist", "cell": [6,2], "type": "trigger", "priority": "high"}
             ]
         }]

@@ -25,4 +25,4 @@ de votre cible et assemblez les bibliothèques compilées séparément avant un
 export multi-plateforme. Les [démos Unreal](../../examples/unreal/README.fr.md)
 restent séparées.
 
-[Distribution](../../docs/development/distribution.fr.md) · [Paquet ABI C](../../docs/reference/c-abi.fr.md).
+[Distribution](../../docs/getting-started/packages.fr.md) · [Paquet ABI C](../../docs/reference/c-abi.fr.md).

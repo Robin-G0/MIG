@@ -2,8 +2,11 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
+import subprocess
+import sys
 import zipfile
 
 from package_linux import SYSTEM_LIBRARIES, bundle_libraries, copy_tree, create_archive, verify_architecture
@@ -38,7 +41,7 @@ def assemble_sources(root):
 
 
 def assemble_windows(root):
-    copy_tree(PROJECT / "build/examples-sdk/windows", root / "sdk")
+    copy_example_sdk(PROJECT / "build/examples-sdk/windows", root / "sdk")
     runtime = root / "runtime"
     runtime.mkdir()
     source = PROJECT / "build/windows/bin"
@@ -71,8 +74,19 @@ def assemble_windows(root):
     return []
 
 
+def copy_example_sdk(source, destination):
+    """Examples need development libraries, not a second copy of the desktop apps/models."""
+    destination.mkdir(parents=True)
+    for name in ("include", "lib", "share"):
+        if (source / name).is_dir():
+            copy_tree(source / name, destination / name)
+    if (source / "bin/mig-c.dll").is_file():
+        (destination / "bin").mkdir()
+        shutil.copy2(source / "bin/mig-c.dll", destination / "bin/mig-c.dll")
+
+
 def assemble_linux(root):
-    copy_tree(PROJECT / "build/release-linux-x64-install", root / "sdk")
+    copy_example_sdk(PROJECT / "build/release-linux-x64-install", root / "sdk")
     runtime = root / "runtime"
     runtime.mkdir()
     fonts = runtime / "fonts"
@@ -133,9 +147,31 @@ def assemble_python(root, platform):
             for item in source.iterdir():
                 destination = root / "examples" / technology / item.name
                 if item.is_dir():
-                    copy_tree(item, destination)
+                    merge_runtime(item, destination)
                 else:
                     shutil.copy2(item, destination)
+
+
+def merge_runtime(source, destination):
+    """Share demo/importer dependencies only when same-name bytes are identical."""
+    destination.mkdir(parents=True, exist_ok=True)
+    for item in source.iterdir():
+        target = destination / item.name
+        if item.is_symlink():
+            if target.is_symlink():
+                if os.readlink(target) != os.readlink(item):
+                    raise RuntimeError(f"Conflicting frozen symlinks: {target}")
+            elif target.exists():
+                raise RuntimeError(f"Frozen symlink conflicts with a file: {target}")
+            else:
+                target.symlink_to(os.readlink(item))
+        elif item.is_dir():
+            merge_runtime(item, target)
+        elif target.exists():
+            if target.read_bytes() != item.read_bytes():
+                raise RuntimeError(f"Conflicting frozen dependencies: {target}")
+        else:
+            shutil.copy2(item, target)
 
 
 def assemble_consumers(root, platform):
@@ -185,6 +221,7 @@ def write_manifest(root, platform, dependencies):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--platform", choices=("windows-x64", "linux-x64"), required=True)
+    parser.add_argument("--standalone", action="store_true", help="Also package each native example independently")
     options = parser.parse_args()
     root = PROJECT / "build/examples" / options.platform
     if root.exists():
@@ -218,6 +255,10 @@ def main():
         create_archive(root, archive)
     print(root)
     print(archive)
+    if options.standalone:
+        for example in ("python-tkinter", "pygame", "sdl2", "sfml", "sdk-consumer", "native-consumer"):
+            subprocess.run([sys.executable, str(PROJECT / "tools/package-single-example.py"),
+                            "--platform", options.platform, "--example", example], check=True)
 
 
 if __name__ == "__main__":

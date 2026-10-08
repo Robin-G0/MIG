@@ -104,6 +104,9 @@ void App::controller_file(bool saving) {
     } else {
         const std::filesystem::path source(path);
         const auto proposed = load_configuration(source);
+        if (!review_import(proposed)) {
+            return;
+        }
 #ifndef MIG_NATIVE_HANDS
         if (hand_tracking_requested(proposed)) {
             throw std::runtime_error("This profile needs the hands-enabled controller.");

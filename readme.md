@@ -13,6 +13,22 @@ The grid follows shoulder spacing, so it scales as you move toward the camera.
 [**Download**](https://github.com/Robin-G0/MIG/releases) ·
 [**Documentation**](docs/index.md) · [**Examples**](examples/README.md)
 
+## Try MIG now
+
+Extract the complete built examples archive, then launch a viewer. Setup estimates
+assume the platform prerequisites are installed; first model loading depends on hardware.
+
+| Example | Setup after extraction | Platform / requirements | Try it |
+| --- | --- | --- | --- |
+| [Browser](examples/web/README.md) | About 30–60 seconds | Modern browser; bundled Node and local assets | Run `run.cmd` / `sh run.sh`, open localhost, grant camera permission, raise a hand |
+| [Python/Tk](examples/python-tkinter/README.md) | About 30–60 seconds | Windows x64 VC++ runtime; Linux x64 glibc 2.35+ | Run frozen `main.exe` / `./main`; Python is bundled |
+| [SDL2](examples/sdl2/README.md) | About 30–60 seconds | Same native prerequisites | Run `mig-sdl2.exe` / `./mig-sdl2`; raise a wrist from green into yellow |
+
+Built viewers are the quickest trial. Source builds require a toolchain and dependencies.
+[Godot](examples/godot/README.md), [Unity](examples/unity/README.md) and
+[Unreal](examples/unreal/README.md) remain **preview integrations** with editor setup
+and host-provided tracking. Their initial setup exceeds one minute.
+
 ## Use MIG on your desktop
 
 > [!NOTE]
@@ -81,7 +97,7 @@ from your application and start tracking after a user click.
 | --- | --- |
 | C++ / CMake / Make | [Install an SDK and link `MIG::core`](docs/getting-started/cpp.md) |
 | vcpkg | [Install through the release overlay](ports/motion-input-grid/README.md) |
-| Debian / Ubuntu | [Install a `.deb` or configure a signed APT repository](docs/development/distribution.md#debian-and-signed-apt-hosting) |
+| Debian / Ubuntu | [Install a downloaded `.deb`](docs/getting-started/packages.md#debianubuntu) |
 | Godot | [GDScript add-on and C# examples](integrations/godot/README.md) |
 | Unity | [.NET / C ABI UPM package](integrations/unity/README.md) |
 | Unreal | [Native C ABI plugin](integrations/unreal/README.md) |
@@ -106,7 +122,7 @@ ownership. The [configuration reference](docs/reference/configuration.md),
 [C++ API](docs/reference/cpp.md) and [C ABI](docs/reference/c-abi.md) describe
 recognition, live action state and lifecycle contracts.
 
-MIG 1.0.0 provides Windows/Linux x64 desktop applications and Linux ARM64
+MIG 1.0.2 provides Windows/Linux x64 desktop applications and Linux ARM64
 positions-based SDKs. Engine integrations are Preview. Automated tests cover
 recognition and packages; physical cameras, target-game key delivery and editor
 exports need separate validation. Check the [support matrix](docs/reference/support.md)
@@ -116,6 +132,6 @@ Build from source: [Windows](docs/getting-started/windows.md) ·
 [Linux](docs/getting-started/linux.md) · [Portable SDK](docs/getting-started/cpp.md).
 
 [Contributing](CONTRIBUTING.md) · [Changelog](docs/development/CHANGELOG.md) ·
-[Roadmap](docs/development/ROADMAP.md) · [Package and release details](docs/development/distribution.md)
+[Roadmap](docs/development/ROADMAP.md) · [Package installation](docs/getting-started/packages.md)
 
 Licensed under [Apache-2.0](LICENSE). Redistributed dependencies retain their notices.

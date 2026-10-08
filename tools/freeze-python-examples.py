@@ -1,5 +1,7 @@
 """Build onedir camera viewers on their target OS; no interpreter needed to run."""
 import os
+import io
+import zipfile
 from importlib.metadata import distribution
 from pathlib import Path
 import subprocess
@@ -8,11 +10,29 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def canonicalize_python_library(path):
+    """Discard ZIP build timestamps so identical stdlib modules share identical bytes."""
+    output = io.BytesIO()
+    with zipfile.ZipFile(path) as source, zipfile.ZipFile(output, 'w') as destination:
+        for name in sorted(source.namelist()):
+            info = zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            destination.writestr(info, source.read(name))
+    path.write_bytes(output.getvalue())
+
+
 def freeze(technology, variant, platform):
+    # Both viewers use Tk for profile picking. PyInstaller otherwise only warns
+    # and emits an apparently successful executable that cannot open that UI.
+    import tkinter
+    try:
+        tkinter.Tcl()
+    except tkinter.TclError as error:
+        raise RuntimeError("Cannot freeze viewers: Python's Tcl/Tk runtime is unavailable") from error
     output = ROOT / "build/frozen" / platform / technology / variant
     command = [
         sys.executable, "-m", "PyInstaller", "--noconfirm", "--onedir",
-        "--name", variant, "--contents-directory", f"{variant}.runtime",
+        "--name", variant, "--contents-directory", "viewer.runtime",
         "--distpath", str(output.parent),
         "--workpath", str(ROOT / "build/freeze-work" / platform / technology / variant),
         "--specpath", str(ROOT / "build/freeze-specs" / platform / technology),
@@ -30,6 +50,7 @@ def freeze(technology, variant, platform):
                 raise RuntimeError(f"Install the Wayland development runtime: {library}")
             command[3:3] = ["--add-binary", f"{library}{os.pathsep}."]
     subprocess.run(command, cwd=ROOT, check=True)
+    canonicalize_python_library(output / "viewer.runtime/base_library.zip")
     return output
 
 

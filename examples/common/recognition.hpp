@@ -4,6 +4,8 @@
 namespace demo {
 inline unsigned consume(mig::Engine& engine, const mig::Frame& body, std::string* status = nullptr,
                         bool hand_messages = true) {
+    // Submit one fresh, unmirrored observation. The returned span is borrowed
+    // until the next update/reset, so consume its action IDs immediately.
     const auto events = engine.update(body, body.timestamp_ms);
     if (!events.empty() && status) {
         status->clear();

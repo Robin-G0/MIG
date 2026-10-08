@@ -111,7 +111,7 @@ The [API reference](../reference/cpp.md) describes frames and recognition.
 
 A local Debian package installs the SDK under `/usr`; CMake can discover it
 without a custom prefix. vcpkg provides it through the release overlay and its
-CMake toolchain. See [distribution](../development/distribution.md) and the
+CMake toolchain. See [distribution](packages.md) and the
 [vcpkg port](../../ports/motion-input-grid/README.md).
 
 If CMake cannot find MIG, locate `MIGConfig.cmake` and check your prefix. You can

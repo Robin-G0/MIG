@@ -21,4 +21,4 @@ cache with the generated file and still validates the pinned hash. After manual
 upload, test the public release URL without that cache. Publishing a registry port
 or submitting to upstream vcpkg remains manual.
 
-[Distribution guide](../../docs/development/distribution.md).
+[Distribution guide](../../docs/getting-started/packages.md).

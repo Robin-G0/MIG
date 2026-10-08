@@ -27,7 +27,7 @@ The application guides identify the files to launch and system requirements.
 | Python | [pip and frame submission](../bindings/python/README.md), [Tkinter](../examples/python-tkinter/README.md), [Pygame](../examples/pygame/README.md) |
 | Browser / React / Vue / Next.js | [npm package](../bindings/javascript/README.md), [framework setup](integrations/javascript.md) |
 | Godot / Unity / Unreal | [Godot add-on](../integrations/godot/README.md), [Unity UPM](../integrations/unity/README.md), [Unreal plugin](../integrations/unreal/README.md) |
-| vcpkg / Debian / APT | [Package distribution](development/distribution.md) |
+| vcpkg / Debian | [Package installation](getting-started/packages.md) |
 
 Start with [bootstrap](getting-started/bootstrap.md) to connect a profile,
 tracking and action feedback. Then use the [example catalogue](../examples/README.md)
@@ -46,11 +46,10 @@ The [integration guide](integrations/overview.md) covers supplied landmarks and 
 | Real-time work, measurement and limits | [Performance](architecture/performance.md) |
 | Supported platforms and test coverage | [Support matrix](reference/support.md) |
 
-## Build, contribute and release
+## Build and contribute
 
 [Windows build](getting-started/windows.md) · [Linux build](getting-started/linux.md) ·
-[Coding style and checks](development/contributing.md) · [Packaging](development/packaging.md) ·
-[Distribution and signed APT hosting](development/distribution.md) ·
+[Contributing](../CONTRIBUTING.md) · [Package installation](getting-started/packages.md) ·
 [Changelog](development/CHANGELOG.md) · [Roadmap](development/ROADMAP.md)
 
 Each guide has an English/French link at the top. API names, JSON fields and

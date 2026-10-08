@@ -43,6 +43,30 @@ Runtime packets/handles and keyboard/window consent are not serialized. Successf
 C ABI imports stop capture; invalid imports preserve it. Linux Pro edits all fields
 through its complete-profile editor. See [C ABI](c-abi.md) and [Linux UI limits](../getting-started/linux.md).
 
+## Import review
+
+Desktop file/command-line imports validate first, then display a scrollable review of
+every movement, ordered chord/text action and Single press/Hold/Repeat mode. Accepting
+the review imports the profile; Keyboard output stays off until enabled separately.
+Cancel keeps the previous configuration. Chord keys are simultaneous; numbered
+actions run sequentially. Text is quoted with escaped newlines/tabs, so the display
+preserves the sequence. Hold executes its prefix once and owns the last chord;
+Repeat displays its interval. User-authored delays are not currently supported.
+
+The **System interaction** heuristic covers Windows/Super, Alt+F4, Alt+Tab, Alt+Esc,
+Alt+Space, Ctrl+Alt+Delete/Backspace/function keys, Ctrl+Shift+Esc, Sleep and launch keys,
+including left/right modifiers. It cannot determine the effect in every focused
+application. Text can also initiate behavior after a shortcut; review the entire
+sequence. A supported definition does not guarantee an OS accepts an injected
+shortcut (for example, secure attention) or that the X11 layout can emit every key.
+
+Central limits in `mig/core/input.hpp`: 256 actions, 1,024 total serialized chord-key
+entries and 16,384 total UTF-8 text bytes per input. Example profiles currently have
+at most one keyboard action, so these limits retain substantial headroom. Duplicate,
+reserved, undefined, mouse/gamepad and Unicode-packet key codes are rejected. UTF-8
+must be valid. Existing 1 MiB/depth-32 configuration bounds still apply. SDKs validate
+the same schema; desktop review is an application UI responsibility.
+
 ## Document and coordinate system
 
 Root fields are `schema_version: 2`, required `inputs` (0..64), optional
@@ -491,7 +515,7 @@ feedback are host presentation settings; no fields were added to JSON. Accepted
 callbacks are logical application events, not desktop key injection or a Hold/
 Repeat scheduler. See [JavaScript integration](../integrations/javascript.md).
 
-MIG 1.0.0 uses schema version 2. See [bootstrap](../getting-started/bootstrap.md) and [example code](../getting-started/examples.md).
+MIG 1.0.2 uses schema version 2. See [bootstrap](../getting-started/bootstrap.md) and [example code](../getting-started/examples.md).
 
 ## Controller profile list
 

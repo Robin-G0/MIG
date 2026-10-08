@@ -26,9 +26,10 @@ def grid_lines(packet):
     ax, ay = (lx - rx) / distance, (ly - ry) / distance
     cx, cy = (lx + rx) / 2, (ly + ry) / 2
     scale = 0.2 * distance
-    for row in range(1, 6):
+    # Match the authored start [3,6) and trigger [1,3) regions.
+    for row, height in ((1, 2), (3, 3)):
         points = []
-        for column, y in ((-9, row), (18, row), (18, row + 1), (-9, row + 1)):
+        for column, y in ((-9, row), (18, row), (18, row + height), (-9, row + height)):
             dx, dy = (column - 4.5) * scale, (y - 3.5) * scale
             points.append((1 - (cx + ax * dx - ay * dy) / aspect, cy + ay * dx + ax * dy))
         yield row, points

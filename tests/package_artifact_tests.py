@@ -7,7 +7,7 @@ import sys
 import tarfile
 import zipfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from distribution_policy import private_file
+from distribution_policy import EXCLUDED_NAMES
 from release_metadata import PACKAGE_NAME, PROJECT_NAME, REPOSITORY
 
 
@@ -42,7 +42,7 @@ def verify(path):
                    json.loads(files["package/package.json"])["name"] == "motion-input-grid")
     assert not any(".." in Path(name).parts or name.startswith("/") for name in names)
     assert not any("node_modules" in Path(name).parts or ".git" in Path(name).parts for name in names)
-    assert not any(private_file(part) for name in names for part in Path(name).parts), path
+    assert not any(part in EXCLUDED_NAMES for name in names for part in Path(name).parts), path
     assert any(name.endswith("LICENSE") for name in names), path
     if "-native." in path.name or "-examples." in path.name:
         assert any(name.endswith("licenses/MediaPipe-LICENSE") and files[name].strip()

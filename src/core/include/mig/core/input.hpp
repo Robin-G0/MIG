@@ -28,6 +28,12 @@ struct KeyboardAction {
     std::string text; // UTF-8, emitted as Unicode text rather than virtual keys.
     bool operator==(const KeyboardAction&) const = default;
 };
+// Shared import/runtime bounds. Text is counted as serialized UTF-8 bytes.
+inline constexpr std::size_t maximum_keyboard_actions = 256;
+inline constexpr std::size_t maximum_keyboard_text_bytes = 16384;
+inline constexpr std::size_t maximum_keyboard_keys = 1024;
+bool supported_keyboard_key(int key) noexcept;
+bool system_keyboard_action(const KeyboardAction& action) noexcept;
 std::u16string keyboard_text(std::string_view text);
 void validate_keyboard(const std::vector<KeyboardAction>& sequence);
 inline constexpr std::array<std::string_view, 6> gesture_names{"None", "Thumb",     "V",

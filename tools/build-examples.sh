@@ -18,4 +18,4 @@ for example in sdk-consumer native-consumer; do
     cmake --build "$build" --parallel "${MIG_BUILD_JOBS:-3}"
 done
 python3 tools/freeze-python-examples.py
-python3 tools/package-examples.py --platform linux-x64
+python3 tools/package-examples.py --platform linux-x64 --standalone

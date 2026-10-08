@@ -2,6 +2,18 @@
 
 [English](CHANGELOG.md) | [Français](CHANGELOG.fr.md)
 
+## 1.0.2
+
+- Desktop profile imports show the complete keyboard mapping before acceptance and
+  require separate keyboard activation. Keyboard definitions and automation sizes
+  are validated consistently across the engine and profile parser.
+- Raised-hand demos use broad Required and Trigger regions, with regression coverage
+  for skipped observations and movement direction.
+- Native example packages share frozen Python dependencies and avoid redundant SDK
+  runtime copies. Parallel C++ example builds serialize shared asset staging.
+- Example guides include launch instructions, integration walkthroughs and package
+  installation instructions.
+
 ## 1.0.0 — first public release
 
 Prototype and initial development took place privately before this first public release.

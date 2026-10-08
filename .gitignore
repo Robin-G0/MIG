@@ -1,4 +1,4 @@
-# Any self notes or text files
+# Local text files
 *.txt
 NEXT.md
 !requirements.txt
@@ -24,7 +24,7 @@ out/
 /examples/vue/public/mig/
 /examples/next/public/mig/
 
-# Private preparation and editor state
+# Local task files and editor settings
 /archived-NEXT.md
 /placeholders.md
 /.codex/

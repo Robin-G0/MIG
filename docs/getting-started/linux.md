@@ -34,7 +34,7 @@ both applications after installing the prerequisites above.
 Source builds are tested on Ubuntu 22.04 and 24.04 x86-64. Official MediaPipe requires
 glibc >=2.28; packaged applications require glibc >=2.35. Source builds use system
 Qt/X11; release archives bundle their shared dependencies/plugins/fonts. See
-[release preparation](../development/packaging.md) for x64 archives and ARM64 positions SDKs.
+[package installation](packages.md) for x64 archives and ARM64 positions SDKs.
 Use `--camera N` for `/dev/videoN`;
 single-plane YUYV V4L2 and camera permissions are required. Start explicitly opens
 capture; stop one application before starting the other.

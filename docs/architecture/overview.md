@@ -154,7 +154,7 @@ under `build` or `distribution`, then create files in `build/releases`: native
 archives, C++ SDK/Debian packages, Python wheel/sdist, npm package, runnable examples
 and editor-source bundles. Python/npm wrappers do not replace the compiled engine.
 Editor-source bundles need their editor and native dependencies; they are not
-exported games. See [publication](../development/packaging.md) and
+exported games. See [package installation](../getting-started/packages.md) and
 [platform validation](../reference/support.md).
 
 ## Where to make a change
@@ -213,5 +213,5 @@ recognition/output contracts. Hidden previews skip Windows BGRX conversion and L
 QImage copies. Verification reads selected-input progress without isolating the
 engine, and pauses output. See [controller](../guides/controller.md).
 
-The [distributable packages](../development/distribution.md) use these same modules; demo
+The [distributable packages](../getting-started/packages.md) use these same modules; demo
 projects remain under `examples`.

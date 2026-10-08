@@ -62,7 +62,7 @@ restores its last selected profile and starts with camera and keyboard output of
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1 -SkipBootstrap
-powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1 -Hands OFF -BuildDirectory build/next-no-hands
+powershell -ExecutionPolicy Bypass -File tools/build-windows.ps1 -Hands OFF -BuildDirectory build/windows-no-hands
 cmake --install build/windows --config Release --prefix install
 ```
 
@@ -145,7 +145,7 @@ Ctrl+Z/Y, copy/paste/duplicate/delete retain ordinary text-field editing.
 
 ```powershell
 ctest --test-dir build/windows -C Release --output-on-failure
-ctest --test-dir build/next-no-hands -C Release --output-on-failure
+ctest --test-dir build/windows-no-hands -C Release --output-on-failure
 ```
 
 UI tests run controls and synthetic rendering without a camera. --infer-test,

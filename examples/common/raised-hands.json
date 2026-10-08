@@ -14,69 +14,30 @@
                 {
                     "constraints": [
                         {
-                            "id": "left_row_5",
+                            "id": "left_start",
                             "landmark": "left_wrist",
                             "cell": [
                                 -9,
-                                5,
+                                3,
                                 27,
-                                1
+                                3
                             ],
                             "type": "required",
                             "priority": "high",
                             "order": 1
                         },
                         {
-                            "id": "left_row_4",
-                            "landmark": "left_wrist",
-                            "cell": [
-                                -9,
-                                4,
-                                27,
-                                1
-                            ],
-                            "type": "required",
-                            "priority": "high",
-                            "order": 2
-                        },
-                        {
-                            "id": "left_row_3",
-                            "landmark": "left_wrist",
-                            "cell": [
-                                -9,
-                                3,
-                                27,
-                                1
-                            ],
-                            "type": "required",
-                            "priority": "high",
-                            "order": 3
-                        },
-                        {
-                            "id": "left_row_2",
-                            "landmark": "left_wrist",
-                            "cell": [
-                                -9,
-                                2,
-                                27,
-                                1
-                            ],
-                            "type": "required",
-                            "priority": "high",
-                            "order": 4
-                        },
-                        {
-                            "id": "left_row_1",
+                            "id": "left_finish",
                             "landmark": "left_wrist",
                             "cell": [
                                 -9,
                                 1,
                                 27,
-                                1
+                                2
                             ],
                             "type": "trigger",
                             "priority": "high",
-                            "order": 5
+                            "order": 2
                         }
                     ],
                     "id": "raise",
@@ -94,69 +55,30 @@
                 {
                     "constraints": [
                         {
-                            "id": "right_row_5",
+                            "id": "right_start",
                             "landmark": "right_wrist",
                             "cell": [
                                 -9,
-                                5,
+                                3,
                                 27,
-                                1
+                                3
                             ],
                             "type": "required",
                             "priority": "high",
                             "order": 1
                         },
                         {
-                            "id": "right_row_4",
-                            "landmark": "right_wrist",
-                            "cell": [
-                                -9,
-                                4,
-                                27,
-                                1
-                            ],
-                            "type": "required",
-                            "priority": "high",
-                            "order": 2
-                        },
-                        {
-                            "id": "right_row_3",
-                            "landmark": "right_wrist",
-                            "cell": [
-                                -9,
-                                3,
-                                27,
-                                1
-                            ],
-                            "type": "required",
-                            "priority": "high",
-                            "order": 3
-                        },
-                        {
-                            "id": "right_row_2",
-                            "landmark": "right_wrist",
-                            "cell": [
-                                -9,
-                                2,
-                                27,
-                                1
-                            ],
-                            "type": "required",
-                            "priority": "high",
-                            "order": 4
-                        },
-                        {
-                            "id": "right_row_1",
+                            "id": "right_finish",
                             "landmark": "right_wrist",
                             "cell": [
                                 -9,
                                 1,
                                 27,
-                                1
+                                2
                             ],
                             "type": "trigger",
                             "priority": "high",
-                            "order": 5
+                            "order": 2
                         }
                     ],
                     "id": "raise",

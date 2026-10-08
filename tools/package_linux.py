@@ -12,7 +12,7 @@ import subprocess
 import tarfile
 import tempfile
 from release_metadata import PACKAGE_NAME, PROJECT_NAME, REPOSITORY, release_version
-from distribution_policy import private_file, GENERATED_DIRECTORIES
+from distribution_policy import EXCLUDED_NAMES
 
 SYSTEM_LIBRARIES = {
     "libc.so.6", "libm.so.6", "libpthread.so.0", "libdl.so.2", "librt.so.1",
@@ -29,7 +29,7 @@ def run(*arguments):
 
 def copy_tree(source, destination):
     def excluded(directory, names):
-        return [name for name in names if name in EXCLUDED_FILES or name in GENERATED_DIRECTORIES or private_file(name)
+        return [name for name in names if name in EXCLUDED_FILES or name in EXCLUDED_NAMES
                 or name.endswith((".pyc", ".egg-info"))]
     shutil.copytree(source, destination, symlinks=True, ignore=excluded)
 
@@ -203,7 +203,7 @@ def main():
             f"# Motion Input Grid (MIG) {options.version} — Linux {options.architecture}\n\n"
             "[English](README.md) | [Français](README.fr.md)\n\n"
             f"{usage}\n\n"
-            "See [release instructions](docs/development/packaging.md) and the "
+            "See [package installation](docs/getting-started/packages.md) and the "
             "[verification report](docs/reference/support.md) for prerequisites and limitations.\n")
         usage_fr = ("Lancez ./mig-controller ou ./mig-configurator depuis ce dossier."
                     if options.native else "Utilisez le dossier sdk comme CMAKE_PREFIX_PATH.")
@@ -211,7 +211,7 @@ def main():
             f"# Motion Input Grid (MIG) {options.version} — Linux {options.architecture}\n\n"
             "[English](README.md) | [Français](README.fr.md)\n\n"
             f"{usage_fr}\n\n"
-            "[Publication](docs/development/packaging.fr.md) et "
+            "[Installation](docs/getting-started/packages.fr.md) et "
             "[vérifications actuelles](docs/reference/support.fr.md).\n", encoding="utf-8")
         shutil.copy2(options.runtime / "nlohmann-LICENSE", root / "licenses/nlohmann-LICENSE")
         inventory = bundle_apps(root, options.install, options.runtime) if options.native else []

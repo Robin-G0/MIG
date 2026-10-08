@@ -1,5 +1,6 @@
 #include "window.hpp"
 #include "../apps/authoring.hpp"
+#include "import_review.hpp"
 #include "theme.hpp"
 #include <QAction>
 #include <QApplication>
@@ -268,6 +269,10 @@ void Window::load(const std::string& path) {
     try {
         auto proposed = load_configuration(path);
         stop();
+        keyboard_switch_->setChecked(false);
+        if (!review_import(this, proposed)) {
+            return;
+        }
         config_ = std::move(proposed);
         refresh_inputs();
         report("Profile loaded.");

@@ -76,7 +76,7 @@ inline std::vector<int> parse_shortcut(std::string_view text) {
                 key = 0;
             }
         }
-        if (key < 1 || key > 255 || keys.size() >= 255 ||
+        if (!supported_keyboard_key(key) || keys.size() >= 255 ||
             std::find(keys.begin(), keys.end(), key) != keys.end()) {
             throw std::runtime_error("Unknown/duplicate shortcut key; use _ to repeat, e.g. A _ A");
         }
@@ -262,7 +262,7 @@ inline std::vector<KeyboardAction> parse_binding(std::string_view value) {
                 separator == std::string_view::npos ? std::string_view{} : value.substr(separator);
         }
         result.push_back(std::move(action));
-        if (result.size() > 256) {
+        if (result.size() > maximum_keyboard_actions) {
             throw std::runtime_error("Maximum 256 keyboard actions");
         }
         if (!value.empty()) {

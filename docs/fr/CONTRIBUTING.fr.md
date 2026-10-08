@@ -32,8 +32,9 @@ Utiliser quatre espaces et clang-format 16 selon `.clang-format`.
 Les commits utilisent `[ADD]`, `[FIX]` ou `[DEL]`. Décrire le comportement modifié,
 les contrats concernés, les validations et les limites dans la pull request.
 
-Exécuter les tests concernés, `python tools/check-docs.py` et le contrôle de format
-indiqué dans les [conventions](../development/contributing.fr.md). Pour un binding ou
-package, installer l'artefact généré dans un consommateur séparé selon le [guide de distribution](../development/distribution.fr.md).
+Exécuter les tests concernés, `python tools/check-docs.py` et
+`tools/format-code.ps1 -Check`. Pour un binding ou un package, installer l’artefact
+généré dans un consommateur séparé selon le
+[guide d’installation](../getting-started/packages.fr.md).
 Mettre à jour le guide anglais/français et ajouter un test de régression pertinent
 si le comportement change. Ne pas modifier les copies générées ni distribuer d'identifiants.

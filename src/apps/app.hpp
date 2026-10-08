@@ -195,6 +195,7 @@ struct EditorDocument {
     Recorder recording;
 };
 struct App {
+    bool review_import(const Configuration& proposed);
     std::unique_ptr<controller::Profiles> profiles;
     bool controller_camera{}, controller_compact{}, controller_verify{};
     std::atomic<bool> preview_enabled{true};

@@ -30,4 +30,4 @@ The complete checkout also supports building the SDK as a dependency.
 The bridge sources live here; the runnable projects stay in
 [examples/godot](../../examples/godot/README.md).
 
-[Distribution guide](../../docs/development/distribution.md) · [C ABI](../../docs/reference/c-abi.md).
+[Distribution guide](../../docs/getting-started/packages.md) · [C ABI](../../docs/reference/c-abi.md).
