@@ -83,7 +83,8 @@ try {
                         name: "custom.json", mimeType: "application/json",
                         buffer: Buffer.from(JSON.stringify(custom))
                     });
-                    await page.getByRole("status").filter({ hasText: "Profile imported" }).waitFor();
+                    await (plain ? page.locator('#status') : page.getByRole("status"))
+                        .filter({ hasText: "Profile imported" }).waitFor();
                 }
                 await page.getByRole("button", { name: "Start camera" }).click();
                 const expected = mode === "hands" ? "Left hand raised!" : "custom action";

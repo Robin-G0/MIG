@@ -43,6 +43,10 @@ Activez `MIG_BUILD_BENCHMARKS=ON` pour compiler `mig-engine-benchmark` dans
 
 ## Tests par scripts
 
+`packaging/standalone_editor_tests.py --build-csharp` valide les dépendances
+d’éditeur isolées et compile le projet Godot .NET fourni. L’exécution dans
+Unity/Unreal et les exports nécessitent encore leurs éditeurs installés.
+
 ```sh
 python tests/tooling/release_version_tests.py
 python tests/tooling/version_resolution_tests.py

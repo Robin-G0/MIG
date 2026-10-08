@@ -1,18 +1,17 @@
 """Run deterministic viewer workflows after extracting a single native example package."""
 import hashlib
+import argparse
 import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 import sys
 import tempfile
 import tarfile
 import zipfile
 
-ROOT = Path(__file__).resolve().parents[2]
-
-
-def verify(archive):
+def verify(archive, source_python=None):
     with tempfile.TemporaryDirectory(prefix='standalone-test-') as temporary:
         extracted = Path(temporary)
         package = zipfile.ZipFile(archive) if zipfile.is_zipfile(archive) else tarfile.open(archive)
@@ -35,12 +34,15 @@ def verify(archive):
         environment = dict(os.environ, MIG_RUNTIME='', MIG_LIBRARY='', SDL_VIDEODRIVER='dummy')
         if example in ('pygame', 'python-tkinter'):
             commands = [[str(directory / f'{variant}{extension}'), '--smoke'] for variant in ('main', 'profile')]
+            if source_python:
+                commands.extend([[str(source_python), str(directory / f'{variant}.py'), '--smoke']
+                                 for variant in ('main', 'profile')])
             assert (directory / 'viewer.runtime/base_library.zip').is_file()
             assert not (directory / 'main.runtime').exists()
         elif example in ('sdl2', 'sfml'):
             commands = [[str(directory / f'mig-{example}{suffix}{extension}'), '--smoke'] for suffix in ('', '-profile')]
         elif example == 'sdk-consumer':
-            commands = [[str(directory / f'mig-sdk-example{extension}'), str(folder / 'configs/default.json')]]
+            commands = [[str(directory / f'mig-sdk-example{extension}'), str(folder / 'configuration/default.json')]]
         else:
             commands = [[str(directory / f'mig-native-example{extension}'), str(folder / 'runtime')]]
         environment['LD_LIBRARY_PATH'] = str(folder / 'runtime/lib')
@@ -49,7 +51,8 @@ def verify(archive):
                                        capture_output=True, text=True, timeout=60)
             assert completed.returncode == 0, (command, completed.stdout, completed.stderr)
             if example in ('pygame', 'python-tkinter'):
-                expected = ('Left hand raised!', 'Right hand raised!') if Path(command[0]).stem == 'main' else (
+                entry = command[1] if source_python and command[0] == str(source_python) else command[0]
+                expected = ('Left hand raised!', 'Right hand raised!') if Path(entry).stem == 'main' else (
                     'left_raise (input left_raise)', 'right_raise (input right_raise)')
                 assert all(message in completed.stdout for message in expected), completed.stdout
             elif example in ('sdl2', 'sfml'):
@@ -62,9 +65,13 @@ def verify(archive):
 
 
 if __name__ == '__main__':
-    for argument in sys.argv[1:]:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('archives', nargs='+')
+    parser.add_argument('--source-python', type=lambda value: Path(shutil.which(value) or value).resolve())
+    options = parser.parse_args()
+    for argument in options.archives:
         paths = sorted(Path(argument).parent.glob(Path(argument).name))
         if not paths:
             raise FileNotFoundError(argument)
         for path in paths:
-            verify(path)
+            verify(path, options.source_python)

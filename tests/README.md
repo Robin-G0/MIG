@@ -59,6 +59,10 @@ command line. The [CI workflow](../.github/workflows/ci.yml) and
 [release validation workflow](../.github/workflows/release-check.yml) show the
 complete build order and platform-specific invocations.
 
+`packaging/standalone_editor_tests.py --build-csharp` validates isolated editor
+dependencies and compiles the packaged Godot .NET project. Unity/Unreal editor
+execution and exported games still need their own installed editor toolchains.
+
 The Godot regression scene stays in `examples/godot/gdscript/tests/`: it belongs
 to the demo project used to validate the extracted add-on and is run by
 `packaging/godot_package_tests.py`.

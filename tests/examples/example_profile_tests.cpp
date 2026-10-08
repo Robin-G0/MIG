@@ -1,5 +1,5 @@
-#include "../../examples/sdl2/example_usage.hpp"
 #include "../../examples/common/synthetic.hpp"
+#include "../../examples/sdl2/example_usage.hpp"
 #include <iostream>
 
 int main(int argc, char** argv) {
