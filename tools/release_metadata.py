@@ -98,8 +98,27 @@ def write_package_manifest(folder, ecosystem, platform):
 
 def rewrite_package_guides(folder):
     prefix = f"https://github.com/Robin-G0/MIG/blob/v{release_version()}/"
+    package_root = folder.resolve()
     for guide in folder.rglob("README*.md"):
         content = guide.read_text(encoding="utf-8")
         content = re.sub(r"\]\((?:\.\./)+(docs|examples)/",
                          lambda match: f"]({prefix}{match[1]}/", content)
+        def missing_reference(match):
+            target = match[1]
+            if ':' in target or target.startswith('#'):
+                return match[0]
+            filename, separator, anchor = target.partition('#')
+            candidate = (guide.parent / filename).resolve()
+            if candidate.exists():
+                return match[0]
+            try:
+                relative = candidate.relative_to(package_root)
+            except ValueError:
+                return match[0]
+            # Optional API/source references can point to the matching release;
+            # runtime dependencies must already exist and are tested separately.
+            if (ROOT / relative).is_file():
+                return f"]({prefix}{relative.as_posix()}{separator}{anchor})"
+            return match[0]
+        content = re.sub(r'\]\(([^)\s]+)\)', missing_reference, content)
         guide.write_text(content, encoding="utf-8")

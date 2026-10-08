@@ -10,7 +10,7 @@ import sys
 import zipfile
 
 from package_linux import SYSTEM_LIBRARIES, bundle_libraries, copy_tree, create_archive, verify_architecture
-from release_metadata import PACKAGE_NAME, PROJECT_NAME, REPOSITORY, release_version
+from release_metadata import PACKAGE_NAME, PROJECT_NAME, REPOSITORY, release_version, rewrite_package_guides
 
 PROJECT = Path(__file__).resolve().parents[1]
 
@@ -101,7 +101,10 @@ def assemble_linux(root):
     shutil.copy2(PROJECT / "build/release-linux-x64/src/c-api" / f"libmig-c.so.{release_version()}",
                  runtime / "libmig-c.so.1")
     copy_tree(native / "models", runtime / "models")
-    shutil.copy2(native / "LICENSE", root / "licenses/MediaPipe-LICENSE")
+    mediapipe_license = native / "MediaPipe-LICENSE"
+    if not mediapipe_license.is_file():
+        mediapipe_license = native / "LICENSE"  # older bootstrapped dependency trees
+    shutil.copy2(mediapipe_license, root / "licenses/MediaPipe-LICENSE")
     shutil.copy2(native / "nlohmann-LICENSE", root / "licenses/nlohmann-LICENSE")
     seeds = [runtime / "libmediapipe.so", runtime / "libmig-c.so.1"]
     inventory = bundle_libraries(seeds, runtime / "lib", root / "licenses",
@@ -178,7 +181,7 @@ def assemble_consumers(root, platform):
     for technology, executable in (("sdk-consumer", "mig-sdk-example"),
                                    ("native-consumer", "mig-native-example")):
         folder = root / "examples" / technology
-        argument = "../../configs/default.json" if technology == "sdk-consumer" else "../../runtime"
+        argument = "configuration/default.json" if technology == "sdk-consumer" else "../../runtime"
         if platform == "windows-x64":
             source = PROJECT / f"build/examples-compile/windows-{technology}/Release/{executable}.exe"
             shutil.copy2(source, folder)
@@ -237,6 +240,7 @@ def main():
         verify_windows(root)
     else:
         verify_architecture(root, "x64")
+    rewrite_package_guides(root)
     write_manifest(root, options.platform, inventory)
     output = PROJECT / "build/releases"
     output.mkdir(parents=True, exist_ok=True)

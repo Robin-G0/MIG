@@ -17,8 +17,6 @@ EXAMPLES = ('sdl2', 'sfml', 'pygame', 'python-tkinter', 'sdk-consumer', 'native-
 def assemble(source, folder, example, platform):
     copy_tree(source / 'examples' / example, folder)
     shared = ['licenses']
-    if example in ('sdk-consumer', 'native-consumer'):
-        shared.append('configs')
     if example not in ('pygame', 'python-tkinter'):
         shared.append('sdk')
     for name in shared:
