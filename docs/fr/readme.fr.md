@@ -2,14 +2,21 @@
 
 [English](../../readme.md) | [Français](readme.fr.md)
 
+> [!NOTE]
+> MIG est en cours de développement et vient de commencer à publier ses premières versions.
+> Tous les [retours et suggestions](https://github.com/Robin-G0/MIG/issues) sont les bienvenus.
+
 ## Essayer MIG maintenant
 
-Extrayez le package d'exemples compilé complet et conservez ses dossiers.
-Avec les prérequis installés, le [navigateur](../../examples/web/README.fr.md),
-[Python/Tk](../../examples/python-tkinter/README.fr.md) et
-[SDL2](../../examples/sdl2/README.fr.md) visent environ 30–60 secondes après extraction.
-Le chargement initial des modèles dépend du matériel. Le package navigateur fournit
-Node et les assets ; les viewers Python fournissent l'interpréteur.
+Téléchargez et extrayez l'archive complète des exemples, puis ouvrez le dossier indiqué.
+Les durées supposent les prérequis installés ; le chargement initial des modèles dépend du matériel.
+
+| Exemple | Préparation après extraction | Plateforme / prérequis | Essayez-moi |
+| --- | --- | --- | --- |
+| [Navigateur](../../examples/web/README.fr.md) | Environ 30–60 secondes | Navigateur moderne ; Node et assets locaux fournis | [Télécharger la dernière version](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-javascript-examples.tar.gz). Dans `examples/web`, lancez `run.cmd` / `sh run.sh`, ouvrez localhost, autorisez la caméra et levez une main |
+| [Python/Tk](../../examples/python-tkinter/README.fr.md) | Environ 30–60 secondes | Windows x64 : runtime VC++ ; Linux x64 : glibc 2.35+ | Dernière version : [Windows](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-windows-x64-examples.zip) · [Linux](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-linux-x64-examples.tar.gz). Dans `examples/python-tkinter`, lancez `main.exe` / `./main` ; Python est fourni |
+| [SDL2](../../examples/sdl2/README.fr.md) | Environ 30–60 secondes | Mêmes prérequis natifs | Dernière version : [Windows](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-windows-x64-examples.zip) · [Linux](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-linux-x64-examples.tar.gz). Dans `examples/sdl2`, lancez `mig-sdl2.exe` / `./mig-sdl2` ; levez un poignet du vert vers le jaune |
+
 Les intégrations Godot, Unity et Unreal restent en preview : éditeur et fournisseur
 de pose sont nécessaires, avec une préparation initiale supérieure à une minute.
 

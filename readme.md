@@ -2,6 +2,10 @@
 
 [English](readme.md) | [Français](docs/fr/readme.fr.md)
 
+> [!NOTE]
+> MIG is under active development and has just started publishing its first versions.
+> All [feedback and suggestions](https://github.com/Robin-G0/MIG/issues) are welcome.
+
 **Turn a movement into an action.** Draw a route for a wrist or another body part,
 then use a camera to recognize it. MIG can send a keyboard shortcut to your desktop
 application or report an action to your game, website or Python program.
@@ -15,14 +19,14 @@ The grid follows shoulder spacing, so it scales as you move toward the camera.
 
 ## Try MIG now
 
-Extract the complete built examples archive, then launch a viewer. Setup estimates
+Download and extract the complete examples archive, then open the indicated viewer folder. Setup estimates
 assume the platform prerequisites are installed; first model loading depends on hardware.
 
-| Example | Setup after extraction | Platform / requirements | Try it |
+| Example | Setup after extraction | Platform / requirements | Try me |
 | --- | --- | --- | --- |
-| [Browser](examples/web/README.md) | About 30–60 seconds | Modern browser; bundled Node and local assets | Run `run.cmd` / `sh run.sh`, open localhost, grant camera permission, raise a hand |
-| [Python/Tk](examples/python-tkinter/README.md) | About 30–60 seconds | Windows x64 VC++ runtime; Linux x64 glibc 2.35+ | Run frozen `main.exe` / `./main`; Python is bundled |
-| [SDL2](examples/sdl2/README.md) | About 30–60 seconds | Same native prerequisites | Run `mig-sdl2.exe` / `./mig-sdl2`; raise a wrist from green into yellow |
+| [Browser](examples/web/README.md) | About 30–60 seconds | Modern browser; bundled Node and local assets | [Download latest](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-javascript-examples.tar.gz). In `examples/web`, run `run.cmd` / `sh run.sh`, open localhost, grant camera permission, raise a hand |
+| [Python/Tk](examples/python-tkinter/README.md) | About 30–60 seconds | Windows x64 VC++ runtime; Linux x64 glibc 2.35+ | Download latest: [Windows](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-windows-x64-examples.zip) · [Linux](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-linux-x64-examples.tar.gz). In `examples/python-tkinter`, run frozen `main.exe` / `./main`; Python is bundled |
+| [SDL2](examples/sdl2/README.md) | About 30–60 seconds | Same native prerequisites | Download latest: [Windows](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-windows-x64-examples.zip) · [Linux](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-linux-x64-examples.tar.gz). In `examples/sdl2`, run `mig-sdl2.exe` / `./mig-sdl2`; raise a wrist from green into yellow |
 
 Built viewers are the quickest trial. Source builds require a toolchain and dependencies.
 [Godot](examples/godot/README.md), [Unity](examples/unity/README.md) and
