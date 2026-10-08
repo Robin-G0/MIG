@@ -69,7 +69,9 @@ jobs:
               with:
                   dotnet-version: '8.0.x'
             - name: Validate the extracted Linux Unity managed bridge
-              run: python3 tests/packaging/native_integration_package_tests.py build/releases/motion-input-grid-*-linux-x64-unity.tgz
+              run: |
+                  python3 tests/packaging/native_integration_package_tests.py build/releases/motion-input-grid-*-linux-x64-unity.tgz
+                  python3 tests/packaging/native_integration_package_tests.py build/releases/motion-input-grid-*-linux-x64-unity-standalone.zip
             - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: motion-input-grid-linux-and-python-candidates
@@ -160,10 +162,13 @@ jobs:
                   npm test
                   npm run test:types
                   npm run build:examples
+                  node tools/bootstrap-node.mjs
                   mkdir -p build/releases
                   npm pack --workspace motion-input-grid --pack-destination build/releases
                   node tests/packaging/npm_package_tests.mjs build/releases/motion-input-grid-*.tgz
                   npm run package:examples
+                  npx playwright install --with-deps chromium
+                  python3 tests/packaging/standalone_browser_tests.py 'build/releases/*-browser-*-standalone.tar.gz'
                   python3 tests/packaging/package_artifact_tests.py build/releases/motion-input-grid-*-javascript-examples.tar.gz
                   python3 tests/packaging/release_archive_tests.py build/releases
             - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -256,6 +261,7 @@ jobs:
               run: |
                   python3 tools/bootstrap-godot.py --editor
                   python3 tests/packaging/godot_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-godot.zip --godot build/godot-deps/Godot_v4.3-stable_linux.arm64
+                  python3 tests/packaging/godot_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-godot-gdscript-standalone.zip --godot build/godot-deps/Godot_v4.3-stable_linux.arm64
                   python3 tests/packaging/native_integration_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-unreal.zip
 
     manifest:
