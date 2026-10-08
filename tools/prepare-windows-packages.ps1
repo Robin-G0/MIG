@@ -33,3 +33,10 @@ Invoke-Checked python @('tools/package-integrations.py', '--ecosystem', 'godot',
     '--godot-cpp', 'build/godot-deps/godot-cpp-godot-4.3-stable')
 Invoke-Checked python @('tests/packaging/godot_package_tests.py', "build/releases/motion-input-grid-$version-windows-x64-godot.zip",
     '--godot', 'build/godot-deps/Godot_v4.3-stable_win64_console.exe')
+Invoke-Checked python @('tests/packaging/godot_package_tests.py', "build/releases/motion-input-grid-$version-windows-x64-godot-gdscript-standalone.zip",
+    '--godot', 'build/godot-deps/Godot_v4.3-stable_win64_console.exe')
+foreach ($ecosystem in @('unity', 'unreal')) {
+    Invoke-Checked python @('tests/packaging/native_integration_package_tests.py', "build/releases/motion-input-grid-$version-windows-x64-$ecosystem-standalone.zip")
+    Invoke-Checked python @('tests/packaging/standalone_editor_tests.py', "build/releases/motion-input-grid-$version-windows-x64-$ecosystem-standalone.zip")
+}
+Invoke-Checked python @('tests/packaging/standalone_editor_tests.py', '--build-csharp', "build/releases/motion-input-grid-$version-windows-x64-godot-csharp-standalone.zip")

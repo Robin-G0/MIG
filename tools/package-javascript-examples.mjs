@@ -152,8 +152,8 @@ await writeFile(join(destination, "manifest.json"), JSON.stringify({
     repository: "https://github.com/Robin-G0/MIG", version, sha256: hashes
 }, null, 2) + "\n");
 const archive = join(releases, `${name}.tar.gz`);
-const python = process.platform === "win32" ? "py" : "python3";
-const pythonOptions = process.platform === "win32" ? ["-3"] : [];
+const python = process.env.MIG_PYTHON ?? (process.platform === "win32" ? "python" : "python3");
+const pythonOptions = [];
 execFileSync(python, [...pythonOptions, join(root, "tools/archive-examples.py"), destination, archive]);
 for (const example of ["web", "react", "vue", "next"]) {
     execFileSync(python, [...pythonOptions, join(root, "tools/package-browser-example.py"),

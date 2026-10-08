@@ -22,6 +22,8 @@ def assemble(integration, folder, ecosystem, platform):
     copy_tree(source, folder)
     if ecosystem == 'godot-gdscript':
         copy_tree(integration / 'addons', folder / 'addons')
+        copy_tree(ROOT / 'integrations/godot/native', folder / 'dependencies/godot/native')
+        copy_tree(ROOT / 'integrations/godot/addons', folder / 'dependencies/godot/addons')
     elif ecosystem == 'godot-csharp':
         shutil.copy2(ROOT / 'bindings/dotnet/MigTracker.cs', folder / 'MigTracker.cs')
         shutil.copy2(ROOT / 'bindings/dotnet/SyntheticFrames.cs', folder / 'SyntheticFrames.cs')

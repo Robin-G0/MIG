@@ -11,8 +11,13 @@ from release_metadata import ROOT, build_directory, release_version, write_packa
 
 def assemble(source, folder, example):
     copy_tree(source / 'examples' / example, folder)
+    if example != 'web':
+        output = 'out' if example == 'next' else 'dist'
+        copy_tree(source / 'examples' / example / output, folder / output)
     copy_tree(source / 'bindings/javascript', folder / 'dependencies/motion-input-grid')
-    copy_tree(source / 'licenses', folder / 'licenses')
+    # Plain web already contains its runtime license folder. Framework notices
+    # occupy their own subdirectory and must not replace those model/WASM notices.
+    copy_tree(source / 'licenses/javascript', folder / 'licenses/javascript')
     shutil.copy2(source / 'LICENSE', folder / 'LICENSE')
     package_path = folder / 'package.json'
     if package_path.is_file():

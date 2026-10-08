@@ -15,6 +15,7 @@ for architecture in x64 arm64; do
 done
 python3 tools/package-integrations.py --ecosystem unity --sdk build/release-sdk-x64-install --dependencies "$dependencies" --platform linux-x64
 python3 tests/packaging/native_integration_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-unreal.zip"
+python3 tests/packaging/native_integration_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-unreal-standalone.zip"
 python3 tests/packaging/python_package_tests.py build/releases/*-manylinux_2_35_x86_64.whl
 python3 tests/packaging/debian_package_tests.py build/releases/motion-input-grid_*.deb
 python3 tools/bootstrap-godot.py --editor
@@ -33,4 +34,6 @@ for architecture in x64 arm64; do
         --godot-cpp build/godot-deps/godot-cpp-godot-4.3-stable
 done
 python3 tests/packaging/godot_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-godot.zip" \
+    --godot build/godot-deps/Godot_v4.3-stable_linux.x86_64
+python3 tests/packaging/godot_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-godot-gdscript-standalone.zip" \
     --godot build/godot-deps/Godot_v4.3-stable_linux.x86_64

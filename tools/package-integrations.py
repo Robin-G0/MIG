@@ -69,7 +69,8 @@ def unity_asset_metadata(folder):
         header = f"fileFormatVersion: 2\nguid: {guid}\n"
         if asset.is_dir():
             header += "folderAsset: yes\n"
-        importers = {".cs": "MonoImporter", ".asmdef": "AssemblyDefinitionImporter"}
+        importers = {".cs": "MonoImporter", ".asmdef": "AssemblyDefinitionImporter",
+                     ".json": "TextScriptImporter"}
         importer = importers.get(asset.suffix, "DefaultImporter")
         settings = ""
         if asset.suffix == ".cs":
@@ -133,7 +134,8 @@ def package(args):
                         relative = file.relative_to(folder).as_posix()
                         output.write(file, relative if args.ecosystem == "godot" else f"MIG/{relative}")
         print(archive)
-        examples = ('godot-gdscript', 'godot-csharp') if args.ecosystem == 'godot' else (args.ecosystem,)
+        examples = (('godot-gdscript', 'godot-csharp') if args.platform.endswith('x64')
+                    else ('godot-gdscript',)) if args.ecosystem == 'godot' else (args.ecosystem,)
         for ecosystem in examples:
             subprocess.run([sys.executable, str(ROOT / 'tools/package-editor-examples.py'),
                             '--integration', str(folder), '--ecosystem', ecosystem,
