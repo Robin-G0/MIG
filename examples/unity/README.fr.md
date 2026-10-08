@@ -25,12 +25,12 @@ l’installation peuvent dépasser une minute. Aucun estimateur caméra fourni ;
 | Fichier/dossier | Rôle |
 | --- | --- |
 | `MigInput.cs` | Propriétaire du tracker, profil, images, actions et nettoyage. |
-| `MigRaisedHands.cs / MigProfileInput.cs` | Demo/import component selection. |
-| `Resources/MIG/raised-hands.json` | Two-wrist profile loaded as a TextAsset. |
-| `SyntheticFrames.cs` | Release: camera-free provider fixture. |
-| `MIG.Examples.asmdef` | Example assembly references the native binding assembly. |
-| `package.json` | UPM descriptor; standalone package has no second UPM dependency. |
-| `Runtime/` | Release: MIG.Runtime assembly, managed bridge and filtered native plugins. |
+| `MigRaisedHands.cs / MigProfileInput.cs` | Sélection du composant démo/import. |
+| `Resources/MIG/raised-hands.json` | Profil des deux poignets chargé comme TextAsset. |
+| `SyntheticFrames.cs` | Archive : fournisseur synthétique sans caméra. |
+| `MIG.Examples.asmdef` | Assembly des exemples référençant celui du binding. |
+| `package.json` | Descripteur UPM ; aucune seconde dépendance UPM dans l’archive autonome. |
+| `Runtime/` | Archive : assembly MIG.Runtime, bridge géré et plugins natifs filtrés. |
 | `licenses/`, `LICENSE`, `manifest.json` | Notices et sommes de contrôle de l’archive. |
 
 ## Parcours du code

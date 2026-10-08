@@ -25,14 +25,14 @@ peuvent dépasser une minute. Aucun estimateur caméra fourni.
 
 | Fichier/dossier | Rôle |
 | --- | --- |
-| `project.godot / raised_hands.tscn / profile.tscn` | Complete project, demo scene and import scene. |
+| `project.godot / raised_hands.tscn / profile.tscn` | Projet complet, scène démo et scène d’import. |
 | `mig_input.gd` | Initialisation MIG, images, signaux et nettoyage. |
-| `mig_raised_hands.gd / mig_profile_input.gd` | Initial mode selection. |
-| `mig_synthetic_frames.gd` | Camera-free observation provider. |
+| `mig_raised_hands.gd / mig_profile_input.gd` | Sélection du mode initial. |
+| `mig_synthetic_frames.gd` | Fournisseur d’observations sans caméra. |
 | `raised-hands.json` | Profil local schema-v2 des deux poignets. |
-| `addons/mig/` | Release: native GDExtension, platform descriptor, C ABI and licenses. |
-| `native/ / dependencies/godot/` | Optional bridge rebuild entry and local bridge sources in the release. |
-| `tests/regression.gd` | Deterministic bridge/scene/import/teardown checks. |
+| `addons/mig/` | Archive : GDExtension, descripteur de plateforme, ABI C et licences. |
+| `native/ / dependencies/godot/` | Point d’entrée de recompilation facultative et sources locales du bridge. |
+| `tests/regression.gd` | Tests déterministes du bridge, scènes, imports et nettoyage. |
 | `licenses/`, `LICENSE`, `manifest.json` | Notices et sommes de contrôle de l’archive. |
 
 ## Parcours du code

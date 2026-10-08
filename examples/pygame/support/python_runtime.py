@@ -14,7 +14,12 @@ def resource_root():
     for directory in location.parents:
         if (directory / "manifest.json").is_file():
             return directory
-    return Path(__file__).resolve().parents[3]  # source checkout only
+    folder = (Path(sys.executable).resolve().parent if getattr(sys, "frozen", False)
+              else Path(__file__).resolve().parent.parent)
+    repository = folder.parent.parent
+    if (repository / "src/core/CMakeLists.txt").is_file():
+        return repository  # optional full-checkout development fallback
+    return folder
 
 
 ROOT = resource_root()

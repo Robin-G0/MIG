@@ -19,3 +19,7 @@ l'architecture de votre éditeur/export. Aucun estimateur ni export web n'est fo
 [Code](../../docs/getting-started/examples.fr.md) · [Démarrage](../../docs/getting-started/bootstrap.fr.md).
 
 [Package runtime séparé](../../integrations/godot/README.fr.md).
+
+Les archives `*-godot-gdscript-standalone` et `*-godot-csharp-standalone`
+sont des projets complets avec leur bridge et ABI natif. Ouvrez leur README
+et `project.godot` ; l’éditeur reste externe.

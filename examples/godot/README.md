@@ -19,3 +19,7 @@ architecture. These examples supply no estimator or web export.
 [Source walkthrough](../../docs/getting-started/examples.md) · [Bootstrap](../../docs/getting-started/bootstrap.md).
 
 [Separate runtime package](../../integrations/godot/README.md).
+
+Individual `*-godot-gdscript-standalone` and `*-godot-csharp-standalone`
+archives are complete projects with their matching bridge and native ABI.
+Open each project’s README and `project.godot`; an editor remains external.

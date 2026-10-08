@@ -25,13 +25,13 @@ Aucun fournisseur caméra fourni ; la démo utilise des observations synthétiqu
 
 | Fichier/dossier | Rôle |
 | --- | --- |
-| `project.godot / MigExample.csproj` | Complete Godot project and pinned .NET build configuration. |
-| `raised_hands.tscn / profile.tscn` | Synthetic demo and arbitrary-profile scenes. |
-| `MigInput.cs` | Tracker lifecycle, native resolver, packets and signals. |
-| `MigRaisedHands.cs / MigProfileInput.cs` | Initial mode selection. |
+| `project.godot / MigExample.csproj` | Projet Godot complet et version de compilation .NET fixée. |
+| `raised_hands.tscn / profile.tscn` | Scènes de démo synthétique et de profil arbitraire. |
+| `MigInput.cs` | Cycle de vie du tracker, résolution native, paquets et signaux. |
+| `MigRaisedHands.cs / MigProfileInput.cs` | Sélection du mode initial. |
 | `raised-hands.json` | Profil local schema-v2 des deux poignets. |
-| `MigTracker.cs / SyntheticFrames.cs` | Release: managed bridge and camera-free provider fixture. |
-| `mig-c.dll / libmig-c.so` | Release: loose native C ABI at the project root. |
+| `MigTracker.cs / SyntheticFrames.cs` | Archive : bridge géré et fournisseur synthétique sans caméra. |
+| `mig-c.dll / libmig-c.so` | Archive : bibliothèque ABI C libre à la racine du projet. |
 | `licenses/`, `LICENSE`, `manifest.json` | Notices et sommes de contrôle de l’archive. |
 
 ## Parcours du code

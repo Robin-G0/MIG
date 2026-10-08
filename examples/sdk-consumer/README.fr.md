@@ -25,7 +25,7 @@ du matériel. L'archive groupée propose aussi ces lanceurs dans son dossier d'e
 | `run.cmd`, `run.sh` | Lancement avec arguments relatifs à ce dossier. |
 | `sdk/` | En-têtes et bibliothèques dans l'archive individuelle. |
 | `licenses/`, `LICENSE` | Notices de redistribution. |
-| `configs/default.json` | Chemin ordonné `left_raise` de l’archive individuelle. |
+| `configuration/default.json` | Chemin ordonné `left_raise` de l’archive individuelle. |
 
 ## Parcours du code
 
@@ -42,11 +42,11 @@ Copiez le dossier et utilisez le SDK installé ou `sdk/` fourni :
 ```sh
 cmake -S . -B build -DCMAKE_PREFIX_PATH=/chemin/MIG/sdk
 cmake --build build --config Release
-build/mig-sdk-example configs/default.json
+build/mig-sdk-example configuration/default.json
 ```
 
 Visual Studio utilise `build/Release/` et `.exe`. Les sources seules nécessitent
-le SDK et un profil du configurateur ou le default.json distribué.
+le SDK ; le profil local `configuration/default.json` est déjà fourni.
 La compilation prend plus de temps que l'essai précompilé.
 
 ## Réutilisation et dépannage
@@ -56,7 +56,7 @@ Le marcheur synthétique illustre un chemin simple ; pas les profils simultanés
 Conservez des observations fraîches non miroir, leur aspect, un temps monotone,
 une séquence croissante et un propriétaire par moteur.
 
-- Profil absent : transmettez un JSON existant ; le lanceur utilise `configs/default.json`.
+- Profil absent : transmettez un JSON existant ; le lanceur utilise `configuration/default.json`.
 - SDK absent : renseignez `CMAKE_PREFIX_PATH` ou conservez `sdk/`.
 - Vérifiez l'architecture des bibliothèques et de l'exécutable.
 

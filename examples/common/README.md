@@ -1,44 +1,22 @@
-# Shared example helpers
-
-Each runnable tutorial owns `example_usage` and its local `support/` files.
-This directory keeps canonical profile/font assets and fixtures used by
-repository builds/tests. It is not needed beside a copied standalone tutorial.
+# Canonical example assets and repository fixtures
 
 [English](README.md) | [Français](README.fr.md)
 
-To use the libraries without compiling them, install
-`python -m pip install motion-input-grid` (Python) or
-`npm install motion-input-grid` (browser/React/Vue/Next.js), then run
-`npx mig-copy-assets public/mig` for browser assets.
-[Python](../../bindings/python/README.md) · [JavaScript](../../bindings/javascript/README.md).
+Runnable tutorials own their integration in `example_usage` and their local
+`support/` helpers. Copy a complete tutorial folder; it does not need this directory.
 
-Desktop applications and the Python camera runtime remain separate native
-archives; prebuilt examples include their dependencies.
-
-These helpers support the examples; they are not recognition-library internals.
-Each has one responsibility and uses the installed public SDK.
-
-| File | Reusable entry point |
+| File/directory | Purpose |
 | --- | --- |
-| options.hpp | `Options(argc, argv)`: explicit synthetic/runtime selection |
-| runtime.hpp | `find_runtime()`: bundled or checkout runtime with platform library and models |
-| source.hpp | `Source::sample()`: camera/model ownership and copied observations |
-| synthetic.hpp | `synthetic_frame()`: deterministic default-profile body/hand fixture |
-| drawing.hpp | `draw(source, line, dot)`: renderer-independent overlay traversal |
-| profile.hpp | Atomic profile replacement, file picker and portable font assets |
+| `raised-hands.json` | Canonical two-wrist profile used to prepare camera/browser assets. |
+| `synthetic.hpp` | Deterministic body/hand fixture for repository tests. |
+| `sdk.cmake` | Full-repository examples build: installed SDK or checkout fallback. |
+| `DejaVuSans.ttf`, `DejaVuSans-LICENSE` | Redistributable font and its license. |
+| `licenses/` | FreeType, HarfBuzz and zlib notices for SDL2_ttf components. |
 
-Python profile imports are queued to the camera owner thread. Failed validation
-preserves the running profile; successful import restarts capture/calibration.
-Demo and profile variants share recognition and rendering instead of duplicating
-camera loops. SDL2/SFML HUDs cache their text until the accepted actions change.
+The font/notices come from the official SDL2_ttf 2.24.0 dependencies. The source
+archive SHA256 is `0b2bf1e7b6568adbdbc9bb924643f79d9dedafe061fa1ed687d1d9ac4e453bfd`.
+Local tutorial profiles/support assets are included explicitly so they survive
+copying outside this repository. Update the matching tutorial files when changing
+canonical fixtures/assets; the example and extracted-package tests check behavior.
 
-`licenses/` contains the FreeType, HarfBuzz and zlib notices from the official
-SDL2_ttf 2.24.0 source archive's VisualC/external/lib/x64 folder (SHA256
-`0b2bf1e7b6568adbdbc9bb924643f79d9dedafe061fa1ed687d1d9ac4e453bfd`).
-DejaVuSans.ttf is redistributable under the adjacent DejaVuSans-LICENSE.
-
-Copy or adapt only the helpers you need. Real-time games may replace synchronous
-C++ capture with a worker, as the Python GUIs demonstrate. Keep engine recognition
-in MIG, display mirroring in rendering, and camera ownership in one thread.
-
-[Complete source walkthrough](../../docs/getting-started/examples.md) · [Bootstrap](../../docs/getting-started/bootstrap.md).
+[Tutorial index](../README.md) · [Source walkthrough](../../docs/getting-started/examples.md).

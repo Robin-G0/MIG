@@ -27,13 +27,13 @@ sans caméra ; aucun fournisseur caméra n’est inclus.
 | Fichier/dossier | Rôle |
 | --- | --- |
 | `MigExample.uplugin` | Descripteur du plugin. |
-| `Source/MigExample/Public/MigInputComponent.h` | Provider packet API, Blueprint OnMotion and synthetic toggle. |
-| `Source/MigExample/Private/MigInputComponent.cpp` | Direct C ABI integration and component lifecycle. |
-| `Source/MigExample/Public/MigRaisedHandsComponent.h / MigProfileInputComponent.h` | Initial mode selection. |
-| `Source/MigExample/Private/MigExamplePanel.cpp` | UMG feedback, file path and import button. |
-| `Source/MigExample/MigExample.Build.cs` | Links/stages native library and loose JSON. |
-| `Content/raised-hands.json` | Two-wrist profile, staged NonUFS. |
-| `ThirdParty/` | Release: C ABI headers and platform native/import libraries. |
+| `Source/MigExample/Public/MigInputComponent.h` | API des paquets, événement Blueprint OnMotion et mode synthétique. |
+| `Source/MigExample/Private/MigInputComponent.cpp` | Intégration directe de l’ABI C et cycle de vie. |
+| `Source/MigExample/Public/MigRaisedHandsComponent.h / MigProfileInputComponent.h` | Sélection du mode initial. |
+| `Source/MigExample/Private/MigExamplePanel.cpp` | Retour UMG, chemin du fichier et bouton d’import. |
+| `Source/MigExample/MigExample.Build.cs` | Liaison et placement de la bibliothèque native et du JSON libre. |
+| `Content/raised-hands.json` | Profil des deux poignets, fourni en NonUFS. |
+| `ThirdParty/` | Archive : en-têtes ABI C et bibliothèques de la plateforme. |
 | `licenses/`, `LICENSE`, `manifest.json` | Notices et sommes de contrôle de l’archive. |
 
 ## Parcours du code

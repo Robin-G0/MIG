@@ -27,7 +27,7 @@ depends on hardware. The combined archive offers the same launchers in its examp
 | `run.cmd`, `run.sh` | Packaged launch command and resource arguments relative to this folder. |
 | `sdk/` | Individual package: headers and development libraries. |
 | `licenses/`, `LICENSE` | Redistribution notices. |
-| `configs/default.json` | Individual archive: one authored `left_raise` path. |
+| `configuration/default.json` | Individual archive: one authored `left_raise` path. |
 
 ## Code walkthrough
 
@@ -53,13 +53,13 @@ this folder and use an installed SDK or the individually bundled `sdk/`:
 ```sh
 cmake -S . -B build -DCMAKE_PREFIX_PATH=/path/to/MIG/sdk
 cmake --build build --config Release
-build/mig-sdk-example configs/default.json
+build/mig-sdk-example configuration/default.json
 ```
 
 Visual Studio puts the binary under `build/Release/` and appends `.exe`.
 Source-only folders require an installed SDK and your configuration file.
-For source-only positions setup, obtain `default.json` from the configuration
-release or create a profile in the configurator. Compilation exceeds the prebuilt trial time.
+The local `configuration/default.json` is included in source folders too.
+Replace it with your own configurator profile. Compilation exceeds the prebuilt trial time.
 
 ## Reuse and troubleshooting
 
@@ -68,7 +68,7 @@ The synthetic walker only illustrates a simple authored path; it does not simula
 Use fresh unmirrored observations with valid aspect, monotonic timestamps and
 increasing sequence. Keep one owning thread and the demonstrated scope lifetime.
 
-- Missing JSON: pass an existing profile; the launcher uses the bundled `configs/default.json`.
+- Missing JSON: pass an existing profile; the launcher uses the bundled `configuration/default.json`.
 - SDK not found: set `CMAKE_PREFIX_PATH` or retain bundled `sdk/`.
 - Wrong architecture: use the SDK and native files matching the executable.
 

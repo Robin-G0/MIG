@@ -14,7 +14,9 @@ except ModuleNotFoundError as error:
         raise
     bindings = Path(__file__).resolve().parent / "bindings" / "python"
     if not bindings.is_dir():
-        bindings = Path(__file__).resolve().parents[2] / "bindings/python"
+        repository = Path(__file__).resolve().parent.parent.parent
+        if (repository / "src/core/CMakeLists.txt").is_file():
+            bindings = repository / "bindings/python"
     if not (bindings / "mig" / "__init__.py").is_file():
         raise
     sys.path.insert(0, str(bindings))
