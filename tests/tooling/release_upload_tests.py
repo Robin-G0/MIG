@@ -2,6 +2,7 @@
 import importlib.util
 import io
 import json
+import re
 from pathlib import Path
 import sys
 import tarfile
@@ -145,10 +146,14 @@ class ReleaseUploadTests(unittest.TestCase):
         with patch.object(upload, "verify_remote_run"), patch.object(upload, "gh") as commands:
             with patch.object(upload, "remote_release", side_effect=[None, release]):
                 upload.upload_release("v1.0.1", files)
-            self.assertEqual(commands.call_count, 5)
+            self.assertEqual(commands.call_count, 6)
             self.assertIn("--draft", commands.call_args_list[0].args)
             self.assertIn("--verify-tag", commands.call_args_list[0].args)
+            self.assertEqual(commands.call_args_list[-1].args[:2], ("release", "edit"))
+            self.assertIn("--notes-file", commands.call_args_list[-1].args)
             commands.reset_mock()
+            release["body"] = upload.merge_download_notes(None, "v1.0.1",
+                [asset["name"] for asset in release["assets"]])
             with patch.object(upload, "remote_release", return_value=release):
                 upload.upload_release("v1.0.1", files)
             commands.assert_not_called()
@@ -158,6 +163,44 @@ class ReleaseUploadTests(unittest.TestCase):
                     upload.upload_release("v1.0.1", files)
             commands.assert_not_called()
 
+    def test_download_categories_cover_assets_and_preserve_release_notes(self):
+        names = [
+            'motion-input-grid-1.0.2-windows-x64-native.zip',
+            'motion-input-grid-1.0.2-linux-x64-examples.tar.gz',
+            'motion-input-grid-1.0.2-windows-x64-python-tkinter-standalone.zip',
+            'motion-input-grid-1.0.2-linux-x64-sdl2-standalone.tar.gz',
+            'motion-input-grid-1.0.2-browser-react-standalone.tar.gz',
+            'motion-input-grid-1.0.2-javascript-examples.tar.gz',
+            'motion-input-grid-1.0.2-windows-x64-godot-csharp-standalone.zip',
+            'motion-input-grid-1.0.2-linux-arm64-sdk.tar.gz',
+            'motion_input_grid-1.0.2-py3-none-win_amd64.whl',
+            'motion-input-grid-1.0.2.tgz', 'motion-input-grid_1.0.2_amd64.deb',
+            'motion-input-grid-1.0.2-source.tar.gz', 'SHA256SUMS', 'release-manifest.json',
+        ]
+        original = '## Highlights\n\nA user-written explanation.\n'
+        body = upload.merge_download_notes(original, 'v1.0.2', names)
+        self.assertIn(original, body)
+        for heading in ('Desktop applications', 'Native examples', 'Python Tkinter examples',
+                        'SDL2 examples', 'Browser examples', 'Game engines',
+                        'SDKs and language packages', 'Source and integrity files'):
+            self.assertIn(f'# {heading}\n', body)
+        for guide in ('readme.md', 'docs/fr/readme.fr.md'):
+            for fragment in re.findall(r'releases/latest#([a-z0-9-]+)',
+                                       (ROOT / guide).read_text(encoding='utf-8')):
+                self.assertTrue(fragment.startswith('user-content-'), fragment)
+                anchor = fragment.removeprefix('user-content-')
+                self.assertIn(f'<a name="{anchor}"></a>', body)
+        for name in names:
+            self.assertIn(f'/releases/download/v1.0.2/{name})', body)
+        self.assertEqual(body, upload.merge_download_notes(body, 'v1.0.2', names))
+        changed = upload.merge_download_notes(body, 'v1.0.2', names[1:])
+        self.assertNotIn(names[0], changed)
+        self.assertIn(original, changed)
+        # Older releases link to the published collection when individual
+        # tutorials do not exist; never invent an unavailable download.
+        legacy = upload.merge_download_notes(None, 'v1.0.2', [names[1]])
+        self.assertIn('examples/python-tkinter/', legacy)
+        self.assertNotIn('python-tkinter-standalone.zip', legacy)
     def test_existing_asset_fallback_and_immutable_release(self):
         files = fixture(self.root)
         asset = {"name": files[0].name, "size": files[0].stat().st_size}

@@ -14,19 +14,19 @@ Use a raised hand to advance a presentation, a movement to control a game, or a
 hand sign to run a shortcut. You choose the movements and their bindings.
 The grid follows shoulder spacing, so it scales as you move toward the camera.
 
-[**Download**](https://github.com/Robin-G0/MIG/releases) ·
+[**Download**](https://github.com/Robin-G0/MIG/releases/latest#user-content-downloads) ·
 [**Documentation**](docs/index.md) · [**Examples**](examples/README.md)
 
 ## Try MIG now
 
-Download and extract the complete examples archive, then open the indicated viewer folder. Setup estimates
+Choose an archive from the linked category, extract it completely and follow its README to find the launch folder. Setup estimates
 assume the platform prerequisites are installed; first model loading depends on hardware.
 
 | Example | Setup after extraction | Platform / requirements | Try me |
 | --- | --- | --- | --- |
-| [Browser](examples/web/README.md) | About 30–60 seconds | Modern browser; bundled Node and local assets | [Download latest](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-javascript-examples.tar.gz). In `examples/web`, run `run.cmd` / `sh run.sh`, open localhost, grant camera permission, raise a hand |
-| [Python/Tk](examples/python-tkinter/README.md) | About 30–60 seconds | Windows x64 VC++ runtime; Linux x64 glibc 2.35+ | Download latest: [Windows](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-windows-x64-examples.zip) · [Linux](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-linux-x64-examples.tar.gz). In `examples/python-tkinter`, run frozen `main.exe` / `./main`; Python is bundled |
-| [SDL2](examples/sdl2/README.md) | About 30–60 seconds | Same native prerequisites | Download latest: [Windows](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-windows-x64-examples.zip) · [Linux](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-linux-x64-examples.tar.gz). In `examples/sdl2`, run `mig-sdl2.exe` / `./mig-sdl2`; raise a wrist from green into yellow |
+| [Browser](examples/web/README.md) | About 30–60 seconds | Modern browser; Node 22.12+ for individual archives; local assets included | [Download latest](https://github.com/Robin-G0/MIG/releases/latest#user-content-browser-examples). Run `run.cmd` / `sh run.sh`, open localhost, grant camera permission, raise a hand |
+| [Python/Tk](examples/python-tkinter/README.md) | About 30–60 seconds | Windows x64 VC++ runtime; Linux x64 glibc 2.35+ | [Download latest](https://github.com/Robin-G0/MIG/releases/latest#user-content-python-tkinter-examples). Run frozen `main.exe` / `./main`; Python is bundled |
+| [SDL2](examples/sdl2/README.md) | About 30–60 seconds | Same native prerequisites | [Download latest](https://github.com/Robin-G0/MIG/releases/latest#user-content-sdl2-examples). Run `mig-sdl2.exe` / `./mig-sdl2`; raise a wrist from green into yellow |
 
 Built viewers are the quickest trial. Source builds require a toolchain and dependencies.
 [Godot](examples/godot/README.md), [Unity](examples/unity/README.md) and
@@ -41,7 +41,7 @@ and host-provided tracking. Their initial setup exceeds one minute.
 
 No code is needed to create and run a movement profile.
 
-1. Download the **`*-native` archive** for Windows x64 or Linux x64 and extract it completely.
+1. Download the [**`*-native` archive**](https://github.com/Robin-G0/MIG/releases/latest#user-content-desktop-applications) for Windows x64 or Linux x64 and extract it completely.
 2. Open the [**configurator**](docs/guides/configurator.md), start the camera,
    draw your movement and save its profile.
 3. Open the [**controller**](docs/guides/controller.md), import that profile and

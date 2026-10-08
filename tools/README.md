@@ -85,3 +85,15 @@ hashes detect corruption but do not establish publisher identity.
 The [tests guide](../tests/README.md) explains CTest, binding tests and extracted
 tutorial checks. The [support matrix](../docs/reference/support.md) distinguishes
 automated validation from camera, editor and export support.
+
+To prepare a categorized download page from an existing release inventory, use
+[release-notes.py](release/release-notes.py):
+
+```sh
+python tools/release/release-notes.py build/releases/release-manifest.json --output build/release-notes.md
+```
+
+The page groups desktop applications, tutorials, engine integrations, SDKs and
+source/integrity files by platform. [upload-release.py](release/upload-release.py)
+adds these tables to the release description while preserving its existing notes.
+The main README links to those categories in the latest release.

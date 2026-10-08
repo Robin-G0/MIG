@@ -14,6 +14,7 @@ import tempfile
 import zipfile
 
 from release_metadata import ROOT, PROJECT_NAME, PACKAGE_NAME, REPOSITORY, file_hash, release_version
+from release_notes import merge_download_notes
 
 REPO = "Robin-G0/MIG"
 EXTENSIONS = (".zip", ".tar.gz", ".tgz", ".whl", ".deb")
@@ -182,6 +183,13 @@ def upload_release(tag, files):
     release = remote_release(tag)
     if release is None or missing_assets(tag, files, release):
         raise ValueError("Release upload is incomplete; rerun the same command to resume")
+    body = merge_download_notes(release.get("body"), tag,
+                                [asset["name"] for asset in release["assets"]])
+    if body != (release.get("body") or ""):
+        with tempfile.TemporaryDirectory(prefix="mig-release-notes-") as temporary:
+            notes = Path(temporary) / "notes.md"
+            notes.write_text(body, encoding="utf-8")
+            gh("release", "edit", tag, "--repo", REPO, "--notes-file", str(notes))
     print(f"Release assets verified: {release['html_url']}")
     if release["draft"]:
         print("The release is a draft. Review its notes and publish it on GitHub when ready.")

@@ -8,14 +8,14 @@
 
 ## Essayer MIG maintenant
 
-Téléchargez et extrayez l'archive complète des exemples, puis ouvrez le dossier indiqué.
+Choisissez une archive dans la catégorie indiquée, extrayez-la entièrement et suivez son README pour trouver le dossier de lancement.
 Les durées supposent les prérequis installés ; le chargement initial des modèles dépend du matériel.
 
 | Exemple | Préparation après extraction | Plateforme / prérequis | Essayez-moi |
 | --- | --- | --- | --- |
-| [Navigateur](../../examples/web/README.fr.md) | Environ 30–60 secondes | Navigateur moderne ; Node et assets locaux fournis | [Télécharger la dernière version](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-javascript-examples.tar.gz). Dans `examples/web`, lancez `run.cmd` / `sh run.sh`, ouvrez localhost, autorisez la caméra et levez une main |
-| [Python/Tk](../../examples/python-tkinter/README.fr.md) | Environ 30–60 secondes | Windows x64 : runtime VC++ ; Linux x64 : glibc 2.35+ | Dernière version : [Windows](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-windows-x64-examples.zip) · [Linux](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-linux-x64-examples.tar.gz). Dans `examples/python-tkinter`, lancez `main.exe` / `./main` ; Python est fourni |
-| [SDL2](../../examples/sdl2/README.fr.md) | Environ 30–60 secondes | Mêmes prérequis natifs | Dernière version : [Windows](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-windows-x64-examples.zip) · [Linux](https://github.com/Robin-G0/MIG/releases/latest/download/motion-input-grid-1.0.1-linux-x64-examples.tar.gz). Dans `examples/sdl2`, lancez `mig-sdl2.exe` / `./mig-sdl2` ; levez un poignet du vert vers le jaune |
+| [Navigateur](../../examples/web/README.fr.md) | Environ 30–60 secondes | Navigateur moderne ; Node 22.12+ pour les archives individuelles ; assets locaux inclus | [Télécharger la dernière version](https://github.com/Robin-G0/MIG/releases/latest#user-content-browser-examples). Lancez `run.cmd` / `sh run.sh`, ouvrez localhost, autorisez la caméra et levez une main |
+| [Python/Tk](../../examples/python-tkinter/README.fr.md) | Environ 30–60 secondes | Windows x64 : runtime VC++ ; Linux x64 : glibc 2.35+ | [Télécharger la dernière version](https://github.com/Robin-G0/MIG/releases/latest#user-content-python-tkinter-examples). Lancez `main.exe` / `./main` ; Python est fourni |
+| [SDL2](../../examples/sdl2/README.fr.md) | Environ 30–60 secondes | Mêmes prérequis natifs | [Télécharger la dernière version](https://github.com/Robin-G0/MIG/releases/latest#user-content-sdl2-examples). Lancez `mig-sdl2.exe` / `./mig-sdl2` ; levez un poignet du vert vers le jaune |
 
 Les intégrations Godot, Unity et Unreal restent en preview : éditeur et fournisseur
 de pose sont nécessaires, avec une préparation initiale supérieure à une minute.
@@ -30,7 +30,7 @@ ou associez un signe de main à un raccourci. Vous choisissez les mouvements et
 leurs commandes. La grille suit l'écartement des épaules et s'adapte donc à
 votre distance par rapport à la caméra.
 
-[**Télécharger**](https://github.com/Robin-G0/MIG/releases) ·
+[**Télécharger**](https://github.com/Robin-G0/MIG/releases/latest#user-content-downloads) ·
 [**Documentation**](../index.fr.md) · [**Exemples**](../../examples/README.fr.md)
 
 ## Utiliser MIG sur votre ordinateur
@@ -42,7 +42,7 @@ votre distance par rapport à la caméra.
 
 Aucun code n'est nécessaire pour créer et utiliser un profil de mouvements.
 
-1. Téléchargez l'**archive `*-native`** pour Windows x64 ou Linux x64 et extrayez-la entièrement.
+1. Téléchargez l'[**archive `*-native`**](https://github.com/Robin-G0/MIG/releases/latest#user-content-desktop-applications) pour Windows x64 ou Linux x64 et extrayez-la entièrement.
 2. Ouvrez le [**configurateur**](../guides/configurator.fr.md), démarrez la caméra,
    dessinez votre mouvement et enregistrez son profil.
 3. Ouvrez le [**contrôleur**](../guides/controller.fr.md), importez ce profil et

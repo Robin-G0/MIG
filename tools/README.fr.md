@@ -84,3 +84,16 @@ mais ne prouve pas l'identité de l'éditeur.
 Le [guide des tests](../tests/README.fr.md) décrit CTest, bindings et archives extraites.
 La [matrice de support](../docs/reference/support.fr.md) distingue validation automatique,
 compatibilité caméra et support des éditeurs/exports.
+
+Pour préparer une page de téléchargements classés à partir d'un inventaire existant,
+utilisez [release-notes.py](release/release-notes.py) :
+
+```sh
+python tools/release/release-notes.py build/releases/release-manifest.json --output build/release-notes.md
+```
+
+La page regroupe applications, tutoriels, intégrations des moteurs, SDK et
+sources/fichiers de vérification, avec les plateformes correspondantes.
+[upload-release.py](release/upload-release.py) ajoute ces tableaux à la description
+de la release en préservant ses notes existantes. Le README principal pointe vers
+ces catégories dans la dernière release.
