@@ -14,18 +14,22 @@ def verify(archive, executable):
     with tempfile.TemporaryDirectory(prefix="godot-artifact-") as temporary:
         folder = Path(temporary)
         project = folder / "project"
-        shutil.copytree(ROOT / "examples/godot/gdscript", project,
-                        ignore=shutil.ignore_patterns("native", ".godot", "bin"))
         with zipfile.ZipFile(archive) as package:
-            package.extractall(project)
-        (project / ".godot").mkdir()
+            if '-standalone.' in archive.name:
+                package.extractall(folder)
+                project = next(path for path in folder.iterdir() if path.is_dir())
+            else:
+                shutil.copytree(ROOT / "examples/godot/gdscript", project,
+                                ignore=shutil.ignore_patterns("native", ".godot", "bin"))
+                package.extractall(project)
+        (project / ".godot").mkdir(exist_ok=True)
         (project / ".godot/extension_list.cfg").write_text("res://addons/mig/mig.gdextension\n")
         environment = os.environ.copy()
         environment["APPDATA"] = str(folder / "userdata/roaming")
         environment["LOCALAPPDATA"] = str(folder / "userdata/local")
         for arguments in (("--editor", "--import"), ("--script", "res://tests/regression.gd")):
             result = subprocess.run([str(executable.resolve()), "--headless", "--path", str(project), *arguments],
-                                    env=environment, text=True, capture_output=True, timeout=90)
+                                    cwd=folder, env=environment, text=True, capture_output=True, timeout=90)
             print(result.stdout)
             assert result.returncode == 0, result.stderr
             assert "SCRIPT ERROR" not in result.stderr, result.stderr

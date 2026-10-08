@@ -62,3 +62,9 @@ complete build order and platform-specific invocations.
 The Godot regression scene stays in `examples/godot/gdscript/tests/`: it belongs
 to the demo project used to validate the extracted add-on and is run by
 `packaging/godot_package_tests.py`.
+
+The extracted tutorial checks are `packaging/standalone_example_tests.py`
+(native Windows/Linux), `packaging/standalone_browser_tests.py` (four browser
+archives with Playwright), and `packaging/godot_package_tests.py` (addon or
+standalone project). Native integration checks accept standalone Unity/Unreal
+archives as well. Release CI runs these after packaging.

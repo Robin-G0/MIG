@@ -62,3 +62,9 @@ décrivent l'ordre complet de compilation et les commandes de chaque plateforme.
 La scène de régression Godot reste dans `examples/godot/gdscript/tests/` : elle accompagne
 le projet d'exemple utilisé pour valider l'add-on extrait et est exécutée par
 `packaging/godot_package_tests.py`.
+
+Les tests d’archives tutoriels sont `packaging/standalone_example_tests.py`
+(Windows/Linux natif), `packaging/standalone_browser_tests.py` (navigateur avec
+Playwright) et `packaging/godot_package_tests.py` (addon ou projet autonome).
+Les tests d’intégration acceptent aussi Unity/Unreal autonomes. La CI release
+les exécute après packaging.

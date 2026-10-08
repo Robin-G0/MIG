@@ -33,7 +33,8 @@ def verify(archive):
             project = folder / "managed"
             project.mkdir()
             shutil.copy2(ROOT / "tests/bindings/dotnet/Program.cs", project / "Program.cs")
-            shutil.copy2(ROOT / "bindings/dotnet/SyntheticFrames.cs", project / "SyntheticFrames.cs")
+            synthetic = next(folder.rglob('SyntheticFrames.cs')) if '-standalone.' in archive.name else ROOT / "bindings/dotnet/SyntheticFrames.cs"
+            shutil.copy2(synthetic, project / "SyntheticFrames.cs")
             bridge = next(folder.rglob("MigTracker.cs"))
             shutil.copy2(bridge, project / "MigTracker.cs")
             (project / "test.csproj").write_text(

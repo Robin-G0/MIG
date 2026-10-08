@@ -1,5 +1,7 @@
 """Verify shared frozen dependencies and example SDK staging."""
 import importlib.util
+import json
+import shutil
 from pathlib import Path
 import sys
 import tempfile
@@ -55,4 +57,49 @@ with tempfile.TemporaryDirectory(dir=ROOT / 'build', prefix='example-package-tes
     assert (staged / 'bin/mig-c.dll').read_bytes() == b'abi'
     assert not (staged / 'bin/mig-controller.exe').exists()
     assert not (staged / 'bin/models').exists()
+    single = load('single_tutorial', 'package-single-example.py')
+    examples = root / 'prepared'
+    (examples / 'examples').mkdir(parents=True)
+    (examples / 'licenses').mkdir()
+    (examples / 'runtime/models').mkdir(parents=True)
+    (examples / 'runtime/libmediapipe.dll').write_bytes(b'native')
+    for name in ('pose_landmarker_full.task', 'pose_landmarker_lite.task', 'hand_landmarker.task'):
+        (examples / 'runtime/models' / name).write_bytes(b'model')
+    (examples / 'bindings/python/mig').mkdir(parents=True)
+    (examples / 'bindings/python/mig/__init__.py').write_text('# binding')
+    (examples / 'LICENSE').write_text('license')
+    shutil.copytree(ROOT / 'examples/python-tkinter', examples / 'examples/python-tkinter')
+    isolated = root / 'isolated'
+    single.assemble(examples, isolated, 'python-tkinter', 'windows-x64')
+    assert (isolated / 'example_usage.py').is_file()
+    assert (isolated / 'configuration/raised-hands.json').is_file()
+    assert not (isolated / 'examples').exists()
+    assert not (isolated / 'runtime/models/pose_landmarker_full.task').exists()
+    assert (isolated / 'runtime/models/pose_landmarker_lite.task').is_file()
+    assert not (isolated / 'sdk').exists(), 'Python tutorial does not need C++ development libraries'
+    browser = load('browser_tutorial', 'package-browser-example.py')
+    (examples / 'licenses/javascript').mkdir()
+    (examples / 'licenses/javascript/react-LICENSE').write_text('license')
+    (examples / 'bindings/javascript').mkdir()
+    (examples / 'bindings/javascript/package.json').write_text('{"name":"motion-input-grid"}')
+    (examples / 'examples/web/licenses').mkdir(parents=True)
+    (examples / 'examples/web/licenses/MediaPipe-LICENSE').write_text('license')
+    (examples / 'examples/web/README.md').write_text('# Browser\n')
+    (examples / 'examples/web/README.fr.md').write_text('# Navigateur\n')
+    small_browser = root / 'browser'
+    browser.assemble(examples, small_browser, 'web')
+    assert (small_browser / 'licenses/MediaPipe-LICENSE').is_file()
+    assert (small_browser / 'licenses/javascript/react-LICENSE').is_file()
+    package = json.loads((small_browser / 'package.json').read_text())
+    assert (small_browser / package['dependencies']['motion-input-grid'].removeprefix('file:')).is_dir()
+    assert '../../' not in (small_browser / 'run.sh').read_text()
+    (examples / 'examples/next/out/mig').mkdir(parents=True)
+    (examples / 'examples/next/out/index.html').write_text('compiled')
+    (examples / 'examples/next/out/mig/mig.wasm').write_bytes(b'wasm')
+    (examples / 'examples/next/package.json').write_text(
+        '{"dependencies":{"motion-input-grid":"1.0.2"}}')
+    next_browser = root / 'next-browser'
+    browser.assemble(examples, next_browser, 'next')
+    assert (next_browser / 'out/index.html').read_text() == 'compiled'
+    assert (next_browser / 'out/mig/mig.wasm').read_bytes() == b'wasm'
 print('Shared-runtime conflicts, deterministic libraries and example SDK staging passed')

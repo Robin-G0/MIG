@@ -90,6 +90,7 @@ def verify_pygame_quit():
     import pygame
     spec = importlib.util.spec_from_file_location("pygame_example", ROOT / "examples/pygame/application.py")
     sys.path.insert(0, str(ROOT / "examples/pygame"))
+    sys.path.insert(0, str(ROOT / "examples/pygame/support"))
     viewer = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(viewer)
     order = []

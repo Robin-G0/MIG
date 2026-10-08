@@ -1,4 +1,4 @@
-#include "../../examples/common/runtime.hpp"
+#include "../../examples/sdl2/support/runtime.hpp"
 #include <chrono>
 #include <fstream>
 
@@ -44,5 +44,10 @@ int main(int argc, char** argv) {
         return 5;
     }
     create_runtime(executable, library);
-    return demo::find_runtime(executable, root) == executable ? 0 : 6;
+    if (demo::find_runtime(executable, root) != executable) {
+        return 6;
+    }
+    const auto individual = executable / "runtime";
+    create_runtime(individual, library);
+    return demo::find_runtime(executable, root) == individual ? 0 : 7;
 }
