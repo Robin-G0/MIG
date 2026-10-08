@@ -38,7 +38,7 @@ compilent et testent. Archive : sources à côté des binaires et SDK sous sdk/.
 demo::Source possède capture/inférence, demo::consume traite les événements,
 draw_frame reflète caméra et overlays. Textures/buffers sont réutilisés.
 La capture C++ synchrone simplifie cet exemple ; un worker permet un dessin
-indépendant dans un jeu. [Lancement](../standalone.fr.md),
+indépendant dans un jeu. [Lancement](../README.fr.md),
 [code complet](../../docs/getting-started/examples.fr.md), [démarrage](../../docs/getting-started/bootstrap.fr.md).
 
 ## Structure et intégration MIG

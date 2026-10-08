@@ -12,7 +12,7 @@ engine in your own project. Choose a starting point below.
 | --- | --- |
 | Draw a movement and assign a shortcut | [Configurator](guides/configurator.md) |
 | Run my profile while using another application | [Controller](guides/controller.md) |
-| Try a camera demo without setting up a profile | [Standalone examples](../examples/standalone.md) |
+| Try a camera demo without setting up a profile | [Standalone examples](../examples/README.md) |
 | Add a hand sign or finger condition | [Hand tracking](guides/hands.md) |
 
 Download a **`*-native`** archive for the applications or a **`*-examples`** archive

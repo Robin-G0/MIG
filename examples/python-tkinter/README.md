@@ -34,7 +34,7 @@ and show all accepted actions on screen. The importer has an **Import profile** 
 Invalid profiles keep the previous configuration running; successful imports recalibrate.
 
 Install Python 3.10+, Tk and Pillow. On Ubuntu, install `python3-tk` and
-`python3-pil.imagetk`. See [standalone setup](../standalone.md) for runtime discovery.
+`python3-pil.imagetk`. See [standalone setup](../README.md) for runtime discovery.
 Installed `mig` is preferred, with the complete repository as fallback.
 The inference worker owns the camera and tracker, including imports and teardown.
 Closing the window joins the worker before destroying UI resources.

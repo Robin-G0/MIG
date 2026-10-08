@@ -39,7 +39,7 @@ et python3-pil.imagetk. Les imports préfèrent mig installé puis le dépôt co
 Dans l'archive, lancez main.exe/profile.exe sous Windows ou ./main et ./profile
 sous Linux. Python/Tk/Pillow sont fournis ; aucune installation Python n'est
 nécessaire. Le worker possède caméra/tracker, imports et destruction. Fermer
-rejoint le worker avant Tk. [Prérequis et découverte](../standalone.fr.md),
+rejoint le worker avant Tk. [Prérequis et découverte](../README.fr.md),
 [code complet expliqué](../../docs/getting-started/examples.fr.md), [démarrage](../../docs/getting-started/bootstrap.fr.md).
 
 ## Structure et intégration MIG

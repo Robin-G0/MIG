@@ -42,7 +42,7 @@ The hidden `--smoke` option uses generated frames without opening a camera.
 `draw_frame` mirrors the camera and coordinate overlays, including wrist props.
 The camera texture and pixel buffers are reused between frames. The simple C++
 demo captures synchronously; move Source ownership to a worker for independent
-rendering latency in your game. See [standalone instructions](../standalone.md).
+rendering latency in your game. See [standalone instructions](../README.md).
 
 [Complete source walkthrough](../../docs/getting-started/examples.md) · [Bootstrap](../../docs/getting-started/bootstrap.md).
 

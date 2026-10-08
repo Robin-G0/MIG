@@ -12,7 +12,7 @@ for platform requirements and integration maturity.
 - `*-native` archives contain the configurator, controller, camera runtime and models.
   Follow the [configurator](../guides/configurator.md) or [controller](../guides/controller.md) guide.
 - `*-examples` archives contain runnable demos and their sources. Follow the
-  [standalone examples guide](../../examples/standalone.md).
+  [standalone examples guide](../../examples/README.md).
 - `*-standalone` archives contain one native example and its required dependencies.
   Start with the README at the archive root; keep its sibling folders together.
 - JavaScript examples include local browser assets and Node launchers. Run

@@ -52,7 +52,7 @@ No code is needed to create and run a movement profile.
 | 🟪 Interaction | Make a hand sign here, optionally holding it. |
 
 > [!TIP]
-> Try the [standalone camera examples](examples/standalone.md) first if you just
+> Try the [standalone camera examples](examples/README.md) first if you just
 > want to see tracking work. Raise either hand and watch its feedback, without
 > sending any keys.
 

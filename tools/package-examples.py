@@ -26,14 +26,14 @@ def assemble_sources(root):
     copy_tree(PROJECT / "docs", root / "docs")
     shutil.copy2(PROJECT / "examples/README.md", root / "examples/README.md")
     shutil.copy2(PROJECT / "examples/README.fr.md", root / "examples/README.fr.md")
-    shutil.copy2(PROJECT / "examples/standalone.md", root / "examples/standalone.md")
-    shutil.copy2(PROJECT / "examples/standalone.fr.md", root / "examples/standalone.fr.md")
     shutil.copy2(PROJECT / "LICENSE", root / "LICENSE")
     for language in ("", ".fr"):
-        guide = (PROJECT / f"examples/standalone{language}.md").read_text(encoding="utf-8")
-        guide = guide.replace("(../docs/", "(docs/")
-        guide = guide.replace("(standalone.md)", "(README.md)")
-        guide = guide.replace("(standalone.fr.md)", "(README.fr.md)")
+        guide = (PROJECT / f"examples/README{language}.md").read_text(encoding="utf-8")
+        guide = guide.replace("(../", "(")
+        for name in ("common", "python-tkinter", "pygame", "sdl2", "sfml",
+                     "web", "react", "vue", "next", "godot", "unity", "unreal",
+                     "sdk-consumer", "native-consumer"):
+            guide = guide.replace(f"({name}/", f"(examples/{name}/")
         (root / f"README{language}.md").write_text(guide, encoding="utf-8")
     (root / "licenses").mkdir()
     shutil.copy2(PROJECT / "examples/common/DejaVuSans-LICENSE", root / "licenses/DejaVuSans-LICENSE")

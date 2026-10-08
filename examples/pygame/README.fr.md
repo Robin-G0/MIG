@@ -51,7 +51,7 @@ mig installé est préféré ; bindings/python est le repli dépôt. Modèles et
 sont trouvés dans le build/archive. InputSource publie une image RGB/paquet au
 dernier état et des événements bornés. announce consomme, wrists reflète pour
 dessiner. Remplacez ces retours/objets pour votre app. Les pixels viennent de
-Tracker.camera_image. [Instructions](../standalone.fr.md),
+Tracker.camera_image. [Instructions](../README.fr.md),
 [explication complète](../../docs/getting-started/examples.fr.md), [démarrage](../../docs/getting-started/bootstrap.fr.md).
 
 ## Structure et intégration MIG

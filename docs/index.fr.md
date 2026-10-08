@@ -12,7 +12,7 @@ ou intégrez le même moteur dans votre projet. Choisissez un point de départ.
 | --- | --- |
 | Dessiner un mouvement et lui attribuer un raccourci | [Configurateur](guides/configurator.fr.md) |
 | Utiliser mon profil avec une autre application | [Contrôleur](guides/controller.fr.md) |
-| Essayer une démo caméra sans créer de profil | [Exemples autonomes](../examples/standalone.fr.md) |
+| Essayer une démo caméra sans créer de profil | [Exemples autonomes](../examples/README.fr.md) |
 | Ajouter un signe de main ou une condition sur les doigts | [Suivi des mains](guides/hands.fr.md) |
 
 Téléchargez une archive **`*-native`** pour les applications ou **`*-examples`**

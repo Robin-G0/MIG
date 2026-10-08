@@ -29,7 +29,7 @@ archives natives séparées ; les exemples précompilés incluent leurs dépenda
 Téléchargez l'archive complète d'exemples de votre plateforme pour obtenir
 rapidement un retour caméra. Extrayez-la entièrement : `runtime`, `bindings`,
 `examples/common` et les licences sont partagés. Le code accompagne les binaires
-ou pages compilées. Les [instructions autonomes](../../examples/standalone.fr.md)
+ou pages compilées. Les [instructions autonomes](../../examples/README.fr.md)
 précisent les exigences du système.
 
 ## Configurer une action

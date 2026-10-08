@@ -7,26 +7,60 @@ importez votre propre profil. Les démos caméra affichent une image miroir, des
 objets suivant les poignets et un retour indiquant l'action acceptée. Elles
 transmettent des événements sans envoyer de touches clavier.
 
-## Essayer une démo
+## Lancer une démo
 
 > [!NOTE]
 > Sur Debian, le configurateur, le contrôleur et certains exemples natifs sont
 > encore en cours de développement et de test. Ils peuvent ne pas fonctionner
 > entièrement pour le moment.
 
-Téléchargez une archive **`*-examples`** depuis les
-[Releases](https://github.com/Robin-G0/MIG/releases), extrayez-la entièrement et
-suivez les [instructions de lancement](standalone.fr.md). Les archives natives
-x64 et navigateur incluent leurs runtimes et sources ; aucune compilation n'est nécessaire.
+Téléchargez l'archive **`*-examples`** correspondant à votre système depuis les
+[Releases](https://github.com/Robin-G0/MIG/releases) et extrayez-la entièrement.
+Les archives natives x64 et navigateur incluent les applications compilées, leurs
+sources et leurs dépendances ; aucune compilation n'est nécessaire.
 
-1. Lancez un viewer et autorisez la caméra.
-2. Gardez les deux épaules visibles pour le calibrage, puis baissez les mains.
+1. Lancez un viewer du tableau ci-dessous et autorisez la caméra.
+2. Gardez les deux épaules visibles une seconde pour le calibrage, puis baissez les mains.
 3. Levez un poignet à travers les lignes vertes jusqu'à la ligne jaune.
 4. Ouvrez la variante profil pour importer un JSON enregistré par le configurateur.
+
+Les objets et os des mains suivent les poignets. L'image est reflétée une fois ;
+les actions restent anatomiques.
 
 > [!TIP]
 > Conservez les dossiers extraits ensemble. Lancez un seul viewer caméra à la fois.
 > Baissez la main avant de refaire le mouvement.
+
+| Plateforme | Démo de levée | Import de profil |
+| --- | --- | --- |
+| Windows x64 Tk/Pygame | `examples/python-tkinter/main.exe`, `examples/pygame/main.exe` | `profile.exe` dans le même dossier |
+| Linux x64 Tk/Pygame | `./examples/python-tkinter/main`, `./examples/pygame/main` | `./profile` correspondant |
+| Windows x64 SDL2/SFML | `examples/sdl2/mig-sdl2.exe`, `examples/sfml/mig-sfml.exe` | Exécutable `-profile.exe` |
+| Linux x64 SDL2/SFML | `./examples/sdl2/mig-sdl2`, `./examples/sfml/mig-sfml` | Lanceur `-profile` |
+| Archive JavaScript | `run.cmd` Windows x64 ou `sh run.sh` Linux x64/ARM64 dans web/react/vue/next | `/profile.html` ou `/profile` pour Next |
+
+### Prérequis natifs
+
+Les exécutables natifs Windows nécessitent encore Microsoft Visual C++ 2022
+Redistributable : l'archive ne fonctionne donc pas forcément sur un Windows sans
+aucun prérequis. Linux x64 cible Ubuntu 22.04+, Debian 12+, Fedora/Arch récents,
+avec session X11/XWayland. glibc, pilotes et serveur graphique restent fournis par
+le système. Le SDK ARM64 accepte les positions fournies ; le runtime caméra
+épinglé n'existe pas sous Linux ARM64. Les binaires Windows ARM64 n'ont pas été compilés.
+
+### Lanceurs navigateur
+
+L'archive JavaScript inclut Node portable, pages compilées, sources, modèles,
+MediaPipe et WASM. Les lanceurs servent localhost:8820 ; ouvrez cette URL puis
+Start dans un navigateur moderne. Aucun npm install, Node installé ou CDN n'est
+nécessaire. Arrêtez le serveur avant un autre exemple. Les pages web simples
+doivent également être servies, jamais ouvertes via file://.
+
+### Importer un profil
+
+Les importeurs commencent vides. Import profile charge un JSON schéma 2 ;
+une erreur garde le profil actif. SDL2/Pygame acceptent aussi le dépôt de fichier.
+Les actions/IDs s'affichent sans injection clavier. Les os des doigts nécessitent Hands dans le profil.
 
 ## Choisir une intégration
 
@@ -43,6 +77,7 @@ Chaque intégration visuelle propose une démo de poignet levé et un importeur 
 profil initialement vide. Elles partagent [raised-hands.json](common/raised-hands.json)
 et le moteur C++. Les exemples de moteurs de jeu demandent leur éditeur et un
 fournisseur d'observations ; ce ne sont pas des exports caméra autonomes.
+Les consommateurs SDK sont des exemples console.
 Consultez la [matrice de support](../docs/reference/support.fr.md).
 
 ## Adapter le code
@@ -58,3 +93,25 @@ au retour d'action. Le [parcours du code](../docs/getting-started/examples.fr.md
 explique les modules et leur cycle de vie ; les [helpers communs](common/README.fr.md)
 couvrent la découverte du runtime, les coordonnées et le dessin. Commencez par
 remplacer le callback d'action par une commande de votre application.
+
+## Sources et runtimes
+
+Les exécutables Python figés incluent l'interpréteur, Tk/Pillow/Pygame et les
+ressources natives. Aucun Python installé ni pip n'est nécessaire. Les scripts
+restent à côté pour les modifier ; ils demandent Python 3.10+,
+`python -m pip install motion-input-grid pillow pygame` et Tk pour les sélecteurs. L'import installé
+`mig` est préféré, avec repli sur celui de l'archive.
+
+Les exemples du checkout trouvent aussi le runtime natif dans `build/release/bin`
+ou `build/debug/bin` après un build avec les presets CMake. La sélection automatique
+exige la bibliothèque MediaPipe de la plateforme et le modèle de pose ; les modèles
+seuls ne suffisent pas. Utilisez `MIG_RUNTIME` pour choisir un autre dossier runtime.
+
+### Remplacement du runtime et diagnostics
+
+`MIG_LIBRARY`/`MIG_RUNTIME` remplacent facultativement la découverte.
+`--smoke` utilise des points synthétiques sans caméra. La fermeture rejoint
+l'inférence avant le toolkit. MediaPipe peut écrire des avertissements de
+télémétrie ; seuls, ils ne prouvent pas un crash. Une exécution sans téléchargement
+ne garantit pas le silence de la télémétrie upstream. Les vérifications et
+exigences restantes figurent dans la [préparation](../docs/reference/support.fr.md).

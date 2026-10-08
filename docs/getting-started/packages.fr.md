@@ -13,7 +13,7 @@ précise les prérequis et la maturité des intégrations.
   caméra et les modèles. Consultez le [configurateur](../guides/configurator.fr.md)
   ou le [contrôleur](../guides/controller.fr.md).
 - Les archives `*-examples` contiennent les démos exécutables et leurs sources.
-  Consultez les [exemples autonomes](../../examples/standalone.fr.md).
+  Consultez les [exemples autonomes](../../examples/README.fr.md).
 - Les archives `*-standalone` contiennent un exemple natif et ses dépendances.
   Suivez le README à la racine et conservez les dossiers voisins.
 - Les exemples JavaScript incluent les assets navigateur et les lanceurs Node.

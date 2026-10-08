@@ -29,7 +29,7 @@ archives; prebuilt examples include their dependencies.
 Choose a complete examples archive for your platform when you want immediate
 camera feedback. Extract the whole archive; its shared `runtime`, `bindings`,
 `examples/common` and license folders are required. Source files sit beside
-executables or compiled pages. [Standalone instructions](../../examples/standalone.md)
+executables or compiled pages. [Standalone instructions](../../examples/README.md)
 list runtime and operating-system requirements.
 
 ## Configure one action

@@ -47,7 +47,7 @@ feedback warnings are upstream diagnostics, not a Python traceback.
 
 Installed `mig` is preferred; `bindings/python` is the checkout fallback.
 Native runtime, models and DLL/SO are detected from the built checkout or archive.
-See [standalone instructions](../standalone.md) for dependencies, custom SDK
+See [standalone instructions](../README.md) for dependencies, custom SDK
 selection, package contents and the camera-free smoke check.
 
 `python_source.InputSource` owns tracking on a worker and publishes one latest

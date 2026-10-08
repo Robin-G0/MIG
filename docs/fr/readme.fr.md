@@ -51,7 +51,7 @@ Aucun code n'est nécessaire pour créer et utiliser un profil de mouvements.
 
 > [!TIP]
 > Pour découvrir le suivi sans envoyer de touches, commencez par les
-> [exemples caméra autonomes](../../examples/standalone.fr.md).
+> [exemples caméra autonomes](../../examples/README.fr.md).
 > Levez une main et observez le retour visuel.
 
 Les archives de bureau incluent le runtime caméra et les modèles. Conservez
