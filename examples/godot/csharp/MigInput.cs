@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Godot;
 using MotionInputGrid;
 
@@ -19,12 +20,35 @@ public partial class MigInput : Node3D
     protected virtual bool RaisedHands => false;
     private Label status;
     private bool actionInFrame;
+    private static bool libraryResolverInstalled;
+
+    private static void InitializeNativeLibrary()
+    {
+        if (libraryResolverInstalled)
+        {
+            return;
+        }
+        // Godot executes assemblies from .godot/, not beside project.godot.
+        // Resolve the loose ABI library from project resources instead of cwd.
+        NativeLibrary.SetDllImportResolver(typeof(MigTracker).Assembly, (name, assembly, searchPath) =>
+        {
+            if (name != "mig-c")
+            {
+                return IntPtr.Zero;
+            }
+            string filename = OperatingSystem.IsWindows() ? "mig-c.dll" : "libmig-c.so";
+            string path = ProjectSettings.GlobalizePath("res://" + filename);
+            return NativeLibrary.Load(path);
+        });
+        libraryResolverInstalled = true;
+    }
 
     public override void _Ready()
     {
         CreateInterface();
         try
         {
+            InitializeNativeLibrary();
             tracker = new MigTracker("{\"schema_version\":2,\"tracking\":{\"hands\":true},\"inputs\":[]}");
             var path = RaisedHands ? "res://raised-hands.json" : ProfilePath;
             if (path.Length > 0)

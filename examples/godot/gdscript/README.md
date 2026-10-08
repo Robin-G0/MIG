@@ -2,9 +2,9 @@
 
 [English](README.md) | [Français](README.fr.md)
 
-## Try it now
+## Quick Start
 
-1. Extract the **complete built example package**, keeping its folders together.
+1. Extract this example’s **standalone archive**; keep its contents together.
 2. Build/install the matching GDExtension as described below, open the staged project, run `raised_hands.tscn` and enable **Use Synthetic Demo** on its node.
 3. Keep shoulders visible for calibration, lower your hands into the green region, then raise either wrist into yellow. Expect **Left/Right hand raised** once per wrist.
 
@@ -85,13 +85,13 @@ godot --headless --path build/godot-gdscript/project --script res://tests/regres
 [Godot GDExtension setup](https://docs.godotengine.org/en/4.3/tutorials/scripting/gdextension/gdextension_cpp_example.html)
 · [Source walkthrough](../../../docs/getting-started/examples.md).
 
-## Project structure and MIG integration overview
+## Folder walkthrough
 
 `mig_input.gd`: MIG lifecycle and game UI. `mig_raised_hands.gd`: initial mode. Native `MigTrackerNative` bridge calls the C ABI; scene files configure nodes.
 
 Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
 
-## Walkthrough: initialization to shutdown
+## Code walkthrough
 
 1. `_ready()` creates `MigTrackerNative` and opens a validated empty profile; `import_profile()` loads the selected JSON with `import_json()`.
 2. `submit_frame()` accepts unmirrored body/hand buffers, timestamps, sequence and aspect. `_process()` optionally supplies synthetic packets.
@@ -118,3 +118,13 @@ Install the matching MIG package/SDK and retain the integration calls in the wal
 - No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
 - Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
 - Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+
+## Standalone project dependencies
+
+`project.godot` selects `raised_hands.tscn`; `profile.tscn` is the import variant.
+The archive includes `addons/mig/` with the native GDExtension and C ABI,
+its platform descriptor and licenses. Import the project in Godot 4 desktop,
+enable `use_synthetic_demo` on the scene node, and press Run.
+A copied source folder needs the matching MIG Godot addon installed in `addons/`.
+These preview projects accept supplied observations; a live camera provider
+is your responsibility. First editor/.NET setup can exceed one minute.

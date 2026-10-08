@@ -1,5 +1,6 @@
 import contextlib
 import io
+import importlib.util
 import json
 import sys
 import tempfile
@@ -10,8 +11,18 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "examples/common"))
-from python_source import InputSource, Tracker, announce
+sys.path.insert(0, str(ROOT / "examples/python-tkinter/support"))
+sys.path.insert(0, str(ROOT / "bindings/python"))
+import mig
+Tracker = mig.Tracker
+
+
+def load_usage(technology):
+    spec = importlib.util.spec_from_file_location('example_usage', ROOT / 'examples' / technology / 'example_usage.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    sys.modules['example_usage'] = module
+    return module
 
 
 def wait_for_notice(source):
@@ -39,12 +50,12 @@ def verify_import_and_shutdown(library):
     configuration["inputs"][0]["action"] = "custom_action"
     options = SimpleNamespace(library=library, profile=ROOT / "examples/common/raised-hands.json",
                               profile_mode=True, smoke=False, synthetic=True)
-    with tempfile.TemporaryDirectory() as directory, patch("python_source.Tracker", ObservedTracker):
+    with tempfile.TemporaryDirectory() as directory, patch.object(usage.mig, "Tracker", ObservedTracker):
         valid = Path(directory) / "valid.json"
         invalid = Path(directory) / "invalid.json"
         valid.write_text(json.dumps(configuration))
         invalid.write_text("{}")
-        source = InputSource(options)
+        source = usage.InputSource(options)
         try:
             source.import_profile(valid)
             assert "imported" in wait_for_notice(source)
@@ -67,9 +78,9 @@ def verify_import_and_shutdown(library):
 
 def verify_messages():
     with contextlib.redirect_stdout(io.StringIO()):
-        assert announce([("left_raise", "a"), ("right_raise", "b")]) == (
+        assert usage.handle_detected_actions([("left_raise", "a"), ("right_raise", "b")]) == (
             "Left hand raised! | Right hand raised!")
-        assert announce([("custom_action", "a")], True) == "custom_action (input a)"
+        assert usage.handle_detected_actions([("custom_action", "a")], True) == "custom_action (input a)"
 
 
 def verify_pygame_quit():
@@ -77,7 +88,8 @@ def verify_pygame_quit():
     import os
     os.environ["SDL_VIDEODRIVER"] = "dummy"
     import pygame
-    spec = importlib.util.spec_from_file_location("pygame_example", ROOT / "examples/pygame/main.py")
+    spec = importlib.util.spec_from_file_location("pygame_example", ROOT / "examples/pygame/application.py")
+    sys.path.insert(0, str(ROOT / "examples/pygame"))
     viewer = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(viewer)
     order = []
@@ -107,7 +119,9 @@ def verify_pygame_quit():
 
 
 if __name__ == "__main__":
-    verify_import_and_shutdown(sys.argv[1])
-    verify_messages()
+    for technology in ('python-tkinter', 'pygame'):
+        usage = load_usage(technology)
+        verify_import_and_shutdown(sys.argv[1])
+        verify_messages()
     verify_pygame_quit()
     print("Viewer profile import, atomic rejection, generic actions and owner-thread shutdown passed")

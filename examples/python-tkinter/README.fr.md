@@ -1,78 +1,101 @@
-# Exemples caméra Python/Tkinter
+# Python / Tkinter : caméra et actions logiques
 
 [English](README.md) | [Français](README.fr.md)
 
-## Essayer maintenant
-
-Extrayez le **package compilé complet** et conservez ses dossiers voisins. Le lancement rapide correspondant est :
-
-Lancez `main.exe` (Windows) ou `./main` (Linux). Python, Pillow et Tk sont fournis.
-
-Prérequis et limites : Archive native compilée ; runtime VC++ sous Windows ou glibc 2.35+ sous Linux. Les sources nécessitent aussi Python, Tk, Pillow et le runtime caméra natif.
-
-Les viewers compilés visent **30–60 secondes après extraction**, hors installation des prérequis et chargement initial du modèle. Les projets de moteur et les compilations source nécessitent davantage de préparation, décrite ci-dessous.
-
-Après calibration, gardez les épaules visibles, baissez les poignets dans Required puis levez-les vers Trigger : le viewer affiche une action pour chaque main.
-
 ## Ce que démontre cet exemple
 
-## Installer la bibliothèque Python
+Un aperçu miroir, les doigts et des objets suivant les poignets illustrent
+**Left hand raised!** et **Right hand raised!**. Le second exécutable importe
+votre JSON du configurateur et affiche ses noms d'actions.
+
+## Démarrage rapide — archive compilée
+
+1. Extrayez l'archive `*-python-tkinter-standalone`.
+2. Dans ce dossier, lancez `main.exe` sous Windows ou `./main` sous Linux.
+3. Gardez les deux épaules visibles pour la calibration. Baissez les mains
+   dans le vert, puis montez un poignet vers le jaune. Observez le panneau.
+4. Fermez la fenêtre pour libérer la caméra. `profile.exe / ./profile` permet d'importer un JSON.
+
+Comptez 30–60 secondes avec les prérequis installés ; le chargement des modèles
+dépend du matériel. Dans l'archive groupée, utilisez le dossier de l'exemple.
+
+## Organisation du dossier
+
+| Fichier ou dossier | Rôle |
+| --- | --- |
+| `main.py / profile.py` | Petit point d'entrée ; sélection du mode démo ou import. |
+| `example_usage.py` | Initialisation MIG, reconnaissance et gestion des actions. |
+| `application.py` | Fenêtre, événements, rendu et boucle de traitement. |
+| `configuration/raised-hands.json` | Profil local schema-v2 des deux poignets. |
+| `support/` | Recherche de ressources et affichage, avec leurs sources locales. |
+| `requirements.txt` | Dépendances pour exécuter/modifier les sources. |
+| `viewer.runtime/` | Python et dépendances de l'archive compilée, partagés entre les deux variantes. |
+| `bindings/python/mig/` | Binding Python fourni dans l'archive individuelle. |
+
+## Parcours du code
+
+1. `example_usage.py` importe explicitement `mig` : installation, puis binding fourni.
+   `parse_options()` sélectionne la configuration locale.
+2. `InputSource._run()` appelle `load_configuration()` et `initialize_mig()` dans
+   son worker. `mig.Tracker(library, json)` valide le profil et possède le moteur.
+3. `start_tracking_camera()` appelle `start_camera(runtime, camera_index)`.
+4. `process_tracking_frame()` appelle `poll_camera()`, puis `events()`. La caméra
+   effectue déjà la reconnaissance ; les paquets synthétiques utilisent `update(packet)`.
+5. `_publish()` copie image et actions dans une boîte bornée. L'interface appelle
+   `handle_detected_actions()` (alias `announce`) pour afficher les tuples logiques.
+6. `_import_pending()` traite les imports sur ce même worker, avec une limite de 1 Mio.
+7. `InputSource.close()` signale l'arrêt et rejoint le worker. La sortie du contexte
+   ferme MIG, même après une erreur, avant la destruction de la fenêtre.
+
+## Dépendances et placement des ressources
+
+Fourni : Python, Tk, Pillow, Pygame selon l'exemple, ABI MIG, MediaPipe, modèles
+Lite/mains et licences. Gardez `viewer.runtime/` auprès des deux exécutables.
+L'archive individuelle contient `runtime/` dans ce dossier ; l'archive groupée
+le partage à sa racine. Le manifeste sert de repère, indépendamment du dossier courant.
+L'exécutable compilé ne nécessite aucune installation de Python.
+
+Externe : Windows x64 et runtime VC++, ou Linux x64 avec glibc 2.35+ et affichage
+graphique. Webcam pour le suivi réel. Facultatif : Python 3.10+ et SDK MIG avec caméra.
+
+## Exécuter les sources hors du dépôt
+
+Copiez ce dossier, puis installez le binding et les dépendances locales :
 
 ```sh
-python -m pip install motion-input-grid pillow
+python -m pip install motion-input-grid -r requirements.txt
+# Linux : python3-tk et python3-pil.imagetk si nécessaire.
+# MIG_LIBRARY : mig-c.dll / libmig-c.so.1 du SDK avec caméra.
+# MIG_RUNTIME : dossier contenant libmediapipe et models/.
+python main.py
+python profile.py
 ```
 
-L'import reste `mig`. Tk est fourni séparément par Python ou le système.
-La wheel inclut le moteur de positions ; cet exemple caméra exige aussi
-un SDK natif avec caméra et ses modèles. Utilisez `MIG_LIBRARY` pour
-sa bibliothèque `mig-c.dll` / `libmig-c.so.1` et `MIG_RUNTIME` pour son
-dossier MediaPipe/modèles si la découverte automatique ne les trouve pas.
-[Installation Python](../../bindings/python/README.fr.md).
+Le wheel seul reconnaît des positions ; le SDK avec caméra est nécessaire ici.
+`python main.py --smoke` utilise des observations déterministes puis quitte ; ce
+n'est pas une mesure de précision caméra. Pygame utilise Tk pour son sélecteur
+de fichier et accepte aussi le glisser-déposer JSON.
 
-Depuis les sources : `python examples/python-tkinter/main.py` pour la démo,
-`python examples/python-tkinter/profile.py` pour importer un profil configurateur.
-Sans arguments, les deux affichent caméra reflétée, objets aux poignets et toutes
-les actions. L'importeur possède Import profile ; échec conserve l'ancien profil,
-succès recalibre. Il faut Python 3.10+, Tk et Pillow. Sous Ubuntu : python3-tk
-et python3-pil.imagetk. Les imports préfèrent mig installé puis le dépôt complet.
+## Configuration et réutilisation
 
-Dans l'archive, lancez main.exe/profile.exe sous Windows ou ./main et ./profile
-sous Linux. Python/Tk/Pillow sont fournis ; aucune installation Python n'est
-nécessaire. Le worker possède caméra/tracker, imports et destruction. Fermer
-rejoint le worker avant Tk. [Prérequis et découverte](../README.fr.md),
-[code complet expliqué](../../docs/getting-started/examples.fr.md), [démarrage](../../docs/getting-started/bootstrap.fr.md).
+Le profil contient, pour chaque poignet, une zone Required `[-9,3,27,3]`, puis
+une zone Trigger `[-9,1,27,2]`. Une pose isolée dans le jaune ne déclenche rien.
+Le mode import démarre sans règles. Un JSON invalide préserve le profil précédent ;
+un import valide recommence la calibration.
 
-## Structure et intégration MIG
+Reprenez le fichier d'intégration indiqué et le profil. Remplacez le callback
+d'action par une commande du jeu. Fournissez des observations MediaPipe non
+miroir, leur aspect original, une séquence croissante et un temps monotone.
+Traitez chaque nouvelle image une fois ; fournissez des observations absentes
+si le suivi est perdu. L'aperçu, les objets et le panneau sont uniquement visuels.
+Gardez un propriétaire par tracker et son nettoyage. Aucune touche système n'est injectée.
 
-`main.py` / `profile.py`: entry points. `../common/tk_view.py`: Tk UI. `../common/python_source.py`: explicit MIG integration in `InputSource._run()`.
+## Dépannage
 
-Le framework gère la fenêtre et le rendu. Le fichier d'intégration indiqué gère le profil, les observations, les appels MIG, les actions et leur libération.
-
-## Parcours de l'intégration
-
-1. Repérez l'import MIG et la création du tracker dans le fichier indiqué.
-2. Chargez et validez le JSON avant de traiter les observations.
-3. Fournissez des points non miroités, le rapport d'aspect, des timestamps monotones et une séquence croissante.
-4. Appelez le traitement une fois par frame nouvelle. Un poll de caméra natif reconnaît déjà les observations ; récupérez ensuite les événements sans doubler update.
-5. Utilisez les actions logiques pour votre application. Les exemples n'injectent pas de touches système.
-6. Conservez le hook de fermeture du framework et libérez le tracker sur son thread propriétaire.
-
-## API MIG utilisée
-
-`Tracker(...)`, `start_camera()`, `poll_camera()`, `events()`, `update()`, `import_json()`, `close()`.
-
-## Configuration
-
-Le profil raised-hands.json utilise, pour chaque poignet, une grande zone Required `[-9,3,27,3]`, puis une zone Trigger `[-9,1,27,2]`. Un poignet directement dans Trigger ne suffit pas. L'import valide le schéma 2 avant remplacement.
-
-## Réutiliser dans votre projet
-
-Installez le package ou SDK MIG correspondant et conservez les appels du fichier d'intégration indiqué. Copiez profil, assets et licences ; branchez votre fournisseur de points ou l'adaptateur caméra natif. Remplacez les messages affichés par vos actions applicatives. Gardez le ratio caméra, un update par frame, les observations de perte de tracking et la fermeture sur le thread propriétaire. Fenêtre, props et HUD restent facultatifs.
-
-## Résoudre les problèmes
-
-- Runtime/modèles/WASM absents : extrayez le package complet ; un dossier de sources seul ne suffit pas.
-- Caméra indisponible : fermez les autres utilisateurs et autorisez l'accès ; le navigateur nécessite HTTPS ou localhost. Les moteurs nécessitent votre fournisseur de pose.
-- Pas d'action : gardez les épaules visibles, calibrez, partez de Required et atteignez Trigger. Les chemins nécessitent un intervalle maximal de 180 ms ; profilez une inférence très lente.
-- Import invalide : corrigez l'action ou le schéma indiqué par l'erreur ; le profil précédent est conservé.
-- Une inférence native en cours doit terminer avant la jointure du worker lors de l'arrêt.
+- Bibliothèque ou modèle absent : conservez tout le dossier extrait. Les sources
+  seules nécessitent l'installation ci-dessous et ne contiennent pas les exécutables.
+- Caméra occupée : fermez les autres applications et autorisez son accès.
+- Aucune action : attendez la calibration des deux épaules, baissez les poignets,
+  puis passez du vert au jaune. Un intervalle supérieur à 180 ms nécessite un profilage.
+- Import refusé : corrigez l'erreur de schéma ; les règles précédentes restent actives.
+- La fermeture attend la fin de l'inférence en cours avant de libérer MIG.

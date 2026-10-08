@@ -3,8 +3,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "examples/common"))
-from python_source import Tracker, demo_packet
+sys.path.insert(0, str(ROOT / "examples/python-tkinter/support"))
+sys.path.insert(0, str(ROOT / "examples/python-tkinter"))
+from example_usage import mig, demo_packet
+Tracker = mig.Tracker
 
 
 def actions_for(library, side=None, start_at_trigger=False):

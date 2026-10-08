@@ -1,81 +1,106 @@
-# SDL2 camera example
+# SDL2: camera and logical actions
 
 [English](README.md) | [Français](README.fr.md)
 
-## Try it now
-
-1. Extract the **complete built example package**, keeping its folders together.
-2. Run `mig-sdl2.exe` (Windows) or `./mig-sdl2` (Linux) from this folder.
-3. Keep shoulders visible for calibration, lower your hands into the green region, then raise either wrist into yellow. Expect **Left/Right hand raised** once per wrist.
-
-**Prerequisites:** Windows/Linux; prebuilt native examples archive; Windows VC++ runtime or Linux glibc 2.35+.
-
-Desktop/browser built viewers target about **30–60 seconds after extraction**, with prerequisites installed; cold model loading depends on hardware. Editor and source builds have the longer setup described below. A source-only folder is not the prebuilt package.
-
 ## What this example demonstrates
 
-Launch `mig-sdl2` (`mig-sdl2.exe` on Windows) without arguments.
-The demo displays a mirrored camera, finger outlines and a prop for each wrist.
-Follow the green region upward into yellow to display Left/Right hand raised.
-`mig-sdl2-profile` starts empty and imports arbitrary configurator JSON via its
-**Import profile** button or file drop. Actions appear in the window. Invalid
-imports preserve the old profile; successful imports recalibrate. Both executables
-are compiled from the same source with shared profile and recognition helpers.
-Close the window to release the camera. No keys are injected.
+A mirrored camera preview, finger outlines and wrist-following props show two
+logical actions: **Left hand raised!** and **Right hand raised!**. The second
+executable imports your own configurator JSON and displays its action names.
 
-Build with an installed MIG SDK:
+## Quick Start — prebuilt package
+
+1. Extract this example's `*-sdl2-standalone` archive.
+2. In the extracted folder, run `mig-sdl2.exe` on Windows or `./mig-sdl2` on Linux.
+3. Keep both shoulders visible for calibration; lower your hands into green,
+   then raise either wrist into yellow. Watch the action panel.
+4. Close the window to release the camera. Run `mig-sdl2-profile.exe / ./mig-sdl2-profile` to import JSON.
+
+Allow about 30–60 seconds with prerequisites installed; model loading depends
+on hardware. These commands also work inside the combined archive's example folder.
+
+## Folder walkthrough
+
+| File or directory | Purpose |
+| --- | --- |
+| `main.cpp` | Small application entry point; selects demo or import mode. |
+| `example_usage.hpp` | Actual MIG initialization, recognition and action handling. |
+| `application.cpp` | Window, input events, rendering and processing loop. |
+| `configuration/raised-hands.json` | Local schema-v2 two-wrist profile. |
+| `support/` | Resource lookup and display helpers; source is included locally. |
+| `hud.hpp` | Action text and import controls for the graphics library. |
+| `CMakeLists.txt` | Builds both variants against public MIG SDK targets. |
+| `support/DejaVuSans.ttf` | Redistributable HUD font; its license is alongside it. |
+| `lib/` | Linux release: bundled graphics and file-dialog shared libraries. |
+| `sdk/` | Individual release: development headers/libraries for reuse. |
+
+## Code walkthrough
+
+1. `main.cpp` calls `run_application()` in `application.cpp`.
+2. `example_usage.hpp` includes the public MIG API. `initialize_mig()` calls
+   `load_configuration()` to validate the local JSON, then constructs `mig::Engine`.
+3. `support/source.hpp`, `demo::Source::sample()`, captures RGB and calls
+   `Pose::infer()` to obtain unmirrored landmarks; synthetic mode supplies fixtures.
+4. `tutorial::process_tracking_frame()` calls `engine.update(frame, timestamp_ms)`.
+   It consumes the borrowed events immediately and looks up each logical action
+   through `engine.configuration().motions[event.motion]`.
+5. The action loop prints and updates the HUD. Replace it with your game's
+   action dispatch. `draw_frame()` mirrors only the visual preview.
+6. `demo::import_profile()` validates a replacement before changing the engine.
+7. Closing exits the loop. C++ destruction stops Source capture/tasks before
+   destroying the engine; graphics owners release textures and the window.
+
+## Dependencies and runtime placement
+
+Bundled: executable variants, MIG/MediaPipe, Lite pose and hand models, graphics
+runtime, font and licenses. Individual archives contain `runtime/` here;
+combined archives share it at their root. Linux launchers set their library,
+font and Qt plugin paths relative to themselves. Windows graphics DLLs sit
+beside the executables. Keep these folders together; launch from any working directory.
+
+External: Windows x64 and VC++ runtime, or Linux x64 with glibc 2.35+ and a
+desktop display; webcam for real tracking. Optional development: CMake 3.25+,
+C++20 compiler, installed MIG SDK and graphics development libraries.
+
+## Rebuild this folder outside the repository
 
 ```sh
-cmake -S examples/sdl2 -B build/sdl2 -DCMAKE_PREFIX_PATH=/path/to/sdk
-cmake --build build/sdl2 --config Release
+cmake -S . -B build -DCMAKE_PREFIX_PATH="/path/to/MIG/sdk;/path/to/graphics/sdk"
+cmake --build build --config Release
 ```
 
-If MIG is not installed, the build falls back to the full repository; bootstrap
-native dependencies first. SDL2 and SDL2_ttf development libraries are needed.
-Linux builds also need Qt6 Widgets for the profile picker; Windows uses its native
-file dialog. The archive includes the redistributable DejaVu font and its license.
-Run `tools/build-examples.ps1` on Windows or `tools/build-examples.sh` on Linux
-for tested builds. The examples archives contain binaries and sources side by side.
-The hidden `--smoke` option uses generated frames without opening a camera.
+Individual archives bundle the MIG SDK and CMake also searches `sdk/`. A copied
+source-only folder requires an installed MIG SDK. The full checkout can build MIG
+as a fallback after native bootstrap. Camera assets are separate from development
+headers: set `MIG_RUNTIME` to the directory containing MediaPipe and `models/`.
+The hidden `--smoke` argument supplies generated frames and exits without a camera.
+Capture/inference is synchronous; move Source ownership to a worker in a game
+that needs rendering independent of inference latency.
 
-`demo::Source` owns capture/inference; `demo::consume` dispatches library events;
-`draw_frame` mirrors the camera and coordinate overlays, including wrist props.
-The camera texture and pixel buffers are reused between frames. The simple C++
-demo captures synchronously; move Source ownership to a worker for independent
-rendering latency in your game. See [standalone instructions](../README.md).
+SDL2 and SDL2_ttf development libraries are required. Linux additionally uses
+Qt6 Widgets for the profile picker; Windows uses its native dialog.
 
-[Complete source walkthrough](../../docs/getting-started/examples.md) · [Bootstrap](../../docs/getting-started/bootstrap.md).
+## Configuration and reuse
 
-## Project structure and MIG integration overview
+The raised-hands profile has a broad Required region `[-9,3,27,3]`, followed by
+a Trigger region `[-9,1,27,2]` for each wrist. Starting only in yellow cannot
+trigger the upward path. Import mode starts without rules; invalid JSON keeps
+the previous configuration, while a valid import resets calibration.
 
-`main.cpp`: SDL window, event loop, camera texture and HUD. `../common/source.hpp`: camera/model ownership. `../common/recognition.hpp`: MIG processing and action dispatch.
-
-Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
-
-## Walkthrough: initialization to shutdown
-
-1. Include `<mig/core/engine.hpp>` and `<mig/format/configuration.hpp>`; `main()` constructs `mig::Engine` from `mig::load_configuration(options.config)`.
-2. `demo::Source::sample()` captures RGB and calls `Pose::infer()` once per new frame; it also supplies optional hands. These calls acquire observations, while `Engine` performs recognition.
-3. `demo::consume()` calls `engine.update(body, body.timestamp_ms)` and resolves each event through `engine.configuration().motions[event.motion]`.
-4. `draw_frame()` and `ActionHud` display actions. Replace this reaction with a game command; no desktop keys are injected.
-5. The SDL close event exits the loop. C++ owners release textures, engine, camera and tasks; exceptions print an error and unwind those owners.
-
-## MIG API used
-
-`engine.update(frame, now_ms)`, `engine.configuration()`, `load_configuration()`, `Pose::infer()`.
-
-## Configuration used
-
-The raised-hand demo uses `raised-hands.json` (served as `default.json` in browser assets): one broad Required zone `[-9,3,27,3]`, then a Trigger zone `[-9,1,27,2]` for each wrist. Import mode starts empty and validates schema-v2 JSON before replacement. Step order retains the upward movement; an isolated pose in yellow cannot fire.
-
-## Reuse this in your project
-
-Install the matching MIG package/SDK and retain the integration calls in the walkthrough. Copy the profile and required runtime assets with their licenses; use supplied tracking observations or the native camera adapter, as this example does. Replace the displayed/logged action with your application callback. Keep observations unmirrored, preserve camera aspect, submit one update per fresh frame, and provide missing observations when tracking is lost. Keep the tracker on one owner thread and preserve its cleanup hook. The application window, props and HUD are optional.
+Copy the named integration file and configuration into your application. Replace
+the action callback with your game command. Feed unmirrored MediaPipe-indexed
+observations with their original aspect, increasing sequence and monotonic time;
+submit one update per fresh frame and missing observations on tracking loss.
+The preview, wrist props and action panel are optional presentation code.
+Keep each tracker on one owning thread and preserve its cleanup lifecycle.
+Actions stay in the application; these examples never inject desktop keys.
 
 ## Troubleshooting
 
-- Missing native library/model or WASM: extract the whole built package and retain its runtime/assets folders. Check the prerequisite list; a source checkout needs the documented build.
-- Camera unavailable: close other camera users; grant permission. Browser capture needs localhost or HTTPS. Engine previews need your own pose provider.
-- No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
-- Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
-- Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+- Missing library/model: retain the complete extracted folder. Source folders
+  require the dependencies and setup below; they do not contain release binaries.
+- Camera busy: close other camera applications and grant camera permission.
+- No action: keep both shoulders visible until calibrated, lower the wrists, then
+  raise through green into yellow. Samples more than 180 ms apart need profiling.
+- Import rejected: fix the reported schema error; the previous rules still run.
+- Closing waits for any in-flight inference before releasing the tracker.

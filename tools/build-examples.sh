@@ -19,3 +19,4 @@ for example in sdk-consumer native-consumer; do
 done
 python3 tools/freeze-python-examples.py
 python3 tools/package-examples.py --platform linux-x64 --standalone
+xvfb-run -a python3 tests/packaging/standalone_example_tests.py 'build/releases/*-linux-x64-*-standalone.tar.gz'

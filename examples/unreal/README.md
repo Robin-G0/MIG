@@ -2,10 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
-## Try it now
+## Quick Start
 
-1. Extract the **complete built example package**, keeping its folders together.
-2. Install this plugin and its matching SDK in an Unreal desktop project, rebuild, attach **MigRaisedHandsComponent** and supply tracking packets to **SubmitFrame**.
+1. Extract this example’s **standalone archive**; keep its contents together.
+2. Install this plugin (its native SDK is bundled) in an Unreal desktop project, rebuild, attach **MigRaisedHandsComponent** and supply tracking packets to **SubmitFrame**.
 3. With a configured pose provider, lower and raise either wrist; expect an action in the UMG panel.
 
 **Prerequisites:** Preview integration; Unreal 5 editor, C++ toolchain and matching ABI library. Setup exceeds one minute; there is no bundled camera estimator or synthetic autoplay.
@@ -53,13 +53,13 @@ See [Epic library staging](https://dev.epicgames.com/documentation/en-us/unreal-
 
 [Separate runtime package](../../integrations/unreal/README.md).
 
-## Project structure and MIG integration overview
+## Folder walkthrough
 
 `Source/MigExample/Private/MigInputComponent.cpp`: C ABI integration. Public component header: packet/event API. `MigExamplePanel.cpp`: UMG UI. `MigExample.Build.cs`: native linking/staging.
 
 Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
 
-## Walkthrough: initialization to shutdown
+## Code walkthrough
 
 1. The component includes the MIG C ABI through `MigInputComponent.h`. `BeginPlay()` calls `mig_create()` and optionally imports the loose Content JSON.
 2. `ImportProfile(path)` reads JSON and calls `mig_load()`. Failure reports `mig_last_error()` and preserves the prior profile.
@@ -86,3 +86,13 @@ Install the matching MIG package/SDK and retain the integration calls in the wal
 - No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
 - Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
 - Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+
+## Standalone plugin dependencies
+
+The individual archive contains `ThirdParty/include/mig/c`, the platform native
+library (and Windows import library), the plugin descriptor, Source, Content
+profile and licenses. Copy this folder to `YourProject/Plugins/MigExample`;
+regenerate project files and build. An Unreal 5 desktop C++ project/compiler and
+your own pose provider are external prerequisites. Editor compilation takes
+longer than one minute; no camera estimator or models are bundled.
+For a copied raw source folder, install the SDK into `ThirdParty/` as above.

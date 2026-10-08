@@ -6,38 +6,46 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import tarfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 def verify(archive):
-    with tempfile.TemporaryDirectory(prefix='standalone-test-', dir=ROOT / 'build') as temporary:
+    with tempfile.TemporaryDirectory(prefix='standalone-test-') as temporary:
         extracted = Path(temporary)
-        with zipfile.ZipFile(archive) as package:
-            for entry in package.namelist():
+        package = zipfile.ZipFile(archive) if zipfile.is_zipfile(archive) else tarfile.open(archive)
+        with package:
+            entries = package.namelist() if isinstance(package, zipfile.ZipFile) else package.getnames()
+            for entry in entries:
                 if '..' in Path(entry).parts or Path(entry).is_absolute():
                     raise AssertionError('Invalid package member')
-            package.extractall(extracted)
+            if isinstance(package, zipfile.ZipFile):
+                package.extractall(extracted)
+            else:
+                package.extractall(extracted, filter='data')
         folder = next(extracted.iterdir())
         manifest = json.loads((folder / 'manifest.json').read_text(encoding='utf-8'))
         for name, digest in manifest['sha256'].items():
             assert hashlib.sha256((folder / name).read_bytes()).hexdigest() == digest, name
         example = manifest['ecosystem']
-        directory = folder / 'examples' / example
+        directory = folder
+        extension = '.exe' if os.name == 'nt' else ''
         environment = dict(os.environ, MIG_RUNTIME='', MIG_LIBRARY='', SDL_VIDEODRIVER='dummy')
         if example in ('pygame', 'python-tkinter'):
-            commands = [[str(directory / f'{variant}.exe'), '--smoke'] for variant in ('main', 'profile')]
+            commands = [[str(directory / f'{variant}{extension}'), '--smoke'] for variant in ('main', 'profile')]
             assert (directory / 'viewer.runtime/base_library.zip').is_file()
             assert not (directory / 'main.runtime').exists()
         elif example in ('sdl2', 'sfml'):
-            commands = [[str(directory / f'mig-{example}{suffix}.exe'), '--smoke'] for suffix in ('', '-profile')]
+            commands = [[str(directory / f'mig-{example}{suffix}{extension}'), '--smoke'] for suffix in ('', '-profile')]
         elif example == 'sdk-consumer':
-            commands = [[str(directory / 'mig-sdk-example.exe'), str(folder / 'configs/default.json')]]
+            commands = [[str(directory / f'mig-sdk-example{extension}'), str(folder / 'configs/default.json')]]
         else:
-            commands = [[str(directory / 'mig-native-example.exe'), str(folder / 'runtime')]]
-        for command in commands:
-            completed = subprocess.run(command, cwd=extracted, env=environment,
+            commands = [[str(directory / f'mig-native-example{extension}'), str(folder / 'runtime')]]
+        environment['LD_LIBRARY_PATH'] = str(folder / 'runtime/lib')
+        for command, working_directory in ((command, cwd) for command in commands for cwd in (folder, extracted)):
+            completed = subprocess.run(command, cwd=working_directory, env=environment,
                                        capture_output=True, text=True, timeout=60)
             assert completed.returncode == 0, (command, completed.stdout, completed.stderr)
             if example in ('pygame', 'python-tkinter'):

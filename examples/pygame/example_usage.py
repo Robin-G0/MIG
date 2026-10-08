@@ -8,26 +8,30 @@ from pathlib import Path
 from python_runtime import options
 
 try:
-    from mig import Packet, Tracker
+    import mig
 except ModuleNotFoundError as error:
     if error.name != "mig":
         raise
-    bindings = Path(__file__).resolve().parents[2] / "bindings" / "python"
+    bindings = Path(__file__).resolve().parent / "bindings" / "python"
+    if not bindings.is_dir():
+        bindings = Path(__file__).resolve().parents[2] / "bindings/python"
     if not (bindings / "mig" / "__init__.py").is_file():
         raise
     sys.path.insert(0, str(bindings))
-    from mig import Packet, Tracker
+    import mig
 
 
 def parse_options(profile_mode=False):
     parser = argparse.ArgumentParser(description="MIG mirrored camera and wrist tracking")
     parser.add_argument("--smoke", action="store_true", help=argparse.SUPPRESS)
-    return options(parser.parse_args().smoke, profile_mode)
+    settings = options(parser.parse_args().smoke, profile_mode)
+    settings.profile = Path(__file__).resolve().parent / "configuration/raised-hands.json"
+    return settings
 
 
 def synthetic_packet(sequence):
     """A deterministic left-wrist rise for configs/default.json, not detection."""
-    packet = Packet()
+    packet = mig.Packet()
     packet.sequence = sequence
     packet.timestamp_ms = sequence * 20
     packet.aspect = 1
@@ -45,6 +49,43 @@ def demo_packet(sequence):
     for joint, column in ((15, 6.5), (16, 2.5)):
         packet.set_body(joint, 0.5 + (column - 4.5) * 0.06, 0.45 + (row - 3.5) * 0.06)
     return packet
+
+
+def load_configuration(settings):
+    """Read MIG JSON before creating the tracker; import mode starts without rules."""
+    configuration = json.loads(settings.profile.read_text(encoding="utf-8"))
+    if settings.profile_mode and not settings.smoke:
+        configuration["inputs"] = []
+        configuration["tracking"]["hands"] = False
+    return json.dumps(configuration)
+
+
+def initialize_mig(settings, configuration):
+    # Tracker(library, profile_json) validates the rules and owns a native engine.
+    # library is the bundled C ABI DLL/SO, or None for a system installation.
+    return mig.Tracker(settings.library, configuration)
+
+
+def start_tracking_camera(tracker, settings):
+    if settings.synthetic:
+        return
+    if settings.runtime is None:
+        raise RuntimeError("Native runtime/models missing; see README dependencies.")
+    # start_camera(runtime_directory, device_index) owns capture and inference.
+    tracker.start_camera(settings.runtime, settings.camera)
+
+
+def process_tracking_frame(tracker, settings, sequence):
+    if settings.synthetic:
+        tracking_frame = demo_packet(sequence)
+        # Host-provided packets carry unmirrored landmarks, sequence and time.
+        detected_actions = tracker.update(tracking_frame)
+    else:
+        # poll_camera() already evaluates MIG rules. Do not update() it twice.
+        tracking_frame = tracker.poll_camera()
+        detected_actions = tracker.events()
+    # Copy action tuples now: native results belong to the current update.
+    return tracking_frame, detected_actions
 
 
 class InputSource:
@@ -72,29 +113,17 @@ class InputSource:
 
     def _run(self):
         try:
-            profile = self.options.profile.read_text(encoding="utf-8")
-            if self.options.profile_mode and not self.options.smoke:
-                configuration = json.loads(profile)
-                configuration["inputs"] = []
-                configuration["tracking"]["hands"] = False
-                profile = json.dumps(configuration)
-            # Creating Tracker validates JSON and owns one C ABI engine. Keep all
-            # calls here on the worker; the context closes tasks/handle on errors too.
-            with Tracker(self.options.library, profile) as tracker:
-                if not self.options.synthetic:
-                    if self.options.runtime is None:
-                        raise RuntimeError("Native runtime/models missing. Build MIG or extract the examples archive.")
-                    tracker.start_camera(self.options.runtime, self.options.camera)
+            configuration = load_configuration(self.options)
+            # The worker exclusively owns the tracker. The context manager calls
+            # close() even if a camera or configuration operation raises an error.
+            with initialize_mig(self.options, configuration) as tracker:
+                start_tracking_camera(tracker, self.options)
                 sequence = 0
                 synthetic_image = (320, 240, bytes((24, 30, 40)) * (320 * 240))
                 while not self.stopping.is_set():
                     self._import_pending(tracker)
                     sequence += 1
-                    packet = (demo_packet(sequence) if self.options.synthetic
-                              else tracker.poll_camera())
-                    # A native poll already updates MIG. Synthetic/provider frames
-                    # require update(); copy logical events before the next native call.
-                    events = tracker.update(packet) if self.options.synthetic else tracker.events()
+                    packet, events = process_tracking_frame(tracker, self.options, sequence)
                     image = (synthetic_image if self.options.synthetic else
                              tracker.camera_image() if packet else None)
                     self._publish(packet, events, image)
@@ -145,6 +174,7 @@ class InputSource:
             return None
 
     def close(self):
+        """Stop and join before the GUI destroys its resources; worker closes MIG."""
         self.stopping.set()
         self.worker.join()
 
@@ -181,7 +211,8 @@ def hand_lines(packet):
                 previous = current
 
 
-def announce(events, profile_mode=False):
+def handle_detected_actions(events, profile_mode=False):
+    """Map logical (action, input_id) tuples to application behavior, never OS keys."""
     messages = []
     for action, input_id in events:
         message = (f"{action.split('_')[0].capitalize()} hand raised!"
@@ -190,3 +221,7 @@ def announce(events, profile_mode=False):
         print(message, flush=True)
         messages.append(message)
     return " | ".join(messages) or None
+
+
+# The view calls this after receiving the worker's copied logical actions.
+announce = handle_detected_actions

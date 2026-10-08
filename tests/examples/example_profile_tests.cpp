@@ -1,5 +1,4 @@
-#include "../../examples/common/profile.hpp"
-#include "../../examples/common/recognition.hpp"
+#include "../../examples/sdl2/example_usage.hpp"
 #include "../../examples/common/synthetic.hpp"
 #include <iostream>
 
@@ -38,7 +37,7 @@ int main(int argc, char** argv) {
             mig::Frame body;
             mig::hands::Frame hands;
             demo::synthetic_frame(sequence, body, hands);
-            actions += demo::consume(engine, body, &status);
+            actions += tutorial::process_tracking_frame(engine, body, &status);
         }
         if (actions != 2 || status.find("custom action") == std::string::npos ||
             status.find("Right hand raised!") == std::string::npos) {

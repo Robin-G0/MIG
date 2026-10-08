@@ -36,11 +36,11 @@ def freeze(technology, variant, platform):
         "--distpath", str(output.parent),
         "--workpath", str(ROOT / "build/freeze-work" / platform / technology / variant),
         "--specpath", str(ROOT / "build/freeze-specs" / platform / technology),
-        "--paths", str(ROOT / "examples/common"),
+        "--paths", str(ROOT / "examples" / technology / "support"),
         "--paths", str(ROOT / "bindings/python"),
         "--hidden-import", "mig", "--hidden-import", "tkinter",
         "--hidden-import", "PIL._tkinter_finder",
-        "--add-data", f"{ROOT / 'examples/common/raised-hands.json'}{os.pathsep}.",
+        "--add-data", f"{ROOT / 'examples' / technology / 'configuration'}{os.pathsep}configuration",
         str(ROOT / "examples" / technology / f"{variant}.py"),
     ]
     if os.name != "nt" and technology == "pygame":

@@ -5,9 +5,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "bindings/python"))
-sys.path.insert(0, str(ROOT / "examples/common"))
+sys.path.insert(0, str(ROOT / "examples/python-tkinter/support"))
+sys.path.insert(0, str(ROOT / "examples/python-tkinter"))
 from mig import Packet, Tracker
-from python_source import synthetic_packet
+from example_usage import synthetic_packet
 
 
 def run(library):

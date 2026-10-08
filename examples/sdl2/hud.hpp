@@ -1,5 +1,5 @@
 #pragma once
-#include "../common/profile.hpp"
+#include "support/profile.hpp"
 #include <SDL.h>
 #include <SDL_ttf.h>
 

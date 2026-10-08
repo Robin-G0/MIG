@@ -2,10 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
-## Try it now
+## Quick Start
 
-1. Extract the **complete built example package**, keeping its folders together.
-2. Install the matching runtime UPM package, add these scripts/profile to a Unity desktop project, attach **MigRaisedHands** and enable **UseSyntheticDemo**, then press Play.
+1. Extract this example’s **standalone archive**; keep its contents together.
+2. Add this standalone package via Package Manager’s **Add package from disk** (`package.json`), add its component to a Unity desktop project, attach **MigRaisedHands** and enable **UseSyntheticDemo**, then press Play.
 3. Keep shoulders visible for calibration, lower your hands into the green region, then raise either wrist into yellow. Expect **Left/Right hand raised** once per wrist.
 
 **Prerequisites:** Preview integration; Unity desktop editor and matching native plugin. Initial editor/package setup takes longer than one minute; no camera estimator is bundled.
@@ -55,13 +55,13 @@ Disable synthetic mode when connecting your real estimator.
 
 [Separate runtime package](../../integrations/unity/README.md).
 
-## Project structure and MIG integration overview
+## Folder walkthrough
 
 `MigInput.cs`: direct MIG integration and Unity lifecycle. `MigRaisedHands.cs` / `MigProfileInput.cs`: initial mode selection. `Resources/MIG/raised-hands.json`: profile.
 
 Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
 
-## Walkthrough: initialization to shutdown
+## Code walkthrough
 
 1. `MigInput.cs` imports `MotionInputGrid`; `OnEnable()` constructs `MigTracker` from the assigned TextAsset or Resources profile.
 2. `SubmitFrame(packet)` accepts unmirrored body/hand observations with valid shoulders, monotonically increasing timestamps and sequences. Synthetic mode supplies demo packets in `Update()`.
@@ -88,3 +88,14 @@ Install the matching MIG package/SDK and retain the integration calls in the wal
 - No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
 - Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
 - Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+
+## Standalone package dependencies
+
+The individual package contains `Runtime/Bridge/MigTracker.cs`, the
+`MIG.Runtime` assembly, `Runtime/Plugins/<platform>/` with importer metadata,
+`SyntheticFrames.cs`, components, Resources profile and licenses. It has no
+dependency on a second UPM package. Add its `package.json` from disk and attach
+`MigRaisedHands` to a GameObject; enable `UseSyntheticDemo` and press Play.
+The editor is external. No MediaPipe models are needed for supplied observations.
+For the raw source folder, install the separate MIG runtime UPM package first
+and copy `SyntheticFrames.cs` from the matching managed binding release.

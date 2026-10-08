@@ -11,6 +11,8 @@ def verify_consumer(sdk, folder, arm64=False):
     source.mkdir()
     version = (ROOT / "VERSION").read_text().strip()
     code = (ROOT / "examples/sdk-consumer/main.cpp").read_text()
+    (source / "example_usage.hpp").write_text(
+        (ROOT / "examples/sdk-consumer/example_usage.hpp").read_text())
     code = '#include <mig/core/library.hpp>\n#include <mig/c/api.h>\n' + code
     entry = "int main(int argc, char** argv) {"
     assert entry in code

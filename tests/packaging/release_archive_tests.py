@@ -35,11 +35,15 @@ def check_tar(path):
         for name, expected in manifest["sha256"].items():
             content = archive.extractfile(f"{root}/{name}").read()
             assert hashlib.sha256(content).hexdigest() == expected, name
-        required = ("LICENSE", "README.md") if "-examples." in path.name else (
+        standalone = '-standalone.' in path.name
+        required = ("LICENSE", "README.md", "README.fr.md") if "-examples." in path.name or standalone else (
             "LICENSE", "README.md", "docs/reference/support.md", "docs/getting-started/packages.md")
         for name in required:
             assert f"{root}/{name}" in entries, name
-        if "-examples." not in path.name:
+        if standalone:
+            assert manifest['ecosystem']
+            assert not any('/examples/' in name for name in entries), 'Individual example is not its package root'
+        elif "-examples." not in path.name:
             assert any(item.issym() and item.name.endswith("libmig-c.so.1")
                        for item in entries.values()), "SDK SONAME link missing"
         else:

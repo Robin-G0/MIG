@@ -1,0 +1,11 @@
+config_version=5
+
+[application]
+config/name="MIG C# tutorial"
+run/main_scene="res://raised_hands.tscn"
+
+[dotnet]
+project/assembly_name="MigExample"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"

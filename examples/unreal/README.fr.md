@@ -82,3 +82,13 @@ Installez le package ou SDK MIG correspondant et conservez les appels du fichier
 - Pas d'action : gardez les épaules visibles, calibrez, partez de Required et atteignez Trigger. Les chemins nécessitent un intervalle maximal de 180 ms ; profilez une inférence très lente.
 - Import invalide : corrigez l'action ou le schéma indiqué par l'erreur ; le profil précédent est conservé.
 - Une inférence native en cours doit terminer avant la jointure du worker lors de l'arrêt.
+
+## Standalone plugin dependencies
+
+The individual archive contains `ThirdParty/include/mig/c`, the platform native
+library (and Windows import library), the plugin descriptor, Source, Content
+profile and licenses. Copy this folder to `YourProject/Plugins/MigExample`;
+regenerate project files and build. An Unreal 5 desktop C++ project/compiler and
+your own pose provider are external prerequisites. Editor compilation takes
+longer than one minute; no camera estimator or models are bundled.
+For a copied raw source folder, install the SDK into `ThirdParty/` as above.

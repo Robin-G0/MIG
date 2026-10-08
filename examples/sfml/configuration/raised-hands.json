@@ -1,0 +1,90 @@
+{
+    "schema_version": 2,
+    "tracking": {
+        "hands": true
+    },
+    "inputs": [
+        {
+            "id": "left_raise",
+            "name": "Raise left hand",
+            "action": "left_raise",
+            "space": "body",
+            "cooldown_ms": 700,
+            "steps": [
+                {
+                    "constraints": [
+                        {
+                            "id": "left_start",
+                            "landmark": "left_wrist",
+                            "cell": [
+                                -9,
+                                3,
+                                27,
+                                3
+                            ],
+                            "type": "required",
+                            "priority": "high",
+                            "order": 1
+                        },
+                        {
+                            "id": "left_finish",
+                            "landmark": "left_wrist",
+                            "cell": [
+                                -9,
+                                1,
+                                27,
+                                2
+                            ],
+                            "type": "trigger",
+                            "priority": "high",
+                            "order": 2
+                        }
+                    ],
+                    "id": "raise",
+                    "mode": "ordered"
+                }
+            ]
+        },
+        {
+            "id": "right_raise",
+            "name": "Raise right hand",
+            "action": "right_raise",
+            "space": "body",
+            "cooldown_ms": 700,
+            "steps": [
+                {
+                    "constraints": [
+                        {
+                            "id": "right_start",
+                            "landmark": "right_wrist",
+                            "cell": [
+                                -9,
+                                3,
+                                27,
+                                3
+                            ],
+                            "type": "required",
+                            "priority": "high",
+                            "order": 1
+                        },
+                        {
+                            "id": "right_finish",
+                            "landmark": "right_wrist",
+                            "cell": [
+                                -9,
+                                1,
+                                27,
+                                2
+                            ],
+                            "type": "trigger",
+                            "priority": "high",
+                            "order": 2
+                        }
+                    ],
+                    "id": "raise",
+                    "mode": "ordered"
+                }
+            ]
+        }
+    ]
+}

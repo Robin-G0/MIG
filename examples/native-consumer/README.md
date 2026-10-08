@@ -1,66 +1,74 @@
-# C++ native inference consumer
+# Native RGB inference tutorial
 
 [English](README.md) | [Français](README.fr.md)
 
-## Try it now
-
-1. Extract the **complete built example package**, keeping its folders together.
-2. Run `run.cmd` (Windows) or `sh run.sh` (Linux) in this folder of the prebuilt native examples archive.
-3. Expect an inference sequence/capability line; blank RGB does not demonstrate a detected gesture.
-
-**Prerequisites:** Native runtime/models are bundled in that archive. Source builds need CMake, C++20 and the native SDK. This is a blank-image inference check, with no camera or gesture demo.
-
-Desktop/browser built viewers target about **30–60 seconds after extraction**, with prerequisites installed; cold model loading depends on hardware. Editor and source builds have the longer setup described below. A source-only folder is not the prebuilt package.
-
 ## What this example demonstrates
 
-Requires the installed native SDK and bootstrapped MediaPipe runtime/models.
-`demonstrate_inference(runtime, hands)` owns one estimator and performs inference
-on blank RGB, demonstrating explicit hand capability and RAII cleanup.
+Loads MediaPipe and the Full pose model, performs inference on one blank RGB
+frame, toggles optional hands and releases tasks. It prints `sequence=1`; blank
+RGB demonstrates ownership and API wiring, not human tracking accuracy.
+
+## Quick Start
+
+1. Extract `*-native-consumer-standalone` for your Windows/Linux x64 platform.
+2. Run `run.cmd` (Windows) or `sh run.sh` (Linux) from this folder.
+3. Observe the console result, then normal process exit. No webcam is needed.
+
+Target: 30–60 seconds with prerequisites installed; inference model loading
+depends on hardware. The combined archive offers the same launchers in its example folder.
+
+## Folder walkthrough
+
+| File/directory | Purpose |
+| --- | --- |
+| `main.cpp` | Argument validation and simple tutorial orchestration. |
+| `example_usage.hpp` | Actual MIG API calls and explanatory comments. |
+| `CMakeLists.txt` | Public MIG SDK targets; also searches a bundled `sdk/`. |
+| `run.cmd`, `run.sh` | Packaged launch command and resource arguments relative to this folder. |
+| `sdk/` | Individual package: headers and development libraries. |
+| `licenses/`, `LICENSE` | Redistribution notices. |
+| `runtime/` | MediaPipe and Full pose/hand models, plus required Linux libraries. |
+
+## Code walkthrough
+
+1. `main.cpp` checks the runtime-directory argument and optional `--hands`.
+2. `example_usage.hpp` includes `<mig/native/pose.hpp>`.
+3. `demonstrate_inference()` constructs `mig::native::Pose(runtime)` and calls
+   `set_hands_enabled(hands)`. The runtime folder must contain the native library
+   and `models/pose_landmarker_full.task` (also the hand model with `--hands`).
+4. `infer(rgb, width, height, timestamp_ms, sequence)` returns unmirrored
+   observations. Replace blank RGB with fresh camera pixels and pass the result
+   to `Engine::update()` for motion recognition; inference alone emits no actions.
+5. Disable hands; scope exit destroys tasks before unloading the native library.
+
+## Dependencies and rebuilding
+
+External: Windows x64 with VC++ runtime, or Linux x64 with glibc 2.35+.
+Bundled: executable, public SDK, licenses, native MediaPipe and models.
+Keep `runtime/` beside the executable in an individual package; combined archives use their shared runtime root. The Linux launcher sets relative library paths.
+Optional development: CMake 3.25+, C++20 compiler and matching MIG SDK. Copy
+this folder and use an installed SDK or the individually bundled `sdk/`:
 
 ```sh
-cmake -S examples/native-consumer -B build/native-example -DCMAKE_PREFIX_PATH=/absolute/path/to/sdk
-cmake --build build/native-example --config Release
-build/native-example/mig-native-example /absolute/path/to/runtime --hands
+cmake -S . -B build -DCMAKE_PREFIX_PATH=/path/to/MIG/sdk
+cmake --build build --config Release
+build/mig-native-example runtime
 ```
 
-Windows uses `Release/mig-native-example.exe`. Omit `--hands` for a body-only build.
-Replace blank RGB with your capture frame and preserve width, height, timestamp and
-sequence. A `Pose` and its borrowed results belong to one thread. Copy hand results
-before the next inference call. For a complete capture loop, see `sdl2`/`sfml`.
+Visual Studio puts the binary under `build/Release/` and appends `.exe`.
+Source-only folders require an installed SDK and runtime/models from its native release.
+For source-only positions setup, obtain `default.json` from the configuration
+release or create a profile in the configurator. Compilation exceeds the prebuilt trial time.
 
-[Complete source walkthrough](../../docs/getting-started/examples.md) · [Bootstrap](../../docs/getting-started/bootstrap.md).
+## Reuse and troubleshooting
 
-## Project structure and MIG integration overview
+Start with `example_usage.hpp`; replace the blank RGB input with your camera/provider.
+Native inference and configured recognition are separate; see the positions tutorial for `Engine::update()`.
+Use fresh unmirrored observations with valid aspect, monotonic timestamps and
+increasing sequence. Keep one owning thread and the demonstrated scope lifetime.
 
-`main.cpp`: `demonstrate_inference()` owns the estimator and blank RGB input; `CMakeLists.txt`: installed native SDK.
+- Missing native library/model: retain the complete runtime folder and pass its absolute path when calling the executable directly.
+- SDK not found: set `CMAKE_PREFIX_PATH` or retain bundled `sdk/`.
+- Wrong architecture: use the SDK and native files matching the executable.
 
-Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
-
-## Walkthrough: initialization to shutdown
-
-1. Include `<mig/native/pose.hpp>` and construct `mig::native::Pose(runtime_directory)` in `demonstrate_inference()`. The default model is Full.
-2. `set_hands_enabled(hands)` explicitly controls hand inference; a build without hands rejects that request.
-3. `infer(rgb, width, height, capture_ms, sequence)` returns body observations; blank RGB exercises ownership, not human detection.
-4. Feed returned observations into a separate `mig::Engine::update()` in a real application. This consumer prints the returned sequence and capability, without generating movement actions.
-5. Disable hands when no longer required. The scoped estimator closes tasks and releases its loaded runtime on return or exception. Keep estimator calls on one owning thread.
-
-## MIG API used
-
-`mig::native::Pose`, `set_hands_enabled()`, `infer()`, `hands_enabled()`.
-
-## Configuration used
-
-This inference-only consumer has no movement configuration.
-
-## Reuse this in your project
-
-Install the matching MIG package/SDK and retain the integration calls in the walkthrough. Copy the profile and required runtime assets with their licenses; use supplied tracking observations or the native camera adapter, as this example does. Replace the displayed/logged action with your application callback. Keep observations unmirrored, preserve camera aspect, submit one update per fresh frame, and provide missing observations when tracking is lost. Keep the tracker on one owner thread and preserve its cleanup hook. The application window, props and HUD are optional.
-
-## Troubleshooting
-
-- Missing native library/model or WASM: extract the whole built package and retain its runtime/assets folders. Check the prerequisite list; a source checkout needs the documented build.
-- Camera unavailable: close other camera users; grant permission. Browser capture needs localhost or HTTPS. Engine previews need your own pose provider.
-- No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
-- Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
-- Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+[C++ SDK setup](../../docs/getting-started/cpp.md).

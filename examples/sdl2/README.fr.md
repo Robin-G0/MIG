@@ -1,77 +1,104 @@
-# Exemple caméra SDL2
+# SDL2 : caméra et actions logiques
 
 [English](README.md) | [Français](README.fr.md)
 
-## Essayer maintenant
-
-Extrayez le **package compilé complet** et conservez ses dossiers voisins. Le lancement rapide correspondant est :
-
-Lancez `mig-sdl2.exe` (Windows) ou `./mig-sdl2` (Linux) depuis ce dossier.
-
-Prérequis et limites : Windows/Linux ; archive native compilée ; runtime VC++ sous Windows ou glibc 2.35+ sous Linux.
-
-Les viewers compilés visent **30–60 secondes après extraction**, hors installation des prérequis et chargement initial du modèle. Les projets de moteur et les compilations source nécessitent davantage de préparation, décrite ci-dessous.
-
-Après calibration, gardez les épaules visibles, baissez les poignets dans Required puis levez-les vers Trigger : le viewer affiche une action pour chaque main.
-
 ## Ce que démontre cet exemple
 
-Lancez mig-sdl2 (mig-sdl2.exe sous Windows) sans arguments.
-Caméra reflétée, doigts et objets suivent les poignets. Levez la main du vert
-vers le jaune pour Left/Right hand raised. mig-sdl2-profile commence vide
-et importe un JSON par Import profile ou dépôt de fichier. Invalide garde l'ancien, valide
-recalibre. Les deux binaires partagent source/helpers et affichent les actions
-sans touches injectées. Fermer libère la caméra.
+Un aperçu miroir, les doigts et des objets suivant les poignets illustrent
+**Left hand raised!** et **Right hand raised!**. Le second exécutable importe
+votre JSON du configurateur et affiche ses noms d'actions.
+
+## Démarrage rapide — archive compilée
+
+1. Extrayez l'archive `*-sdl2-standalone`.
+2. Dans ce dossier, lancez `mig-sdl2.exe` sous Windows ou `./mig-sdl2` sous Linux.
+3. Gardez les deux épaules visibles pour la calibration. Baissez les mains
+   dans le vert, puis montez un poignet vers le jaune. Observez le panneau.
+4. Fermez la fenêtre pour libérer la caméra. `mig-sdl2-profile.exe / ./mig-sdl2-profile` permet d'importer un JSON.
+
+Comptez 30–60 secondes avec les prérequis installés ; le chargement des modèles
+dépend du matériel. Dans l'archive groupée, utilisez le dossier de l'exemple.
+
+## Organisation du dossier
+
+| Fichier ou dossier | Rôle |
+| --- | --- |
+| `main.cpp` | Petit point d'entrée ; sélection du mode démo ou import. |
+| `example_usage.hpp` | Initialisation MIG, reconnaissance et gestion des actions. |
+| `application.cpp` | Fenêtre, événements, rendu et boucle de traitement. |
+| `configuration/raised-hands.json` | Profil local schema-v2 des deux poignets. |
+| `support/` | Recherche de ressources et affichage, avec leurs sources locales. |
+| `hud.hpp` | Texte des actions et commandes du sélecteur de profil. |
+| `CMakeLists.txt` | Compilation des deux variantes avec les cibles publiques MIG. |
+| `support/DejaVuSans.ttf` | Police redistribuable du panneau, avec sa licence. |
+| `lib/` | Archive Linux : bibliothèques graphiques et sélecteur de fichier. |
+| `sdk/` | Archive individuelle : en-têtes et bibliothèques de développement. |
+
+## Parcours du code
+
+1. `main.cpp` appelle `run_application()` dans `application.cpp`.
+2. `example_usage.hpp` inclut l'API publique. `initialize_mig()` appelle
+   `load_configuration()`, valide le JSON, puis construit `mig::Engine`.
+3. `demo::Source::sample()` dans `support/source.hpp` capture RGB et appelle
+   `Pose::infer()` ; le mode synthétique fournit des observations de test.
+4. `tutorial::process_tracking_frame()` appelle `engine.update(frame, timestamp_ms)`
+   et consomme immédiatement les événements empruntés, via
+   `engine.configuration().motions[event.motion]`.
+5. La boucle d'actions écrit le texte et le panneau ; remplacez-la par vos commandes.
+   `draw_frame()` ne retourne que l'aperçu visuel.
+6. `demo::import_profile()` valide un remplacement avant de changer le moteur.
+7. À la fermeture, Source libère caméra et tâches avant la destruction du moteur.
+   Les propriétaires C++ libèrent aussi textures et fenêtre.
+
+## Dépendances et placement des ressources
+
+Fourni : les deux exécutables, MIG/MediaPipe, modèles Lite et mains, bibliothèques
+graphiques, police et licences. `runtime/` est local dans l'archive individuelle,
+partagé à la racine dans l'archive groupée. Les lanceurs Linux règlent les chemins
+des bibliothèques, polices et plugins Qt depuis leur emplacement. Les DLL Windows
+restent à côté des exécutables. Conservez tous ces dossiers.
+
+Externe : Windows x64 et runtime VC++, ou Linux x64 avec glibc 2.35+ et affichage
+graphique ; webcam pour le suivi réel. Développement facultatif : CMake 3.25+,
+compilateur C++20, SDK MIG et bibliothèques de développement graphiques.
+
+## Recompiler hors du dépôt
 
 ```sh
-cmake -S examples/sdl2 -B build/sdl2 -DCMAKE_PREFIX_PATH=/chemin/sdk
-cmake --build build/sdl2 --config Release
+cmake -S . -B build -DCMAKE_PREFIX_PATH="/chemin/MIG/sdk;/chemin/sdk/graphique"
+cmake --build build --config Release
 ```
 
-Le build cherche le SDK installé puis le dépôt complet, dont il faut préparer
-les dépendances natives. Dépendances de développement : SDL2 2.0.10+ et SDL2_ttf ;
-Qt 6 Widgets sous Linux pour le sélecteur, dialogue système sous Windows.
-La police DejaVu et sa licence sont fournies. Les scripts build-examples.ps1/.sh
-compilent et testent. Archive : sources à côté des binaires et SDK sous sdk/.
---smoke génère des points sans caméra.
+L'archive individuelle fournit `sdk/`, recherché par CMake. Les sources copiées
+seules nécessitent un SDK MIG installé. Le dépôt complet peut compiler MIG après
+bootstrap natif. Les modèles sont séparés des en-têtes : définissez `MIG_RUNTIME`
+vers le dossier MediaPipe et `models/`. `--smoke` génère des images sans caméra,
+puis quitte. La capture est synchrone : utilisez un worker dans un jeu qui doit
+rendre indépendamment du temps d'inférence.
 
-demo::Source possède capture/inférence, demo::consume traite les événements,
-draw_frame reflète caméra et overlays. Textures/buffers sont réutilisés.
-La capture C++ synchrone simplifie cet exemple ; un worker permet un dessin
-indépendant dans un jeu. [Lancement](../README.fr.md),
-[code complet](../../docs/getting-started/examples.fr.md), [démarrage](../../docs/getting-started/bootstrap.fr.md).
+Développement : SDL2, SDL2_ttf et Qt6 Widgets sous Linux pour le sélecteur.
+Sous Windows, le sélecteur est natif.
 
-## Structure et intégration MIG
+## Configuration et réutilisation
 
-`main.cpp`: SDL window, event loop, camera texture and HUD. `../common/source.hpp`: camera/model ownership. `../common/recognition.hpp`: MIG processing and action dispatch.
+Le profil contient, pour chaque poignet, une zone Required `[-9,3,27,3]`, puis
+une zone Trigger `[-9,1,27,2]`. Une pose isolée dans le jaune ne déclenche rien.
+Le mode import démarre sans règles. Un JSON invalide préserve le profil précédent ;
+un import valide recommence la calibration.
 
-Le framework gère la fenêtre et le rendu. Le fichier d'intégration indiqué gère le profil, les observations, les appels MIG, les actions et leur libération.
+Reprenez le fichier d'intégration indiqué et le profil. Remplacez le callback
+d'action par une commande du jeu. Fournissez des observations MediaPipe non
+miroir, leur aspect original, une séquence croissante et un temps monotone.
+Traitez chaque nouvelle image une fois ; fournissez des observations absentes
+si le suivi est perdu. L'aperçu, les objets et le panneau sont uniquement visuels.
+Gardez un propriétaire par tracker et son nettoyage. Aucune touche système n'est injectée.
 
-## Parcours de l'intégration
+## Dépannage
 
-1. Repérez l'import MIG et la création du tracker dans le fichier indiqué.
-2. Chargez et validez le JSON avant de traiter les observations.
-3. Fournissez des points non miroités, le rapport d'aspect, des timestamps monotones et une séquence croissante.
-4. Appelez le traitement une fois par frame nouvelle. Un poll de caméra natif reconnaît déjà les observations ; récupérez ensuite les événements sans doubler update.
-5. Utilisez les actions logiques pour votre application. Les exemples n'injectent pas de touches système.
-6. Conservez le hook de fermeture du framework et libérez le tracker sur son thread propriétaire.
-
-## API MIG utilisée
-
-`engine.update(frame, now_ms)`, `engine.configuration()`, `load_configuration()`, `Pose::infer()`.
-
-## Configuration
-
-Le profil raised-hands.json utilise, pour chaque poignet, une grande zone Required `[-9,3,27,3]`, puis une zone Trigger `[-9,1,27,2]`. Un poignet directement dans Trigger ne suffit pas. L'import valide le schéma 2 avant remplacement.
-
-## Réutiliser dans votre projet
-
-Installez le package ou SDK MIG correspondant et conservez les appels du fichier d'intégration indiqué. Copiez profil, assets et licences ; branchez votre fournisseur de points ou l'adaptateur caméra natif. Remplacez les messages affichés par vos actions applicatives. Gardez le ratio caméra, un update par frame, les observations de perte de tracking et la fermeture sur le thread propriétaire. Fenêtre, props et HUD restent facultatifs.
-
-## Résoudre les problèmes
-
-- Runtime/modèles/WASM absents : extrayez le package complet ; un dossier de sources seul ne suffit pas.
-- Caméra indisponible : fermez les autres utilisateurs et autorisez l'accès ; le navigateur nécessite HTTPS ou localhost. Les moteurs nécessitent votre fournisseur de pose.
-- Pas d'action : gardez les épaules visibles, calibrez, partez de Required et atteignez Trigger. Les chemins nécessitent un intervalle maximal de 180 ms ; profilez une inférence très lente.
-- Import invalide : corrigez l'action ou le schéma indiqué par l'erreur ; le profil précédent est conservé.
-- Une inférence native en cours doit terminer avant la jointure du worker lors de l'arrêt.
+- Bibliothèque ou modèle absent : conservez tout le dossier extrait. Les sources
+  seules nécessitent l'installation ci-dessous et ne contiennent pas les exécutables.
+- Caméra occupée : fermez les autres applications et autorisez son accès.
+- Aucune action : attendez la calibration des deux épaules, baissez les poignets,
+  puis passez du vert au jaune. Un intervalle supérieur à 180 ms nécessite un profilage.
+- Import refusé : corrigez l'erreur de schéma ; les règles précédentes restent actives.
+- La fermeture attend la fin de l'inférence en cours avant de libérer MIG.

@@ -2,10 +2,10 @@
 
 [English](README.md) | [Français](README.fr.md)
 
-## Try it now
+## Quick Start
 
-1. Extract the **complete built example package**, keeping its folders together.
-2. Use a Godot .NET desktop project, copy the bridge/scripts/profile as described below, attach **MigRaisedHands**, enable **UseSyntheticDemo** and run the scene.
+1. Extract this example’s **standalone archive**; keep its contents together.
+2. Import `project.godot` into Godot 4.4 .NET, build the C# project and run its scene. Synthetic mode is enabled in the supplied scene.
 3. Keep shoulders visible for calibration, lower your hands into the green region, then raise either wrist into yellow. Expect **Left/Right hand raised** once per wrist.
 
 **Prerequisites:** Preview integration; Godot .NET, .NET SDK and a matching loose native ABI library. Initial setup exceeds one minute; no camera provider is bundled.
@@ -53,13 +53,13 @@ Disable synthetic mode when connecting your real estimator.
 
 [Complete source walkthrough](../../../docs/getting-started/examples.md) · [Bootstrap](../../../docs/getting-started/bootstrap.md).
 
-## Project structure and MIG integration overview
+## Folder walkthrough
 
 `MigInput.cs`: direct MIG calls and Godot lifecycle. `MigRaisedHands.cs` / `MigProfileInput.cs`: mode selection. Shared `MigTracker.cs`: C ABI signatures/ownership.
 
 Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
 
-## Walkthrough: initialization to shutdown
+## Code walkthrough
 
 1. `_Ready()` creates `MigTracker` and calls `ImportProfile()` for the requested JSON. The empty profile starts without actions.
 2. `SubmitFrame(packet)` accepts provider observations on the main thread; `_Process()` optionally supplies synthetic demo packets.
@@ -86,3 +86,15 @@ Install the matching MIG package/SDK and retain the integration calls in the wal
 - No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
 - Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
 - Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+
+## Standalone project dependencies
+
+`project.godot` selects `raised_hands.tscn`; `profile.tscn` is the import variant.
+The archive includes `MigExample.csproj`, `MigTracker.cs`, `SyntheticFrames.cs`,
+the native C ABI library at project root and licenses. Godot 4.4 .NET and its
+.NET 8 SDK are external. Import the project, Build, then Run (synthetic mode).
+The C# native resolver uses the project path, independently of the working directory.
+A copied source folder needs the two bridge files and matching native library
+from the managed binding/SDK release placed at project root.
+These preview projects accept supplied observations; a live camera provider
+is your responsibility. First editor/.NET setup can exceed one minute.

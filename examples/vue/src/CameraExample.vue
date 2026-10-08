@@ -1,14 +1,10 @@
 <script setup>
 import { ref } from "vue";
-import { useMIG } from "motion-input-grid/vue";
+import { useMotionInput } from "./example_usage.mjs";
 
 const props = defineProps({ profileMode: Boolean });
 const error = ref("");
-const { state, video, canvas, start, stop, recalibrate, importJSON } = useMIG({
-    assetBase: new URL("mig/", document.baseURI).href,
-    profileMode: props.profileMode,
-    onAction: event => console.log(event)
-});
+const { state, video, canvas, start, stop, recalibrate, importJSON } = useMotionInput(props.profileMode);
 
 async function importProfile(event) {
     const file = event.target.files[0];

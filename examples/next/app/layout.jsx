@@ -1,4 +1,4 @@
-import "../../react/src/style.css";
+import "./style.css";
 
 export const metadata = { title: "MIG Next.js camera examples" };
 

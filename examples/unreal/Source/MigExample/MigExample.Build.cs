@@ -19,8 +19,8 @@ public class MigExample : ModuleRules
         }
         else if (target.Platform == UnrealTargetPlatform.Linux)
         {
-            PublicAdditionalLibraries.Add(Path.Combine(sdk, "lib", "libmig-c.so"));
-            RuntimeDependencies.Add("$(TargetOutputDir)/libmig-c.so", Path.Combine(sdk, "lib", "libmig-c.so"));
+            PublicAdditionalLibraries.Add(Path.Combine(sdk, "lib", "libmig-c.so.1"));
+            RuntimeDependencies.Add("$(TargetOutputDir)/libmig-c.so.1", Path.Combine(sdk, "lib", "libmig-c.so.1"));
         }
         else
         {

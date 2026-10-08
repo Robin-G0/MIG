@@ -84,3 +84,14 @@ Installez le package ou SDK MIG correspondant et conservez les appels du fichier
 - Pas d'action : gardez les épaules visibles, calibrez, partez de Required et atteignez Trigger. Les chemins nécessitent un intervalle maximal de 180 ms ; profilez une inférence très lente.
 - Import invalide : corrigez l'action ou le schéma indiqué par l'erreur ; le profil précédent est conservé.
 - Une inférence native en cours doit terminer avant la jointure du worker lors de l'arrêt.
+
+## Standalone package dependencies
+
+The individual package contains `Runtime/Bridge/MigTracker.cs`, the
+`MIG.Runtime` assembly, `Runtime/Plugins/<platform>/` with importer metadata,
+`SyntheticFrames.cs`, components, Resources profile and licenses. It has no
+dependency on a second UPM package. Add its `package.json` from disk and attach
+`MigRaisedHands` to a GameObject; enable `UseSyntheticDemo` and press Play.
+The editor is external. No MediaPipe models are needed for supplied observations.
+For the raw source folder, install the separate MIG runtime UPM package first
+and copy `SyntheticFrames.cs` from the matching managed binding release.

@@ -155,6 +155,10 @@ const archive = join(releases, `${name}.tar.gz`);
 const python = process.platform === "win32" ? "py" : "python3";
 const pythonOptions = process.platform === "win32" ? ["-3"] : [];
 execFileSync(python, [...pythonOptions, join(root, "tools/archive-examples.py"), destination, archive]);
+for (const example of ["web", "react", "vue", "next"]) {
+    execFileSync(python, [...pythonOptions, join(root, "tools/package-browser-example.py"),
+        "--source", destination, "--example", example], { stdio: "inherit" });
+}
 const digest = createHash("sha256").update(await readFile(archive)).digest("hex");
 await writeFile(`${archive}.sha256`, `${digest}  ${name}.tar.gz\n`);
 const sums = [];

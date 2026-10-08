@@ -1,107 +1,97 @@
-# Browser integration
+# Web camera tutorial
 
 [English](README.md) | [Français](README.fr.md)
 
-## Try it now
-
-1. Extract the **complete built example package**, keeping its folders together.
-2. Run `run.cmd` (Windows) or `sh run.sh` (Linux) in the extracted JavaScript examples archive. Open `http://localhost:8820`.
-3. Keep shoulders visible for calibration, lower your hands into the green region, then raise either wrist into yellow. Expect **Left/Right hand raised** once per wrist.
-
-**Prerequisites:** Modern browser and complete built JavaScript examples archive; Node and local WASM/models are bundled. A raw checkout needs the build described below.
-
-Desktop/browser built viewers target about **30–60 seconds after extraction**, with prerequisites installed; cold model loading depends on hardware. Editor and source builds have the longer setup described below. A source-only folder is not the prebuilt package.
-
 ## What this example demonstrates
 
-Two variants share the same camera tracking: a raised-hand demo with visual
-feedback and a JSON profile importer. Actions stay inside your application;
-this example does not send desktop keyboard shortcuts.
+Raise either wrist through the green region into yellow to receive
+**Left/Right hand raised!**. The profile page imports configurator JSON and
+displays logical action/input IDs. Actions stay in your application.
 
-## Use in your application
+## Quick Start
+
+1. Extract `*-browser-web-standalone.tar.gz`. Have Node.js 22.12+ and
+   a modern browser installed; Linux and Windows are supported by this server.
+2. Run `node run.mjs` in this folder, or use `run.cmd` / `sh run.sh`.
+3. Open `http://localhost:8820`, click **Start camera**, and grant camera permission.
+4. Keep both shoulders visible, lower your hands into green, then raise into yellow.
+5. Visit `/profile.html` to import JSON; click Stop and use Ctrl+C to stop the server.
+
+Target: 30–60 seconds after extraction with prerequisites installed. All models,
+WASM and MediaPipe Vision assets are local; no npm install or CDN is needed to try
+compiled pages. The combined JavaScript archive also includes portable Node;
+its launchers select that interpreter. Initial model loading depends on hardware.
+
+## Folder walkthrough
+
+| File/directory | Purpose |
+| --- | --- |
+| `index.html / profile.html` | Application entry and raised-hands/import mode selection. |
+| `mig-tracker.mjs` | MIG integration and action callback; start studying here. |
+| `camera.mjs` | Controls, video/canvas refs and visible action feedback. |
+| `run.mjs`, `server.mjs` | Localhost static server; resolves files relative to this folder. |
+| `run.cmd`, `run.sh` | Release launchers; independent of the working directory. |
+| `./` | Release HTML/CSS/JS and local MIG assets (web uses this folder itself). |
+| `default.json` or `./mig/default.json` | Schema-v2 two-wrist demo profile. |
+| `models/`, `vision/` or `./mig/` | Local pose/hand models, Vision runtime and MIG WASM. |
+| `licenses/`, `LICENSE` | Redistribution notices in the release. |
+| `style.css` | Mirrored preview and unmirrored text panel. |
+
+## Code walkthrough
+
+1. `mig-tracker.mjs` imports `createMIG` from the local `mig.mjs` WASM loader.
+   `MIGTracker.create(json)` constructs the native tracker and validates JSON.
+2. `session.mjs`, `MIGSession.createTracker()`, fetches local `default.json`.
+   `camera.mjs` constructs a session and supplies its application callbacks.
+3. Start calls `session.start(video, canvas)` after a click. `models.mjs` loads
+   local MediaPipe tasks; `session.mjs` obtains a camera stream and infers fresh frames.
+4. `MIGTracker.update(pose, hands, timestampMs, aspect, onAction)` uses
+   `packets.mjs` to copy unmirrored results, then calls native `update()` once.
+5. It copies `eventAction()` and `eventId()` before callbacks. `camera.mjs`
+   logs the action, dispatches `mig-action` and updates the text panel.
+6. The profile input reads at most 1 MiB, then calls `session.importJSON(text)`.
+   Invalid imports retain the previous rules; valid imports recalibrate.
+7. Stop releases stream tracks. Page teardown calls `session.dispose()` to
+   close models and delete the WASM tracker, including partial startup failures.
+
+`coordinate(15, 2)` supplies optional world wrist XYZ in metres, Y up. Missing
+world observations return no coordinate. Feed empty detection results on loss
+and reacquire WASM buffer views after importing a profile. `active(index)` supports
+held commands; your application schedules Hold/Repeat behavior.
+
+## Dependencies and source rebuild
+
+External runtime prerequisites: Node.js 22.12+, modern browser and webcam with
+camera permission. Optional development dependencies: npm plus the framework
+versions in `package.json`. `session.mjs`, `packets.mjs`, `models.mjs` and `overlay.mjs` are local
+source modules: camera ownership, observation conversion, model loading and drawing.
+
+Copy this folder outside the repository, then use these commands to edit/rebuild:
 
 ```sh
 npm install motion-input-grid
-npx mig-copy-assets public/mig
+npx mig-copy-assets .
+node run.mjs
 ```
 
-Import from `motion-input-grid`. Serve the assets at `/mig/` over localhost or HTTPS. The package includes
-WASM and models, so your application needs no C++ build. The checkout
-commands below are for editing and rebuilding this example. See the
-[npm guide](../../bindings/javascript/README.md).
+For plain web, `mig-copy-assets .` installs runtime assets without replacing HTML
+or `camera.mjs`. For frameworks the copied `public/mig/` assets enter `./mig/`
+during build. Source builds take longer than the prebuilt trial. No C++ compiler
+is needed when using the npm binding. Keep the generated output and its assets together.
 
-## Run from the checkout
+## Reuse and troubleshooting
 
-Build with Emscripten, then package with `tools/package-distribution.ps1`, or copy
-this directory together with `mig.mjs`, `mig.wasm`, `default.json`, `models/` and `vision/`.
-Serve over localhost/HTTPS, never `file://`:
+Start with `mig-tracker.mjs` and the profile. Replace the named action callback;
+the DOM/component styles and paper-plane props are optional. Keep observation
+anatomy unmirrored, aspect correct, timestamp monotonic and sequence increasing.
+Mirror only presentation. Rules require starting in green; standing in yellow
+alone does not fire. Intervals over 180 ms need hardware profiling.
 
-```sh
-python3 -m http.server 8820 --directory distribution/web
-```
+- Camera permission requires localhost or HTTPS, not `file://`.
+- Missing assets: retain all model/WASM folders; source builds need the asset copy step.
+- Port 8820 occupied: stop the other example server before starting this one.
+- Import error: fix the displayed schema error; the old configuration still runs.
+- Preview integrations and synthetic tests do not establish webcam accuracy.
 
-Open `http://localhost:8820`. Start explicitly grants camera permission and loads
-pinned MediaPipe Tasks Vision 0.10.35 from local assets. Prepare `vision/` with
-`node tools/bootstrap-browser.mjs` before packaging. The JavaScript archive includes
-Node launchers (`run.cmd` or `sh run.sh`), models, WASM and vision; no CDN is needed.
-
-`index.html` is the raised-hands demo; `profile.html` starts empty and imports
-arbitrary configurator JSON. Both use the same camera/tracker modules. Accepted
-actions appear above the video with simultaneous events on separate lines; the
-text panel is not mirrored. Invalid imports preserve the previous configuration;
-successful imports clear old action feedback and restart calibration.
-Packaging uses `common/raised-hands.json` as `default.json`, not `configs/default.json`.
-
-```js
-const tracker = await MIGTracker.create(profileJson);
-tracker.update(poseResults, handResults, performance.now(), width / height,
-    (action, inputId) => game.dispatch(action, inputId));
-const wrist = tracker.coordinate(15, 2); // optional world metres, Y-up
-tracker.dispose();
-```
-
-`mig-tracker.mjs` owns the WASM engine; `packets.mjs` copies fixed-size observations;
-`models.mjs` handles model setup/partial-failure cleanup; `overlay.mjs` draws; and
-`session.mjs` owns camera lifecycle for HTML, React, Vue and Next.js;
-`camera.mjs` connects the session to DOM controls. HTML mirrors video/overlay
-once. Feed empty detection results on loss. Reacquire buffer views after imports.
-Callbacks are logical events; browsers cannot inject desktop keyboard keys.
-Use `active(index)` and profile action settings for application Hold/Repeat scheduling.
-Stop/page-close releases stream tracks and native model/engine resources.
-
-[Complete source walkthrough](../../docs/getting-started/examples.md) · [Bootstrap](../../docs/getting-started/bootstrap.md).
-
-## Project structure and MIG integration overview
-
-`index.html` / `profile.html`, `camera.mjs`: browser controls. `session.mjs`: session lifecycle. `mig-tracker.mjs`: direct WASM calls. `packets.mjs`: observation buffers.
-
-Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
-
-## Walkthrough: initialization to shutdown
-
-1. `camera.mjs` imports `MIGSession` from `session.mjs`; the session loads `mig-tracker.mjs`, models and overlay code from an explicitly resolved asset base.
-2. `MIGSession.createTracker()` fetches `default.json`; `MIGTracker.create(json)` imports `mig.mjs`, constructs `new module.Tracker()` and validates/loads JSON before acquiring a camera.
-3. Start calls `navigator.mediaDevices.getUserMedia()` after a user click. The session estimates one fresh video frame, and `packets.mjs` copies unmirrored body/hand observations into fixed buffers.
-4. `MIGTracker.update()` calls the WASM tracker `update()` with monotonic milliseconds, sequence, aspect and hand metadata. It copies `eventAction()` / `eventId()` values before invoking application callbacks.
-5. The session publishes action feedback; `camera.mjs` updates the text panel. Replace `onAction` with your game callback. Browser imports validate profiles but never inject desktop keyboard sequences.
-6. Stop releases stream tracks. `dispose()` cancels the session generation, closes models and deletes the WASM engine; page teardown calls it. Failed startup/import leaves a useful error and releases partial resources.
-
-## MIG API used
-
-`MIGSession`, `MIGTracker.create()`, `Tracker.load()`, `Tracker.update()`, `eventAction()`, `eventId()`, `active()`, `dispose()`.
-
-## Configuration used
-
-The raised-hand demo uses `raised-hands.json` (served as `default.json` in browser assets): one broad Required zone `[-9,3,27,3]`, then a Trigger zone `[-9,1,27,2]` for each wrist. Import mode starts empty and validates schema-v2 JSON before replacement. Step order retains the upward movement; an isolated pose in yellow cannot fire.
-
-## Reuse this in your project
-
-Install the matching MIG package/SDK and retain the integration calls in the walkthrough. Copy the profile and required runtime assets with their licenses; use supplied tracking observations or the native camera adapter, as this example does. Replace the displayed/logged action with your application callback. Keep observations unmirrored, preserve camera aspect, submit one update per fresh frame, and provide missing observations when tracking is lost. Keep the tracker on one owner thread and preserve its cleanup hook. The application window, props and HUD are optional.
-
-## Troubleshooting
-
-- Missing native library/model or WASM: extract the whole built package and retain its runtime/assets folders. Check the prerequisite list; a source checkout needs the documented build.
-- Camera unavailable: close other camera users; grant permission. Browser capture needs localhost or HTTPS. Engine previews need your own pose provider.
-- No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
-- Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
-- Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+[Public JavaScript API](../../bindings/javascript/README.md) ·
+[Configuration](../../docs/reference/configuration.md).

@@ -1,8 +1,24 @@
 #pragma once
+#include "support/profile.hpp"
 #include <iostream>
 #include <mig/core/engine.hpp>
-namespace demo {
-inline unsigned consume(mig::Engine& engine, const mig::Frame& body, std::string* status = nullptr,
+namespace tutorial {
+inline mig::Configuration load_configuration(const demo::Options& options) {
+    // Parse and validate the JSON once, before processing observations.
+    auto configuration = mig::load_configuration(options.config);
+    if (demo::profile_mode && !options.smoke) {
+        configuration.motions.clear();
+        configuration.track_hands = false;
+    }
+    return configuration;
+}
+
+inline mig::Engine initialize_mig(const demo::Options& options) {
+    // Engine owns calibration and movement state. Its destructor releases them.
+    return mig::Engine(load_configuration(options));
+}
+
+inline unsigned process_tracking_frame(mig::Engine& engine, const mig::Frame& body, std::string* status = nullptr,
                         bool hand_messages = true) {
     // Submit one fresh, unmirrored observation. The returned span is borrowed
     // until the next update/reset, so consume its action IDs immediately.
@@ -28,4 +44,4 @@ inline unsigned consume(mig::Engine& engine, const mig::Frame& body, std::string
     }
     return unsigned(events.size());
 }
-} // namespace demo
+} // namespace tutorial

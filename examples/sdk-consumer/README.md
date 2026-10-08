@@ -1,71 +1,75 @@
-# C++ positions-only consumer
+# C++ positions recognition tutorial
 
 [English](README.md) | [Français](README.fr.md)
 
-## Try it now
-
-1. Extract the **complete built example package**, keeping its folders together.
-2. Run `run.cmd` (Windows) or `sh run.sh` (Linux) in this folder of the prebuilt native examples archive.
-3. Expect `left_raise` on the console.
-
-**Prerequisites:** Prebuilt executable: no camera or estimator. Building sources needs CMake 3.25+, C++20 and an installed/bundled SDK; compilation can exceed one minute.
-
-Desktop/browser built viewers target about **30–60 seconds after extraction**, with prerequisites installed; cold model loading depends on hardware. Editor and source builds have the longer setup described below. A source-only folder is not the prebuilt package.
-
 ## What this example demonstrates
 
-To install just the library and link it to your project, follow the
-[C++ SDK / CMake guide](../../docs/getting-started/cpp.md). It covers archives, source builds,
-`cmake --install` and generated Makefiles on Linux.
+Recognizes `left_raise` from supplied synthetic shoulder/wrist observations.
+It demonstrates linking the installed SDK, calibration, ordered movement rules
+and logical event dispatch without a camera, model or window.
 
-Requires CMake 3.25, C++20 and an installed MIG SDK with `MIG::core`/`MIG::format`.
-No camera, models, Python or window system is needed.
+## Quick Start
+
+1. Extract `*-sdk-consumer-standalone` for your Windows/Linux x64 platform.
+2. Run `run.cmd` (Windows) or `sh run.sh` (Linux) from this folder.
+3. Observe the console result, then normal process exit. No webcam is needed.
+
+Target: 30–60 seconds with prerequisites installed; inference model loading
+depends on hardware. The combined archive offers the same launchers in its example folder.
+
+## Folder walkthrough
+
+| File/directory | Purpose |
+| --- | --- |
+| `main.cpp` | Argument validation and simple tutorial orchestration. |
+| `example_usage.hpp` | Actual MIG API calls and explanatory comments. |
+| `CMakeLists.txt` | Public MIG SDK targets; also searches a bundled `sdk/`. |
+| `run.cmd`, `run.sh` | Packaged launch command and resource arguments relative to this folder. |
+| `sdk/` | Individual package: headers and development libraries. |
+| `licenses/`, `LICENSE` | Redistribution notices. |
+| `configs/default.json` | Individual archive: one authored `left_raise` path. |
+
+## Code walkthrough
+
+1. `main.cpp` checks the JSON argument and calls `initialize_mig()`.
+2. `example_usage.hpp` includes `<mig/core/engine.hpp>` and the format API.
+   `initialize_mig()` validates JSON with `mig::load_configuration(path)` and
+   constructs an engine owning the rules and temporal state.
+3. `calibrate()` supplies stable shoulders over time, with increasing sequence.
+4. `demonstrate_path()` walks the first input’s constraint centers and calls
+   `engine.update(frame, frame.timestamp_ms)` once per generated observation.
+5. `dispatch_events()` consumes borrowed events immediately and maps each
+   `event.motion` to `engine.configuration().motions[event.motion].action`.
+6. The scoped engine is destroyed on return or exception.
+
+## Dependencies and rebuilding
+
+External: Windows x64 with VC++ runtime, or Linux x64 with glibc 2.35+.
+Bundled: executable, public SDK, licenses, configuration.
+Recognition is statically linked; no MediaPipe or camera runtime is needed.
+Optional development: CMake 3.25+, C++20 compiler and matching MIG SDK. Copy
+this folder and use an installed SDK or the individually bundled `sdk/`:
 
 ```sh
-cmake -S examples/sdk-consumer -B build/sdk-example -DCMAKE_PREFIX_PATH=/absolute/path/to/sdk
-cmake --build build/sdk-example --config Release
-build/sdk-example/mig-sdk-example configs/default.json
+cmake -S . -B build -DCMAKE_PREFIX_PATH=/path/to/MIG/sdk
+cmake --build build --config Release
+build/mig-sdk-example configs/default.json
 ```
 
-Visual Studio places the executable under `Release/`. The supplied profile emits
-`left_raise`. `calibrate()` supplies stable synthetic shoulders; `demonstrate_path()`
-walks one simple authored path; `dispatch_events()` shows the application callback.
-Replace the synthetic frame construction with your estimator and retain
-`engine.update(frame, frame.timestamp_ms)`. The synthetic walker is intentionally
-not a simulator for arbitrary simultaneous/finger/Interaction profiles.
+Visual Studio puts the binary under `build/Release/` and appends `.exe`.
+Source-only folders require an installed SDK and your configuration file.
+For source-only positions setup, obtain `default.json` from the configuration
+release or create a profile in the configurator. Compilation exceeds the prebuilt trial time.
 
-[Complete source walkthrough](../../docs/getting-started/examples.md) · [Bootstrap](../../docs/getting-started/bootstrap.md).
+## Reuse and troubleshooting
 
-## Project structure and MIG integration overview
+Start with `example_usage.hpp`; replace synthetic frame construction with your pose provider and dispatch with your game commands.
+The synthetic walker only illustrates a simple authored path; it does not simulate arbitrary simultaneous lanes, fingers or Interaction profiles.
+Use fresh unmirrored observations with valid aspect, monotonic timestamps and
+increasing sequence. Keep one owning thread and the demonstrated scope lifetime.
 
-`main.cpp`: complete integration, including synthetic host observations and console dispatch. `CMakeLists.txt`: installed SDK links.
+- Missing JSON: pass an existing profile; the launcher uses the bundled `configs/default.json`.
+- SDK not found: set `CMAKE_PREFIX_PATH` or retain bundled `sdk/`.
+- Wrong architecture: use the SDK and native files matching the executable.
 
-Framework/UI code owns rendering and user events. The named integration source owns configuration, observation submission, action retrieval and cleanup; it uses the public MIG API. Shared helpers are source references included with the archive.
-
-## Walkthrough: initialization to shutdown
-
-1. Include `<mig/core/engine.hpp>` and `<mig/format/configuration.hpp>` and create `mig::Engine(mig::load_configuration(path))` in `main()`.
-2. `calibrate()` supplies valid synthetic shoulders, timestamps and sequences. Replace these synthetic observations with your tracking provider.
-3. `demonstrate_path()` submits one landmark at the center of each authored region with `engine.update(frame, frame.timestamp_ms)`; it is a simple demonstration, not an arbitrary-profile simulator.
-4. `dispatch_events()` resolves `event.motion` in `engine.configuration().motions` and prints its logical action. Replace this with application commands.
-5. The scoped engine is destroyed on return or exception. There is no camera/model ownership or keyboard injection in this example.
-
-## MIG API used
-
-`mig::Engine`, `mig::load_configuration()`, `Engine::update()`, `Engine::configuration()`.
-
-## Configuration used
-
-This consumer takes a profile path (`configs/default.json` in the supplied launcher).
-
-## Reuse this in your project
-
-Install the matching MIG package/SDK and retain the integration calls in the walkthrough. Copy the profile and required runtime assets with their licenses; use supplied tracking observations or the native camera adapter, as this example does. Replace the displayed/logged action with your application callback. Keep observations unmirrored, preserve camera aspect, submit one update per fresh frame, and provide missing observations when tracking is lost. Keep the tracker on one owner thread and preserve its cleanup hook. The application window, props and HUD are optional.
-
-## Troubleshooting
-
-- Missing native library/model or WASM: extract the whole built package and retain its runtime/assets folders. Check the prerequisite list; a source checkout needs the documented build.
-- Camera unavailable: close other camera users; grant permission. Browser capture needs localhost or HTTPS. Engine previews need your own pose provider.
-- No action: keep both shoulders visible, finish calibration, start in green, then raise into yellow. Paths require samples no more than 180 ms apart; very slow inference needs hardware profiling.
-- Import fails: keep the error message and fix the schema/action it identifies. Failed validation preserves the old profile.
-- Close/Stop releases owned resources; an in-flight native inference must finish before its worker can join.
+[C++ SDK setup](../../docs/getting-started/cpp.md).

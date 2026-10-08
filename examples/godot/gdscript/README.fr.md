@@ -125,3 +125,13 @@ Installez le package ou SDK MIG correspondant et conservez les appels du fichier
 - Pas d'action : gardez les épaules visibles, calibrez, partez de Required et atteignez Trigger. Les chemins nécessitent un intervalle maximal de 180 ms ; profilez une inférence très lente.
 - Import invalide : corrigez l'action ou le schéma indiqué par l'erreur ; le profil précédent est conservé.
 - Une inférence native en cours doit terminer avant la jointure du worker lors de l'arrêt.
+
+## Standalone project dependencies
+
+`project.godot` selects `raised_hands.tscn`; `profile.tscn` is the import variant.
+The archive includes `addons/mig/` with the native GDExtension and C ABI,
+its platform descriptor and licenses. Import the project in Godot 4 desktop,
+enable `use_synthetic_demo` on the scene node, and press Run.
+A copied source folder needs the matching MIG Godot addon installed in `addons/`.
+These preview projects accept supplied observations; a live camera provider
+is your responsibility. First editor/.NET setup can exceed one minute.

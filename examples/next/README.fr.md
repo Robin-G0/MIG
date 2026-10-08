@@ -1,103 +1,94 @@
-# Exemples caméra Next.js
+# Tutoriel caméra Next
 
 [English](README.md) | [Français](README.fr.md)
 
-## Essayer maintenant
-
-Extrayez le **package compilé complet** et conservez ses dossiers voisins. Le lancement rapide correspondant est :
-
-Lancez `run.cmd` (Windows) ou `sh run.sh` (Linux), puis ouvrez `http://localhost:8820`.
-
-Prérequis et limites : Navigateur moderne et archive JavaScript compilée complète avec le dossier statique `out/`. Les sources nécessitent Node.js et les dépendances Next.
-
-Les viewers compilés visent **30–60 secondes après extraction**, hors installation des prérequis et chargement initial du modèle. Les projets de moteur et les compilations source nécessitent davantage de préparation, décrite ci-dessous.
-
-Après calibration, gardez les épaules visibles, baissez les poignets dans Required puis levez-les vers Trigger : le viewer affiche une action pour chaque main.
-
 ## Ce que démontre cet exemple
 
-Deux variantes partagent le même suivi caméra : une démo de main levée avec
-retour visuel et un importeur de profils JSON. Les actions restent dans votre
-application ; cet exemple n'envoie pas de raccourcis clavier système.
+Montez un poignet du vert vers le jaune pour obtenir **Left/Right hand raised!**.
+La page de profil importe un JSON du configurateur et affiche les actions/identifiants.
+Les actions restent dans l'application.
 
-## Dans votre application
+## Démarrage rapide
+
+1. Extrayez `*-browser-next-standalone.tar.gz`. Installez au préalable
+   Node.js 22.12+ et un navigateur moderne (serveur Windows/Linux).
+2. Lancez `node run.mjs` dans ce dossier, ou `run.cmd` / `sh run.sh`.
+3. Ouvrez `http://localhost:8820`, cliquez **Start camera** et autorisez la caméra.
+4. Gardez les épaules visibles, baissez les mains dans le vert, puis montez vers le jaune.
+5. `/profile` permet d'importer un JSON. Stop libère la caméra ; Ctrl+C arrête le serveur.
+
+Objectif : 30–60 secondes après extraction avec les prérequis installés.
+WASM, modèles et MediaPipe Vision sont locaux ; aucune installation npm ni CDN
+n'est nécessaire pour essayer les pages compilées. L'archive JavaScript groupée
+fournit aussi Node portable. Le chargement initial dépend du matériel.
+
+## Organisation du dossier
+
+| Fichier/dossier | Rôle |
+| --- | --- |
+| `app/page.jsx / app/profile/page.jsx` | Point d'entrée et sélection démo/import. |
+| `app/example_usage.mjs` | Intégration MIG et callback d'action ; commencez ici. |
+| `app/CameraExample.jsx / app/CameraView.jsx` | Commandes, vidéo/canvas et affichage des actions. |
+| `run.mjs`, `server.mjs` | Serveur local ; chemins indépendants du dossier courant. |
+| `run.cmd`, `run.sh` | Lanceurs fournis dans l'archive. |
+| `out/` | HTML/CSS/JS compilés et ressources (web utilise ce dossier lui-même). |
+| `default.json` ou `out/mig/default.json` | Profil schema-v2 des deux poignets. |
+| `models/`, `vision/` ou `out/mig/` | Modèles, Vision et moteur WASM locaux. |
+| `licenses/`, `LICENSE` | Notices de redistribution. |
+| `next.config.mjs`, `app/layout.jsx`, `app/style.css` | Export statique, document et styles locaux. |
+
+## Parcours du code
+
+1. `app/example_usage.mjs` importe `useMIG` depuis `motion-input-grid/react`.
+   `useMotionInput(profileMode)` fournit les ressources et `handleDetectedAction`.
+2. Le hook/composable crée une session ; `assetBase` héberge JSON, WASM, Vision et
+   modèles. Le mode import démarre vide. La caméra n'est demandée qu'après un clic.
+3. `app/CameraExample.jsx / app/CameraView.jsx` connecte les refs vidéo/canvas et appelle `start()`, `stop()`, `recalibrate()`.
+4. `runtime/session.mjs` du binding gère la capture. `runtime/mig-tracker.mjs`,
+   `MIGTracker.update()`, soumet les observations et copie actions/identifiants.
+   Les sources sont incluses dans `dependencies/motion-input-grid/` de l'archive.
+5. Remplacez le journal de `handleDetectedAction(event)` par vos commandes de jeu.
+6. `importProfile()` limite le JSON à 1 Mio, puis appelle `importJSON(text)`.
+   Un échec conserve les règles ; un succès recommence la calibration.
+7. Le démontage du composant ferme la session automatiquement, y compris les
+   remontages StrictMode de React. Stop ferme les pistes ; dispose libère modèles/WASM.
+
+Next exporte `/` et `/profile` avec son composant client local `app/CameraView.jsx`. Aucun dossier React voisin n’est nécessaire et le rendu serveur n’ouvre pas de caméra.
+
+## Dépendances et compilation des sources
+
+Externe : Node.js 22.12+, navigateur moderne et webcam autorisée. Développement
+facultatif : npm et les versions du framework indiquées dans `package.json`.
+L'archive individuelle fournit le binding dans `dependencies/motion-input-grid/`
+avec ses sources et ressources ; les sources brutes utilisent le paquet npm publié.
+Les modules de suivi du navigateur simple restent directement dans son dossier.
+
+Copiez le dossier hors du dépôt, puis :
 
 ```sh
-npm install motion-input-grid
+npm install
 npx mig-copy-assets public/mig
+npm run build
+node run.mjs
 ```
 
-Importez depuis `motion-input-grid/react`. Next.js nécessite un composant `'use client'`. Servez les ressources à `/mig/` sur localhost ou HTTPS.
-Le package inclut le moteur WASM et les modèles : aucun build C++ n'est
-nécessaire pour votre application. Les commandes du dépôt ci-dessous
-servent à modifier et recompiler cet exemple. Voir le
-[guide npm](../../bindings/javascript/README.fr.md).
+Pour web, la copie des ressources dans `.` préserve HTML et `camera.mjs`.
+Pour les frameworks, `public/mig/` est copié dans `out/mig/` à la compilation.
+La compilation prend davantage de temps ; aucun compilateur C++ n'est nécessaire.
+Conservez les pages compilées et leurs ressources ensemble.
 
-## Lancer depuis le dépôt
+## Réutilisation et dépannage
 
-Depuis la racine, avec Node.js 22.12+ et le moteur WASM compilé :
+Étudiez `app/example_usage.mjs` et reprenez le callback ; commandes visuelles, styles et
+objets sont facultatifs. Gardez anatomie non miroir, aspect correct, temps monotone
+et séquence croissante. Le miroir concerne seulement l'affichage. Partez du vert :
+une pose jaune isolée ne déclenche rien. Un intervalle supérieur à 180 ms nécessite un profilage.
 
-```sh
-npm ci
-npm run prepare:javascript
-npm run dev --workspace examples/next
-```
+- Caméra : utilisez localhost ou HTTPS, jamais `file://`.
+- Ressources absentes : conservez modèles/WASM et effectuez la copie pour les sources.
+- Port 8820 occupé : arrêtez l'autre serveur d'exemple.
+- Import refusé : corrigez l'erreur affichée ; les anciennes règles restent actives.
+- Les tests synthétiques ne prouvent pas la précision webcam.
 
-Ouvrez `/` pour le levage des mains, `/profile` pour importer un JSON dans un
-moteur vide. Start ouvre la caméra ; épaules visibles, baissez les mains puis
-levez un poignet. Les actions acceptées s'affichent. Stop libère la caméra,
-Recalibrate réinitialise la progression. Les imports invalides gardent le profil.
-
-Les deux routes serveur utilisent `app/CameraExample.jsx`, frontière client
-réutilisant le composant React et son hook. Les accès URL sont protégés pendant
-le pré-rendu ; caméra, modèles et WASM démarrent uniquement au clic. Le hook
-nettoie au démontage/à la sortie. CSS partagé : miroir une fois pour vidéo/overlay,
-texte normal. Les fichiers restent dans le navigateur. Next exporte des pages
-statiques. Remplacez `onAction` du composant partagé par vos commandes.
-
-Après compilation ou extraction : `node examples/next/run.mjs`, puis
-`http://localhost:8820`. Le serveur résout `/profile` vers la page exportée.
-Sources et `out/` sont ensemble, avec les sources React partagées. Aucun serveur Next ni npm install n'est requis pour les pages exportées.
-Le même adaptateur React est utilisé depuis le package installé ou le workspace.
-Voir le [guide complet](../../docs/integrations/javascript.fr.md) et le
-[package](../../bindings/javascript/README.fr.md).
-
-L'archive fournit aussi `run.cmd` et `run.sh` avec Node portable. MediaPipe et
-les modèles sont locaux ; aucun CDN ni Node installé n'est nécessaire.
-
-[Parcours du code](../../docs/getting-started/examples.fr.md).
-
-## Structure et intégration MIG
-
-`app/page.jsx` / `app/profile/page.jsx`: routes. `app/CameraExample.jsx`: client boundary. `../react/src/CameraExample.jsx`: shared hook UI. `../web/session.mjs` / `mig-tracker.mjs`: processing.
-
-Le framework gère la fenêtre et le rendu. Le fichier d'intégration indiqué gère le profil, les observations, les appels MIG, les actions et leur libération.
-
-## Parcours de l'intégration
-
-1. Repérez l'import MIG et la création du tracker dans le fichier indiqué.
-2. Chargez et validez le JSON avant de traiter les observations.
-3. Fournissez des points non miroités, le rapport d'aspect, des timestamps monotones et une séquence croissante.
-4. Appelez le traitement une fois par frame nouvelle. Un poll de caméra natif reconnaît déjà les observations ; récupérez ensuite les événements sans doubler update.
-5. Utilisez les actions logiques pour votre application. Les exemples n'injectent pas de touches système.
-6. Conservez le hook de fermeture du framework et libérez le tracker sur son thread propriétaire.
-
-## API MIG utilisée
-
-`useMIG()`, `start()`, `stop()`, `recalibrate()`, `importJSON()`.
-
-## Configuration
-
-Le profil raised-hands.json utilise, pour chaque poignet, une grande zone Required `[-9,3,27,3]`, puis une zone Trigger `[-9,1,27,2]`. Un poignet directement dans Trigger ne suffit pas. L'import valide le schéma 2 avant remplacement.
-
-## Réutiliser dans votre projet
-
-Installez le package ou SDK MIG correspondant et conservez les appels du fichier d'intégration indiqué. Copiez profil, assets et licences ; branchez votre fournisseur de points ou l'adaptateur caméra natif. Remplacez les messages affichés par vos actions applicatives. Gardez le ratio caméra, un update par frame, les observations de perte de tracking et la fermeture sur le thread propriétaire. Fenêtre, props et HUD restent facultatifs.
-
-## Résoudre les problèmes
-
-- Runtime/modèles/WASM absents : extrayez le package complet ; un dossier de sources seul ne suffit pas.
-- Caméra indisponible : fermez les autres utilisateurs et autorisez l'accès ; le navigateur nécessite HTTPS ou localhost. Les moteurs nécessitent votre fournisseur de pose.
-- Pas d'action : gardez les épaules visibles, calibrez, partez de Required et atteignez Trigger. Les chemins nécessitent un intervalle maximal de 180 ms ; profilez une inférence très lente.
-- Import invalide : corrigez l'action ou le schéma indiqué par l'erreur ; le profil précédent est conservé.
-- Une inférence native en cours doit terminer avant la jointure du worker lors de l'arrêt.
+[API JavaScript](../../bindings/javascript/README.fr.md) ·
+[Configuration](../../docs/reference/configuration.fr.md).

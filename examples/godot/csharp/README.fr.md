@@ -89,3 +89,15 @@ Installez le package ou SDK MIG correspondant et conservez les appels du fichier
 - Pas d'action : gardez les épaules visibles, calibrez, partez de Required et atteignez Trigger. Les chemins nécessitent un intervalle maximal de 180 ms ; profilez une inférence très lente.
 - Import invalide : corrigez l'action ou le schéma indiqué par l'erreur ; le profil précédent est conservé.
 - Une inférence native en cours doit terminer avant la jointure du worker lors de l'arrêt.
+
+## Standalone project dependencies
+
+`project.godot` selects `raised_hands.tscn`; `profile.tscn` is the import variant.
+The archive includes `MigExample.csproj`, `MigTracker.cs`, `SyntheticFrames.cs`,
+the native C ABI library at project root and licenses. Godot 4.4 .NET and its
+.NET 8 SDK are external. Import the project, Build, then Run (synthetic mode).
+The C# native resolver uses the project path, independently of the working directory.
+A copied source folder needs the two bridge files and matching native library
+from the managed binding/SDK release placed at project root.
+These preview projects accept supplied observations; a live camera provider
+is your responsibility. First editor/.NET setup can exceed one minute.

@@ -8,17 +8,24 @@ import zipfile
 
 from package_linux import copy_tree, create_archive
 from release_metadata import build_directory, release_version, write_package_manifest
+from release_metadata import rewrite_package_guides
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = ('sdl2', 'sfml', 'pygame', 'python-tkinter', 'sdk-consumer', 'native-consumer')
 
 
 def assemble(source, folder, example, platform):
-    copy_tree(source / 'examples' / example, folder / 'examples' / example)
-    copy_tree(source / 'examples/common', folder / 'examples/common')
-    for name in ('licenses', 'configs', 'sdk', 'bindings', 'docs', 'integrations'):
+    copy_tree(source / 'examples' / example, folder)
+    shared = ['licenses']
+    if example in ('sdk-consumer', 'native-consumer'):
+        shared.append('configs')
+    if example not in ('pygame', 'python-tkinter'):
+        shared.append('sdk')
+    for name in shared:
         if (source / name).is_dir():
             copy_tree(source / name, folder / name)
+    if example in ('pygame', 'python-tkinter'):
+        copy_tree(source / 'bindings/python', folder / 'bindings/python')
     shutil.copy2(source / 'LICENSE', folder / 'LICENSE')
     if example != 'sdk-consumer':
         copy_tree(source / 'runtime', folder / 'runtime')
@@ -28,23 +35,14 @@ def assemble(source, folder, example, platform):
             full_model = folder / 'runtime/models/pose_landmarker_full.task'
             if full_model.is_file():
                 full_model.unlink()
-    for language in ('', '.fr'):
-        guide = source / 'examples' / example / f'README{language}.md'
-        content = guide.read_text(encoding='utf-8')
-        content = content.replace('(../../docs/', '(docs/').replace('(../../bindings/', '(bindings/')
-        content = content.replace('(../../integrations/', '(integrations/')
-        command = ('main.exe' if example in ('pygame', 'python-tkinter') else f'mig-{example}.exe')
-        if example in ('sdk-consumer', 'native-consumer'):
-            command = 'run.cmd' if platform.startswith('windows') else 'sh run.sh'
-        elif platform.startswith('linux'):
-            command = './main' if example in ('pygame', 'python-tkinter') else f'./mig-{example}'
-        instruction = (f'From this archive root: `cd examples/{example}`, then `{command}`. '
-                       'Keep the whole extracted archive together; all sibling dependencies are included.\n\n')
-        if language:
-            instruction = (f'Depuis la racine de cette archive : `cd examples/{example}`, puis `{command}`. '
-                           'Conservez toute l\'archive extraite : les dossiers voisins contiennent ses dépendances.\n\n')
-        content = content.replace('\n\n', '\n\n' + instruction, 1)
-        (folder / f'README{language}.md').write_text(content, encoding='utf-8')
+    # Launchers resolve resources from their own location, independent of cwd.
+    for name in ('run.cmd', 'run.sh', f'mig-{example}', f'mig-{example}-profile'):
+        launcher = folder / name
+        if launcher.is_file():
+            content = launcher.read_text(encoding='utf-8')
+            content = content.replace('../../runtime', 'runtime').replace('../../configs', 'configs')
+            launcher.write_text(content, encoding='utf-8', newline='\n')
+    rewrite_package_guides(folder)
     write_package_manifest(folder, example, platform)
 
 

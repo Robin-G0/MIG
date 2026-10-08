@@ -2,7 +2,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
-from python_source import InputSource, announce, hand_lines, parse_options, visible_points, wrists
+from example_usage import InputSource, announce, hand_lines, parse_options, visible_points, wrists
 from python_view import COLORS, grid_lines, prop_points, viewport
 
 
