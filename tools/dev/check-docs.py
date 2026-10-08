@@ -2,11 +2,9 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
-from pathlib import Path
 import os
 import re
 from urllib.parse import unquote, urlsplit
-import sys
 from distribution_policy import EXCLUDED_NAMES
 
 ROOT = Path(__file__).resolve().parents[2]

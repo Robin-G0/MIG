@@ -6,7 +6,6 @@ import argparse
 import hashlib
 import os
 import platform
-from pathlib import Path
 import urllib.request
 import zipfile
 

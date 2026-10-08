@@ -4,10 +4,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
 import argparse
 import hashlib
-from pathlib import Path
 import shutil
 import subprocess
-import sys
 import tempfile
 import zipfile
 

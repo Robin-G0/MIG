@@ -2,8 +2,6 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
-from pathlib import Path
-import sys
 
 from package_linux import create_archive
 

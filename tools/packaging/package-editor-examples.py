@@ -9,7 +9,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
 import argparse
 import hashlib
 import json
-from pathlib import Path
 import shutil
 import tempfile
 import zipfile

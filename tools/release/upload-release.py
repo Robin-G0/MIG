@@ -5,13 +5,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
 import argparse
 import hashlib
 import json
-from pathlib import Path
 import re
 import runpy
 import shutil
 import stat
 import subprocess
-import sys
 import tempfile
 import zipfile
 

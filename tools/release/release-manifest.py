@@ -4,7 +4,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
 import argparse
 import json
-from pathlib import Path
 import re
 
 from release_metadata import release_version, file_hash, PROJECT_NAME, PACKAGE_NAME, REPOSITORY
