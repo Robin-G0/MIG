@@ -192,17 +192,54 @@ test("either hand can raise or lower from the camera edges without a central hol
     }
 });
 
-test("thumb tracking uses the published engine with either anatomical hand", async () => {
-    const { enableThumbTracking, thumbRaised } = await import("../src/camera.mjs");
-    const { default: createMIG } = await import("../dist/mig/mig.mjs");
-    const module = await createMIG();
-    const tracker = new module.Tracker();
-    try {
-        await enableThumbTracking({ importJSON: json => assert.equal(tracker.load(json), "") });
-        assert.equal(tracker.trackHands(), true);
-    } finally { tracker.delete(); }
-    for (const side of [0, 1]) {
-        assert.equal(thumbRaised({ tracker: { gesture: index => index === side ? 1 : 0 } }), true);
+test("slow vertical sweeps tolerate jitter and a brief occlusion in both directions", async () => {
+    const { CameraSwipes } = await import("../src/camera-swipes.mjs");
+    for (const landmark of [15, 16]) {
+        for (const direction of [-1, 1]) {
+            const swipes = new CameraSwipes();
+            let wrist;
+            const session = { coordinate: index => index === landmark ? wrist : null };
+            const actions = [];
+            for (let frame = 0; frame <= 45; frame++) {
+                const y = (direction === 1 ? .8 : .2) - direction * frame * .01;
+                wrist = frame === 20 ? null : { x: .5 + Math.sin(frame) * .005, y };
+                actions.push(...swipes.update(session, frame * 40));
+            }
+            assert.deepEqual(actions, [direction === 1 ? "scroll_presentation" : "scroll_previous"]);
+        }
     }
-    assert.equal(thumbRaised({ tracker: { gesture: () => 4 } }), false);
+});
+
+test("slow horizontal sweeps survive brief occlusion without turning vertical drift into a slide", async () => {
+    const { CameraSwipes } = await import("../src/camera-swipes.mjs");
+    for (const direction of [-1, 1]) {
+        const swipes = new CameraSwipes();
+        let wrist;
+        const actions = [];
+        const session = { coordinate: index => index === 16 ? wrist : null };
+        for (let frame = 0; frame <= 20; frame++) {
+            wrist = frame === 10 ? null : { x: .5 + direction * frame * .009, y: .5 };
+            actions.push(...swipes.update(session, frame * 80));
+        }
+        assert.deepEqual(actions, [direction === 1 ? "next_slide" : "previous_slide"]);
+    }
+    const swipes = new CameraSwipes();
+    let wrist = { x: .4, y: .8 };
+    const session = { coordinate: () => wrist };
+    swipes.update(session, 0);
+    wrist = { x: .58, y: .5 };
+    assert.ok(!swipes.update(session, 200).includes("next_slide"));
+});
+
+
+test("a reversal after stale tracking starts a new gesture instead of scrolling immediately", async () => {
+    const { CameraSwipes } = await import("../src/camera-swipes.mjs");
+    const swipes = new CameraSwipes();
+    let wrist = { x: .5, y: .7 };
+    const session = { coordinate: index => index === 15 ? wrist : null };
+    swipes.update(session, 0);
+    wrist.y = .45;
+    assert.deepEqual(swipes.update(session, 150), []);
+    wrist.y = .95;
+    assert.deepEqual(swipes.update(session, 1000), []);
 });

@@ -805,12 +805,12 @@ test("phone visitors get one-hand guidance and can finish and stop the demo", as
         expect(await page.evaluate(() => window.demoCamera.state.running)).toBe(true);
         await page.locator("#finale-stop-camera").click();
         expect(await page.evaluate(() => window.demoCamera.stopped)).toBe(true);
-        await expect(page.locator("#thumb-tip")).toBeHidden();
+        await expect(page.locator("#thumb-tip")).toHaveCount(0);
         await expect(page.locator("#hands-tip")).toBeHidden();
     } finally { await page.close(); }
 });
 
-test("the finale keeps hand navigation and opens GitHub only after a held thumbs-up", async ({ page }) => {
+test("the finale keeps navigation and the GitHub link without enabling hand inference", async ({ page }) => {
     await mockCamera(page);
     await page.clock.install();
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -829,21 +829,16 @@ test("the finale keeps hand navigation and opens GitHub only after a held thumbs
     await expect(page.locator("#finale")).toBeVisible();
     await page.clock.runFor(3000);
     await page.evaluate(() => window.demoCamera.frame(true));
-    await expect(page.locator("#thumb-tip")).toBeVisible();
-    expect(await page.evaluate(() => window.demoCamera.profile.tracking.hands)).toBe(true);
+    await expect(page.locator("#thumb-tip")).toHaveCount(0);
+    expect(await page.evaluate(() => window.demoCamera.profile.tracking.hands)).toBe(false);
     await swipeHand(page, "scroll_previous");
     await expect(page.locator("#presence-title")).toBeInViewport();
     await swipeHand(page, "scroll_presentation");
     await expect(page.locator("#finale-title")).toBeInViewport();
     await page.clock.runFor(3000);
-    await page.evaluate(() => { window.demoCamera.tracker = { gesture: side => side === 1 ? 1 : 0 }; window.demoCamera.frame(true); });
-    await page.clock.runFor(500);
-    await page.evaluate(() => window.demoCamera.frame(true));
-    expect(page.url()).not.toContain("github.com");
-    await page.evaluate(() => { window.demoCamera.tracker.gesture = () => 0; window.demoCamera.frame(true); });
-    await page.evaluate(() => { window.demoCamera.tracker.gesture = () => 1; window.demoCamera.frame(true); });
-    await page.clock.runFor(800);
-    await page.evaluate(() => window.demoCamera.frame(true));
+    await expect(page.locator('#finale [data-link="repository"]')).toHaveAttribute("href", "https://github.com/Robin-G0/Motion-Input-Grid");
+    expect(await page.evaluate(() => window.demoCamera.profile.tracking.hands)).toBe(false);
+    await page.locator('#finale [data-link="repository"]').click();
     await expect(page).toHaveURL("https://github.com/Robin-G0/Motion-Input-Grid");
 });
 
@@ -898,4 +893,29 @@ test("native MIG slide events remain connected to the page navigation", async ({
     await page.clock.runFor(2200);
     await page.evaluate(() => window.demoCamera.action("previous_slide"));
     await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
+});
+
+
+test("a slow sweep with a missing frame navigates down and back up", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("./?lang=en");
+    await page.locator("#start-camera").click();
+    await holdHandsInFrame(page);
+    for (const direction of [1, -1]) {
+        await page.clock.runFor(3000);
+        for (let frame = 0; frame <= 45; frame++) {
+            await page.evaluate(({ frame, direction }) => {
+                const camera = window.demoCamera;
+                camera.coordinate = index => index === 15
+                    ? frame === 20 ? null : { x: .5, y: (direction === 1 ? .8 : .2) - direction * frame * .01 }
+                    : index === 11 || index === 12 ? { x: .5, y: .5 } : null;
+                camera.frame(true);
+            }, { frame, direction });
+            await page.clock.runFor(40);
+        }
+        if (direction === 1) await expect(page.locator("#presentation h2")).toBeInViewport();
+        else expect(await page.evaluate(() => scrollY)).toBe(0);
+    }
 });

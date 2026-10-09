@@ -7,7 +7,7 @@ import { settings } from "./settings.mjs";
 import { translations } from "./translations.mjs";
 import { SlideController } from "./slides.mjs";
 import { PresenceMonitor } from "./presence.mjs";
-import { cameraError, createCameraSession, enableThumbTracking, thumbRaised } from "./camera.mjs";
+import { cameraError, createCameraSession } from "./camera.mjs";
 
 const element = id => document.getElementById(id);
 const slides = new SlideController(translations.fr.slides.length, settings.slideDelay);
@@ -34,8 +34,6 @@ let greenSince = null;
 let handScrollReady = false;
 let bothHandsSeen = false;
 let demoStarted = false;
-let thumbSince = null;
-let thumbTrackingReady = false;
 const phone = matchMedia("(pointer: coarse)").matches && Math.min(innerWidth, innerHeight) <= 800;
 document.body.classList.toggle("phone", phone);
 const cooldown = new NavigationCooldown(element("navigation-cooldown"), () => cameraSwipes.reset());
@@ -178,22 +176,12 @@ function handlePresence(currentSession) {
     if (document.hidden || currentSession !== session || !currentSession.state.running) return;
     const time = performance.now();
     updateHandHint(currentSession, time);
-    // Track either wrist across the camera, using the original movement thresholds.
     if (handScrollReady && !cooldown.locked && !away) {
         for (const action of cameraSwipes.update(currentSession, time, { horizontal: slideFocused() })) {
             handleAction({ action });
             if (cooldown.locked) break;
         }
     } else cameraSwipes.reset();
-    element("thumb-tip").hidden = !finaleFocused() || !thumbTrackingReady || away;
-    if (finaleFocused() && thumbTrackingReady && thumbRaised(currentSession) && !cooldown.locked) {
-        thumbSince ??= time;
-        if (time - thumbSince >= 800) {
-            stopCamera();
-            location.assign(settings.links.repository);
-            return;
-        }
-    } else thumbSince = null;
     const detected = currentSession.coordinate(11) !== null && currentSession.coordinate(12) !== null;
     // Only the final section can start the departure demo. Scrolling back up
     // clears its timer; an already hidden page still waits for the person to return.
@@ -218,9 +206,6 @@ function handlePresence(currentSession) {
         element("hands-tip").hidden = true;
         cameraSwipes.reset();
         cooldown.start(true);
-        enableThumbTracking(currentSession).then(() => {
-            if (session === currentSession) thumbTrackingReady = true;
-        }).catch(error => console.error("Thumb tracking unavailable:", error));
         setStatus("returned");
         element("finale").scrollIntoView({ behavior: "instant", block: "center" });
         element("finale-title").tabIndex = -1;
@@ -274,9 +259,6 @@ function stopCamera() {
     element("departure-tip").hidden = true;
     guide.stop();
     cooldown.reset();
-    thumbSince = null;
-    thumbTrackingReady = false;
-    element("thumb-tip").hidden = true;
     element("finale-stop-camera").hidden = true;
     showPage();
     document.querySelector(".camera-card").classList.remove("is-running", "has-hands");
@@ -452,8 +434,6 @@ document.addEventListener("keydown", event => {
 });
 document.addEventListener("visibilitychange", () => {
     // Start new tracking intervals after tab suspension.
-    thumbSince = null;
-    element("thumb-tip").hidden = true;
     cooldown.reset();
     greenSince = null;
     cameraSwipes.reset();

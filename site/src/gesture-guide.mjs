@@ -82,7 +82,9 @@ export class GestureGuide {
         this.cancelNudge(true);
         // Find the closest section so manual scrolling and hand navigation agree.
         const sections = this.sections.filter(section => !section.hidden);
-        const positions = sections.map(section => this.sectionTop(section));
+        // The last section cannot always reach the top of the viewport.
+        const maximumScroll = Math.max(0, document.documentElement.scrollHeight - innerHeight);
+        const positions = sections.map(section => Math.min(maximumScroll, this.sectionTop(section)));
         const current = positions.reduce((nearest, position, index) =>
             Math.abs(position - scrollY) < Math.abs(positions[nearest] - scrollY) ? index : nearest, 0);
         const next = Math.max(0, Math.min(sections.length - 1, current + direction));

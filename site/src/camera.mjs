@@ -18,15 +18,6 @@ export async function createCameraSession(onAction, onFrame) {
     }
 }
 
-// MIG exposes anatomical hand gestures through its tracker (1 is Thumb).
-export function thumbRaised(session) {
-    return [0, 1].some(side => session.tracker?.gesture(side) === 1);
-}
-
-export async function enableThumbTracking(session) {
-    await session.importJSON(JSON.stringify({ ...gestureProfile, tracking: { hands: true } }));
-}
-
 export function cameraError(status) {
     if (/denied|permission|not.?allowed/i.test(status)) return "denied";
     if (/notfound|notreadable|device|camera.*use/i.test(status)) return "unavailable";
