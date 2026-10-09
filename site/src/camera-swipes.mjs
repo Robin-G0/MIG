@@ -1,7 +1,10 @@
 // Camera-space wrist motion has no height restriction, even outside the body grid.
 export class CameraSwipes {
-    constructor({ distance = .16, duration = 1200, gap = 250 } = {}) {
+    constructor({ distance = .16, raiseDistance = .4, raiseDuration = 250, raiseDrift = .12, duration = 1200, gap = 250 } = {}) {
         this.distance = distance;
+        this.raiseDistance = raiseDistance;
+        this.raiseDuration = raiseDuration;
+        this.raiseDrift = raiseDrift;
         this.duration = duration;
         this.gap = gap;
         this.reset();
@@ -15,12 +18,15 @@ export class CameraSwipes {
     handRaised(landmark, point, time) {
         let sample = this.verticalHands.get(landmark);
         if (!sample || time - sample.lastTime > this.gap
-            || time - sample.startTime > this.duration || point.y > sample.y) {
-            sample = { y: point.y, startTime: time, lastTime: time };
+            || time - sample.startTime > this.duration || point.y > sample.lastY + .025
+            || Math.abs(point.x - sample.x) > this.raiseDrift) {
+            sample = { x: point.x, y: point.y, lastY: point.y, startTime: time, lastTime: time };
             this.verticalHands.set(landmark, sample);
         }
         sample.lastTime = time;
-        if (sample.y - point.y < this.distance) return false;
+        sample.lastY = point.y;
+        // Scrolling needs a deliberate vertical sweep, not a small lift or diagonal swipe.
+        if (sample.y - point.y < this.raiseDistance || time - sample.startTime < this.raiseDuration) return false;
         sample.y = point.y;
         sample.startTime = time;
         return true;

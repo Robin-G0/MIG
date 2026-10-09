@@ -26,6 +26,7 @@ let generation = 0;
 let away = false;
 let returnFocus = null;
 let handsMissingSince = null;
+let departureStartedAt = null;
 
 function renderSlide() {
     const text = translations[language];
@@ -80,6 +81,7 @@ function handInFrame(point) {
 
 function updateHandHint(currentSession, time) {
     const handsVisible = [15, 16].every(index => handInFrame(currentSession.coordinate(index)));
+    document.querySelector(".camera-card").classList.toggle("has-hands", handsVisible);
     if (handsVisible || away) {
         handsMissingSince = null;
         element("hands-tip").hidden = true;
@@ -94,6 +96,16 @@ function departureSectionReached() {
     return element("presence-demo").getBoundingClientRect().top < innerHeight / 2;
 }
 
+function updateDepartureTip(enabled, detected, time) {
+    if (!enabled || !detected || away || !element("finale").hidden) {
+        departureStartedAt = null;
+        element("cover-camera-tip").hidden = true;
+        return;
+    }
+    departureStartedAt ??= time;
+    element("cover-camera-tip").hidden = time - departureStartedAt < 5000;
+}
+
 function handlePresence(currentSession) {
     if (document.hidden || currentSession !== session || !currentSession.state.running) return;
     const time = performance.now();
@@ -106,6 +118,7 @@ function handlePresence(currentSession) {
     // Only the final section can start the departure demo. Scrolling back up
     // clears its timer; an already hidden page still waits for the person to return.
     const departureEnabled = away || departureSectionReached();
+    updateDepartureTip(departureEnabled, detected, time);
     if (!departureEnabled) presence.reset();
     const nextState = departureEnabled ? presence.update(detected, time) : "waiting";
     if (nextState === "away" && !away) {
@@ -154,9 +167,11 @@ function stopCamera() {
     handsMissingSince = null;
     element("hands-tip").hidden = true;
     element("camera-placement").hidden = true;
+    departureStartedAt = null;
+    element("cover-camera-tip").hidden = true;
     guide.stop();
     showPage();
-    document.querySelector(".camera-card").classList.remove("is-running");
+    document.querySelector(".camera-card").classList.remove("is-running", "has-hands");
     element("start-camera").disabled = false;
     element("start-camera").hidden = false;
     element("stop-camera").hidden = true;
@@ -295,6 +310,8 @@ document.addEventListener("visibilitychange", () => {
     if (document.hidden) guide.cancelNudge(true);
     handsMissingSince = null;
     element("hands-tip").hidden = true;
+    departureStartedAt = null;
+    element("cover-camera-tip").hidden = true;
     presence.changedAt = null;
     presence.lastTime = null;
 });

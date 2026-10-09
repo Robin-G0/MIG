@@ -7,7 +7,7 @@ export const settings = {
         github: "https://github.com/Robin-G0",
         source: "https://github.com/Robin-G0/Motion-Input-Grid/tree/main/site"
     },
-    absenceDelay: 1500,
-    returnDelay: 500,
+    absenceDelay: 600,
+    returnDelay: 300,
     slideDelay: 800
 };

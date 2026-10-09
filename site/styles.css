@@ -49,10 +49,7 @@ h2 { font-size: clamp(32px, 4.1vw, 54px); line-height: 1.1; letter-spacing: -.04
 .camera-preview { position: relative; aspect-ratio: 4/3; background: radial-gradient(ellipse at top right, #30495c, #162b33 70%); border-radius: 14px; overflow: hidden; }
 video, canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); position: absolute; inset: 0; }
 video:not([src]) { background: transparent; }
-.preview-decoration { position: absolute; inset: 0; overflow: hidden; }
-.preview-decoration > span:first-child { font-size: 190px; position: absolute; top: -35px; left: 20px; font-weight: 300; }
-.preview-word { position: absolute; bottom: 18px; left: 20px; font-size: 24px; font-weight: 900; letter-spacing: -.06em; }
-.grid-decoration { position: absolute; inset: 30px; background-image: linear-gradient(#85e5e322 1px, transparent 1px), linear-gradient(90deg, #85e5e322 1px, transparent 1px); background-size: 32px 32px; }
+.preview-decoration { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; }
 .camera-card.is-running .preview-decoration { display: none; }
 #camera-status { font-size: 13px; min-height: 36px; line-height: 1.5; margin-bottom: 8px; }
 .camera-hint { color: var(--muted); font-size: 11px; line-height: 1.5; margin-bottom: 0; }
@@ -183,3 +180,6 @@ body.is-away { background: #000; }
 .camera-placement { max-width: 560px; font-size: 14px; line-height: 1.6; color: #d8eaf5; }
 .hands-tip { position: fixed; right: 20px; bottom: 20px; z-index: 20; width: min(340px, calc(100% - 40px)); border: 1px solid #e5b94f80; border-radius: 14px; padding: 12px 16px; background: #171d2df5; box-shadow: 0 8px 24px #0005; pointer-events: none; }
 .hands-tip p { margin: 0; font-size: 13px; line-height: 1.5; }
+
+.camera-card.is-running .camera-preview { outline: 3px solid #ff7770; outline-offset: -3px; }
+.camera-card.is-running.has-hands .camera-preview { outline-color: #71e39e; }

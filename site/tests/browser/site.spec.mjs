@@ -317,9 +317,12 @@ test("camera onboarding nudges scrolling, then a raised hand reveals the slide h
         camera.wrist = { x: .5, y: .8 };
         camera.coordinate = index => index === 15 ? camera.wrist : { x: .5, y: .5 };
         camera.frame(true);
-        camera.wrist = { x: .5, y: .5 };
-        camera.frame(true);
     });
+    await page.clock.runFor(150);
+    await page.evaluate(() => { window.demoCamera.wrist = { x: .5, y: .55 }; window.demoCamera.frame(true); });
+    await expect(page.locator("#scroll-gesture-tip")).toBeVisible();
+    await page.clock.runFor(150);
+    await page.evaluate(() => { window.demoCamera.wrist = { x: .5, y: .3 }; window.demoCamera.frame(true); });
     await expect(page.locator("#scroll-gesture-tip")).toBeHidden();
     await expect(page.locator("#slide-gesture-tip")).toBeVisible();
     await expect(page.locator("#slide-gesture-tip")).toContainText("Right hand, gently from right to left");
@@ -492,6 +495,8 @@ test("camera placement and hand hints guide visitors without triggering departur
     await page.locator("#start-camera").click();
     await expect(page.locator("#start-camera")).toBeHidden();
     await expect(placement).toBeVisible();
+    await expect(page.locator("#camera-overlay")).toBeHidden();
+    await expect(page.locator(".camera-preview")).toHaveCSS("outline-color", "rgb(255, 119, 112)");
     await expect(placement).toContainText("clavier ni de la souris");
     await page.evaluate(() => {
         const camera = window.demoCamera;
@@ -514,6 +519,7 @@ test("camera placement and hand hints guide visitors without triggering departur
     await expect(placement).toContainText("no keyboard or mouse required");
     await page.evaluate(() => { window.demoCamera.missingHand = false; window.demoCamera.frame(true); });
     await expect(hint).toBeHidden();
+    await expect(page.locator(".camera-preview")).toHaveCSS("outline-color", "rgb(113, 227, 158)");
     // A predicted wrist outside the image also needs a hint.
     await page.evaluate(() => {
         window.demoCamera.coordinate = index => ({ x: index === 15 ? 1.2 : .5, y: .5 });
@@ -536,7 +542,7 @@ test("camera placement and hand hints guide visitors without triggering departur
     await page.evaluate(() => window.demoCamera.frame(true));
     // Leaving the final section cancels a pending departure.
     await page.evaluate(() => window.demoCamera.frame(false));
-    await page.clock.runFor(1000);
+    await page.clock.runFor(200);
     await page.locator("#welcome").evaluate(node => node.scrollIntoView({ behavior: "instant", block: "start" }));
     for (let index = 0; index < 10; index++) {
         await page.evaluate(() => window.demoCamera.frame(false));
@@ -546,4 +552,44 @@ test("camera placement and hand hints guide visitors without triggering departur
     await page.keyboard.press("Escape");
     await expect(hint).toBeHidden();
     await expect(placement).toBeHidden();
+});
+
+test("the final section suggests covering the camera after five seconds and detects departure quickly", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("./?lang=fr");
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#start-camera")).toBeHidden();
+    const tip = page.locator("#cover-camera-tip");
+    for (let index = 0; index < 6; index++) {
+        await page.evaluate(() => window.demoCamera.frame(true));
+        await page.clock.runFor(1000);
+    }
+    await expect(tip).toBeHidden();
+    await page.locator("#presence-demo").evaluate(node => node.scrollIntoView({ behavior: "instant", block: "start" }));
+    await page.evaluate(() => window.demoCamera.frame(true));
+    for (let index = 0; index < 4; index++) {
+        await page.clock.runFor(1000);
+        await page.evaluate(() => window.demoCamera.frame(true));
+        await expect(tip).toBeHidden();
+    }
+    await page.clock.runFor(1000);
+    await page.evaluate(() => window.demoCamera.frame(true));
+    await expect(tip).toBeVisible();
+    await expect(tip).toContainText("masquer la cam\u00e9ra avec votre main");
+    await page.evaluate(() => document.querySelector('[data-language="en"]').click());
+    await expect(tip).toContainText("cover the camera with your hand");
+    await page.evaluate(() => window.demoCamera.frame(false));
+    await page.clock.runFor(500);
+    await page.evaluate(() => window.demoCamera.frame(false));
+    await expect(page.locator("#away-screen")).toBeHidden();
+    await page.clock.runFor(150);
+    await page.evaluate(() => window.demoCamera.frame(false));
+    await expect(page.locator("#away-screen")).toBeVisible();
+    await page.evaluate(() => window.demoCamera.frame(true));
+    await page.clock.runFor(300);
+    await page.evaluate(() => window.demoCamera.frame(true));
+    await expect(page.locator("#finale")).toBeVisible();
+    await expect(tip).toBeHidden();
 });

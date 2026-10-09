@@ -101,13 +101,15 @@ test("raising either hand requests scrolling; downward motion and tracking gaps 
         const session = { coordinate: index => index === landmark ? wrist : null };
         assert.deepEqual(swipes.update(session, 0), []);
         wrist = { x: .5, y: .6 };
-        assert.deepEqual(swipes.update(session, 100), ["scroll_presentation"]);
+        assert.deepEqual(swipes.update(session, 100), []);
+        wrist = { x: .5, y: .3 };
+        assert.deepEqual(swipes.update(session, 300), ["scroll_presentation"]);
         wrist = { x: .5, y: .9 };
-        assert.deepEqual(swipes.update(session, 200), []);
+        assert.deepEqual(swipes.update(session, 400), []);
         wrist = null;
-        assert.deepEqual(swipes.update(session, 210), []);
+        assert.deepEqual(swipes.update(session, 410), []);
         wrist = { x: .5, y: .1 };
-        assert.deepEqual(swipes.update(session, 220), []);
+        assert.deepEqual(swipes.update(session, 420), []);
         wrist = { x: .5, y: .01 };
         assert.deepEqual(swipes.update(session, 1000), []);
     }
@@ -126,4 +128,31 @@ test("returning from the second slide changes the first slide, without affecting
     assert.equal(slides.returnedToFirst, true);
     slides.move(1);
     assert.equal(slides.index, 1);
+});
+
+test("site presence settings hide promptly but ignore a brief loss of tracking", () => {
+    const presence = new PresenceMonitor(settings);
+    assert.equal(presence.update(true, 0), "present");
+    assert.equal(presence.update(false, 100), "present");
+    assert.equal(presence.update(false, 500), "present");
+    assert.equal(presence.update(false, 700), "away");
+    assert.equal(presence.update(true, 800), "away");
+    assert.equal(presence.update(true, 1100), "present");
+});
+
+test("small, diagonal and instantaneous hand lifts do not scroll", async () => {
+    const { CameraSwipes } = await import("../src/camera-swipes.mjs");
+    for (const samples of [
+        [[0, .5, .8], [150, .5, .7], [300, .5, .6]],
+        [[0, .3, .8], [150, .5, .5], [300, .7, .2]],
+        [[0, .5, .8], [100, .5, .2]]
+    ]) {
+        const swipes = new CameraSwipes();
+        let wrist;
+        const session = { coordinate: index => index === 15 ? wrist : null };
+        for (const [time, x, y] of samples) {
+            wrist = { x, y };
+            assert.ok(!swipes.update(session, time).includes("scroll_presentation"));
+        }
+    }
 });

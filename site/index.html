@@ -39,9 +39,9 @@
                 <aside class="camera-card">
                     <div class="card-top"><span data-text="cameraTitle"></span><span class="camera-state" id="camera-state" aria-hidden="true"></span></div>
                     <div class="camera-preview">
-                        <div class="preview-decoration" aria-hidden="true"><span>↗</span><div class="grid-decoration"></div><span class="preview-word">YOUR MOVE.</span></div>
+                        <div class="preview-decoration"><p data-text="cameraHint"></p></div>
                         <video id="camera-video" muted playsinline></video>
-                        <canvas id="camera-overlay" aria-hidden="true"></canvas>
+                        <canvas id="camera-overlay" aria-hidden="true" hidden></canvas>
                     </div>
                     <p id="camera-status" role="status" aria-live="polite"></p>
                     <p class="camera-hint" data-text="cameraHint"></p>
@@ -97,6 +97,7 @@
                 <h2 id="presence-title" data-text="presenceTitle"></h2>
                 <p class="lead" data-text="presenceDescription"></p>
                 <p class="manual-hint" data-text="presenceNote"></p>
+                <p class="gesture-tip" id="cover-camera-tip" data-text="coverCamera" role="status" hidden></p>
                 <div class="departure-art" aria-hidden="true"><span>○</span><span>→</span><span>◎</span></div>
             </section>
 
