@@ -193,3 +193,88 @@ test("real MIG session starts with local models, processes video and releases th
     expect(externalRequests).toEqual([]);
     expect(errors).toEqual([]);
 });
+
+test("history diagrams move and the grid explains order, cancellation and conditional actions", async ({ page }) => {
+    await page.clock.install();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("./?lang=en");
+    const illustration = page.locator("#history-illustration");
+    const slider = illustration.locator("input[type=range]");
+    await expect(page.locator("#slide-title")).toHaveText("Positions and plenty of decimal places.");
+    await expect(illustration.locator("[data-history-play]")).toHaveAttribute("aria-pressed", "false");
+    const coordinates = illustration.locator(".coordinate-label");
+    await expect(coordinates.first()).toHaveText(/x: \d\.\d{9}.*y: \d\.\d{9}/);
+    const before = await coordinates.allTextContents();
+    await slider.focus();
+    await slider.press("ArrowRight");
+    expect(await coordinates.allTextContents()).not.toEqual(before);
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
+    await page.locator("#next-slide").click();
+    await expect(illustration.locator("polygon")).toBeVisible();
+    const angleLabels = await illustration.locator(".angle-label").allTextContents();
+    expect(angleLabels.every(label => label.endsWith("\u00b0"))).toBe(true);
+    const angles = angleLabels.map(parseFloat);
+    expect(angles).toHaveLength(3);
+    expect(angles.reduce((sum, value) => sum + value, 0)).toBeCloseTo(180, 0);
+    await expect(illustration.locator(".point-label")).toHaveText(["Head", "Left shoulder", "Right shoulder"]);
+    const beforeAngles = await illustration.locator(".angle-label").allTextContents();
+    await slider.focus();
+    await slider.press("ArrowRight");
+    expect(await illustration.locator(".angle-label").allTextContents()).not.toEqual(beforeAngles);
+    await page.locator("#next-slide").click();
+    const status = illustration.locator("[data-history-status]");
+    const cell = name => illustration.locator(`[data-cell=${name}]`);
+    await expect(illustration.locator("[data-history-grid]")).toBeVisible();
+    await cell("second").click();
+    await expect(status).toHaveAttribute("data-result", "gridOrder");
+    await cell("first").click();
+    await cell("second").click();
+    await cell("cancel").click();
+    await expect(status).toHaveAttribute("data-result", "gridCancelled");
+    await cell("trigger").click();
+    await expect(status).toHaveAttribute("data-result", "gridOrder");
+    await cell("first").click();
+    await cell("second").click();
+    await cell("trigger").click();
+    await expect(status).toHaveAttribute("data-result", "gridTriggered");
+    await cell("first").click();
+    await cell("second").click();
+    await cell("condition").click();
+    await expect(status).toHaveAttribute("data-result", "gridCondition");
+    await illustration.locator("[data-history-thumb]").check();
+    await cell("condition").click();
+    await expect(status).toHaveAttribute("data-result", "gridTriggered");
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await cell("first").click();
+    await expect(status).toHaveAttribute("data-result", "gridFirst");
+    // Explicit playback is available even when automatic motion is disabled.
+    const play = illustration.locator("[data-history-play]");
+    await play.click();
+    await page.clock.runFor(3300);
+    await expect(status).toHaveAttribute("data-result", "gridTriggered");
+    await play.click();
+    await page.clock.runFor(1000);
+    await expect(status).toHaveAttribute("data-result", "gridTriggered");
+});
+
+test("camera-space sweeps change slides at both camera edges without native action events", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.goto("./?lang=en");
+    for (const height of [.01, .99]) {
+        await page.locator("#start-camera").click();
+        await expect(page.locator("#start-camera")).toBeHidden();
+        await page.evaluate(y => {
+            const camera = window.demoCamera;
+            camera.wrist = { x: .1, y };
+            camera.coordinate = index => index === 16 ? camera.wrist : { x: .5, y: .5 };
+            camera.frame(true);
+            camera.wrist = { x: .3, y };
+            camera.frame(true);
+        }, height);
+        await expect(page.locator("#slide-counter")).toHaveText(height === .01 ? "Slide 2 / 3" : "Slide 3 / 3");
+        await page.locator("#stop-camera").click();
+        await page.clock.runFor(850);
+    }
+});

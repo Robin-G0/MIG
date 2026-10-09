@@ -61,9 +61,9 @@ video:not([src]) { background: transparent; }
 .slide-tag { font-size: 13px; font-weight: 650; }
 .slide h3 { font-size: clamp(28px, 3.5vw, 46px); line-height: 1.1; letter-spacing: -.045em; margin: 24px 0; max-width: 480px; }
 .slide-copy > p:last-child { max-width: 440px; line-height: 1.6; }
-.slide-art { display: flex; align-items: center; justify-content: center; position: relative; }
-#slide-symbol { font-size: clamp(140px, 18vw, 220px); line-height: 1; }
-.slide-number { position: absolute; bottom: 0; right: 0; font-size: 14px; font-weight: 750; }
+.slide-art { display: flex; align-items: center; justify-content: center; position: relative; min-width: 0; }
+
+.slide-number { position: absolute; top: -12px; right: 0; font-size: 14px; font-weight: 750; }
 .slide-controls { display: flex; justify-content: center; align-items: center; gap: 24px; margin-top: 22px; }
 .arrow-button { border: 1px solid var(--border); color: var(--ink); background: transparent; border-radius: 50%; width: 48px; height: 48px; font-size: 22px; }
 .arrow-button:hover { background: white; }
@@ -83,6 +83,31 @@ video:not([src]) { background: transparent; }
 body.is-away { background: #000; }
 #away-screen { position: fixed; inset: 0; background: #000; z-index: 100; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* The history drawings are editable SVG; the grid uses ordinary buttons. */
+.history-illustration { width: 100%; min-width: 0; }
+.history-illustration > svg { display: block; width: 100%; touch-action: pan-y; }
+.coordinate-label { font: 12px Consolas, monospace; fill: var(--ink); }
+.point-label { font: 12px "Segoe UI", sans-serif; fill: var(--ink); }
+.angle-label { font: bold 17px "Segoe UI", sans-serif; fill: var(--ink); }
+.motion-control { display: flex; flex-direction: column; gap: 10px; font-size: 12px; }
+.motion-control input { width: 100%; accent-color: #236a44; }
+.thumb-control { display: flex; gap: 8px; align-items: center; margin-top: 14px; font-size: 12px; }
+.thumb-control input { width: 18px; height: 18px; accent-color: #65349a; }
+.animation-button { border: 1px solid #17262070; border-radius: 18px; padding: 9px 14px; background: #ffffff60; color: var(--ink); font-size: 12px; margin-top: 14px; }
+.illustration-status { font-size: 12px; line-height: 1.5; min-height: 54px; margin: 12px 0 0; }
+.illustration-hint { font-size: 11px; line-height: 1.5; color: #3b4942; margin: 4px 0 0; }
+.history-grid { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(5, 1fr); height: 300px; border: 1px solid #17262040; border-radius: 12px; overflow: hidden; background-image: linear-gradient(#17262020 1px, transparent 1px), linear-gradient(90deg, #17262020 1px, transparent 1px); background-size: calc(100% / 6) 20%; }
+.grid-body { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #17262040; stroke-width: 7; pointer-events: none; }
+.history-grid button { z-index: 1; margin: 4px; padding: 2px; border: 2px solid #236a44; border-radius: 8px; background: #b0e9b9; color: #12311b; font-weight: 700; min-width: 0; }
+.history-grid button small { display: block; font: 9px Consolas, monospace; white-space: nowrap; margin-top: 4px; }
+.history-grid [data-cell="first"] { grid-column: 3; grid-row: 3; }
+.history-grid [data-cell="second"] { grid-column: 4; grid-row: 3; }
+.history-grid [data-cell="cancel"] { grid-column: 2; grid-row: 4; background: #ffc1bd; border-color: #9e3430; font-size: 24px; }
+.history-grid [data-cell="trigger"] { grid-column: 5; grid-row: 3; background: #ffe599; border-color: #846119; font-size: 24px; }
+.history-grid [data-cell="condition"] { grid-column: 4 / 6; grid-row: 4; background: #e8caff; border-color: #65349a; font: bold 10px Consolas, monospace; }
+.history-grid .is-complete { background: #236a44; color: white; }
+.history-grid button:focus-visible { outline-offset: -5px; outline-color: #172620; }
+
 @media (max-width: 800px) {
     .header, .section, .footer { width: calc(100% - 40px); }
     .brand-name { display: none; }
@@ -93,7 +118,7 @@ body.is-away { background: #000; }
     .section { padding-block: 55px; }
     .slide { grid-template-columns: 1fr; gap: 20px; }
     .slide-art { min-height: 150px; }
-    #slide-symbol { font-size: 145px; }
+
     .gesture-instructions { justify-content: flex-start; gap: 12px; }
     .footer { flex-direction: column; align-items: flex-start; }
     .finale { padding: 30px; }

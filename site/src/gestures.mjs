@@ -12,8 +12,8 @@ function swipe(id, landmark, startColumn, finishColumn) {
             id: "sweep",
             mode: "ordered",
             constraints: [
-                { id: "start", landmark, cell: [startColumn, -2, 4, 12], type: "required", priority: "high", order: 1 },
-                { id: "finish", landmark, cell: [finishColumn, -2, 4, 12], type: "trigger", priority: "high", order: 2 }
+                { id: "start", landmark, cell: [startColumn, -9, 4, 27], type: "required", priority: "high", order: 1 },
+                { id: "finish", landmark, cell: [finishColumn, -9, 4, 27], type: "trigger", priority: "high", order: 2 }
             ]
         }]
     };

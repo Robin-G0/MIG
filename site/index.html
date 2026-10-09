@@ -56,7 +56,25 @@
                         <h3 id="slide-title"></h3>
                         <p id="slide-description"></p>
                     </div>
-                    <div class="slide-art" aria-hidden="true"><span id="slide-symbol"></span><span class="slide-number" id="slide-number"></span></div>
+                    <div class="slide-art">
+                        <div class="history-illustration" id="history-illustration">
+                            <svg viewBox="0 0 360 320" role="img"></svg>
+                            <div class="history-grid" data-history-grid hidden>
+                                <svg class="grid-body" viewBox="0 0 360 300" aria-hidden="true"><circle cx="180" cy="50" r="23"/><path d="M180 73 V200 M90 125 L180 100 L270 125 M180 200 L135 275 M180 200 L225 275"/></svg>
+                                <button type="button" data-cell="first" data-label-key="firstCell">1<small>[2, 2]</small></button>
+                                <button type="button" data-cell="second" data-label-key="secondCell">2<small>[3, 2]</small></button>
+                                <button type="button" data-cell="cancel" data-label-key="cancelCell">×</button>
+                                <button type="button" data-cell="trigger" data-label-key="triggerCell">→</button>
+                                <button type="button" data-cell="condition" data-label-key="conditionCell">if<br>thumbs up:<br>trigger</button>
+                            </div>
+                            <label class="motion-control"><span data-history-motion-label></span><input type="range" min="0" max="100" value="0" step="1"></label>
+                            <label class="thumb-control" hidden><input type="checkbox" data-history-thumb><span data-history-thumb-label></span></label>
+                            <button class="animation-button" type="button" data-history-play></button>
+                            <p class="illustration-status" data-history-status role="status" aria-live="polite"></p>
+                            <p class="illustration-hint" data-history-hint></p>
+                        </div>
+                        <span class="slide-number" id="slide-number" aria-hidden="true"></span>
+                    </div>
                 </div>
                 <div class="slide-controls">
                     <button class="arrow-button" id="previous-slide" type="button" data-label="previous">←</button>
@@ -75,7 +93,7 @@
                 <h2 id="presence-title" data-text="presenceTitle"></h2>
                 <p class="lead" data-text="presenceDescription"></p>
                 <p class="manual-hint" data-text="presenceNote"></p>
-                <div class="departure-art" aria-hidden="true"><span>○</span><span>→</span><span>✦</span></div>
+                <div class="departure-art" aria-hidden="true"><span>○</span><span>→</span><span>◎</span></div>
             </section>
 
             <section class="section finale" id="finale" hidden aria-labelledby="finale-title">

@@ -67,3 +67,28 @@ test("camera errors give usable recovery messages", () => {
     assert.equal(cameraError("NotFoundError: no device"), "unavailable");
     assert.equal(cameraError("Unexpected model failure"), "error");
 });
+
+// Full-camera sweeps do not depend on wrist height or the body's grid origin.
+test("camera-space sweeps work at the top and bottom and reject stale or missing tracking", async () => {
+    const { CameraSwipes } = await import("../src/camera-swipes.mjs");
+    for (const y of [.01, .99]) {
+        const sweeps = new CameraSwipes();
+        let right = { x: .2, y };
+        let left = { x: .8, y };
+        const session = { coordinate: index => index === 16 ? right : left };
+        assert.deepEqual(sweeps.update(session, 0), []);
+        right = { x: .4, y };
+        assert.deepEqual(sweeps.update(session, 100), ["next_slide"]);
+        left = { x: .6, y };
+        assert.deepEqual(sweeps.update(session, 200), ["previous_slide"]);
+        assert.deepEqual(sweeps.update(session, 220), []);
+        right = null;
+        sweeps.update(session, 230);
+        right = { x: .9, y };
+        assert.deepEqual(sweeps.update(session, 240), []);
+        left = { x: .1, y };
+        assert.deepEqual(sweeps.update(session, 1000), []);
+        sweeps.reset();
+        assert.deepEqual(sweeps.update(session, 1010), []);
+    }
+});

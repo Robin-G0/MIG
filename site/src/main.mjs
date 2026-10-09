@@ -1,3 +1,5 @@
+import { HistoryIllustration } from "./history.mjs";
+import { CameraSwipes } from "./camera-swipes.mjs";
 import { settings } from "./settings.mjs";
 import { translations } from "./translations.mjs";
 import { SlideController } from "./slides.mjs";
@@ -7,6 +9,8 @@ import { cameraError, createCameraSession } from "./camera.mjs";
 const element = id => document.getElementById(id);
 const slides = new SlideController(translations.fr.slides.length, settings.slideDelay);
 const presence = new PresenceMonitor(settings);
+const cameraSwipes = new CameraSwipes();
+const illustration = new HistoryIllustration(element("history-illustration"));
 // README links select a language explicitly; other visits use the browser language.
 const requestedLanguage = new URL(location.href).searchParams.get("lang");
 let language = requestedLanguage === "fr" || requestedLanguage === "en"
@@ -26,7 +30,7 @@ function renderSlide() {
     element("slide-tag").textContent = slide.tag;
     element("slide-title").textContent = slide.title;
     element("slide-description").textContent = slide.description;
-    element("slide-symbol").textContent = slide.symbol;
+    illustration.show(slides.index, text);
     element("slide-number").textContent = slide.number;
     element("slide-counter").textContent = `${text.slideLabel} ${slides.index + 1} / ${slides.count}`;
 }
@@ -63,6 +67,10 @@ function showPage() {
 
 function handlePresence(currentSession) {
     if (document.hidden) return;
+    // Image coordinates keep sweeps usable at every height and outside the body grid.
+    for (const action of cameraSwipes.update(currentSession, performance.now())) {
+        handleAction({ action });
+    }
     const detected = currentSession.coordinate(11) !== null && currentSession.coordinate(12) !== null;
     const nextState = presence.update(detected, performance.now());
     if (nextState === "away" && !away) {
@@ -97,6 +105,7 @@ function stopCamera() {
     previousSession?.dispose();
     starting = false;
     presence.reset();
+    cameraSwipes.reset();
     showPage();
     document.querySelector(".camera-card").classList.remove("is-running");
     element("start-camera").disabled = false;
@@ -178,6 +187,7 @@ element("stop-camera").addEventListener("click", stopCamera);
 element("previous-slide").addEventListener("click", () => { slides.move(-1); renderSlide(); });
 element("next-slide").addEventListener("click", () => { slides.move(1); renderSlide(); });
 element("slide").addEventListener("keydown", event => {
+    if (event.target !== element("slide")) return;
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
         event.preventDefault();
         slides.move(event.key === "ArrowRight" ? 1 : -1);
@@ -187,7 +197,7 @@ element("slide").addEventListener("keydown", event => {
 // Pointer events support touch without interfering with vertical page scrolling.
 let swipeStart = null;
 element("slide").addEventListener("pointerdown", event => {
-    if (event.pointerType === "touch") {
+    if (event.pointerType === "touch" && !event.target.closest(".history-illustration")) {
         swipeStart = { id: event.pointerId, x: event.clientX };
     }
 });
@@ -206,6 +216,7 @@ document.addEventListener("keydown", event => {
 });
 document.addEventListener("visibilitychange", () => {
     // Start a new presence interval after tab suspension.
+    cameraSwipes.reset();
     presence.changedAt = null;
     presence.lastTime = null;
 });
