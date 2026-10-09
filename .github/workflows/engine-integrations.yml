@@ -1,0 +1,137 @@
+name: Build engine integrations (manual)
+
+on:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    linux:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 90
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - name: Propagate exact-tag package versions
+              run: python3 tools/release/release-version.py --sync
+            - name: Cache Linux engine compiler results
+              uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+              with:
+                  path: build/ccache-engines-linux
+                  key: engines-ccache-linux-${{ hashFiles('tools/docker/linux-release.Dockerfile') }}-${{ github.sha }}
+                  restore-keys: engines-ccache-linux-${{ hashFiles('tools/docker/linux-release.Dockerfile') }}-
+            - name: Cache verified Linux engine downloads
+              uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+              with:
+                  path: |
+                      build/native-linux-deps/mediapipe.whl
+                      build/native-linux-deps/models
+                      build/godot-deps/*.zip
+                  key: engines-downloads-linux-${{ hashFiles('tools/bootstrap/bootstrap-native-linux.py', 'tools/bootstrap/bootstrap-godot.py') }}
+            - name: Build baseline toolchain
+              run: docker build -f tools/docker/linux-release.Dockerfile -t mig-linux-engines:22.04 tools
+            - name: Build portable SDKs and engine packages
+              run: |
+                  docker run --rm -v "$PWD:/src" -w /src \
+                      -e CCACHE_DIR=/src/build/ccache-engines-linux -e CCACHE_MAXSIZE=500M \
+                      -e CMAKE_CXX_COMPILER_LAUNCHER=ccache mig-linux-engines:22.04 bash -euo pipefail -c '
+                      python3 tools/bootstrap/bootstrap-native-linux.py
+                      for architecture in x64 arm64; do
+                          toolchain=()
+                          if [[ "$architecture" == arm64 ]]; then
+                              toolchain=(-DCMAKE_TOOLCHAIN_FILE=/src/cmake/linux-arm64.cmake)
+                          fi
+                          build="build/release-sdk-$architecture"
+                          cmake -S . -B "$build" -G Ninja "${toolchain[@]}" \
+                              -DCMAKE_BUILD_TYPE=Release -DMIG_BUILD_CONTROLLER=OFF \
+                              -DMIG_BUILD_CONFIGURATOR=OFF -DMIG_BUILD_NATIVE_RUNTIME=OFF
+                          cmake --build "$build" --parallel 3
+                          ctest --test-dir "$build" --output-on-failure
+                          cmake --install "$build" --prefix "/src/$build-install"
+                      done
+                      bash tools/packaging/prepare-linux-packages.sh --engines-only
+                      '
+            - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+              with:
+                  dotnet-version: '8.0.x'
+            - name: Validate the extracted Linux managed bridges
+              run: |
+                  python3 tests/packaging/native_integration_package_tests.py build/releases/motion-input-grid-*-linux-x64-unity.tgz
+                  python3 tests/packaging/native_integration_package_tests.py build/releases/motion-input-grid-*-linux-x64-unity-standalone.zip
+                  python3 tests/packaging/standalone_editor_tests.py build/releases/motion-input-grid-*-linux-x64-unity-standalone.zip
+                  python3 tests/packaging/standalone_editor_tests.py --build-csharp build/releases/motion-input-grid-*-linux-x64-godot-csharp-standalone.zip
+            - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+              with:
+                  name: motion-input-grid-linux-engine-candidates
+                  path: build/releases/
+                  if-no-files-found: error
+                  compression-level: 1
+
+    windows:
+        runs-on: windows-2022
+        timeout-minutes: 60
+        env:
+            CMAKE_BUILD_PARALLEL_LEVEL: 3
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+              with:
+                  python-version: '3.12'
+            - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+              with:
+                  dotnet-version: '8.0.x'
+            - name: Propagate exact-tag package versions
+              run: python tools/release/release-version.py --sync
+            - name: Cache verified Windows engine downloads
+              uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+              with:
+                  path: |
+                      build/native-deps/mediapipe.zip
+                      build/native-deps/models
+                      build/godot-deps/*.zip
+                  key: engines-downloads-windows-${{ hashFiles('tools/bootstrap/bootstrap-native.ps1', 'tools/bootstrap/bootstrap-godot.py') }}
+            - name: Build and validate engine integration artifacts
+              shell: pwsh
+              run: |
+                  ./tools/bootstrap/bootstrap-native.ps1
+                  ./tools/packaging/prepare-windows-packages.ps1 -EngineIntegrationsOnly
+            - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+              with:
+                  name: motion-input-grid-windows-engine-candidates
+                  path: build/releases/
+                  if-no-files-found: error
+                  compression-level: 1
+
+    arm64-integrations:
+        needs: linux
+        runs-on: ubuntu-24.04-arm
+        container: ubuntu:22.04
+        timeout-minutes: 30
+        steps:
+            - name: Install ARM64 integration validation tools
+              run: |
+                  apt-get update
+                  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y git ca-certificates python3 libstdc++6 libfontconfig1 libx11-6 libxcursor1 libxinerama1 libxrandr2 libxi6 libgl1
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+            - name: Propagate exact-tag package versions
+              run: python3 tools/release/release-version.py --sync
+            - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+              with:
+                  name: motion-input-grid-linux-engine-candidates
+                  path: build/linux-candidates
+            - name: Validate the ARM64 Godot add-on on ARM64
+              run: |
+                  python3 tools/bootstrap/bootstrap-godot.py --editor
+                  python3 tests/packaging/godot_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-godot.zip --godot build/godot-deps/Godot_v4.3-stable_linux.arm64
+                  python3 tests/packaging/godot_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-godot-gdscript-standalone.zip --godot build/godot-deps/Godot_v4.3-stable_linux.arm64
+                  python3 tests/packaging/native_integration_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-unreal.zip
+

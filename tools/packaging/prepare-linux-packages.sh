@@ -3,22 +3,33 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 version=$(cat VERSION)
 dependencies=build/native-linux-deps
+mode="${1:-}"
+if [[ $# -gt 1 || ( -n "$mode" && "$mode" != --engines-only ) ]]; then
+    echo "Usage: $0 [--engines-only]" >&2
+    exit 2
+fi
+if [[ "$mode" != --engines-only ]]; then
+    for architecture in x64 arm64; do
+        sdk="build/release-sdk-$architecture-install"
+        python3 tools/packaging/package-sdk.py --sdk "$sdk" --dependencies "$dependencies" --platform "linux-$architecture"
+        if [[ "$architecture" == arm64 ]]; then
+            python3 tests/packaging/sdk_package_tests.py "build/releases/motion-input-grid-$version-linux-arm64-sdk.tar.gz" --arm64
+        else
+            python3 tests/packaging/sdk_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-sdk.tar.gz"
+        fi
+    done
+    python3 tests/packaging/python_package_tests.py build/releases/*-manylinux_2_35_x86_64.whl
+    python3 tests/packaging/debian_package_tests.py build/releases/motion-input-grid_*.deb
+    exit 0
+fi
+
 for architecture in x64 arm64; do
-    sdk="build/release-sdk-$architecture-install"
-    python3 tools/packaging/package-sdk.py --sdk "$sdk" --dependencies "$dependencies" --platform "linux-$architecture"
-    if [[ "$architecture" == arm64 ]]; then
-        python3 tests/packaging/sdk_package_tests.py "build/releases/motion-input-grid-$version-linux-arm64-sdk.tar.gz" --arm64
-    else
-        python3 tests/packaging/sdk_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-sdk.tar.gz"
-    fi
-    python3 tools/packaging/package-integrations.py --ecosystem unreal --sdk "$sdk" --dependencies "$dependencies" --platform "linux-$architecture"
+    python3 tools/packaging/package-integrations.py --ecosystem unreal --sdk "build/release-sdk-$architecture-install" --dependencies "$dependencies" --platform "linux-$architecture"
 done
 python3 tools/packaging/package-integrations.py --ecosystem unity --sdk build/release-sdk-x64-install --dependencies "$dependencies" --platform linux-x64
 python3 tests/packaging/native_integration_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-unreal.zip"
 python3 tests/packaging/native_integration_package_tests.py "build/releases/motion-input-grid-$version-linux-x64-unreal-standalone.zip"
 python3 tests/packaging/standalone_editor_tests.py "build/releases/motion-input-grid-$version-linux-x64-unreal-standalone.zip"
-python3 tests/packaging/python_package_tests.py build/releases/*-manylinux_2_35_x86_64.whl
-python3 tests/packaging/debian_package_tests.py build/releases/motion-input-grid_*.deb
 python3 tools/bootstrap/bootstrap-godot.py --editor
 for architecture in x64 arm64; do
     toolchain=()

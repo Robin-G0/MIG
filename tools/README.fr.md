@@ -62,7 +62,7 @@ Le bootstrap/packaging JavaScript utilise `python` sous Windows et `python3` sou
 | [package-browser-example.py](packaging/package-browser-example.py) | Arbre JavaScript préparé → tutoriel avec pages compilées et dépendance npm locale pour reconstruire. Node 22.12+ reste externe. |
 | [package-integrations.py](packaging/package-integrations.py) | ABI C installé → add-on Godot, package UPM Unity ou plugin Unreal, plus les projets/plugins tutoriels autonomes correspondants. |
 | [package-editor-examples.py](packaging/package-editor-examples.py) | Intégration préparée → projet/plugin tutoriel avec pont, profil et bibliothèques natives. Éditeur/outils et fournisseur réel de tracking restent externes. |
-| [prepare-windows-packages.ps1](packaging/prepare-windows-packages.ps1), [prepare-linux-packages.sh](packaging/prepare-linux-packages.sh) | Assembler et vérifier les artefacts SDK, langages et moteurs depuis les sorties de compilation. |
+| [prepare-windows-packages.ps1](packaging/prepare-windows-packages.ps1), [prepare-linux-packages.sh](packaging/prepare-linux-packages.sh) | Assembler et vérifier les artefacts SDK et langages. Utiliser `-EngineIntegrationsOnly` (Windows) ou `--engines-only` (Linux) pour les artefacts moteurs, compilés par le workflow manuel **Build engine integrations (manual)**. |
 | [archive-examples.py](packaging/archive-examples.py) | Créer une archive tar et son empreinte depuis un arbre d'exemples déjà préparé. |
 
 Conservez tout le contenu extrait. Les lanceurs natifs résolvent les ressources

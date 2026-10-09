@@ -1,3 +1,5 @@
+param([switch]$EngineIntegrationsOnly)
+
 $ErrorActionPreference = 'Stop'
 Set-Location "$PSScriptRoot/../.."
 $version = (Get-Content VERSION -Raw).Trim()
@@ -11,13 +13,17 @@ Invoke-Checked cmake @('--build', 'build/release-sdk-windows', '--config', 'Rele
 Invoke-Checked ctest @('--test-dir', 'build/release-sdk-windows', '-C', 'Release', '--output-on-failure')
 $sdk = "$PWD/build/release-sdk-windows-install"
 Invoke-Checked cmake @('--install', 'build/release-sdk-windows', '--config', 'Release', '--prefix', $sdk)
-Invoke-Checked python @('tools/packaging/package-sdk.py', '--sdk', $sdk, '--dependencies', 'build/native-deps', '--platform', 'windows-x64')
-Invoke-Checked python @('tests/packaging/sdk_package_tests.py', "build/releases/motion-input-grid-$version-windows-x64-sdk.zip")
-Invoke-Checked python @('-m', 'pip', 'install', 'build', 'twine')
-Invoke-Checked python @('tools/packaging/package-python.py', '--destination', 'build/python-windows')
-Copy-Item -LiteralPath "build/python-windows/motion_input_grid-$version-py3-none-win_amd64.whl" -Destination build/releases
-Invoke-Checked python @('tests/packaging/python_package_tests.py', "build/releases/motion_input_grid-$version-py3-none-win_amd64.whl")
-Invoke-Checked python @('-m', 'twine', 'check', "build/releases/motion_input_grid-$version-py3-none-win_amd64.whl", "build/python-windows/motion_input_grid-$version.tar.gz")
+if (-not $EngineIntegrationsOnly) {
+    Invoke-Checked python @('tools/packaging/package-sdk.py', '--sdk', $sdk, '--dependencies', 'build/native-deps', '--platform', 'windows-x64')
+    Invoke-Checked python @('tests/packaging/sdk_package_tests.py', "build/releases/motion-input-grid-$version-windows-x64-sdk.zip")
+    Invoke-Checked python @('-m', 'pip', 'install', 'build', 'twine')
+    Invoke-Checked python @('tools/packaging/package-python.py', '--destination', 'build/python-windows')
+    Copy-Item -LiteralPath "build/python-windows/motion_input_grid-$version-py3-none-win_amd64.whl" -Destination build/releases
+    Invoke-Checked python @('tests/packaging/python_package_tests.py', "build/releases/motion_input_grid-$version-py3-none-win_amd64.whl")
+    Invoke-Checked python @('-m', 'twine', 'check', "build/releases/motion_input_grid-$version-py3-none-win_amd64.whl", "build/python-windows/motion_input_grid-$version.tar.gz")
+    return
+}
+
 foreach ($ecosystem in @('unity', 'unreal')) {
     Invoke-Checked python @('tools/packaging/package-integrations.py', '--sdk', $sdk, '--dependencies', 'build/native-deps', '--platform', 'windows-x64', '--ecosystem', $ecosystem)
     $extension = if ($ecosystem -eq 'unity') { 'tgz' } else { 'zip' }

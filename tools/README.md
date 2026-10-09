@@ -63,7 +63,7 @@ set `MIG_PYTHON` to select another interpreter. Running compiled pages needs no 
 | [package-browser-example.py](packaging/package-browser-example.py) | Prepared JavaScript tree → one browser tutorial with compiled pages and a local npm dependency for rebuilding. Node 22.12+ remains an external prerequisite. |
 | [package-integrations.py](packaging/package-integrations.py) | Installed C ABI → Godot add-on, Unity UPM or Unreal plugin; also creates matching standalone tutorial projects/plugins. |
 | [package-editor-examples.py](packaging/package-editor-examples.py) | Prepared integration → complete tutorial project/plugin with bridge, profile and native libraries. The editor/toolchain and real tracking provider remain external. |
-| [prepare-windows-packages.ps1](packaging/prepare-windows-packages.ps1), [prepare-linux-packages.sh](packaging/prepare-linux-packages.sh) | Assemble and verify SDK, language and engine artifacts from the platform build outputs. |
+| [prepare-windows-packages.ps1](packaging/prepare-windows-packages.ps1), [prepare-linux-packages.sh](packaging/prepare-linux-packages.sh) | Assemble and verify SDK and language artifacts. Use `-EngineIntegrationsOnly` (Windows) or `--engines-only` (Linux) for engine artifacts, built by the manual **Build engine integrations (manual)** workflow. |
 | [archive-examples.py](packaging/archive-examples.py) | Write a tar archive/checksum from an already prepared example tree. |
 
 Keep all contents of an extracted archive together. Native launchers resolve

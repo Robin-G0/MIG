@@ -49,8 +49,7 @@ jobs:
                   path: |
                       build/native-linux-deps/mediapipe.whl
                       build/native-linux-deps/models
-                      build/godot-deps/*.zip
-                  key: release-downloads-linux-${{ hashFiles('tools/bootstrap/bootstrap-native-linux.py', 'tools/bootstrap/bootstrap-godot.py') }}
+                  key: release-downloads-linux-${{ hashFiles('tools/bootstrap/bootstrap-native-linux.py') }}
             - name: Build baseline toolchain
               run: docker build -f tools/docker/linux-release.Dockerfile -t mig-linux-release:22.04 tools
             - name: Build, test and package x64 and ARM64 SDKs
@@ -67,21 +66,12 @@ jobs:
                       -v "$PWD/tests/packaging/standalone_example_tests.py:/tests/standalone_example_tests.py:ro" \
                       mig-example-test:22.04 xvfb-run -a python3 -u /tests/standalone_example_tests.py \
                       '/archives/*-linux-x64-*-standalone.tar.gz'
-            - name: Generate SDK and runtime integration packages
+            - name: Generate and validate SDK and Python packages
               run: >-
                   docker run --rm -v "$PWD:/src" -w /src
                   -e CCACHE_DIR=/src/build/ccache-linux -e CCACHE_MAXSIZE=500M
                   -e CMAKE_CXX_COMPILER_LAUNCHER=ccache mig-linux-release:22.04
                   bash tools/packaging/prepare-linux-packages.sh
-            - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
-              with:
-                  dotnet-version: '8.0.x'
-            - name: Validate the extracted Linux Unity managed bridge
-              run: |
-                  python3 tests/packaging/native_integration_package_tests.py build/releases/motion-input-grid-*-linux-x64-unity.tgz
-                  python3 tests/packaging/native_integration_package_tests.py build/releases/motion-input-grid-*-linux-x64-unity-standalone.zip
-                  python3 tests/packaging/standalone_editor_tests.py build/releases/motion-input-grid-*-linux-x64-unity-standalone.zip
-                  python3 tests/packaging/standalone_editor_tests.py --build-csharp build/releases/motion-input-grid-*-linux-x64-godot-csharp-standalone.zip
             - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: motion-input-grid-linux-and-python-candidates
@@ -107,9 +97,6 @@ jobs:
                       tools/packaging/freeze-python-examples.py
                       tools/packaging/prepare-windows-packages.ps1
                       bindings/python/pyproject.toml
-            - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
-              with:
-                  dotnet-version: '8.0.x'
             - name: Propagate exact-tag package versions
               run: python tools/release/release-version.py --sync
             - name: Cache verified Windows downloads
@@ -119,8 +106,7 @@ jobs:
                       build/native-deps/mediapipe.zip
                       build/native-deps/models
                       build/example-deps/*.zip
-                      build/godot-deps/*.zip
-                  key: release-downloads-windows-${{ hashFiles('tools/bootstrap/bootstrap-native.ps1', 'tools/build/build-examples.ps1', 'tools/bootstrap/bootstrap-godot.py') }}
+                  key: release-downloads-windows-${{ hashFiles('tools/bootstrap/bootstrap-native.ps1', 'tools/build/build-examples.ps1') }}
             - name: Test download recovery and integrity checks
               shell: pwsh
               run: ./tests/tooling/download_tests.ps1
@@ -138,7 +124,7 @@ jobs:
                   python tools/packaging/freeze-python-examples.py
                   python tools/packaging/package-examples.py --platform windows-x64 --standalone
                   python tests/packaging/standalone_example_tests.py --source-python python build/releases/*-windows-x64-*-standalone.zip
-            - name: Build and validate SDK, Python and engine integration artifacts
+            - name: Build and validate SDK and Python artifacts
               shell: pwsh
               run: ./tools/packaging/prepare-windows-packages.ps1
             - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -247,35 +233,8 @@ jobs:
                   path: build/releases/
                   compression-level: 1
 
-    arm64-integrations:
-        needs: [metadata, linux]
-        runs-on: ubuntu-24.04-arm
-        container: ubuntu:22.04
-        timeout-minutes: 30
-        steps:
-            - name: Install ARM64 integration validation tools
-              run: |
-                  apt-get update
-                  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y git ca-certificates python3 libstdc++6 libfontconfig1 libx11-6 libxcursor1 libxinerama1 libxrandr2 libxi6 libgl1
-            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-              with:
-                  persist-credentials: false
-                  fetch-depth: 0
-            - name: Propagate exact-tag package versions
-              run: python3 tools/release/release-version.py --sync
-            - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-              with:
-                  name: motion-input-grid-linux-and-python-candidates
-                  path: build/linux-candidates
-            - name: Validate the ARM64 Godot add-on on ARM64
-              run: |
-                  python3 tools/bootstrap/bootstrap-godot.py --editor
-                  python3 tests/packaging/godot_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-godot.zip --godot build/godot-deps/Godot_v4.3-stable_linux.arm64
-                  python3 tests/packaging/godot_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-godot-gdscript-standalone.zip --godot build/godot-deps/Godot_v4.3-stable_linux.arm64
-                  python3 tests/packaging/native_integration_package_tests.py build/linux-candidates/motion-input-grid-*-linux-arm64-unreal.zip
-
     manifest:
-        needs: [linux, windows, javascript, source, arm64, arm64-integrations]
+        needs: [linux, windows, javascript, source, arm64]
         runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
