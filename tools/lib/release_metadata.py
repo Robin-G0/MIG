@@ -9,7 +9,7 @@ import shutil
 ROOT = Path(__file__).resolve().parents[2]
 PROJECT_NAME = "Motion Input Grid"
 PACKAGE_NAME = "motion-input-grid"
-REPOSITORY = "https://github.com/Robin-G0/MIG"
+REPOSITORY = "https://github.com/Robin-G0/Motion-Input-Grid"
 
 
 def build_directory():
@@ -97,7 +97,7 @@ def write_package_manifest(folder, ecosystem, platform):
 
 
 def rewrite_package_guides(folder):
-    prefix = f"https://github.com/Robin-G0/MIG/blob/v{release_version()}/"
+    prefix = f"{REPOSITORY}/blob/v{release_version()}/"
     package_root = folder.resolve()
     for guide in folder.rglob("*.md"):
         if 'licenses' in guide.relative_to(folder).parts:

@@ -1,6 +1,6 @@
 # Motion Input Grid (MIG) browser package
 
-[English](README.md) | [Français](README.fr.md)
+[English](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/bindings/javascript/README.md) | [Français](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/bindings/javascript/README.fr.md)
 
 Recognize movements in the browser with the C++ engine compiled to WASM.
 `MIGSession` owns the camera, models and tracker; React and Vue adapters connect
@@ -100,9 +100,9 @@ the preview's CSS. No desktop keyboard injection occurs. MediaPipe Tasks Vision
 0.10.35 is included in `runtime/vision` and copied with the other public assets.
 Start loads local files; no CDN request or consumer dependency installation is needed.
 
-See the [React](https://github.com/Robin-G0/MIG/blob/main/examples/react/README.md), [Vue](https://github.com/Robin-G0/MIG/blob/main/examples/vue/README.md)
-and [Next.js](https://github.com/Robin-G0/MIG/blob/main/examples/next/README.md) examples and the
-[JavaScript bootstrap guide](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.md).
+See the [React](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/examples/react/README.md), [Vue](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/examples/vue/README.md)
+and [Next.js](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/examples/next/README.md) examples and the
+[JavaScript bootstrap guide](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/docs/integrations/javascript.md).
 
 ## Alternative: build the package
 

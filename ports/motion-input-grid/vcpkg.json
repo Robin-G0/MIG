@@ -2,7 +2,7 @@
   "name": "motion-input-grid",
   "version": "1.0.2",
   "description": "Motion Input Grid C++20 recognition engine",
-  "homepage": "https://github.com/Robin-G0/MIG",
+  "homepage": "https://github.com/Robin-G0/Motion-Input-Grid",
   "license": "Apache-2.0",
   "supports": "(windows & !uwp) | linux",
   "default-features": ["format", "hands"],

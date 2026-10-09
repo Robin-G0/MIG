@@ -1,6 +1,6 @@
 # Package Python Motion Input Grid (MIG)
 
-[English](README.md) | [Français](README.fr.md)
+[English](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/bindings/python/README.md) | [Français](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/bindings/python/README.fr.md)
 
 ## Installer depuis PyPI
 
@@ -62,7 +62,7 @@ Les viewers demandent l'extension `mig_camera_image` ; `Tracker.camera_image()`
 copie les pixels. Les callbacks sont des événements logiques ; l'application
 choisit comment les utiliser ou envoyer des touches.
 
-[Exemples caméra](https://github.com/Robin-G0/MIG/tree/main/examples) ·
-[Contrat ABI](https://github.com/Robin-G0/MIG/blob/main/docs/reference/c-abi.fr.md) ·
-[Parcours du code](https://github.com/Robin-G0/MIG/blob/main/docs/getting-started/examples.fr.md) ·
-[Démarrage](https://github.com/Robin-G0/MIG/blob/main/docs/getting-started/bootstrap.fr.md).
+[Exemples caméra](https://github.com/Robin-G0/Motion-Input-Grid/tree/main/examples) ·
+[Contrat ABI](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/docs/reference/c-abi.fr.md) ·
+[Parcours du code](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/docs/getting-started/examples.fr.md) ·
+[Démarrage](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/docs/getting-started/bootstrap.fr.md).

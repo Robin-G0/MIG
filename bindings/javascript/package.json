@@ -45,12 +45,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Robin-G0/MIG.git",
+        "url": "git+https://github.com/Robin-G0/Motion-Input-Grid.git",
         "directory": "bindings/javascript"
     },
-    "homepage": "https://github.com/Robin-G0/MIG",
+    "homepage": "https://github.com/Robin-G0/Motion-Input-Grid",
     "bugs": {
-        "url": "https://github.com/Robin-G0/MIG/issues"
+        "url": "https://github.com/Robin-G0/Motion-Input-Grid/issues"
     },
     "publishConfig": {
         "access": "public"

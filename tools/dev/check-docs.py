@@ -6,6 +6,7 @@ import os
 import re
 from urllib.parse import unquote, urlsplit
 from distribution_policy import EXCLUDED_NAMES
+from release_metadata import REPOSITORY
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -51,7 +52,8 @@ def check(path):
         target = Path(os.path.relpath(translation, path.parent)).as_posix()
         if not translation.is_file():
             errors.append(f"missing translation: {target}")
-        if f"]({target})" not in content:
+        github_target = f"{REPOSITORY}/blob/main/{translation.relative_to(ROOT).as_posix()}"
+        if f"]({target})" not in content and f"]({github_target})" not in content:
             errors.append(f"missing language link: {target}")
     outside_code = re.sub(r"```.*?```", "", content, flags=re.S)
     targets = re.findall(r"\]\(([^\s)]+)(?:\s+\"[^\"]*\")?\)", outside_code)

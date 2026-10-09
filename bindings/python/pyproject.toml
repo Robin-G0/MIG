@@ -19,8 +19,10 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Robin-G0/MIG"
-Issues = "https://github.com/Robin-G0/MIG/issues"
+Homepage = "https://github.com/Robin-G0/Motion-Input-Grid"
+Documentation = "https://github.com/Robin-G0/Motion-Input-Grid/blob/main/bindings/python/README.md"
+Source = "https://github.com/Robin-G0/Motion-Input-Grid"
+Issues = "https://github.com/Robin-G0/Motion-Input-Grid/issues"
 
 [tool.scikit-build]
 cmake.source-dir = "native"

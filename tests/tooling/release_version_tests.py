@@ -12,7 +12,16 @@ def document(path):
 
 def verify_identity():
     identifier = "motion-input-grid"
-    repository = "https://github.com/Robin-G0/MIG"
+    repository = "https://github.com/Robin-G0/Motion-Input-Grid"
+    for binding in ("python", "javascript"):
+        for filename in ("README.md", "README.fr.md"):
+            readme = document(f"bindings/{binding}/{filename}")
+            assert "https://github.com/Robin-G0/MIG" not in readme
+            for translation in ("README.md", "README.fr.md"):
+                assert f"]({repository}/blob/main/bindings/{binding}/{translation})" in readme
+    python_metadata = document("bindings/python/pyproject.toml")
+    assert f'Homepage = "{repository}"' in python_metadata
+    assert f'Issues = "{repository}/issues"' in python_metadata
     for path in ("vcpkg.json", "ports/motion-input-grid/vcpkg.json", "bindings/javascript/package.json"):
         package = json.loads(document(path))
         assert package["name"] == identifier, path

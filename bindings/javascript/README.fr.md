@@ -1,6 +1,6 @@
 # Package navigateur Motion Input Grid (MIG)
 
-[English](README.md) | [Français](README.fr.md)
+[English](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/bindings/javascript/README.md) | [Français](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/bindings/javascript/README.fr.md)
 
 Reconnaissez des mouvements dans le navigateur avec le moteur C++ compilé en
 WASM. `MIGSession` possède la caméra, les modèles et le tracker ; les adaptateurs
@@ -98,9 +98,9 @@ Seules les nouvelles frames sont traitées, hors état réactif ; `tracking.hand
 contrôle l'inférence des mains. Le miroir est uniquement visuel. Aucun raccourci
 clavier système n'est injecté ; les callbacks sont des événements de votre application.
 
-Consultez les exemples [React](https://github.com/Robin-G0/MIG/blob/main/examples/react/README.fr.md),
-[Vue](https://github.com/Robin-G0/MIG/blob/main/examples/vue/README.fr.md), [Next.js](https://github.com/Robin-G0/MIG/blob/main/examples/next/README.fr.md)
-et le [guide de démarrage](https://github.com/Robin-G0/MIG/blob/main/docs/integrations/javascript.fr.md).
+Consultez les exemples [React](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/examples/react/README.fr.md),
+[Vue](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/examples/vue/README.fr.md), [Next.js](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/examples/next/README.fr.md)
+et le [guide de démarrage](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/docs/integrations/javascript.fr.md).
 
 Le paquet inclut `runtime/vision` : MediaPipe JS/WASM est copié avec les modèles
 par mig-copy-assets. Start charge ces fichiers locaux, sans CDN.

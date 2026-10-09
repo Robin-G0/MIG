@@ -1,6 +1,6 @@
 # Motion Input Grid (MIG) Python package
 
-[English](README.md) | [Français](README.fr.md)
+[English](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/bindings/python/README.md) | [Français](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/bindings/python/README.fr.md)
 
 ## Install from PyPI
 
@@ -58,8 +58,8 @@ camera-enabled SDK plus its MediaPipe runtime and models. Poll already updates
 recognition; consume `events()` afterward without submitting the frame twice.
 Action callbacks are logical events; keyboard injection is the host's choice.
 
-See the repository's [examples](https://github.com/Robin-G0/MIG/tree/main/examples)
-and [ABI contract](https://github.com/Robin-G0/MIG/blob/main/docs/reference/c-abi.md) for body
+See the repository's [examples](https://github.com/Robin-G0/Motion-Input-Grid/tree/main/examples)
+and [ABI contract](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/docs/reference/c-abi.md) for body
 and hand XYZ packets, capture ownership, Pygame and Tkinter integration.
 
-[Complete source walkthrough](https://github.com/Robin-G0/MIG/blob/main/docs/getting-started/examples.md) · [Bootstrap](https://github.com/Robin-G0/MIG/blob/main/docs/getting-started/bootstrap.md).
+[Complete source walkthrough](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/docs/getting-started/examples.md) · [Bootstrap](https://github.com/Robin-G0/Motion-Input-Grid/blob/main/docs/getting-started/bootstrap.md).
