@@ -108,6 +108,13 @@ test("gestures advance and reverse the presentation; departure and return reveal
     await expect(page.locator("#away-screen")).toBeHidden();
     await expect(page.locator("#finale")).toBeVisible();
     await expect(page.locator("#finale-title")).toBeFocused();
+    await expect(page.locator('[data-text="finaleStar"]')).toContainText("GitHub");
+    await page.getByRole("button", { name: "EN", exact: true }).click();
+    await expect(page).toHaveTitle("Motion Input Grid : your move");
+    await expect(page.locator('[data-text="finaleStar"]')).toHaveText("If you find the project interesting, give it a star on GitHub!");
+    await page.getByRole("button", { name: "FR", exact: true }).click();
+    await expect(page).toHaveTitle("Motion Input Grid : \u00e0 vous de jouer");
+    await expect(page.locator('[data-text="finaleStar"]')).toContainText("\u00e9toile sur GitHub");
     // Escape must also recover the page while the black screen is active.
     for (let index = 0; index < 17; ++index) {
         await page.evaluate(() => window.demoCamera.frame(false));

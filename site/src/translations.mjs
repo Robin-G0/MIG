@@ -1,7 +1,7 @@
 // All visitor-facing text lives here. Keep the same keys in both languages.
 export const translations = {
     fr: {
-        title: "Motion Input Grid — à vous de jouer",
+        title: "Motion Input Grid : à vous de jouer",
         navigation: "Navigation principale",
         tagline: "Le mouvement devient une interface.",
         welcome: "Bienvenue sur le repository officiel de MIG.",
@@ -93,13 +93,14 @@ export const translations = {
         finaleEyebrow: "03 / Et ensuite ?",
         finaleTitle: "On peut faire toutes sortes de choses.",
         finaleDescription: "La limite, c’est votre créativité.",
+        finaleStar: "Si vous trouvez le projet intéressant, ajoutez-lui une étoile sur GitHub !",
         finaleLink: "Découvrez Motion Input Grid",
         footerDescription: "Motion Input Grid. Des mouvements aux idées.",
         repository: "Repository",
         downloads: "Téléchargements"
     },
     en: {
-        title: "Motion Input Grid — your move",
+        title: "Motion Input Grid : your move",
         navigation: "Main navigation",
         tagline: "Movement becomes an interface.",
         welcome: "Welcome to the official MIG repository.",
@@ -191,6 +192,7 @@ export const translations = {
         finaleEyebrow: "03 / What’s next?",
         finaleTitle: "There are all kinds of things you can do.",
         finaleDescription: "The only limit is your creativity.",
+        finaleStar: "If you find the project interesting, give it a star on GitHub!",
         finaleLink: "Explore Motion Input Grid",
         footerDescription: "Motion Input Grid. From movement to ideas.",
         repository: "Repository",
