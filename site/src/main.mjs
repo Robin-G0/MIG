@@ -27,6 +27,8 @@ let away = false;
 let returnFocus = null;
 let handsMissingSince = null;
 let departureStartedAt = null;
+let greenSince = null;
+let handScrollReady = false;
 
 function renderSlide() {
     const text = translations[language];
@@ -79,9 +81,22 @@ function handInFrame(point) {
         && point.x >= 0 && point.x <= 1 && point.y >= 0 && point.y <= 1;
 }
 
+function prepareHandScrolling(handsVisible, time) {
+    if (handScrollReady) return;
+    // Losing a hand breaks the continuous second of green preview.
+    if (!handsVisible) greenSince = null;
+    if (!handsVisible) return;
+    greenSince ??= time;
+    if (time - greenSince < 1000) return;
+    handScrollReady = true;
+    cameraSwipes.reset();
+    guide.start();
+}
+
 function updateHandHint(currentSession, time) {
     const handsVisible = [15, 16].every(index => handInFrame(currentSession.coordinate(index)));
     document.querySelector(".camera-card").classList.toggle("has-hands", handsVisible);
+    prepareHandScrolling(handsVisible, time);
     if (handsVisible || away) {
         handsMissingSince = null;
         element("hands-tip").hidden = true;
@@ -147,7 +162,7 @@ function handlePresence(currentSession) {
 function handleAction(event) {
     if (away || !session?.state.running) return;
     if (event.action === "scroll_presentation") {
-        guide.raiseHand();
+        if (handScrollReady) guide.raiseHand();
         return;
     }
     if (slides.gesture(event.action, performance.now())) {
@@ -165,6 +180,8 @@ function stopCamera() {
     presence.reset();
     cameraSwipes.reset();
     handsMissingSince = null;
+    greenSince = null;
+    handScrollReady = false;
     element("hands-tip").hidden = true;
     element("camera-placement").hidden = true;
     departureStartedAt = null;
@@ -214,7 +231,6 @@ async function startCamera() {
         element("start-camera").hidden = true;
         setStatus("searching");
         element("camera-placement").hidden = false;
-        guide.start();
         session.subscribe(state => {
             if (!state.running && !state.busy && session === candidate) {
                 const failure = cameraError(state.status);
@@ -305,7 +321,8 @@ document.addEventListener("keydown", event => {
     if (event.key === "Escape") stopCamera();
 });
 document.addEventListener("visibilitychange", () => {
-    // Start a new presence interval after tab suspension.
+    // Start new tracking intervals after tab suspension.
+    greenSince = null;
     cameraSwipes.reset();
     if (document.hidden) guide.cancelNudge(true);
     handsMissingSince = null;
