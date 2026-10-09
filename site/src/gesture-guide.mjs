@@ -5,7 +5,6 @@ export class GestureGuide {
         this.slideTip = slideTip;
         this.slide = slide;
         this.sections = sections;
-        this.presentation = sections[1];
         this.motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
         this.active = false;
         this.entered = false;

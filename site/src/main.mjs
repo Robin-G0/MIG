@@ -213,6 +213,17 @@ function revealCamera() {
     }
 }
 
+function frameCameraPreview() {
+    const bounds = document.querySelector(".camera-preview").getBoundingClientRect();
+    // Browsers can retain the old button's scroll position after the layout opens.
+    if (bounds.top < 16 || bounds.bottom > innerHeight - 16) {
+        window.scrollTo({
+            top: scrollY + bounds.top - Math.max(16, (innerHeight - bounds.height) / 2),
+            behavior: "instant"
+        });
+    }
+}
+
 async function startCamera() {
     if (starting || session?.state.running) return;
     revealCamera();
@@ -246,6 +257,7 @@ async function startCamera() {
         element("start-camera").hidden = true;
         setStatus("searching");
         element("camera-placement").hidden = false;
+        frameCameraPreview();
         session.subscribe(state => {
             if (!state.running && !state.busy && session === candidate) {
                 const failure = cameraError(state.status);

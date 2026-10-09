@@ -93,7 +93,7 @@ test("camera-space sweeps work at the top and bottom and reject stale or missing
     }
 });
 
-test("raising either hand requests scrolling; downward motion and tracking gaps do not", async () => {
+test("raising either hand scrolls forward; quick reversals and tracking gaps do not", async () => {
     const { CameraSwipes } = await import("../src/camera-swipes.mjs");
     for (const landmark of [15, 16]) {
         const swipes = new CameraSwipes();

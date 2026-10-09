@@ -459,6 +459,9 @@ for (const viewport of [{ width: 844, height: 390 }, { width: 1440, height: 1080
         await page.goto("./?lang=en");
         await page.locator("#start-camera").click();
         await expect(page.locator("#start-camera")).toBeHidden();
+        const camera = await page.locator(".camera-preview").boundingBox();
+        expect(camera.y).toBeGreaterThanOrEqual(0);
+        expect(camera.y + camera.height).toBeLessThanOrEqual(viewport.height);
         await holdHandsInFrame(page);
         await page.evaluate(() => window.demoCamera.action("scroll_presentation"));
         const slide = page.locator("#slide");
@@ -581,7 +584,10 @@ test("the final section suggests covering the camera after five seconds and dete
     }
     await expect(tip).toBeHidden();
     await page.locator("#presence-demo").evaluate(node => node.scrollIntoView({ behavior: "instant", block: "start" }));
-    await page.evaluate(() => window.demoCamera.frame(true));
+    await page.evaluate(() => {
+        window.demoCamera.coordinate = index => window.demoCamera.detected && index !== 16 ? { x: .5, y: .5 } : null;
+        window.demoCamera.frame(true);
+    });
     for (let index = 0; index < 4; index++) {
         await page.clock.runFor(1000);
         await page.evaluate(() => window.demoCamera.frame(true));
@@ -590,6 +596,7 @@ test("the final section suggests covering the camera after five seconds and dete
     await page.clock.runFor(1000);
     await page.evaluate(() => window.demoCamera.frame(true));
     await expect(tip).toBeVisible();
+    await expect(page.locator("#hands-tip")).toBeHidden();
     await expect(tip).toContainText("masquer la cam\u00e9ra avec votre main");
     await page.evaluate(() => document.querySelector('[data-language="en"]').click());
     await expect(tip).toContainText("cover the camera with your hand");
