@@ -174,3 +174,46 @@ test("lowering either hand requests the previous section with the same deliberat
         assert.deepEqual(swipes.update(session, 300), ["scroll_previous"]);
     }
 });
+
+
+test("centred gesture arming rejects repositioning, requires a short hold and resets after tracking loss", async () => {
+    const { CameraSwipes } = await import("../src/camera-swipes.mjs");
+    for (const landmark of [15, 16]) {
+        const swipes = new CameraSwipes({ requireCenter: true });
+        let wrist = { x: .1, y: .9 };
+        const session = { coordinate: index => index === landmark ? wrist : null };
+        assert.deepEqual(swipes.update(session, 0), []);
+        wrist = { x: .5, y: .5 };
+        assert.deepEqual(swipes.update(session, 100), []);
+        wrist.x = .72;
+        assert.deepEqual(swipes.update(session, 200), []);
+        swipes.reset(); wrist = { x: .5, y: .5 };
+        assert.deepEqual(swipes.update(session, 300), []);
+        assert.deepEqual(swipes.update(session, 500), []);
+        wrist.x = .74;
+        assert.deepEqual(swipes.update(session, 650), ["next_slide"]);
+        swipes.reset(); wrist = { x: .5, y: .5 };
+        swipes.update(session, 700); swipes.update(session, 900);
+        wrist.y = .28; swipes.update(session, 1050);
+        wrist.y = .06;
+        assert.deepEqual(swipes.update(session, 1200), ["scroll_presentation"]);
+        wrist = null; swipes.update(session, 1250);
+        wrist = { x: .5, y: .95 };
+        assert.deepEqual(swipes.update(session, 1300), []);
+    }
+});
+
+test("thumb tracking uses the published engine with either anatomical hand", async () => {
+    const { enableThumbTracking, thumbRaised } = await import("../src/camera.mjs");
+    const { default: createMIG } = await import("../dist/mig/mig.mjs");
+    const module = await createMIG();
+    const tracker = new module.Tracker();
+    try {
+        await enableThumbTracking({ importJSON: json => assert.equal(tracker.load(json), "") });
+        assert.equal(tracker.trackHands(), true);
+    } finally { tracker.delete(); }
+    for (const side of [0, 1]) {
+        assert.equal(thumbRaised({ tracker: { gesture: index => index === side ? 1 : 0 } }), true);
+    }
+    assert.equal(thumbRaised({ tracker: { gesture: () => 4 } }), false);
+});

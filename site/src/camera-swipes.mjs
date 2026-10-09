@@ -1,6 +1,7 @@
 // Camera-space wrist motion has no height restriction, even outside the body grid.
 export class CameraSwipes {
-    constructor({ distance = .16, raiseDistance = .4, raiseDuration = 250, raiseDrift = .12, duration = 1200, gap = 250 } = {}) {
+    constructor({ distance = .16, raiseDistance = .4, raiseDuration = 250, raiseDrift = .12, duration = 1200, gap = 250, requireCenter = false } = {}) {
+        this.requireCenter = requireCenter;
         this.distance = distance;
         this.raiseDistance = raiseDistance;
         this.raiseDuration = raiseDuration;
@@ -11,6 +12,7 @@ export class CameraSwipes {
     }
 
     reset() {
+        this.centeredHands = new Map();
         this.hands = new Map();
         this.verticalHands = new Map();
     }
@@ -38,22 +40,40 @@ export class CameraSwipes {
         return distance > 0 ? "scroll_presentation" : "scroll_previous";
     }
 
-    update(session, time) {
+    readyFromCenter(landmark, point, time) {
+        if (!this.requireCenter) return true;
+        let sample = this.centeredHands.get(landmark);
+        if (sample && time - sample.lastTime > this.gap) sample = null;
+        const centered = point.x >= .25 && point.x <= .75 && point.y >= .35 && point.y <= .65;
+        if (!sample || !sample.armed && !centered) {
+            sample = { since: centered ? time : null, armed: false, lastTime: time };
+        }
+        if (centered && sample.since === null) sample.since = time;
+        if (centered && time - sample.since >= 200) sample.armed = true;
+        sample.lastTime = time;
+        this.centeredHands.set(landmark, sample);
+        return sample.armed;
+    }
+
+    update(session, time, { horizontal = true } = {}) {
         const actions = [];
         for (const landmark of [15, 16]) {
             const point = session.coordinate(landmark);
             if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) {
+                this.centeredHands.delete(landmark);
                 this.hands.delete(landmark);
                 this.verticalHands.delete(landmark);
                 continue;
             }
+            if (!this.readyFromCenter(landmark, point, time)) continue;
             const vertical = this.verticalAction(landmark, point, time);
             if (vertical) actions.push(vertical);
+            if (!horizontal) { this.hands.delete(landmark); continue; }
             let sample = this.hands.get(landmark);
             const position = point.x;
             if (!sample || time - sample.lastTime > this.gap
-                || time - sample.startTime > this.duration) {
-                sample = { start: position, startTime: time, lastTime: time };
+                || time - sample.startTime > this.duration || Math.abs(point.y - sample.y) > this.raiseDrift) {
+                sample = { start: position, y: point.y, startTime: time, lastTime: time };
                 this.hands.set(landmark, sample);
             }
             sample.lastTime = time;

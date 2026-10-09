@@ -215,3 +215,38 @@ body.is-away { background: #000; }
 
 .camera-card.is-running .camera-preview { outline: 16px solid #ff5148; outline-offset: -16px; box-shadow: 0 0 0 4px #ff514866, 0 0 42px #ff5148a6; }
 .camera-card.is-running.has-hands .camera-preview { outline-color: #38f581; box-shadow: 0 0 0 4px #38f58166, 0 0 42px #38f581a6; }
+
+/* Onboarding and gesture recovery. */
+.hero.camera-open .hero-copy { width: 100%; }
+.camera-card .card-top { justify-content: flex-end; }
+.camera-card.is-running #camera-status { margin-bottom: 0; }
+.camera-card.is-running .camera-hint { display: none; }
+.danger { background: #63232d; border-color: #ff7770; color: #fff; margin-left: 16px; }
+#navigation-cooldown { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 40; pointer-events: none; }
+#navigation-cooldown rect { fill: none; stroke: #ffe49a; stroke-width: 3px; vector-effect: non-scaling-stroke; stroke-dasharray: 100; stroke-dashoffset: 100; filter: drop-shadow(0 0 3px #eebf4b); }
+.thumb-pictogram { font-size: 36px; }
+.phone #scroll-gesture-tip .hand-up-right { display: none; }
+@keyframes hand-swim-left {
+    0%, 15% { transform: translate(0, 16px) rotate(-12deg); }
+    45% { transform: translate(-18px, -4px) rotate(-28deg); }
+    75%, 100% { transform: translate(0, -30px) rotate(8deg); opacity: 0; }
+}
+@keyframes hand-swim-right {
+    0%, 15% { transform: translate(0, 16px) rotate(12deg); }
+    45% { transform: translate(18px, -4px) rotate(28deg); }
+    75%, 100% { transform: translate(0, -30px) rotate(-8deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+    .hand-up-left svg { animation: hand-swim-left 3s ease-in-out infinite; }
+    .hand-up-right svg { animation: hand-swim-right 3s ease-in-out infinite; }
+}
+@media (max-width: 800px) {
+    .finale .danger { display: flex; margin: 16px 0 0; }
+}
+
+.phone .slide-tip .hand-right { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+    #scroll-gesture-tip[data-direction="down"] .hand-up svg { animation-direction: reverse; }
+}
+
+#page-content:has(#thumb-tip:not([hidden])) #scroll-gesture-tip { visibility: hidden; }

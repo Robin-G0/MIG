@@ -6,9 +6,9 @@ export class GestureGuide {
         this.slide = slide;
         this.sections = sections;
         this.motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
+        this.handsVisible = false;
         this.active = false;
         this.entered = false;
-        this.lastNavigation = -Infinity;
         this.frame = null;
         this.timer = null;
         this.animation = null;
@@ -29,13 +29,20 @@ export class GestureGuide {
         this.stop();
         this.active = true;
         this.entered = false;
-        this.lastNavigation = -Infinity;
         this.scrollTip.hidden = false;
         const bounds = this.slide.getBoundingClientRect();
         if (bounds.top < innerHeight && bounds.bottom > 0) {
             this.showSlides();
         } else {
             this.timer = setTimeout(() => this.nudgeScroll(), 350);
+        }
+    }
+
+    setHandsVisible(visible) {
+        this.handsVisible = visible;
+        if (!visible) this.cancelNudge(true);
+        else if (this.active && !this.entered && this.timer === null && this.frame === null) {
+            this.timer = setTimeout(() => this.nudgeScroll(), 5000);
         }
     }
 
@@ -50,7 +57,9 @@ export class GestureGuide {
     }
 
     nudgeScroll() {
-        if (!this.active || this.entered || this.motionPreference.matches || document.hidden) return;
+        this.timer = null;
+        if (!this.active || this.entered || !this.handsVisible || this.motionPreference.matches || document.hidden) return;
+        this.timer = setTimeout(() => this.nudgeScroll(), 5000);
         this.origin = window.scrollY;
         const start = performance.now();
         const draw = time => {
@@ -68,28 +77,28 @@ export class GestureGuide {
         return window.scrollY + title.getBoundingClientRect().top - 16;
     }
 
-    navigate(direction, time = performance.now()) {
-        if (!this.active || time - this.lastNavigation < 1200) return;
+    navigate(direction) {
+        if (!this.active) return false;
         this.cancelNudge(true);
         // Find the closest section so manual scrolling and hand navigation agree.
-        const positions = this.sections.map(section => this.sectionTop(section));
+        const sections = this.sections.filter(section => !section.hidden);
+        const positions = sections.map(section => this.sectionTop(section));
         const current = positions.reduce((nearest, position, index) =>
             Math.abs(position - scrollY) < Math.abs(positions[nearest] - scrollY) ? index : nearest, 0);
-        const next = Math.max(0, Math.min(this.sections.length - 1, current + direction));
-        if (next === current) return;
-        this.lastNavigation = time;
+        const next = Math.max(0, Math.min(sections.length - 1, current + direction));
+        if (next === current) return false;
         if (next === 1) this.showSlides();
-        this.scrollTip.hidden = next !== 0;
+        this.scrollTip.hidden = next !== 0 && next !== 3;
         this.slideTip.hidden = next !== 1;
         window.scrollTo({
             top: positions[next],
             behavior: this.motionPreference.matches ? "instant" : "smooth"
         });
+        return true;
     }
 
     resume() {
         this.active = true;
-        this.lastNavigation = -Infinity;
     }
 
     showSlides() {
@@ -113,6 +122,7 @@ export class GestureGuide {
     }
 
     stop() {
+        this.handsVisible = false;
         this.active = false;
         this.cancelNudge(true);
         this.animation?.cancel();

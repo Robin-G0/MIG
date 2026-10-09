@@ -1,3 +1,4 @@
+import { NavigationCooldown } from "./navigation-cooldown.mjs";
 import { ScreenTransition } from "./screen-transition.mjs";
 import { GestureGuide } from "./gesture-guide.mjs";
 import { HistoryIllustration } from "./history.mjs";
@@ -6,15 +7,15 @@ import { settings } from "./settings.mjs";
 import { translations } from "./translations.mjs";
 import { SlideController } from "./slides.mjs";
 import { PresenceMonitor } from "./presence.mjs";
-import { cameraError, createCameraSession } from "./camera.mjs";
+import { cameraError, createCameraSession, enableThumbTracking, thumbRaised } from "./camera.mjs";
 
 const element = id => document.getElementById(id);
 const slides = new SlideController(translations.fr.slides.length, settings.slideDelay);
 const presence = new PresenceMonitor(settings);
-const cameraSwipes = new CameraSwipes();
+const cameraSwipes = new CameraSwipes({ requireCenter: true });
 const illustration = new HistoryIllustration(element("history-illustration"));
 const guide = new GestureGuide(element("scroll-gesture-tip"), element("slide-gesture-tip"),
-    element("slide"), [element("welcome"), element("presentation"), element("presence-demo")]);
+    element("slide"), [element("welcome"), element("presentation"), element("presence-demo"), element("finale")]);
 const screenTransition = new ScreenTransition(element("away-screen"), element("page-content"));
 // README links select a language explicitly; other visits use the browser language.
 const requestedLanguage = new URL(location.href).searchParams.get("lang");
@@ -31,6 +32,12 @@ let handsMissingSince = null;
 let departureStartedAt = null;
 let greenSince = null;
 let handScrollReady = false;
+let bothHandsSeen = false;
+let thumbSince = null;
+let thumbTrackingReady = false;
+const phone = matchMedia("(pointer: coarse)").matches && Math.min(innerWidth, innerHeight) <= 800;
+document.body.classList.toggle("phone", phone);
+const cooldown = new NavigationCooldown(element("navigation-cooldown"), () => cameraSwipes.reset());
 
 function renderSlide() {
     const text = translations[language];
@@ -52,7 +59,9 @@ function renderSlide() {
 
 function setStatus(nextStatus) {
     status = nextStatus;
-    element("camera-status").textContent = translations[language][status];
+    const text = translations[language];
+    element("camera-status").textContent = ["searching", "tracking"].includes(status)
+        ? (phone || bothHandsSeen ? text.oneHandHint : text.cameraHint) : text[status];
 }
 
 function renderLanguage() {
@@ -68,8 +77,30 @@ function renderLanguage() {
     document.querySelectorAll("[data-language]").forEach(button => {
         button.setAttribute("aria-pressed", String(button.dataset.language === language));
     });
+    element("phone-note").hidden = !phone;
+    element("phone-note").textContent = text.phoneNote;
+    renderHandInstructions();
     renderSlide();
     setStatus(status);
+}
+
+function renderHandInstructions() {
+    const text = translations[language];
+    const oneHand = phone || bothHandsSeen;
+    element("camera-placement").textContent = oneHand ? text.oneHandPlacement : text.cameraPlacement;
+    element("hands-tip").querySelector("[data-text=handsOutside]").textContent = oneHand ? text.oneHandOutside : text.handsOutside;
+    element("camera-hint").textContent = oneHand ? text.oneHandHint : text.cameraHint;
+    element("hands-tip").querySelector("[data-text=handsShort]").textContent = oneHand ? text.oneHandShort : text.handsShort;
+    element("scroll-gesture-tip").classList.toggle("one-hand", phone);
+}
+
+function slideFocused() {
+    const bounds = element("slide").getBoundingClientRect();
+    return bounds.top < innerHeight / 2 && bounds.bottom > innerHeight / 2;
+}
+
+function finaleFocused() {
+    return !element("finale").hidden && element("finale").getBoundingClientRect().top < innerHeight / 2;
 }
 
 function showPage(animate = false) {
@@ -93,13 +124,21 @@ function prepareHandScrolling(handsVisible, time) {
     handScrollReady = true;
     cameraSwipes.reset();
     guide.start();
+    guide.setHandsVisible(true);
 }
 
 function updateHandHint(currentSession, time) {
-    const handsVisible = [15, 16].every(index => handInFrame(currentSession.coordinate(index)));
+    const visibleHands = [15, 16].filter(index => handInFrame(currentSession.coordinate(index))).length;
+    if (visibleHands === 2 && !bothHandsSeen) {
+        bothHandsSeen = true;
+        renderHandInstructions();
+        setStatus(status);
+    }
+    const handsVisible = visibleHands > 0;
+    guide.setHandsVisible(handsVisible);
     document.querySelector(".camera-card").classList.toggle("has-hands", handsVisible);
     prepareHandScrolling(handsVisible, time);
-    if (handsVisible || away) {
+    if (handsVisible || away || !element("finale").hidden) {
         handsMissingSince = null;
         element("hands-tip").hidden = true;
         return;
@@ -130,14 +169,26 @@ function handlePresence(currentSession) {
     if (document.hidden || currentSession !== session || !currentSession.state.running) return;
     const time = performance.now();
     updateHandHint(currentSession, time);
-    // Image coordinates keep sweeps usable at every height and outside the body grid.
-    for (const action of cameraSwipes.update(currentSession, performance.now())) {
-        handleAction({ action });
-    }
+    // Only centred, deliberate movements can navigate; cooldown discards repositioning.
+    if (handScrollReady && !cooldown.locked && !away) {
+        for (const action of cameraSwipes.update(currentSession, time, { horizontal: slideFocused() })) {
+            handleAction({ action });
+            if (cooldown.locked) break;
+        }
+    } else cameraSwipes.reset();
+    element("thumb-tip").hidden = !finaleFocused() || !thumbTrackingReady || away;
+    if (finaleFocused() && thumbTrackingReady && thumbRaised(currentSession) && !cooldown.locked) {
+        thumbSince ??= time;
+        if (time - thumbSince >= 800) {
+            stopCamera();
+            location.assign(settings.links.repository);
+            return;
+        }
+    } else thumbSince = null;
     const detected = currentSession.coordinate(11) !== null && currentSession.coordinate(12) !== null;
     // Only the final section can start the departure demo. Scrolling back up
     // clears its timer; an already hidden page still waits for the person to return.
-    const departureEnabled = away || departureSectionReached();
+    const departureEnabled = element("finale").hidden && (away || departureSectionReached());
     updateDepartureTip(departureEnabled, detected, time);
     if (!departureEnabled) presence.reset();
     const nextState = departureEnabled ? presence.update(detected, time) : "waiting";
@@ -151,8 +202,15 @@ function handlePresence(currentSession) {
         screenTransition.hide();
     } else if (nextState === "present" && away) {
         showPage(true);
-        stopCamera({ completed: true });
+        guide.resume();
         element("finale").hidden = false;
+        element("finale-stop-camera").hidden = false;
+        element("hands-tip").hidden = true;
+        cameraSwipes.reset();
+        cooldown.start(true);
+        enableThumbTracking(currentSession).then(() => {
+            if (session === currentSession) thumbTrackingReady = true;
+        }).catch(error => console.error("Thumb tracking unavailable:", error));
         setStatus("returned");
         element("finale").scrollIntoView({ behavior: "instant", block: "center" });
         element("finale-title").tabIndex = -1;
@@ -163,18 +221,26 @@ function handlePresence(currentSession) {
 }
 
 function handleAction(event) {
-    if (away || !session?.state.running) return;
+    if (away || !session?.state.running || !handScrollReady || cooldown.locked) return;
     if (event.action === "scroll_presentation" || event.action === "scroll_previous") {
-        if (handScrollReady) guide.navigate(event.action === "scroll_presentation" ? 1 : -1);
+        if (guide.navigate(event.action === "scroll_presentation" ? 1 : -1)) {
+            cooldown.start(true);
+            cameraSwipes.reset();
+            const down = !element("finale").hidden && finaleFocused();
+            element("scroll-gesture-tip").dataset.direction = down ? "down" : "up";
+            element("scroll-gesture-tip").querySelector("[data-text=scrollShort]").textContent = translations[language][down ? "lowerShort" : "scrollShort"];
+        }
         return;
     }
-    if (slides.gesture(event.action, performance.now())) {
+    if (slideFocused() && slides.gesture(event.action, performance.now())) {
+        cooldown.start();
+        cameraSwipes.reset();
         guide.completeSwipe();
         renderSlide();
     }
 }
 
-function stopCamera({ completed = false } = {}) {
+function stopCamera() {
     ++generation;
     const previousSession = session;
     session = null;
@@ -191,13 +257,18 @@ function stopCamera({ completed = false } = {}) {
     element("cover-camera-tip").hidden = true;
     element("departure-tip").hidden = true;
     guide.stop();
-    if (!completed) showPage();
+    cooldown.reset();
+    thumbSince = null;
+    thumbTrackingReady = false;
+    element("thumb-tip").hidden = true;
+    element("finale-stop-camera").hidden = true;
+    showPage();
     document.querySelector(".camera-card").classList.remove("is-running", "has-hands");
     element("start-camera").disabled = false;
     element("start-camera").hidden = false;
     element("stop-camera").hidden = true;
     setStatus("stopped");
-    if (!completed && returnFocus instanceof HTMLElement && returnFocus.isConnected) {
+    if (returnFocus instanceof HTMLElement && returnFocus.isConnected) {
         returnFocus.focus({ preventScroll: true });
     }
     returnFocus = null;
@@ -205,6 +276,9 @@ function stopCamera({ completed = false } = {}) {
 
 function revealCamera() {
     const hero = element("welcome");
+    hero.querySelector("h1").hidden = true;
+    hero.querySelector(".lead").hidden = true;
+    hero.querySelector(".privacy").hidden = true;
     if (hero.classList.contains("camera-open")) return;
     const copy = hero.querySelector(".hero-copy");
     const before = copy.getBoundingClientRect();
@@ -238,13 +312,16 @@ async function startCamera() {
         return;
     }
     element("finale").hidden = true;
+    bothHandsSeen = false;
+    renderHandInstructions();
     const run = ++generation;
     starting = true;
     element("start-camera").disabled = true;
     element("stop-camera").hidden = false;
     setStatus("loading");
     try {
-        const candidate = await createCameraSession(handleAction, handlePresence);
+        // Camera-space navigation shares centering and cooldown gates for both axes.
+        const candidate = await createCameraSession(() => {}, handlePresence);
         if (run !== generation) {
             candidate.dispose();
             return;
@@ -300,6 +377,7 @@ document.querySelectorAll("[data-language]").forEach(button => {
 });
 element("start-camera").addEventListener("click", startCamera);
 element("stop-camera").addEventListener("click", stopCamera);
+element("finale-stop-camera").addEventListener("click", stopCamera);
 element("previous-slide").addEventListener("click", () => { slides.move(-1); renderSlide(); });
 element("next-slide").addEventListener("click", () => { slides.move(1); renderSlide(); });
 element("slide").addEventListener("keydown", event => {
@@ -325,7 +403,8 @@ element("slide").addEventListener("wheel", event => {
     const scale = event.deltaMode === 1 ? 20 : event.deltaMode === 2 ? innerWidth : 1;
     wheelDistance += event.deltaX * scale;
     if (Math.abs(wheelDistance) < 60) return;
-    if (time - lastWheelMoveAt >= settings.slideDelay) {
+    if (!cooldown.locked && time - lastWheelMoveAt >= settings.slideDelay) {
+        cooldown.start();
         lastWheelMoveAt = time;
         slides.move(wheelDistance > 0 ? 1 : -1);
         guide.completeSwipe();
@@ -356,6 +435,9 @@ document.addEventListener("keydown", event => {
 });
 document.addEventListener("visibilitychange", () => {
     // Start new tracking intervals after tab suspension.
+    thumbSince = null;
+    element("thumb-tip").hidden = true;
+    cooldown.reset();
     greenSince = null;
     cameraSwipes.reset();
     if (document.hidden) guide.cancelNudge(true);
