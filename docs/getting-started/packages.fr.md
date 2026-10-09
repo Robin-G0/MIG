@@ -3,7 +3,7 @@
 [English](packages.md) | [Français](packages.fr.md)
 
 Téléchargez les packages correspondant à votre système et à votre architecture
-depuis les [tableaux de la dernière release](https://github.com/Robin-G0/MIG/releases/latest#user-content-downloads).
+depuis les [tableaux de la dernière release](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-downloads).
 Conservez l’archive complète après extraction. La [matrice de support](../reference/support.fr.md)
 précise les prérequis et la maturité des intégrations.
 

@@ -3,7 +3,7 @@
 [English](packages.md) | [Français](packages.fr.md)
 
 Download packages for your operating system and architecture from
-[latest release tables](https://github.com/Robin-G0/MIG/releases/latest#user-content-downloads). Keep the complete
+[v1.0.2 release tables](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-downloads). Keep the complete
 archive together after extraction. See the [support matrix](../reference/support.md)
 for platform requirements and integration maturity.
 
