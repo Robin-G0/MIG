@@ -9,7 +9,7 @@ précise les prérequis et la maturité des intégrations.
 
 ## Applications desktop et exemples
 
-- Les archives `*-native` contiennent le configurateur, le contrôleur, le runtime
+- Les archives `desktop applications` contiennent le configurateur, le contrôleur, le runtime
   caméra et les modèles. Consultez le [configurateur](../guides/configurator.fr.md)
   ou le [contrôleur](../guides/controller.fr.md).
 - Chaque exemple possède son téléchargement `*-standalone` ; choisissez la

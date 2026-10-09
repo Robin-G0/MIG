@@ -15,7 +15,7 @@ engine in your own project. Choose a starting point below.
 | Try a camera demo without setting up a profile | [Standalone examples](../examples/README.md) |
 | Add a hand sign or finger condition | [Hand tracking](guides/hands.md) |
 
-Download a **`*-native`** archive for the applications or a **`*-examples`** archive
+Download a **desktop applications archive** archive for the applications or a **`*-examples`** archive
 for the demos from [Releases](https://github.com/Robin-G0/MIG/releases).
 The application guides identify the files to launch and system requirements.
 

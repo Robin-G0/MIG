@@ -58,7 +58,7 @@ Choisissez votre usage, puis un exemple et votre plateforme dans le tableau de l
 
 Aucun code n'est nécessaire pour créer et utiliser un profil de mouvements.
 
-1. Téléchargez l'[**archive `*-native`**](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-desktop-applications) pour Windows x64 ou Linux x64 et extrayez-la entièrement.
+1. Téléchargez [**desktop applications archive**](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-desktop-applications) pour Windows x64 ou Linux x64 et extrayez-la entièrement.
 2. Ouvrez le [**configurateur**](../guides/configurator.fr.md), démarrez la caméra,
    dessinez votre mouvement et enregistrez son profil.
 3. Ouvrez le [**contrôleur**](../guides/controller.fr.md), importez ce profil et

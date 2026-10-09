@@ -55,7 +55,7 @@ Choose your use case, then an example and platform in the release table.
 
 No code is needed to create and run a movement profile.
 
-1. Download the [**`*-native` archive**](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-desktop-applications) for Windows x64 or Linux x64 and extract it completely.
+1. Download the [**desktop applications archive**](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-desktop-applications) for Windows x64 or Linux x64 and extract it completely.
 2. Open the [**configurator**](docs/guides/configurator.md), start the camera,
    draw your movement and save its profile.
 3. Open the [**controller**](docs/guides/controller.md), import that profile and

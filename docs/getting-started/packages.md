@@ -9,7 +9,7 @@ for platform requirements and integration maturity.
 
 ## Desktop applications and examples
 
-- `*-native` archives contain the configurator, controller, camera runtime and models.
+- `desktop applications` archives contain the configurator, controller, camera runtime and models.
   Follow the [configurator](../guides/configurator.md) or [controller](../guides/controller.md) guide.
 - Each example is a separate `*-standalone` download; choose your technology and
   platform in the [examples guide](../../examples/README.md).

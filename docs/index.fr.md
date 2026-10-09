@@ -15,7 +15,7 @@ ou intégrez le même moteur dans votre projet. Choisissez un point de départ.
 | Essayer une démo caméra sans créer de profil | [Exemples autonomes](../examples/README.fr.md) |
 | Ajouter un signe de main ou une condition sur les doigts | [Suivi des mains](guides/hands.fr.md) |
 
-Téléchargez une archive **`*-native`** pour les applications ou **`*-examples`**
+Téléchargez une archive **desktop applications archive** pour les applications ou **`*-examples`**
 pour les démos depuis les [Releases](https://github.com/Robin-G0/MIG/releases).
 Les guides des applications indiquent les fichiers à lancer et les prérequis.
 
