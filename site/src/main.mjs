@@ -33,6 +33,7 @@ let departureStartedAt = null;
 let greenSince = null;
 let handScrollReady = false;
 let bothHandsSeen = false;
+let demoStarted = false;
 let thumbSince = null;
 let thumbTrackingReady = false;
 const phone = matchMedia("(pointer: coarse)").matches && Math.min(innerWidth, innerHeight) <= 800;
@@ -61,7 +62,7 @@ function setStatus(nextStatus) {
     status = nextStatus;
     const text = translations[language];
     element("camera-status").textContent = ["searching", "tracking"].includes(status)
-        ? (phone || bothHandsSeen ? text.oneHandHint : text.cameraHint) : text[status];
+        ? (demoStarted ? text.oneHandHint : phone ? text.oneHandBeginHint : text.cameraHint) : text[status];
 }
 
 function renderLanguage() {
@@ -80,6 +81,14 @@ function renderLanguage() {
     element("phone-note").hidden = !phone;
     element("phone-note").textContent = text.phoneNote;
     renderHandInstructions();
+    const title = document.querySelector(".hero h1");
+    if (language === "fr") {
+        const ending = document.createElement("span");
+        ending.className = "title-ending";
+        const words = text.invitation.split(" ");
+        ending.textContent = words.splice(-2).join(" ");
+        title.replaceChildren(document.createTextNode(words.join(" ") + " "), ending);
+    }
     renderSlide();
     setStatus(status);
 }
@@ -87,9 +96,9 @@ function renderLanguage() {
 function renderHandInstructions() {
     const text = translations[language];
     const oneHand = phone || bothHandsSeen;
-    element("camera-placement").textContent = oneHand ? text.oneHandPlacement : text.cameraPlacement;
+    element("camera-placement").textContent = phone ? text.oneHandPlacement : text.cameraPlacement;
     element("hands-tip").querySelector("[data-text=handsOutside]").textContent = oneHand ? text.oneHandOutside : text.handsOutside;
-    element("camera-hint").textContent = oneHand ? text.oneHandHint : text.cameraHint;
+    element("camera-hint").textContent = demoStarted ? text.oneHandHint : phone ? text.oneHandBeginHint : text.cameraHint;
     element("hands-tip").querySelector("[data-text=handsShort]").textContent = oneHand ? text.oneHandShort : text.handsShort;
     element("scroll-gesture-tip").classList.toggle("one-hand", phone);
 }
@@ -194,6 +203,7 @@ function handlePresence(currentSession) {
     const nextState = departureEnabled ? presence.update(detected, time) : "waiting";
     if (nextState === "away" && !away) {
         guide.stop();
+        cooldown.reset();
         element("hands-tip").hidden = true;
         handsMissingSince = null;
         away = true;
@@ -224,6 +234,9 @@ function handleAction(event) {
     if (away || !session?.state.running || !handScrollReady || cooldown.locked) return;
     if (event.action === "scroll_presentation" || event.action === "scroll_previous") {
         if (guide.navigate(event.action === "scroll_presentation" ? 1 : -1)) {
+            demoStarted = true;
+            renderHandInstructions();
+            setStatus(status);
             cooldown.start(true);
             cameraSwipes.reset();
             const down = !element("finale").hidden && finaleFocused();
@@ -233,6 +246,9 @@ function handleAction(event) {
         return;
     }
     if (slideFocused() && slides.gesture(event.action, performance.now())) {
+        demoStarted = true;
+        renderHandInstructions();
+        setStatus(status);
         cooldown.start();
         cameraSwipes.reset();
         guide.completeSwipe();
@@ -313,6 +329,7 @@ async function startCamera() {
     }
     element("finale").hidden = true;
     bothHandsSeen = false;
+    demoStarted = false;
     renderHandInstructions();
     const run = ++generation;
     starting = true;

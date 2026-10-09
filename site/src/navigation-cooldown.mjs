@@ -1,25 +1,37 @@
-// Wait for scrolling to settle, then give visitors two seconds to reposition.
+// A single viewport-sized path avoids fragmented dashes when the screen changes shape.
 export class NavigationCooldown {
     constructor(border, onReady) {
         this.border = border;
+        this.progress = border.querySelector("[data-cooldown-progress]");
         this.onReady = onReady;
         this.locked = false;
         this.settling = false;
         this.timer = null;
-        this.animation = null;
+        this.frame = null;
+        window.addEventListener("resize", () => this.resize());
         window.addEventListener("scroll", () => {
             if (this.settling) this.waitForScroll(180);
         }, { passive: true });
         document.addEventListener("scrollend", () => {
             if (this.settling) this.recover();
         });
+        this.resize();
+    }
+
+    resize() {
+        this.border.setAttribute("viewBox", `0 0 ${innerWidth} ${innerHeight}`);
+        for (const path of this.border.querySelectorAll("rect")) {
+            path.setAttribute("width", Math.max(1, innerWidth - 12));
+            path.setAttribute("height", Math.max(1, innerHeight - 12));
+        }
     }
 
     start(scrolling = false) {
         this.reset();
+        this.resize();
         this.locked = true;
         this.border.removeAttribute("hidden");
-        this.border.querySelector("rect").style.strokeDashoffset = "100";
+        this.progress.style.strokeDashoffset = "100";
         if (scrolling && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
             this.settling = true;
             this.waitForScroll(800);
@@ -34,9 +46,13 @@ export class NavigationCooldown {
     recover() {
         clearTimeout(this.timer);
         this.settling = false;
-        this.animation = this.border.querySelector("rect").animate([
-            { strokeDashoffset: "100" }, { strokeDashoffset: "0" }
-        ], { duration: 2000, fill: "forwards", easing: "linear" });
+        const startedAt = performance.now();
+        const draw = time => {
+            const progress = Math.min(1, (time - startedAt) / 2000);
+            this.progress.style.strokeDashoffset = String(100 * (1 - progress));
+            if (progress < 1) this.frame = requestAnimationFrame(draw);
+        };
+        this.frame = requestAnimationFrame(draw);
         this.timer = setTimeout(() => {
             this.reset();
             this.onReady();
@@ -45,8 +61,8 @@ export class NavigationCooldown {
 
     reset() {
         clearTimeout(this.timer);
-        this.animation?.cancel();
-        this.animation = null;
+        cancelAnimationFrame(this.frame);
+        this.frame = null;
         this.locked = false;
         this.settling = false;
         this.border.setAttribute("hidden", "");

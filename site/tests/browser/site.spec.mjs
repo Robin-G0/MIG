@@ -539,7 +539,7 @@ test("one hand can navigate and both-hands onboarding is never requested again a
     await expect(page.locator(".hero h1")).toBeHidden();
     await expect(page.locator(".hero .lead")).toBeHidden();
     await expect(page.locator(".hero .privacy")).toBeHidden();
-    await expect(page.locator(".card-top")).not.toContainText("Your playground");
+    await expect(page.locator(".card-top, #camera-state")).toHaveCount(0);
     await expect(page.locator("#camera-placement")).toContainText("follow the tooltips");
     await page.evaluate(() => { window.demoCamera.coordinate = index => index === 16 ? null : { x: .5, y: .5 }; });
     await holdHandsInFrame(page);
@@ -837,4 +837,48 @@ test("the finale keeps hand navigation and opens GitHub only after a held thumbs
     await page.clock.runFor(800);
     await page.evaluate(() => window.demoCamera.frame(true));
     await expect(page).toHaveURL("https://github.com/Robin-G0/Motion-Input-Grid");
+});
+
+
+test("golden cooldown is one continuous viewport perimeter with progress tied to the two-second timer", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("./?lang=en");
+    await page.clock.pauseAt(new Date(await page.evaluate(() => Date.now() + 1000)));
+    await page.locator("#start-camera").click();
+    await holdHandsInFrame(page);
+    await expect(page.locator("#camera-status")).toHaveText("Put your hands in the frame to begin the quick demo!");
+    await expect(page.locator("#camera-placement")).toHaveText("Now take a step back, show your hands and follow the tooltips to navigate!");
+    await swipeHand(page, "scroll_presentation");
+    const border = page.locator("#navigation-cooldown");
+    await expect(border).toBeVisible();
+    const rect = border.locator("[data-cooldown-progress]");
+    const geometry = await border.evaluate(node => ({
+        viewBox: node.getAttribute("viewBox"),
+        width: node.querySelector("rect").getAttribute("width"),
+        height: node.querySelector("rect").getAttribute("height")
+    }));
+    const viewport = page.viewportSize();
+    expect(geometry).toEqual({ viewBox: `0 0 ${viewport.width} ${viewport.height}`, width: String(viewport.width - 12), height: String(viewport.height - 12) });
+    await expect(rect).toHaveCSS("vector-effect", "none");
+    await expect(rect).toHaveCSS("stroke", "rgb(255, 228, 154)");
+    await page.clock.runFor(1000);
+    const offset = await rect.evaluate(node => Number.parseFloat(getComputedStyle(node).strokeDashoffset));
+    expect(offset).toBeGreaterThan(45); expect(offset).toBeLessThan(55);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(border).toHaveAttribute("viewBox", "0 0 390 844");
+    await page.clock.runFor(1000);
+    await expect(border).toBeHidden();
+});
+
+test("French welcome punctuation stays with its preceding word at phone and desktop widths", async ({ page }) => {
+    await page.goto("./?lang=fr");
+    for (const width of [320, 390, 800, 1280]) {
+        await page.setViewportSize({ width, height: 844 });
+        const ending = page.locator(".hero h1 .title-ending");
+        await expect(ending).toHaveText("\u00e7a ?");
+        expect(await ending.evaluate(node => node.getClientRects().length)).toBe(1);
+        await expect(ending).toHaveCSS("white-space", "nowrap");
+    }
 });
