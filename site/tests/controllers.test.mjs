@@ -92,3 +92,23 @@ test("camera-space sweeps work at the top and bottom and reject stale or missing
         assert.deepEqual(sweeps.update(session, 1010), []);
     }
 });
+
+test("raising either hand requests scrolling; downward motion and tracking gaps do not", async () => {
+    const { CameraSwipes } = await import("../src/camera-swipes.mjs");
+    for (const landmark of [15, 16]) {
+        const swipes = new CameraSwipes();
+        let wrist = { x: .5, y: .8 };
+        const session = { coordinate: index => index === landmark ? wrist : null };
+        assert.deepEqual(swipes.update(session, 0), []);
+        wrist = { x: .5, y: .6 };
+        assert.deepEqual(swipes.update(session, 100), ["scroll_presentation"]);
+        wrist = { x: .5, y: .9 };
+        assert.deepEqual(swipes.update(session, 200), []);
+        wrist = null;
+        assert.deepEqual(swipes.update(session, 210), []);
+        wrist = { x: .5, y: .1 };
+        assert.deepEqual(swipes.update(session, 220), []);
+        wrist = { x: .5, y: .01 };
+        assert.deepEqual(swipes.update(session, 1000), []);
+    }
+});

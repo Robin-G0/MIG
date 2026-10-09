@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Essayez Motion Input Grid : pilotez une présentation avec vos gestes, directement dans votre navigateur.">
-    <meta name="theme-color" content="#f5f3ec">
+    <meta name="theme-color" content="#0b101a">
     <title>Motion Input Grid — à vous de jouer</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="./styles.css">
@@ -33,6 +33,7 @@
                         <button class="button primary" id="start-camera" type="button" data-text="start">Oui, on essaie !</button>
                         <button class="button secondary" id="stop-camera" type="button" data-text="stop" hidden></button>
                     </div>
+                    <div class="gesture-tip" id="scroll-gesture-tip" role="status" hidden><span class="tip-motion" aria-hidden="true">↑</span><p data-text="scrollTip"></p></div>
                     <p class="privacy"><span data-text="privacy"></span> <a data-link="source" data-text="source"></a></p>
                 </div>
                 <aside class="camera-card">
@@ -50,6 +51,7 @@
             <section class="section slideshow-section" id="presentation" aria-labelledby="slideshow-title">
                 <p class="eyebrow" data-text="slideshowEyebrow"></p>
                 <h2 id="slideshow-title" data-text="slideshowTitle"></h2>
+                <div class="gesture-tip slide-tip" id="slide-gesture-tip" role="status" hidden><span class="tip-motion" aria-hidden="true">↔</span><p data-text="slideTip"></p></div>
                 <div class="slide" id="slide" tabindex="0" role="region" aria-labelledby="slideshow-title" aria-roledescription="carousel">
                     <div class="slide-copy">
                         <p class="slide-tag" id="slide-tag"></p>

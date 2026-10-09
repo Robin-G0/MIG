@@ -9,6 +9,21 @@ export class CameraSwipes {
 
     reset() {
         this.hands = new Map();
+        this.verticalHands = new Map();
+    }
+
+    handRaised(landmark, point, time) {
+        let sample = this.verticalHands.get(landmark);
+        if (!sample || time - sample.lastTime > this.gap
+            || time - sample.startTime > this.duration || point.y > sample.y) {
+            sample = { y: point.y, startTime: time, lastTime: time };
+            this.verticalHands.set(landmark, sample);
+        }
+        sample.lastTime = time;
+        if (sample.y - point.y < this.distance) return false;
+        sample.y = point.y;
+        sample.startTime = time;
+        return true;
     }
 
     update(session, time) {
@@ -20,8 +35,10 @@ export class CameraSwipes {
             const point = session.coordinate(landmark);
             if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) {
                 this.hands.delete(landmark);
+                this.verticalHands.delete(landmark);
                 continue;
             }
+            if (this.handRaised(landmark, point, time)) actions.push("scroll_presentation");
             let sample = this.hands.get(landmark);
             const position = point.x * direction;
             if (!sample || time - sample.lastTime > this.gap

@@ -1,3 +1,4 @@
+import { GestureGuide } from "./gesture-guide.mjs";
 import { HistoryIllustration } from "./history.mjs";
 import { CameraSwipes } from "./camera-swipes.mjs";
 import { settings } from "./settings.mjs";
@@ -11,6 +12,8 @@ const slides = new SlideController(translations.fr.slides.length, settings.slide
 const presence = new PresenceMonitor(settings);
 const cameraSwipes = new CameraSwipes();
 const illustration = new HistoryIllustration(element("history-illustration"));
+const guide = new GestureGuide(element("scroll-gesture-tip"), element("slide-gesture-tip"),
+    element("slide"), element("presentation"));
 // README links select a language explicitly; other visits use the browser language.
 const requestedLanguage = new URL(location.href).searchParams.get("lang");
 let language = requestedLanguage === "fr" || requestedLanguage === "en"
@@ -74,6 +77,7 @@ function handlePresence(currentSession) {
     const detected = currentSession.coordinate(11) !== null && currentSession.coordinate(12) !== null;
     const nextState = presence.update(detected, performance.now());
     if (nextState === "away" && !away) {
+        guide.stop();
         away = true;
         returnFocus = document.activeElement;
         if (returnFocus instanceof HTMLElement) returnFocus.blur();
@@ -95,7 +99,14 @@ function handlePresence(currentSession) {
 
 function handleAction(event) {
     if (away || !session?.state.running) return;
-    if (slides.gesture(event.action, performance.now())) renderSlide();
+    if (event.action === "scroll_presentation") {
+        guide.raiseHand();
+        return;
+    }
+    if (slides.gesture(event.action, performance.now())) {
+        guide.completeSwipe();
+        renderSlide();
+    }
 }
 
 function stopCamera() {
@@ -106,6 +117,7 @@ function stopCamera() {
     starting = false;
     presence.reset();
     cameraSwipes.reset();
+    guide.stop();
     showPage();
     document.querySelector(".camera-card").classList.remove("is-running");
     element("start-camera").disabled = false;
@@ -149,6 +161,7 @@ async function startCamera() {
         document.querySelector(".camera-card").classList.add("is-running");
         element("start-camera").hidden = true;
         setStatus("searching");
+        guide.start();
         session.subscribe(state => {
             if (!state.running && !state.busy && session === candidate) {
                 const failure = cameraError(state.status);
@@ -217,6 +230,7 @@ document.addEventListener("keydown", event => {
 document.addEventListener("visibilitychange", () => {
     // Start a new presence interval after tab suspension.
     cameraSwipes.reset();
+    if (document.hidden) guide.cancelNudge(true);
     presence.changedAt = null;
     presence.lastTime = null;
 });

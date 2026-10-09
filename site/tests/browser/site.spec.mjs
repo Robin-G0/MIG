@@ -278,3 +278,57 @@ test("camera-space sweeps change slides at both camera edges without native acti
         await page.clock.runFor(850);
     }
 });
+
+test("camera onboarding nudges scrolling, then a raised hand reveals the slide hint", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.goto("./?lang=en");
+    await expect(page.locator("#scroll-gesture-tip")).toBeHidden();
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#start-camera")).toBeHidden();
+    await expect(page.locator("#scroll-gesture-tip")).toBeVisible();
+    await expect(page.locator("#scroll-gesture-tip")).toContainText("bottom to top");
+    const origin = await page.evaluate(() => scrollY);
+    await page.clock.runFor(650);
+    expect(await page.evaluate(() => scrollY)).toBeGreaterThan(origin);
+    await page.clock.runFor(500);
+    expect(await page.evaluate(() => scrollY)).toBeCloseTo(origin, 0);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.evaluate(() => {
+        const camera = window.demoCamera;
+        camera.wrist = { x: .5, y: .8 };
+        camera.coordinate = index => index === 15 ? camera.wrist : { x: .5, y: .5 };
+        camera.frame(true);
+        camera.wrist = { x: .5, y: .5 };
+        camera.frame(true);
+    });
+    await expect(page.locator("#scroll-gesture-tip")).toBeHidden();
+    await expect(page.locator("#slide-gesture-tip")).toBeVisible();
+    await expect(page.locator("#slide-gesture-tip")).toContainText("Right hand, right to left");
+    expect(await page.locator("#presentation").evaluate(node => Math.abs(node.getBoundingClientRect().top))).toBeLessThan(50);
+    await page.evaluate(() => window.demoCamera.action("next_slide"));
+    await expect(page.locator("#slide-gesture-tip")).toBeHidden();
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#scroll-gesture-tip")).toBeHidden();
+});
+
+test("reduced motion disables the scroll nudge and camera denial leaves hints hidden", async ({ page }) => {
+    await mockCamera(page);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.clock.install();
+    await page.goto("./?lang=fr");
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#start-camera")).toBeHidden();
+    const origin = await page.evaluate(() => scrollY);
+    await page.clock.runFor(1200);
+    expect(await page.evaluate(() => scrollY)).toBe(origin);
+    await expect(page.locator("#scroll-gesture-tip")).toContainText("Montez une main");
+    expect(await page.locator("#start-camera").evaluate(node => getComputedStyle(node, "::after").animationName)).toBe("none");
+    await page.keyboard.press("Escape");
+    await page.evaluate(() => { window.nextCameraFailure = "Permission denied"; });
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#camera-status")).toContainText("refus\u00e9");
+    await expect(page.locator("#scroll-gesture-tip")).toBeHidden();
+    await expect(page.locator("#slide-gesture-tip")).toBeHidden();
+});

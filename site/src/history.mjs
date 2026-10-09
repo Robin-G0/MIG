@@ -138,7 +138,7 @@ export class HistoryIllustration {
 
     drawCoordinates() {
         const phase = this.position / 100 * Math.PI * 2;
-        for (const [index, color] of ["#236a44", "#9d4a19"].entries()) {
+        for (const [index, color] of ["var(--diagram-first)", "var(--diagram-second)"].entries()) {
             const offset = index * 90;
             const curve = `M 30 ${110 + offset} C 110 ${20 + offset} 240 ${200 + offset} 330 ${90 + offset}`;
             this.drawing.append(svgElement("path", { d: curve, fill: "none", stroke: color, "stroke-width": 2, "stroke-dasharray": "5 5" }));
@@ -163,11 +163,11 @@ export class HistoryIllustration {
         ];
         this.drawing.append(svgElement("polygon", {
             points: points.map(point => `${point.x},${point.y}`).join(" "),
-            fill: "#ffffff50", stroke: "#7e411a", "stroke-width": 3
+            fill: "#ffffff08", stroke: "var(--diagram-second)", "stroke-width": 3
         }));
         for (const [index, point] of points.entries()) {
             const angle = angleAt(point, points[(index + 1) % 3], points[(index + 2) % 3]);
-            this.drawing.append(svgElement("circle", { cx: point.x, cy: point.y, r: 8, fill: "#7e411a" }));
+            this.drawing.append(svgElement("circle", { cx: point.x, cy: point.y, r: 8, fill: "var(--diagram-second)" }));
             const label = [this.text.head, this.text.leftShoulder, this.text.rightShoulder][index];
             this.drawing.append(svgElement("text", { x: point.x, y: point.y + (index === 0 ? -22 : 30), "text-anchor": "middle", class: "point-label" }, label));
             this.drawing.append(svgElement("text", {
