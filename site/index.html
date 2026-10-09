@@ -13,7 +13,6 @@
 <body>
     <div id="page-content">
         <header class="header">
-            <a class="brand" href="#welcome" aria-label="Motion Input Grid"><span class="brand-mark" aria-hidden="true">M</span> MIG<span class="brand-name"> / Motion Input Grid</span></a>
             <nav data-label="navigation">
                 <a data-link="repository" data-text="repository">Repository</a>
                 <div class="languages" aria-label="Language / Langue">
@@ -25,7 +24,7 @@
         <main>
             <section class="hero section" id="welcome">
                 <div class="hero-copy">
-                    <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span><span data-text="tagline">Le mouvement devient une interface.</span></p>
+                    <p class="eyebrow"><span class="prismatic-text" data-text="tagline">Le mouvement devient une interface.</span></p>
                     <p class="welcome" data-text="welcome">Bienvenue sur le repository officiel de MIG.</p>
                     <h1 data-text="invitation">Alors, on teste tout ça ?</h1>
                     <p class="lead" data-text="introduction"></p>
@@ -66,9 +65,10 @@
                                 <button type="button" data-cell="first" data-label-key="firstCell">1<small>[2, 2]</small></button>
                                 <button type="button" data-cell="second" data-label-key="secondCell">2<small>[3, 2]</small></button>
                                 <button type="button" data-cell="cancel" data-label-key="cancelCell">×</button>
-                                <button type="button" data-cell="trigger" data-label-key="triggerCell">→</button>
-                                <button type="button" data-cell="condition" data-label-key="conditionCell">if<br>thumbs up:<br>trigger</button>
+                                <button type="button" data-cell="trigger" data-label-key="triggerCell">3</button>
+                                <button type="button" data-cell="condition" data-label-key="conditionCell"><span data-condition-content>3</span></button>
                             </div>
+                            <p class="grid-outcome" data-history-outcome role="status" aria-live="polite"></p>
                             <label class="motion-control"><span data-history-motion-label></span><input type="range" min="0" max="100" value="0" step="1"></label>
                             <label class="thumb-control" hidden><input type="checkbox" data-history-thumb><span data-history-thumb-label></span></label>
                             <button class="animation-button" type="button" data-history-play></button>

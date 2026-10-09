@@ -25,6 +25,10 @@ export class HistoryIllustration {
         this.thumb = root.querySelector("[data-history-thumb]");
         this.grid = root.querySelector("[data-history-grid]");
         this.status = root.querySelector("[data-history-status]");
+        this.outcome = root.querySelector("[data-history-outcome]");
+        this.conditionContent = root.querySelector("[data-condition-content]");
+        this.stage = "detect";
+        this.lastActivated = null;
         this.motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
         this.playing = !this.motionPreference.matches;
         this.position = 0;
@@ -75,7 +79,8 @@ export class HistoryIllustration {
         this.drawing.toggleAttribute("hidden", index === 2);
         this.slider.closest("label").hidden = index === 2;
         this.grid.hidden = index !== 2;
-        this.thumb.closest("label").hidden = index !== 2;
+        this.thumb.closest("label").hidden = true;
+        this.outcome.hidden = index !== 2;
         this.position = 0;
         this.progress = 0;
         this.result = "gridReady";
@@ -83,11 +88,15 @@ export class HistoryIllustration {
         this.thumb.checked = false;
         this.lastFrame = null;
         this.refreshControls();
-        if (index === 2) this.updateGrid();
+        if (index === 2) {
+            this.resetGrid("detect");
+            this.updateGrid();
+        }
         this.draw();
     }
 
     pause() {
+        if (this.index === 2) this.setGridStage("interactive");
         this.playing = false;
         this.lastFrame = null;
         this.refreshControls();
@@ -116,7 +125,8 @@ export class HistoryIllustration {
         const visible = !document.hidden && this.root.getClientRects().length > 0;
         if (this.playing && visible && this.text) {
             const elapsed = this.lastFrame === null ? 0 : Math.min(time - this.lastFrame, 100);
-            this.position = (this.position + elapsed / 120) % 100;
+            const cycleSpeed = this.index === 2 ? 200 : 120;
+            this.position = (this.position + elapsed / cycleSpeed) % 100;
             this.slider.value = this.position;
             this.draw();
         }
@@ -180,6 +190,7 @@ export class HistoryIllustration {
     }
 
     activateCell(cell) {
+        this.lastActivated = cell;
         if (cell === "cancel") {
             this.progress = 0;
             this.result = "gridCancelled";
@@ -207,27 +218,61 @@ export class HistoryIllustration {
 
     updateGrid() {
         for (const button of this.grid.querySelectorAll("button")) {
-            const completed = button.dataset.cell === "first" && this.progress >= 1
-                || button.dataset.cell === "second" && this.progress === 2;
+            const fired = this.result === "gridTriggered";
+            const completed = button.dataset.cell === "first" && (this.progress >= 1 || fired)
+                || button.dataset.cell === "second" && (this.progress === 2 || fired);
+            button.classList.toggle("is-active", button.dataset.cell === this.lastActivated);
             button.classList.toggle("is-complete", completed);
         }
         this.setStatus(this.text[this.result]);
         this.status.dataset.result = this.result;
+        const message = this.result === "gridTriggered" ? this.text.inputDetected
+            : this.result === "gridCancelled" ? this.text.inputCancelled : "";
+        if (this.outcome.textContent !== message) this.outcome.textContent = message;
+        this.outcome.dataset.result = this.result;
+    }
+
+    setGridStage(stage) {
+        this.stage = stage;
+        this.grid.dataset.stage = stage;
+        const cell = name => this.grid.querySelector(`[data-cell=${name}]`);
+        cell("cancel").hidden = stage !== "cancel" && stage !== "interactive";
+        cell("condition").hidden = stage !== "condition" && stage !== "interactive";
+        cell("trigger").hidden = stage === "condition";
+        this.thumb.closest("label").hidden = stage !== "interactive";
+        this.conditionContent.textContent = stage === "interactive" ? "if thumbsup, trigger" : "3";
+    }
+
+    resetGrid(stage) {
+        this.progress = 0;
+        this.result = stage === "condition" ? "gridCondition" : "gridReady";
+        this.lastActivated = null;
+        this.thumb.checked = false;
+        this.setGridStage(stage);
     }
 
     animateGrid() {
-        const step = Math.floor(this.position / 100 * 12);
+        // Each numbered step lasts one second; outcomes remain visible between stages.
+        const step = Math.floor(this.position / 100 * 20);
         if (step === this.step) return;
         this.step = step;
-        // Show a successful path, a cancelled attempt, then a conditional action.
-        if (step === 0) { this.progress = 0; this.result = "gridReady"; this.thumb.checked = false; }
-        if ([1, 4, 7].includes(step)) this.activateCell("first");
-        if ([2, 8].includes(step)) this.activateCell("second");
+        if (step === 0) this.resetGrid("detect");
+        if (step === 6) this.resetGrid("cancel");
+        if (step === 12) {
+            this.resetGrid("condition");
+            this.conditionContent.textContent = "if thumbsup, trigger";
+        }
+        if (step === 13) this.conditionContent.textContent = "3";
+        if ([1, 7, 14].includes(step)) this.activateCell("first");
+        if ([2, 8, 15].includes(step)) this.activateCell("second");
         if (step === 3) this.activateCell("trigger");
-        if (step === 5) this.activateCell("cancel");
-        if (step === 9) this.activateCell("condition");
-        if (step === 10) this.thumb.checked = true;
-        if (step === 11) this.activateCell("condition");
+        if (step === 9) this.activateCell("cancel");
+        if (step === 16) this.conditionContent.textContent = "\u{1f44d}";
+        if (step === 17) {
+            this.conditionContent.textContent = "3";
+            this.thumb.checked = true;
+            this.activateCell("condition");
+        }
         this.updateGrid();
     }
 }
