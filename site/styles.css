@@ -64,8 +64,8 @@ video:not([src]) { background: transparent; }
 .slide[data-returned="true"] .slide-art { display: none; }
 .slide[data-returned="true"] .slide-copy > p, .slide[data-returned="true"] h3 { max-width: 740px; margin-inline: auto; }
 .slide-tag { font-size: 13px; font-weight: 650; }
-.slide h3 { font-size: clamp(28px, 3.5vw, 46px); line-height: 1.1; letter-spacing: -.045em; margin: 24px 0; max-width: 480px; }
-.slide-copy > p:last-child { max-width: 440px; line-height: 1.6; }
+.slide h3 { font-size: clamp(28px, 3.5vw, 64px); line-height: 1.1; letter-spacing: -.045em; margin: 24px 0; max-width: 480px; }
+.slide-copy > p:last-child { max-width: 540px; font-size: clamp(16px, 1.2vw, 20px); line-height: 1.6; }
 .slide-art { display: flex; align-items: center; justify-content: center; position: relative; min-width: 0; }
 
 .slide-number { position: absolute; top: -12px; right: 0; font-size: 14px; font-weight: 750; }
@@ -142,6 +142,14 @@ body.is-away { background: #000; }
     .header nav { gap: 14px; }
     .hero, .hero.camera-open { grid-template-columns: 1fr; gap: 36px; padding-top: 24px; }
     .hero-copy { max-width: 620px; }
+    .hero.camera-open { gap: 20px; padding-block: 12px 24px; align-content: center; }
+    .hero.camera-open .hero-copy > .eyebrow, .hero.camera-open .lead, .hero.camera-open .privacy { display: none; }
+    .hero.camera-open h1 { font-size: 28px; margin: 0 0 12px; }
+    .hero.camera-open .camera-actions { margin-top: 0; }
+    .hero.camera-open .camera-placement { font-size: 12px; line-height: 1.5; margin: 12px 0 0; }
+    .hero.camera-open .camera-card { width: 100%; padding: 14px; margin-inline: auto; }
+    .hero.camera-open .camera-preview { aspect-ratio: 16 / 9; }
+    .hero.camera-open video { object-fit: contain; }
     .camera-card { max-width: 520px; transform: none; }
     .section { padding-block: 55px; }
     .slide { grid-template-columns: 1fr; grid-template-rows: 1fr 290px; height: 540px; padding: 24px; gap: 16px; }
@@ -181,10 +189,10 @@ body.is-away { background: #000; }
     .prismatic-text { animation: prism-colours 4s linear infinite alternate; }
     .primary::after { animation: prism-shine 3.5s ease-in-out infinite; }
     .gesture-tip, .hands-tip { animation: prism-colours 4s linear infinite alternate; }
-    .hand-up svg { animation: hand-up-demo 1.6s steps(2, end) infinite alternate; }
-    .hand-left svg { animation: hand-side-demo 1.6s steps(2, end) infinite alternate-reverse; }
-    .hand-right svg { animation: hand-side-demo 1.6s steps(2, end) infinite alternate; }
-    .hand-cover svg { animation: hand-cover-demo 1.6s steps(2, end) infinite alternate; }
+    .hand-up svg { animation: hand-up-demo 1.6s steps(1, end) infinite alternate; }
+    .hand-left svg { animation: hand-side-demo 1.6s steps(1, end) infinite alternate-reverse; }
+    .hand-right svg { animation: hand-side-demo 1.6s steps(1, end) infinite alternate; }
+    .hand-cover svg { animation: hand-cover-demo 1.6s steps(1, end) infinite alternate; }
     .camera-open .camera-card { animation: camera-arrive .6s ease-out both; }
     #away-screen { transition: opacity .65s ease-in-out; }
     .button, .arrow-button { transition: background .15s ease; }
