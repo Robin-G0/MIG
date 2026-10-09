@@ -7,7 +7,11 @@ import { cameraError, createCameraSession } from "./camera.mjs";
 const element = id => document.getElementById(id);
 const slides = new SlideController(translations.fr.slides.length, settings.slideDelay);
 const presence = new PresenceMonitor(settings);
-let language = navigator.language.startsWith("fr") ? "fr" : "en";
+// README links select a language explicitly; other visits use the browser language.
+const requestedLanguage = new URL(location.href).searchParams.get("lang");
+let language = requestedLanguage === "fr" || requestedLanguage === "en"
+    ? requestedLanguage
+    : navigator.language.startsWith("fr") ? "fr" : "en";
 let session = null;
 let status = "ready";
 let starting = false;
@@ -163,6 +167,9 @@ document.querySelectorAll("[data-link]").forEach(link => {
 document.querySelectorAll("[data-language]").forEach(button => {
     button.addEventListener("click", () => {
         language = button.dataset.language;
+        const url = new URL(location.href);
+        url.searchParams.set("lang", language);
+        history.replaceState(null, "", url);
         renderLanguage();
     });
 });

@@ -56,6 +56,31 @@ test("bilingual page, footer and controls work under the repository subpath", as
     expect(errors).toEqual([]);
 });
 
+test("README links override the browser language and language switches survive reload", async ({ browser }) => {
+    for (const language of ["fr", "en"]) {
+        const page = await browser.newPage({
+            baseURL: test.info().project.use.baseURL,
+            locale: language === "fr" ? "en-US" : "fr-FR"
+        });
+        try {
+            await page.goto(`./?lang=${language}`);
+            await expect(page.locator("html")).toHaveAttribute("lang", language);
+            const title = language === "fr" ? "Alors, on teste tout \u00e7a ?" : "Ready to give it a go?";
+            await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
+            const otherLanguage = language === "fr" ? "en" : "fr";
+            await page.getByRole("button", { name: otherLanguage.toUpperCase(), exact: true }).click();
+            expect(new URL(page.url()).searchParams.get("lang")).toBe(otherLanguage);
+            await page.reload();
+            await expect(page.locator("html")).toHaveAttribute("lang", otherLanguage);
+            // Unknown URL languages fall back to the browser's language.
+            await page.goto("./?lang=unknown");
+            await expect(page.locator("html")).toHaveAttribute("lang", otherLanguage);
+        } finally {
+            await page.close();
+        }
+    }
+});
+
 test("gestures advance and reverse the presentation; departure and return reveal the finale", async ({ page }) => {
     await mockCamera(page);
     await page.clock.install();
