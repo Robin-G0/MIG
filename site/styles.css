@@ -124,7 +124,8 @@ body.is-away { background: #000; }
 .gesture-pictogram > span { font-size: 28px; }
 #page-content:has(#hands-tip:not([hidden])) #scroll-gesture-tip,
 #page-content:has(#hands-tip:not([hidden])) #slide-gesture-tip { visibility: hidden; }
-#page-content:has(#cover-camera-tip:not([hidden])) #hands-tip { visibility: hidden; }
+#page-content:has(#cover-camera-tip:not([hidden]), #departure-tip:not([hidden])) #hands-tip { visibility: hidden; }
+.arrow-button:disabled { opacity: .35; cursor: default; }
 #presentation { scroll-margin-top: 24px; }
 @keyframes prism-shine { 0%, 20% { transform: translateX(-50%); } 80%, 100% { transform: translateX(50%); } }
 @keyframes hand-side-demo { from { transform: translateX(-16px); } to { transform: translateX(16px); } }
@@ -212,5 +213,5 @@ body.is-away { background: #000; }
 
 .camera-placement { max-width: 560px; font-size: 14px; line-height: 1.6; color: #d8eaf5; }
 
-.camera-card.is-running .camera-preview { outline: 10px solid #ff7770; outline-offset: -10px; box-shadow: 0 0 24px #ff77704d; }
-.camera-card.is-running.has-hands .camera-preview { outline-color: #71e39e; box-shadow: 0 0 24px #71e39e66; }
+.camera-card.is-running .camera-preview { outline: 16px solid #ff5148; outline-offset: -16px; box-shadow: 0 0 0 4px #ff514866, 0 0 42px #ff5148a6; }
+.camera-card.is-running.has-hands .camera-preview { outline-color: #38f581; box-shadow: 0 0 0 4px #38f58166, 0 0 42px #38f581a6; }

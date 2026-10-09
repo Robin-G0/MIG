@@ -44,6 +44,8 @@ function renderSlide() {
     element("slide-title").textContent = slide.title;
     element("slide-description").textContent = slide.description;
     illustration.show(slides.index, text);
+    element("previous-slide").disabled = slides.index === 0;
+    element("next-slide").disabled = slides.index === slides.count - 1;
     element("slide-number").textContent = slide.number;
     element("slide-counter").textContent = `${text.slideLabel} ${slides.index + 1} / ${slides.count}`;
 }
@@ -115,10 +117,13 @@ function updateDepartureTip(enabled, detected, time) {
     if (!enabled || !detected || away || !element("finale").hidden) {
         departureStartedAt = null;
         element("cover-camera-tip").hidden = true;
+        element("departure-tip").hidden = true;
         return;
     }
     departureStartedAt ??= time;
-    element("cover-camera-tip").hidden = time - departureStartedAt < 5000;
+    const showAlternative = time - departureStartedAt >= 10000;
+    element("departure-tip").hidden = showAlternative;
+    element("cover-camera-tip").hidden = !showAlternative;
 }
 
 function handlePresence(currentSession) {
@@ -146,7 +151,7 @@ function handlePresence(currentSession) {
         screenTransition.hide();
     } else if (nextState === "present" && away) {
         showPage(true);
-        guide.resume();
+        stopCamera({ completed: true });
         element("finale").hidden = false;
         setStatus("returned");
         element("finale").scrollIntoView({ behavior: "instant", block: "center" });
@@ -169,7 +174,7 @@ function handleAction(event) {
     }
 }
 
-function stopCamera() {
+function stopCamera({ completed = false } = {}) {
     ++generation;
     const previousSession = session;
     session = null;
@@ -184,14 +189,15 @@ function stopCamera() {
     element("camera-placement").hidden = true;
     departureStartedAt = null;
     element("cover-camera-tip").hidden = true;
+    element("departure-tip").hidden = true;
     guide.stop();
-    showPage();
+    if (!completed) showPage();
     document.querySelector(".camera-card").classList.remove("is-running", "has-hands");
     element("start-camera").disabled = false;
     element("start-camera").hidden = false;
     element("stop-camera").hidden = true;
     setStatus("stopped");
-    if (returnFocus instanceof HTMLElement && returnFocus.isConnected) {
+    if (!completed && returnFocus instanceof HTMLElement && returnFocus.isConnected) {
         returnFocus.focus({ preventScroll: true });
     }
     returnFocus = null;
@@ -231,6 +237,7 @@ async function startCamera() {
         setStatus("unavailable");
         return;
     }
+    element("finale").hidden = true;
     const run = ++generation;
     starting = true;
     element("start-camera").disabled = true;
@@ -356,6 +363,7 @@ document.addEventListener("visibilitychange", () => {
     element("hands-tip").hidden = true;
     departureStartedAt = null;
     element("cover-camera-tip").hidden = true;
+    element("departure-tip").hidden = true;
     presence.changedAt = null;
     presence.lastTime = null;
 });

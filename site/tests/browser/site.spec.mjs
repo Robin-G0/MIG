@@ -46,7 +46,7 @@ test("bilingual page, footer and controls work under the repository subpath", as
         navigator.mediaDevices.getUserMedia = (...args) => { ++window.cameraRequests; return original(...args); };
     });
     await page.goto("./");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Alors, on teste tout ça ?");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Alors, on teste tout Ã§a ?");
     await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
     await expect(page.locator("#finale")).toBeHidden();
     await expect(page.locator("#away-screen")).toBeHidden();
@@ -130,6 +130,13 @@ test("gestures advance and reverse the presentation; departure and return reveal
     await page.getByRole("button", { name: "FR", exact: true }).click();
     await expect(page).toHaveTitle("Motion Input Grid : \u00e0 vous de jouer");
     await expect(page.locator('[data-text="finaleStar"]')).toContainText("\u00e9toile sur GitHub");
+    expect(await page.evaluate(() => window.demoCamera.stopped)).toBe(true);
+    await expect(page.locator("#hands-tip")).toBeHidden();
+    await expect(page.locator("#departure-tip")).toBeHidden();
+    await expect(page.locator("#stop-camera")).toBeHidden();
+    // Restart explicitly to verify Escape during a second departure.
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#start-camera")).toBeHidden();
     // Language controls scroll back to the header; return to the final section.
     await page.locator("#presence-demo").evaluate(node => node.scrollIntoView({ behavior: "instant", block: "start" }));
     await page.evaluate(() => window.demoCamera.frame(true));
@@ -150,7 +157,7 @@ test("a denied camera leaves manual navigation usable and allows retry", async (
     await mockCamera(page, "Permission denied");
     await page.goto("./");
     await page.locator("#start-camera").click();
-    await expect(page.locator("#camera-status")).toContainText("refusé");
+    await expect(page.locator("#camera-status")).toContainText("refusÃ©");
     await expect(page.locator("#start-camera")).toBeEnabled();
     await expect(page.locator("#away-screen")).toBeHidden();
     await page.locator("#next-slide").click();
@@ -512,7 +519,7 @@ test("camera placement and hand hints guide visitors without triggering departur
     await expect(page.locator("#start-camera")).toBeHidden();
     await expect(placement).toBeVisible();
     await expect(page.locator("#camera-overlay")).toBeHidden();
-    await expect(page.locator(".camera-preview")).toHaveCSS("outline-color", "rgb(255, 119, 112)");
+    await expect(page.locator(".camera-preview")).toHaveCSS("outline-color", "rgb(255, 81, 72)");
     await expect(placement).toContainText("clavier ni de la souris");
     await page.evaluate(() => {
         const camera = window.demoCamera;
@@ -535,7 +542,7 @@ test("camera placement and hand hints guide visitors without triggering departur
     await expect(placement).toContainText("no keyboard or mouse required");
     await page.evaluate(() => { window.demoCamera.missingHand = false; window.demoCamera.frame(true); });
     await expect(hint).toBeHidden();
-    await expect(page.locator(".camera-preview")).toHaveCSS("outline-color", "rgb(113, 227, 158)");
+    await expect(page.locator(".camera-preview")).toHaveCSS("outline-color", "rgb(56, 245, 129)");
     // A predicted wrist outside the image also needs a hint.
     await page.evaluate(() => {
         window.demoCamera.coordinate = index => ({ x: index === 15 ? 1.2 : .5, y: .5 });
@@ -570,7 +577,7 @@ test("camera placement and hand hints guide visitors without triggering departur
     await expect(placement).toBeHidden();
 });
 
-test("the final section suggests covering the camera after five seconds and detects departure quickly", async ({ page }) => {
+test("the final section suggests covering the camera after ten seconds and detects departure quickly", async ({ page }) => {
     await mockCamera(page);
     await page.clock.install();
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -588,7 +595,9 @@ test("the final section suggests covering the camera after five seconds and dete
         window.demoCamera.coordinate = index => window.demoCamera.detected && index !== 16 ? { x: .5, y: .5 } : null;
         window.demoCamera.frame(true);
     });
-    for (let index = 0; index < 4; index++) {
+    await expect(page.locator("#departure-tip")).toBeVisible();
+    await expect(page.locator("#departure-tip svg")).toBeVisible();
+    for (let index = 0; index < 9; index++) {
         await page.clock.runFor(1000);
         await page.evaluate(() => window.demoCamera.frame(true));
         await expect(tip).toBeHidden();
@@ -596,6 +605,7 @@ test("the final section suggests covering the camera after five seconds and dete
     await page.clock.runFor(1000);
     await page.evaluate(() => window.demoCamera.frame(true));
     await expect(tip).toBeVisible();
+    await expect(page.locator("#departure-tip")).toBeHidden();
     await expect(page.locator("#hands-tip")).toBeHidden();
     await expect(tip).toContainText("masquer la cam\u00e9ra avec votre main");
     await page.evaluate(() => document.querySelector('[data-language="en"]').click());
@@ -630,7 +640,7 @@ test("hand scrolling and its hint wait for a continuous second of green camera a
         await page.clock.runFor(200);
         await page.evaluate(() => window.demoCamera.frame(true));
     }
-    await expect(page.locator(".camera-preview")).toHaveCSS("outline-color", "rgb(113, 227, 158)");
+    await expect(page.locator(".camera-preview")).toHaveCSS("outline-color", "rgb(56, 245, 129)");
     await expect(tip).toBeHidden();
     await page.evaluate(() => window.demoCamera.action("scroll_presentation"));
     expect(await page.evaluate(() => scrollY)).toBe(origin);
@@ -639,7 +649,7 @@ test("hand scrolling and its hint wait for a continuous second of green camera a
         window.demoCamera.coordinate = index => index === 16 ? null : { x: .5, y: .5 };
         window.demoCamera.frame(true);
     });
-    await expect(page.locator(".camera-preview")).toHaveCSS("outline-color", "rgb(255, 119, 112)");
+    await expect(page.locator(".camera-preview")).toHaveCSS("outline-color", "rgb(255, 81, 72)");
     await page.evaluate(() => { window.demoCamera.coordinate = () => ({ x: .5, y: .5 }); window.demoCamera.frame(true); });
     for (let index = 0; index < 4; index++) {
         await page.clock.runFor(200);
@@ -677,7 +687,7 @@ test("the welcome fills a large screen and introduces the camera only after the 
     await expect(page.locator("#start-camera")).toBeHidden();
     await expect(page.locator(".camera-card")).toBeVisible();
     await expect(page.locator("#welcome")).toHaveClass(/camera-open/);
-    await expect(page.locator(".camera-preview")).toHaveCSS("outline-width", "10px");
+    await expect(page.locator(".camera-preview")).toHaveCSS("outline-width", "16px");
     await holdHandsInFrame(page);
     const tip = page.locator("#scroll-gesture-tip");
     await expect(tip).toBeVisible();
@@ -759,6 +769,7 @@ test("either hand can advance and reverse the slides with the same mirrored swip
             await page.locator("#start-camera").click();
             await expect(page.locator("#start-camera")).toBeHidden();
             await holdHandsInFrame(page);
+            await page.locator("#next-slide").click();
             await page.clock.runFor(300);
             await page.evaluate(({ landmark, direction }) => {
                 const camera = window.demoCamera;
@@ -771,7 +782,7 @@ test("either hand can advance and reverse the slides with the same mirrored swip
                 window.demoCamera.wrist.x = direction === 1 ? .35 : .65;
                 window.demoCamera.frame(true);
             }, direction);
-            await expect(page.locator("#slide-counter")).toHaveText(direction === 1 ? "Slide 2 / 3" : "Slide 3 / 3");
+            await expect(page.locator("#slide-counter")).toHaveText(direction === 1 ? "Slide 3 / 3" : "Slide 1 / 3");
         }
     }
     await expect(page.locator('[data-text="nextInstruction"]')).toContainText("either hand");
@@ -782,4 +793,27 @@ test("either hand can advance and reverse the slides with the same mirrored swip
         return { duration: style.animationDuration, easing: style.animationTimingFunction };
     });
     expect(style).toEqual({ duration: "3.2s", easing: "ease-in-out" });
+});
+
+
+test("carousel boundaries stop keyboard, wheel and hand navigation without wrapping", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.goto("./?lang=en");
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#previous-slide")).toBeDisabled();
+    await page.locator("#slide").focus();
+    await page.keyboard.press("ArrowLeft");
+    await page.evaluate(() => window.demoCamera.action("previous_slide"));
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
+    await page.locator("#next-slide").click();
+    await page.locator("#next-slide").click();
+    await expect(page.locator("#next-slide")).toBeDisabled();
+    await page.locator("#slide").focus();
+    await page.keyboard.press("ArrowRight");
+    await page.locator("#slide").dispatchEvent("wheel", { deltaX: 100, deltaY: 0 });
+    await page.evaluate(() => window.demoCamera.action("next_slide"));
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 3 / 3");
+    await expect(page.locator(".hand-left use")).toHaveAttribute("transform", "translate(100 0) scale(-1 1)");
+    await expect(page.locator(".hand-right use")).not.toHaveAttribute("transform");
 });
