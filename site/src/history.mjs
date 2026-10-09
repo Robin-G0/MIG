@@ -106,7 +106,6 @@ export class HistoryIllustration {
         if (!this.text) return;
         this.playButton.textContent = this.text[this.playing ? "pauseAnimation" : "playAnimation"];
         this.playButton.setAttribute("aria-pressed", String(this.playing));
-        this.root.querySelector("[data-history-hint]").textContent = this.text[this.index === 2 ? "gridHint" : "illustrationHint"];
         this.root.querySelector("[data-history-motion-label]").textContent = this.text.movePoints;
         this.root.querySelector("[data-history-thumb-label]").textContent = this.text.thumbCondition;
         for (const button of this.grid.querySelectorAll("button")) {

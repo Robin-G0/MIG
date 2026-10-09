@@ -63,11 +63,13 @@ export class GestureGuide {
     raiseHand() {
         if (!this.active || this.entered) return;
         this.cancelNudge(true);
-        this.presentation.scrollIntoView({
-            behavior: this.motionPreference.matches ? "instant" : "smooth",
-            block: "start"
-        });
         this.showSlides();
+        // Frame the title and the complete animation, leaving the hints below it.
+        const title = this.presentation.querySelector("h2");
+        window.scrollTo({
+            top: window.scrollY + title.getBoundingClientRect().top - 16,
+            behavior: this.motionPreference.matches ? "instant" : "smooth"
+        });
     }
 
     showSlides() {

@@ -111,7 +111,7 @@ test("gestures advance and reverse the presentation; departure and return reveal
     await expect(page.locator('[data-text="finaleStar"]')).toContainText("GitHub");
     await page.getByRole("button", { name: "EN", exact: true }).click();
     await expect(page).toHaveTitle("Motion Input Grid : your move");
-    await expect(page.locator('[data-text="finaleStar"]')).toHaveText("If you find the project interesting, give it a star on GitHub!");
+    await expect(page.locator('[data-text="finaleStar"]')).toHaveText("If you find the project interesting, would you please consider giving it a star on GitHub? Thank you for your support!");
     await page.getByRole("button", { name: "FR", exact: true }).click();
     await expect(page).toHaveTitle("Motion Input Grid : \u00e0 vous de jouer");
     await expect(page.locator('[data-text="finaleStar"]')).toContainText("\u00e9toile sur GitHub");
@@ -257,10 +257,12 @@ test("history diagrams move and the grid explains order, cancellation and condit
     await expect(status).toHaveAttribute("data-result", "gridFirst");
     // Explicit playback is available even when automatic motion is disabled.
     const play = illustration.locator("[data-history-play]");
-    await play.click();
+    await play.focus();
+    await play.press("Enter");
     await page.clock.runFor(3300);
     await expect(status).toHaveAttribute("data-result", "gridTriggered");
-    await play.click();
+    await play.focus();
+    await play.press("Enter");
     await page.clock.runFor(1000);
     await expect(status).toHaveAttribute("data-result", "gridTriggered");
 });
@@ -423,3 +425,40 @@ test("the evolving grid presents detection, cancellation, then a one-second thum
     await page.clock.runFor(3300);
     await expect(outcome).toHaveText("Entr\u00e9e d\u00e9tect\u00e9e");
 });
+
+for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 }, { width: 390, height: 700 }]) {
+    test(`hand scrolling frames the title and equally sized animations at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+        await page.setViewportSize(viewport);
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        await mockCamera(page);
+        await page.clock.install();
+        await page.goto("./?lang=en");
+        await page.locator("#start-camera").click();
+        await page.evaluate(() => window.demoCamera.action("scroll_presentation"));
+        const slide = page.locator("#slide");
+        const original = await slide.boundingBox();
+        for (let index = 0; index < 3; index++) {
+            const title = await page.locator("#slideshow-title").boundingBox();
+            const frame = await slide.boundingBox();
+            expect(title.y).toBeGreaterThanOrEqual(0);
+            expect(frame.y + frame.height).toBeLessThanOrEqual(viewport.height);
+            expect(frame.height).toBe(original.height);
+            const art = await page.locator("#history-illustration").boundingBox();
+            const copy = await page.locator(".slide-copy").boundingBox();
+            expect(art.y + art.height).toBeLessThanOrEqual(frame.y + frame.height);
+            expect(copy.y + copy.height).toBeLessThanOrEqual(frame.y + frame.height);
+            if (index < 2) {
+                await page.evaluate(() => window.demoCamera.action("next_slide"));
+                await page.clock.runFor(900);
+            }
+        }
+        const second = await page.locator('[data-cell="second"]').boundingBox();
+        // Reveal the cancellation stage by interacting with a green cell.
+        await page.locator('[data-cell="second"]').click();
+        const cancel = await page.locator('[data-cell="cancel"]').boundingBox();
+        expect(cancel.x).toBeCloseTo(second.x, 0);
+        expect(cancel.y).toBeGreaterThan(second.y);
+        await expect(page.locator('[data-text="nextInstruction"]')).toContainText("Gently");
+        await expect(page.locator('[data-text="previousInstruction"]')).toContainText("Gently");
+    });
+}

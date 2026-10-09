@@ -50,7 +50,6 @@
             <section class="section slideshow-section" id="presentation" aria-labelledby="slideshow-title">
                 <p class="eyebrow" data-text="slideshowEyebrow"></p>
                 <h2 id="slideshow-title" data-text="slideshowTitle"></h2>
-                <div class="gesture-tip slide-tip" id="slide-gesture-tip" role="status" hidden><span class="tip-motion" aria-hidden="true">↔</span><p data-text="slideTip"></p></div>
                 <div class="slide" id="slide" tabindex="0" role="region" aria-labelledby="slideshow-title" aria-roledescription="carousel">
                     <div class="slide-copy">
                         <p class="slide-tag" id="slide-tag"></p>
@@ -59,21 +58,22 @@
                     </div>
                     <div class="slide-art">
                         <div class="history-illustration" id="history-illustration">
-                            <svg viewBox="0 0 360 320" role="img"></svg>
-                            <div class="history-grid" data-history-grid hidden>
-                                <svg class="grid-body" viewBox="0 0 360 300" aria-hidden="true"><circle cx="180" cy="50" r="23"/><path d="M180 73 V200 M90 125 L180 100 L270 125 M180 200 L135 275 M180 200 L225 275"/></svg>
-                                <button type="button" data-cell="first" data-label-key="firstCell">1<small>[2, 2]</small></button>
-                                <button type="button" data-cell="second" data-label-key="secondCell">2<small>[3, 2]</small></button>
-                                <button type="button" data-cell="cancel" data-label-key="cancelCell">×</button>
-                                <button type="button" data-cell="trigger" data-label-key="triggerCell">3</button>
-                                <button type="button" data-cell="condition" data-label-key="conditionCell"><span data-condition-content>3</span></button>
+                            <div class="history-visual">
+                                <svg viewBox="0 0 360 320" role="img"></svg>
+                                <div class="history-grid" data-history-grid hidden>
+                                    <svg class="grid-body" viewBox="0 0 360 300" aria-hidden="true"><circle cx="180" cy="50" r="23"/><path d="M180 73 V200 M90 125 L180 100 L270 125 M180 200 L135 275 M180 200 L225 275"/></svg>
+                                    <button type="button" data-cell="first" data-label-key="firstCell">1<small>[2, 2]</small></button>
+                                    <button type="button" data-cell="second" data-label-key="secondCell">2<small>[3, 2]</small></button>
+                                    <button type="button" data-cell="cancel" data-label-key="cancelCell">×</button>
+                                    <button type="button" data-cell="trigger" data-label-key="triggerCell">3</button>
+                                    <button type="button" data-cell="condition" data-label-key="conditionCell"><span data-condition-content>3</span></button>
+                                </div>
                             </div>
                             <p class="grid-outcome" data-history-outcome role="status" aria-live="polite"></p>
-                            <label class="motion-control"><span data-history-motion-label></span><input type="range" min="0" max="100" value="0" step="1"></label>
+                            <label class="motion-control visually-hidden"><span data-history-motion-label></span><input type="range" min="0" max="100" value="0" step="1"></label>
                             <label class="thumb-control" hidden><input type="checkbox" data-history-thumb><span data-history-thumb-label></span></label>
-                            <button class="animation-button" type="button" data-history-play></button>
-                            <p class="illustration-status" data-history-status role="status" aria-live="polite"></p>
-                            <p class="illustration-hint" data-history-hint></p>
+                            <button class="animation-button visually-hidden" type="button" data-history-play></button>
+                            <p class="illustration-status visually-hidden" data-history-status role="status" aria-live="polite"></p>
                         </div>
                         <span class="slide-number" id="slide-number" aria-hidden="true"></span>
                     </div>
@@ -83,6 +83,7 @@
                     <span id="slide-counter" role="status" aria-live="polite" aria-atomic="true"></span>
                     <button class="arrow-button" id="next-slide" type="button" data-label="next">→</button>
                 </div>
+                <div class="gesture-tip slide-tip" id="slide-gesture-tip" role="status" hidden><span class="tip-motion" aria-hidden="true">↔</span><p data-text="slideTip"></p></div>
                 <div class="gesture-instructions">
                     <p><span aria-hidden="true">←</span> <span data-text="nextInstruction"></span></p>
                     <p><span aria-hidden="true">→</span> <span data-text="previousInstruction"></span></p>
