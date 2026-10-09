@@ -43,8 +43,14 @@ jobs:
               run: npm test
             - name: Install test browsers
               run: npx playwright install --with-deps chromium firefox
+            - name: Install software graphics for browser tests
+              run: sudo apt-get install --no-install-recommends -y xvfb xauth libgl1-mesa-dri libglx-mesa0 libegl-mesa0
+            # Firefox needs a display-backed GL context, even in headless mode.
+            # Xvfb and Mesa let the real models run without a hardware GPU.
             - name: Test the built site in Chromium and Firefox
-              run: npm run test:browser
+              env:
+                  LIBGL_ALWAYS_SOFTWARE: '1'
+              run: xvfb-run --auto-servernum npm run test:browser
             - name: Save browser failure traces
               if: failure()
               uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

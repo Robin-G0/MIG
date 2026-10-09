@@ -124,6 +124,12 @@ test("small screens remain readable and touch navigation works", async ({ page }
 test("real MIG session starts with local models, processes video and releases the camera", async ({ page }) => {
     const externalRequests = [];
     const errors = [];
+    // Include runtime errors in the CI log; MIG reports failures through state.
+    page.on("console", message => {
+        if (message.type() === "error" && !message.text().startsWith("INFO:")) {
+            console.error(message.text());
+        }
+    });
     page.on("request", request => {
         if (new URL(request.url()).hostname !== "127.0.0.1") externalRequests.push(request.url());
     });
@@ -144,6 +150,12 @@ test("real MIG session starts with local models, processes video and releases th
         };
     });
     await page.goto("./");
+    const webglAvailable = await page.evaluate(() => {
+        const context = document.createElement("canvas").getContext("webgl2");
+        context?.getExtension("WEBGL_lose_context")?.loseContext();
+        return Boolean(context);
+    });
+    expect(webglAvailable, "The real MIG models require WebGL 2 in the test browser").toBe(true);
     await page.locator("#start-camera").click();
     await expect(page.locator("#camera-status")).toContainText("Cam\u00e9ra active", { timeout: 30000 });
     await expect(page.locator("#stop-camera")).toBeVisible();

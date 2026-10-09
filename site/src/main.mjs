@@ -127,6 +127,7 @@ async function startCamera() {
         if (run !== generation) return;
         // MIGSession reports startup failures through state rather than throwing.
         if (!session.state.running) {
+            console.error("MIG camera could not start:", session.state.status);
             const failure = cameraError(session.state.status);
             stopCamera();
             setStatus(failure);
@@ -144,6 +145,7 @@ async function startCamera() {
         });
     } catch (error) {
         if (run === generation) {
+            console.error("MIG camera could not start:", error);
             stopCamera();
             setStatus(cameraError(error.name + " " + error.message));
         }
