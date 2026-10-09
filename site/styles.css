@@ -127,7 +127,7 @@ body.is-away { background: #000; }
 #page-content:has(#cover-camera-tip:not([hidden])) #hands-tip { visibility: hidden; }
 #presentation { scroll-margin-top: 24px; }
 @keyframes prism-shine { 0%, 20% { transform: translateX(-50%); } 80%, 100% { transform: translateX(50%); } }
-@keyframes hand-side-demo { from { transform: translateX(-10px); } to { transform: translateX(10px); } }
+@keyframes hand-side-demo { from { transform: translateX(-16px); } to { transform: translateX(16px); } }
 @keyframes hand-up-demo { from { transform: translateY(10px); } to { transform: translateY(-10px); } }
 @keyframes hand-cover-demo { from { transform: scale(.75); } to { transform: scale(1.1); } }
 @keyframes camera-arrive { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
@@ -202,8 +202,8 @@ body.is-away { background: #000; }
     .primary::after { animation: prism-shine 3.5s ease-in-out infinite; }
     .gesture-tip, .hands-tip { animation: prism-colours 4s linear infinite alternate; }
     .hand-up svg { animation: hand-up-demo 1.6s steps(1, end) infinite alternate; }
-    .hand-left svg { animation: hand-side-demo 1.6s steps(1, end) infinite alternate-reverse; }
-    .hand-right svg { animation: hand-side-demo 1.6s steps(1, end) infinite alternate; }
+    .hand-left svg { animation: hand-side-demo 3.2s ease-in-out infinite alternate-reverse; }
+    .hand-right svg { animation: hand-side-demo 3.2s ease-in-out infinite alternate; }
     .hand-cover svg { animation: hand-cover-demo 1.6s steps(1, end) infinite alternate; }
     .camera-open .camera-card { animation: camera-arrive .6s ease-out both; }
     #away-screen { transition: opacity .65s ease-in-out; }

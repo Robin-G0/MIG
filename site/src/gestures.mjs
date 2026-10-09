@@ -1,10 +1,10 @@
 // Coordinates belong to the anatomical body, not the mirrored camera preview.
-// A right-hand sweep starts on the person's right and ends on their left.
-function swipe(id, landmark, startColumn, finishColumn) {
+// Either hand can sweep in either direction.
+function swipe(action, landmark, startColumn, finishColumn) {
     return {
-        id,
-        name: id === "next_slide" ? "Right-hand sweep" : "Left-hand sweep",
-        action: id,
+        id: `${action}_${landmark}`,
+        name: action === "next_slide" ? "Sweep to advance" : "Sweep to go back",
+        action,
         space: "body",
         cooldown_ms: 800,
         max_duration_ms: 2500,
@@ -23,7 +23,9 @@ export const gestureProfile = {
     schema_version: 2,
     tracking: { hands: false },
     inputs: [
-        swipe("next_slide", "right_wrist", 0, 5),
-        swipe("previous_slide", "left_wrist", 5, 0)
+        ...["left_wrist", "right_wrist"].flatMap(landmark => [
+            swipe("next_slide", landmark, 0, 5),
+            swipe("previous_slide", landmark, 5, 0)
+        ])
     ]
 };

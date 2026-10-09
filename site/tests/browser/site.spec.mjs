@@ -336,7 +336,7 @@ test("camera onboarding nudges scrolling, then a raised hand reveals the slide h
     await page.evaluate(() => { window.demoCamera.wrist = { x: .5, y: .3 }; window.demoCamera.frame(true); });
     await expect(page.locator("#scroll-gesture-tip")).toBeHidden();
     await expect(page.locator("#slide-gesture-tip")).toBeVisible();
-    await expect(page.locator("#slide-gesture-tip")).toContainText("Right hand, gently from right to left");
+    await expect(page.locator("#slide-gesture-tip")).toContainText("Use either hand");
     expect(await page.locator("#slideshow-title").evaluate(node => Math.abs(node.getBoundingClientRect().top))).toBeLessThan(50);
     await page.evaluate(() => window.demoCamera.action("next_slide"));
     await expect(page.locator("#slide-gesture-tip")).toBeHidden();
@@ -747,4 +747,39 @@ test("departure and return fade progressively while Escape restores the page imm
     await expect(page.locator("#away-screen")).toBeHidden();
     await page.clock.runFor(700);
     await expect(page.locator("#page-content")).toBeVisible();
+});
+
+test("either hand can advance and reverse the slides with the same mirrored swipe directions", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    for (const landmark of [15, 16]) {
+        for (const direction of [1, -1]) {
+            await page.goto("./?lang=en");
+            await page.locator("#start-camera").click();
+            await expect(page.locator("#start-camera")).toBeHidden();
+            await holdHandsInFrame(page);
+            await page.clock.runFor(300);
+            await page.evaluate(({ landmark, direction }) => {
+                const camera = window.demoCamera;
+                camera.wrist = { x: direction === 1 ? .1 : .9, y: .5 };
+                camera.coordinate = index => index === landmark ? camera.wrist : { x: .5, y: .5 };
+                camera.frame(true);
+            }, { landmark, direction });
+            await page.clock.runFor(100);
+            await page.evaluate(direction => {
+                window.demoCamera.wrist.x = direction === 1 ? .35 : .65;
+                window.demoCamera.frame(true);
+            }, direction);
+            await expect(page.locator("#slide-counter")).toHaveText(direction === 1 ? "Slide 2 / 3" : "Slide 3 / 3");
+        }
+    }
+    await expect(page.locator('[data-text="nextInstruction"]')).toContainText("either hand");
+    await expect(page.locator('[data-text="previousInstruction"]')).toContainText("either hand");
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    const style = await page.locator(".hand-left svg").evaluate(node => {
+        const style = getComputedStyle(node);
+        return { duration: style.animationDuration, easing: style.animationTimingFunction };
+    });
+    expect(style).toEqual({ duration: "3.2s", easing: "ease-in-out" });
 });

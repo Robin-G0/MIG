@@ -40,10 +40,7 @@ export class CameraSwipes {
 
     update(session, time) {
         const actions = [];
-        for (const [landmark, direction, action] of [
-            [16, 1, "next_slide"],
-            [15, -1, "previous_slide"]
-        ]) {
+        for (const landmark of [15, 16]) {
             const point = session.coordinate(landmark);
             if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) {
                 this.hands.delete(landmark);
@@ -53,19 +50,21 @@ export class CameraSwipes {
             const vertical = this.verticalAction(landmark, point, time);
             if (vertical) actions.push(vertical);
             let sample = this.hands.get(landmark);
-            const position = point.x * direction;
+            const position = point.x;
             if (!sample || time - sample.lastTime > this.gap
-                || time - sample.startTime > this.duration || position < sample.start) {
+                || time - sample.startTime > this.duration) {
                 sample = { start: position, startTime: time, lastTime: time };
                 this.hands.set(landmark, sample);
             }
             sample.lastTime = time;
-            if (position - sample.start >= this.distance) {
-                actions.push(action);
+            const distance = position - sample.start;
+            if (Math.abs(distance) >= this.distance) {
+                // The camera preview is mirrored: increasing image x sweeps left on screen.
+                actions.push(distance > 0 ? "next_slide" : "previous_slide");
                 sample.start = position;
                 sample.startTime = time;
             }
         }
-        return actions;
+        return [...new Set(actions)];
     }
 }
