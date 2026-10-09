@@ -3,11 +3,16 @@ export class SlideController {
         this.count = count;
         this.delay = delay;
         this.index = 0;
+        this.returnedToFirst = false;
         this.lastGestureAt = -Infinity;
     }
 
     move(direction) {
+        const previous = this.index;
         this.index = (this.index + direction + this.count) % this.count;
+        if (direction < 0 && previous === 1 && this.index === 0) {
+            this.returnedToFirst = true;
+        }
         return this.index;
     }
 

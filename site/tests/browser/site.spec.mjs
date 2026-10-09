@@ -332,3 +332,31 @@ test("reduced motion disables the scroll nudge and camera denial leaves hints hi
     await expect(page.locator("#scroll-gesture-tip")).toBeHidden();
     await expect(page.locator("#slide-gesture-tip")).toBeHidden();
 });
+
+test("returning by hand changes the first slide and scrolling right resumes the presentation", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.goto("./?lang=fr");
+    await expect(page.locator("#slide-title")).toContainText("d\u00e9cimales");
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#start-camera")).toBeHidden();
+    await page.evaluate(() => window.demoCamera.action("next_slide"));
+    await page.clock.runFor(900);
+    await page.evaluate(() => window.demoCamera.action("previous_slide"));
+    await expect(page.locator("#slide-title")).toHaveText("Alors, chouette non ?");
+    await expect(page.locator("#slide-description")).toContainText("quand vous \u00eates pr\u00eat");
+    await expect(page.locator("#history-illustration")).toBeHidden();
+    await page.getByRole("button", { name: "EN", exact: true }).click();
+    await expect(page.locator("#slide-title")).toHaveText("Pretty neat, right?");
+    await page.locator("#slide").dispatchEvent("wheel", { deltaX: 0, deltaY: 150 });
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
+    await page.locator("#slide").dispatchEvent("wheel", { deltaX: 100, deltaY: 0 });
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
+    await expect(page.locator("#slide-title")).toHaveText("Connect the points. Measure the angles.");
+    await expect(page.locator("#history-illustration")).toBeVisible();
+    await page.locator("#slide").dispatchEvent("wheel", { deltaX: 100, deltaY: 0 });
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
+    await page.clock.runFor(900);
+    await page.locator("#slide").dispatchEvent("wheel", { deltaX: -100, deltaY: 0 });
+    await expect(page.locator("#slide-title")).toHaveText("Pretty neat, right?");
+});

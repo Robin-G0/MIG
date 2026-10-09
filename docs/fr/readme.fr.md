@@ -2,6 +2,8 @@
 
 [English](../../readme.md) | [Français](readme.fr.md)
 
+## 🚀 [Essayez le projet dans votre navigateur avant d'en apprendre plus !](https://robin-g0.github.io/Motion-Input-Grid/?lang=fr) ✨
+
 > [!NOTE]
 > MIG est en cours de développement et vient de commencer à publier ses premières versions.
 > Tous les [retours et suggestions](https://github.com/Robin-G0/Motion-Input-Grid/issues) sont les bienvenus.
@@ -14,8 +16,6 @@ votre jeu, site web ou programme Python.
 Levez la main pour avancer une présentation, utilisez un mouvement dans un jeu
 ou associez un signe de main à un raccourci. Vous choisissez les mouvements et
 leurs commandes.
-
-[**Testez la lib depuis votre navigateur**](https://robin-g0.github.io/Motion-Input-Grid/?lang=fr)
 
 [**Télécharger**](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-downloads) ·
 [**Documentation**](../index.fr.md) · [**Exemples**](../../examples/README.fr.md)

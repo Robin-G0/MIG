@@ -28,7 +28,11 @@ let returnFocus = null;
 
 function renderSlide() {
     const text = translations[language];
-    const slide = text.slides[slides.index];
+    const returned = slides.index === 0 && slides.returnedToFirst;
+    const original = text.slides[slides.index];
+    const slide = returned ? { ...original, tag: text.returnTag,
+        title: text.returnTitle, description: text.returnDescription } : original;
+    element("slide").dataset.returned = String(returned);
     element("slide").dataset.color = slide.color;
     element("slide-tag").textContent = slide.tag;
     element("slide-title").textContent = slide.title;
@@ -207,6 +211,30 @@ element("slide").addEventListener("keydown", event => {
         renderSlide();
     }
 });
+// A horizontal trackpad scroll to the right advances the presentation.
+let wheelDistance = 0;
+let lastWheelAt = -Infinity;
+let lastWheelMoveAt = -Infinity;
+element("slide").addEventListener("wheel", event => {
+    if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+    event.preventDefault();
+    const time = performance.now();
+    if (time - lastWheelAt > 250 || Math.sign(wheelDistance) !== Math.sign(event.deltaX)) {
+        wheelDistance = 0;
+    }
+    lastWheelAt = time;
+    const scale = event.deltaMode === 1 ? 20 : event.deltaMode === 2 ? innerWidth : 1;
+    wheelDistance += event.deltaX * scale;
+    if (Math.abs(wheelDistance) < 60) return;
+    if (time - lastWheelMoveAt >= settings.slideDelay) {
+        lastWheelMoveAt = time;
+        slides.move(wheelDistance > 0 ? 1 : -1);
+        guide.completeSwipe();
+        renderSlide();
+    }
+    wheelDistance = 0;
+}, { passive: false });
+
 // Pointer events support touch without interfering with vertical page scrolling.
 let swipeStart = null;
 element("slide").addEventListener("pointerdown", event => {

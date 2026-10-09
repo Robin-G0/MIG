@@ -63,6 +63,9 @@ video:not([src]) { background: transparent; }
 .slide { display: grid; grid-template-columns: 1.3fr 1fr; padding: clamp(28px, 5vw, 65px); gap: 40px; border-radius: 26px; background: var(--mint); min-height: 360px; touch-action: pan-y; }
 .slide[data-color="peach"] { background: #302321; }
 .slide[data-color="lilac"] { background: #242138; }
+.slide[data-returned="true"] { grid-template-columns: 1fr; text-align: center; min-height: 400px; place-items: center; }
+.slide[data-returned="true"] .slide-art { display: none; }
+.slide[data-returned="true"] .slide-copy > p, .slide[data-returned="true"] h3 { max-width: 740px; margin-inline: auto; }
 .slide-tag { font-size: 13px; font-weight: 650; }
 .slide h3 { font-size: clamp(28px, 3.5vw, 46px); line-height: 1.1; letter-spacing: -.045em; margin: 24px 0; max-width: 480px; }
 .slide-copy > p:last-child { max-width: 440px; line-height: 1.6; }

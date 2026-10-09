@@ -112,3 +112,18 @@ test("raising either hand requests scrolling; downward motion and tracking gaps 
         assert.deepEqual(swipes.update(session, 1000), []);
     }
 });
+
+test("returning from the second slide changes the first slide, without affecting a forward wrap", () => {
+    const slides = new SlideController(3);
+    assert.equal(slides.returnedToFirst, false);
+    slides.move(-1);
+    slides.move(1);
+    assert.equal(slides.index, 0);
+    assert.equal(slides.returnedToFirst, false);
+    slides.gesture("next_slide", 0);
+    slides.gesture("previous_slide", 900);
+    assert.equal(slides.index, 0);
+    assert.equal(slides.returnedToFirst, true);
+    slides.move(1);
+    assert.equal(slides.index, 1);
+});
