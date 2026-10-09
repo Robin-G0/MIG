@@ -156,3 +156,17 @@ test("small, diagonal and instantaneous hand lifts do not scroll", async () => {
         }
     }
 });
+
+test("lowering either hand requests the previous section with the same deliberate gesture", async () => {
+    const { CameraSwipes } = await import("../src/camera-swipes.mjs");
+    for (const landmark of [15, 16]) {
+        const swipes = new CameraSwipes();
+        let wrist = { x: .5, y: .15 };
+        const session = { coordinate: index => index === landmark ? wrist : null };
+        assert.deepEqual(swipes.update(session, 0), []);
+        wrist.y = .5;
+        assert.deepEqual(swipes.update(session, 150), []);
+        wrist.y = .85;
+        assert.deepEqual(swipes.update(session, 300), ["scroll_previous"]);
+    }
+});

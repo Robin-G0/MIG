@@ -1,14 +1,15 @@
 // Camera onboarding uses small, cancellable hints. It never starts the camera.
 export class GestureGuide {
-    constructor(scrollTip, slideTip, slide, presentation) {
+    constructor(scrollTip, slideTip, slide, sections) {
         this.scrollTip = scrollTip;
         this.slideTip = slideTip;
         this.slide = slide;
-        this.presentation = presentation;
+        this.sections = sections;
+        this.presentation = sections[1];
         this.motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
         this.active = false;
         this.entered = false;
-        this.scrolled = false;
+        this.lastNavigation = -Infinity;
         this.frame = null;
         this.timer = null;
         this.animation = null;
@@ -29,7 +30,7 @@ export class GestureGuide {
         this.stop();
         this.active = true;
         this.entered = false;
-        this.scrolled = false;
+        this.lastNavigation = -Infinity;
         this.scrollTip.hidden = false;
         const bounds = this.slide.getBoundingClientRect();
         if (bounds.top < innerHeight && bounds.bottom > 0) {
@@ -62,17 +63,34 @@ export class GestureGuide {
         this.frame = requestAnimationFrame(draw);
     }
 
-    raiseHand() {
-        if (!this.active || this.scrolled) return;
-        this.scrolled = true;
+    sectionTop(section) {
+        if (section === this.sections[0]) return 0;
+        const title = section.querySelector("h2");
+        return window.scrollY + title.getBoundingClientRect().top - 16;
+    }
+
+    navigate(direction, time = performance.now()) {
+        if (!this.active || time - this.lastNavigation < 1200) return;
         this.cancelNudge(true);
-        this.showSlides();
-        // Frame the title and the complete animation, leaving the hints below it.
-        const title = this.presentation.querySelector("h2");
+        // Find the closest section so manual scrolling and hand navigation agree.
+        const positions = this.sections.map(section => this.sectionTop(section));
+        const current = positions.reduce((nearest, position, index) =>
+            Math.abs(position - scrollY) < Math.abs(positions[nearest] - scrollY) ? index : nearest, 0);
+        const next = Math.max(0, Math.min(this.sections.length - 1, current + direction));
+        if (next === current) return;
+        this.lastNavigation = time;
+        if (next === 1) this.showSlides();
+        this.scrollTip.hidden = next !== 0;
+        this.slideTip.hidden = next !== 1;
         window.scrollTo({
-            top: window.scrollY + title.getBoundingClientRect().top - 16,
+            top: positions[next],
             behavior: this.motionPreference.matches ? "instant" : "smooth"
         });
+    }
+
+    resume() {
+        this.active = true;
+        this.lastNavigation = -Infinity;
     }
 
     showSlides() {

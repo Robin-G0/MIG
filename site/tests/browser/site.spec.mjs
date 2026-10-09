@@ -116,6 +116,7 @@ test("gestures advance and reverse the presentation; departure and return reveal
         await page.evaluate(() => window.demoCamera.frame(true));
         await page.clock.runFor(100);
     }
+    await page.clock.runFor(700);
     await expect(page.locator("#away-screen")).toBeHidden();
     await expect(page.locator("#finale")).toBeVisible();
     await expect(page.locator("#finale-title")).toBeFocused();
@@ -653,4 +654,90 @@ test("hand scrolling and its hint wait for a continuous second of green camera a
     expect(await page.evaluate(() => scrollY)).toBe(restartedOrigin);
     await holdHandsInFrame(page);
     await expect(tip).toBeVisible();
+});
+
+test("the welcome fills a large screen and introduces the camera only after the button is pressed", async ({ page }) => {
+    await page.setViewportSize({ width: 2560, height: 1440 });
+    await mockCamera(page);
+    await page.clock.install();
+    await page.goto("./?lang=en");
+    await expect(page.locator(".camera-card")).toBeHidden();
+    const title = await page.locator("h1").boundingBox();
+    expect(title.x + title.width / 2).toBeCloseTo(1280, 0);
+    const presentation = await page.locator("#presentation").boundingBox();
+    expect(presentation.y).toBeGreaterThanOrEqual(1440);
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#start-camera")).toBeHidden();
+    await expect(page.locator(".camera-card")).toBeVisible();
+    await expect(page.locator("#welcome")).toHaveClass(/camera-open/);
+    await expect(page.locator(".camera-preview")).toHaveCSS("outline-width", "10px");
+    await holdHandsInFrame(page);
+    const tip = page.locator("#scroll-gesture-tip");
+    await expect(tip).toBeVisible();
+    const bounds = await tip.boundingBox();
+    expect(bounds.x + bounds.width / 2).toBeCloseTo(1280, 0);
+    await expect(tip.locator('[data-text="scrollShort"]')).toHaveText("Raise your hand");
+    expect(await tip.evaluate(node => getComputedStyle(node).animationName)).toBe("prism-colours");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    expect(await tip.evaluate(node => getComputedStyle(node).animationName)).toBe("none");
+});
+
+test("large vertical sweeps repeatedly move between the camera, history and departure sections", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("./?lang=en");
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#start-camera")).toBeHidden();
+    await holdHandsInFrame(page);
+    async function sweep(from, to) {
+        await page.evaluate(y => {
+            const camera = window.demoCamera;
+            camera.wrist = { x: .5, y };
+            camera.coordinate = index => index === 15 ? camera.wrist : { x: .5, y: .5 };
+            camera.frame(true);
+        }, from);
+        await page.clock.runFor(150);
+        await page.evaluate(y => { window.demoCamera.wrist.y = y; window.demoCamera.frame(true); }, (from + to) / 2);
+        await page.clock.runFor(150);
+        await page.evaluate(y => { window.demoCamera.wrist.y = y; window.demoCamera.frame(true); }, to);
+    }
+    for (const [section, direction] of [["presentation", 1], ["presence-demo", 1], ["presentation", -1], ["welcome", -1], ["presentation", 1]]) {
+        await page.clock.runFor(1300);
+        await sweep(direction === 1 ? .85 : .15, direction === 1 ? .15 : .85);
+        const top = await page.locator(section === "welcome" ? "#welcome" : `#${section} h2`).evaluate(node => node.getBoundingClientRect().top);
+        if (section === "presence-demo") {
+            // At the end of the document the browser may clamp the scroll position.
+            expect(top).toBeGreaterThanOrEqual(0);
+            expect(top).toBeLessThan(100);
+        } else expect(top, section).toBeCloseTo(section === "welcome" ? 104 : 16, 0);
+    }
+});
+
+test("departure and return fade progressively while Escape restores the page immediately", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.goto("./?lang=en");
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#start-camera")).toBeHidden();
+    await page.locator("#presence-demo").evaluate(node => node.scrollIntoView({ behavior: "instant", block: "start" }));
+    await page.evaluate(() => window.demoCamera.frame(true));
+    await page.evaluate(() => window.demoCamera.frame(false));
+    await page.clock.runFor(650);
+    await page.evaluate(() => window.demoCamera.frame(false));
+    await expect(page.locator("#away-screen")).toBeVisible();
+    await expect(page.locator("#away-screen")).toHaveCSS("transition-duration", "0.65s");
+    await expect(page.locator("#page-content")).toBeVisible();
+    expect(await page.locator("#page-content").evaluate(node => node.inert)).toBe(true);
+    await page.clock.runFor(650);
+    await expect(page.locator("#page-content")).toBeHidden();
+    await page.evaluate(() => window.demoCamera.frame(true));
+    await page.clock.runFor(300);
+    await page.evaluate(() => window.demoCamera.frame(true));
+    await expect(page.locator("#finale")).toBeVisible();
+    await expect(page.locator("#away-screen")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#away-screen")).toBeHidden();
+    await page.clock.runFor(700);
+    await expect(page.locator("#page-content")).toBeVisible();
 });

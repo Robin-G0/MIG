@@ -11,6 +11,7 @@
     <script type="module" src="./src/main.mjs"></script>
 </head>
 <body>
+    <svg class="visually-hidden" aria-hidden="true"><defs><symbol id="gesture-hand" viewBox="0 0 100 100"><path d="M30 82 L18 57 Q14 49 20 45 Q25 42 31 51 L34 55 V25 Q34 17 40 17 Q46 17 46 25 V45 V12 Q46 5 52 5 Q58 5 58 12 V44 V18 Q58 11 64 11 Q70 11 70 18 V47 V29 Q70 22 76 22 Q82 22 82 29 V64 Q82 83 68 91 H43 Q35 91 30 82Z"/></symbol></defs></svg>
     <div id="page-content">
         <header class="header">
             <nav data-label="navigation">
@@ -25,7 +26,6 @@
             <section class="hero section" id="welcome">
                 <div class="hero-copy">
                     <p class="eyebrow"><span class="prismatic-text" data-text="tagline">Le mouvement devient une interface.</span></p>
-                    <p class="welcome" data-text="welcome">Bienvenue sur le repository officiel de MIG.</p>
                     <h1 data-text="invitation">Alors, on teste tout ça ?</h1>
                     <p class="lead" data-text="introduction"></p>
                     <div class="camera-actions">
@@ -33,10 +33,9 @@
                         <button class="button secondary" id="stop-camera" type="button" data-text="stop" hidden></button>
                     </div>
                     <p class="camera-placement" id="camera-placement" data-text="cameraPlacement" hidden></p>
-                    <div class="gesture-tip" id="scroll-gesture-tip" role="status" hidden><span class="tip-motion" aria-hidden="true">↑</span><p data-text="scrollTip"></p></div>
                     <p class="privacy"><span data-text="privacy"></span> <a data-link="source" data-text="source"></a></p>
                 </div>
-                <aside class="camera-card">
+                <aside class="camera-card" hidden>
                     <div class="card-top"><span data-text="cameraTitle"></span><span class="camera-state" id="camera-state" aria-hidden="true"></span></div>
                     <div class="camera-preview">
                         <div class="preview-decoration"><p data-text="cameraHint"></p></div>
@@ -84,7 +83,6 @@
                     <span id="slide-counter" role="status" aria-live="polite" aria-atomic="true"></span>
                     <button class="arrow-button" id="next-slide" type="button" data-label="next">→</button>
                 </div>
-                <div class="gesture-tip slide-tip" id="slide-gesture-tip" role="status" hidden><span class="tip-motion" aria-hidden="true">↔</span><p data-text="slideTip"></p></div>
                 <div class="gesture-instructions">
                     <p><span aria-hidden="true">←</span> <span data-text="nextInstruction"></span></p>
                     <p><span aria-hidden="true">→</span> <span data-text="previousInstruction"></span></p>
@@ -97,7 +95,6 @@
                 <h2 id="presence-title" data-text="presenceTitle"></h2>
                 <p class="lead" data-text="presenceDescription"></p>
                 <p class="manual-hint" data-text="presenceNote"></p>
-                <p class="gesture-tip" id="cover-camera-tip" data-text="coverCamera" role="status" hidden></p>
                 <div class="departure-art" aria-hidden="true"><span>○</span><span>→</span><span>◎</span></div>
             </section>
 
@@ -108,7 +105,10 @@
                 <p data-text="finaleStar"></p>
                 <a class="button primary" data-link="repository" data-text="finaleLink"></a>
             </section>
-            <div class="hands-tip" id="hands-tip" role="status" hidden><p data-text="handsOutside"></p></div>
+            <div class="gesture-tip" id="scroll-gesture-tip" role="status" hidden><span class="gesture-pictogram hand-up" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg><span>↑</span></span><span data-text="scrollShort"></span><p class="visually-hidden" data-text="scrollTip"></p></div>
+            <div class="gesture-tip slide-tip" id="slide-gesture-tip" role="status" hidden><span class="gesture-pictogram hand-left" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><span data-text="slideShort"></span><span class="gesture-pictogram hand-right" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><p class="visually-hidden" data-text="slideTip"></p></div>
+            <div class="gesture-tip" id="cover-camera-tip" role="status" hidden><span class="gesture-pictogram hand-cover" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><span data-text="coverShort"></span><p class="visually-hidden" data-text="coverCamera"></p></div>
+            <div class="hands-tip" id="hands-tip" role="status" hidden><span class="gesture-pictogram" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><span data-text="handsShort"></span><p class="visually-hidden" data-text="handsOutside"></p></div>
         </main>
         <footer class="footer">
             <p data-text="footerDescription"></p>

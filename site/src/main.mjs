@@ -1,3 +1,4 @@
+import { ScreenTransition } from "./screen-transition.mjs";
 import { GestureGuide } from "./gesture-guide.mjs";
 import { HistoryIllustration } from "./history.mjs";
 import { CameraSwipes } from "./camera-swipes.mjs";
@@ -13,7 +14,8 @@ const presence = new PresenceMonitor(settings);
 const cameraSwipes = new CameraSwipes();
 const illustration = new HistoryIllustration(element("history-illustration"));
 const guide = new GestureGuide(element("scroll-gesture-tip"), element("slide-gesture-tip"),
-    element("slide"), element("presentation"));
+    element("slide"), [element("welcome"), element("presentation"), element("presence-demo")]);
+const screenTransition = new ScreenTransition(element("away-screen"), element("page-content"));
 // README links select a language explicitly; other visits use the browser language.
 const requestedLanguage = new URL(location.href).searchParams.get("lang");
 let language = requestedLanguage === "fr" || requestedLanguage === "en"
@@ -68,12 +70,10 @@ function renderLanguage() {
     setStatus(status);
 }
 
-function showPage() {
+function showPage(animate = false) {
     away = false;
-    document.body.classList.remove("is-away");
-    element("page-content").hidden = false;
-    element("page-content").inert = false;
-    element("away-screen").hidden = true;
+    if (animate) screenTransition.reveal();
+    else screenTransition.reset();
 }
 
 function handInFrame(point) {
@@ -143,12 +143,10 @@ function handlePresence(currentSession) {
         away = true;
         returnFocus = document.activeElement;
         if (returnFocus instanceof HTMLElement) returnFocus.blur();
-        element("page-content").inert = true;
-        element("page-content").hidden = true;
-        element("away-screen").hidden = false;
-        document.body.classList.add("is-away");
+        screenTransition.hide();
     } else if (nextState === "present" && away) {
-        showPage();
+        showPage(true);
+        guide.resume();
         element("finale").hidden = false;
         setStatus("returned");
         element("finale").scrollIntoView({ behavior: "instant", block: "center" });
@@ -161,8 +159,8 @@ function handlePresence(currentSession) {
 
 function handleAction(event) {
     if (away || !session?.state.running) return;
-    if (event.action === "scroll_presentation") {
-        if (handScrollReady) guide.raiseHand();
+    if (event.action === "scroll_presentation" || event.action === "scroll_previous") {
+        if (handScrollReady) guide.navigate(event.action === "scroll_presentation" ? 1 : -1);
         return;
     }
     if (slides.gesture(event.action, performance.now())) {
@@ -199,8 +197,25 @@ function stopCamera() {
     returnFocus = null;
 }
 
+function revealCamera() {
+    const hero = element("welcome");
+    if (hero.classList.contains("camera-open")) return;
+    const copy = hero.querySelector(".hero-copy");
+    const before = copy.getBoundingClientRect();
+    hero.classList.add("camera-open");
+    hero.querySelector(".camera-card").hidden = false;
+    const after = copy.getBoundingClientRect();
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        copy.animate([
+            { transform: `translate(${before.left - after.left}px, ${before.top - after.top}px)` },
+            { transform: "translate(0, 0)" }
+        ], { duration: 600, easing: "ease-out" });
+    }
+}
+
 async function startCamera() {
     if (starting || session?.state.running) return;
+    revealCamera();
     if (!navigator.mediaDevices?.getUserMedia) {
         setStatus("unavailable");
         return;

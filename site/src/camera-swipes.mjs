@@ -15,21 +15,27 @@ export class CameraSwipes {
         this.verticalHands = new Map();
     }
 
-    handRaised(landmark, point, time) {
+    verticalAction(landmark, point, time) {
         let sample = this.verticalHands.get(landmark);
+        const direction = sample ? Math.sign(sample.lastY - point.y) : 0;
+        const reversed = sample && Math.abs(sample.lastY - point.y) > .025
+            && sample.direction !== 0 && direction !== sample.direction;
         if (!sample || time - sample.lastTime > this.gap
-            || time - sample.startTime > this.duration || point.y > sample.lastY + .025
+            || time - sample.startTime > this.duration || reversed
             || Math.abs(point.x - sample.x) > this.raiseDrift) {
-            sample = { x: point.x, y: point.y, lastY: point.y, startTime: time, lastTime: time };
+            const startY = reversed ? sample.lastY : point.y;
+            const startTime = reversed ? sample.lastTime : time;
+            sample = { x: point.x, y: startY, lastY: point.y, direction: reversed ? direction : 0, startTime, lastTime: time };
             this.verticalHands.set(landmark, sample);
         }
+        if (Math.abs(sample.lastY - point.y) > .025) sample.direction = direction;
         sample.lastTime = time;
         sample.lastY = point.y;
-        // Scrolling needs a deliberate vertical sweep, not a small lift or diagonal swipe.
-        if (sample.y - point.y < this.raiseDistance || time - sample.startTime < this.raiseDuration) return false;
-        sample.y = point.y;
-        sample.startTime = time;
-        return true;
+        const distance = sample.y - point.y;
+        // Both directions need a deliberate vertical sweep, not a small diagonal lift.
+        if (Math.abs(distance) < this.raiseDistance || time - sample.startTime < this.raiseDuration) return null;
+        this.verticalHands.delete(landmark);
+        return distance > 0 ? "scroll_presentation" : "scroll_previous";
     }
 
     update(session, time) {
@@ -44,7 +50,8 @@ export class CameraSwipes {
                 this.verticalHands.delete(landmark);
                 continue;
             }
-            if (this.handRaised(landmark, point, time)) actions.push("scroll_presentation");
+            const vertical = this.verticalAction(landmark, point, time);
+            if (vertical) actions.push(vertical);
             let sample = this.hands.get(landmark);
             const position = point.x * direction;
             if (!sample || time - sample.lastTime > this.gap
