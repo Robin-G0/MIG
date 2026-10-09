@@ -1,4 +1,4 @@
-// A single viewport-sized path avoids fragmented dashes when the screen changes shape.
+// Fill one continuous golden bar while the two-second gesture cooldown runs.
 export class NavigationCooldown {
     constructor(border, onReady) {
         this.border = border;
@@ -8,30 +8,20 @@ export class NavigationCooldown {
         this.settling = false;
         this.timer = null;
         this.frame = null;
-        window.addEventListener("resize", () => this.resize());
         window.addEventListener("scroll", () => {
             if (this.settling) this.waitForScroll(180);
         }, { passive: true });
         document.addEventListener("scrollend", () => {
             if (this.settling) this.recover();
         });
-        this.resize();
-    }
-
-    resize() {
-        this.border.setAttribute("viewBox", `0 0 ${innerWidth} ${innerHeight}`);
-        for (const path of this.border.querySelectorAll("rect")) {
-            path.setAttribute("width", Math.max(1, innerWidth - 12));
-            path.setAttribute("height", Math.max(1, innerHeight - 12));
-        }
     }
 
     start(scrolling = false) {
         this.reset();
-        this.resize();
         this.locked = true;
         this.border.removeAttribute("hidden");
-        this.progress.style.strokeDashoffset = "100";
+        this.progress.style.transform = "scaleX(0)";
+        this.border.setAttribute("aria-valuenow", "0");
         if (scrolling && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
             this.settling = true;
             this.waitForScroll(800);
@@ -49,7 +39,8 @@ export class NavigationCooldown {
         const startedAt = performance.now();
         const draw = time => {
             const progress = Math.min(1, (time - startedAt) / 2000);
-            this.progress.style.strokeDashoffset = String(100 * (1 - progress));
+            this.progress.style.transform = `scaleX(${progress})`;
+            this.border.setAttribute("aria-valuenow", String(Math.round(progress * 100)));
             if (progress < 1) this.frame = requestAnimationFrame(draw);
         };
         this.frame = requestAnimationFrame(draw);

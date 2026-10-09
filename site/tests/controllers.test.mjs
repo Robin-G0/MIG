@@ -176,30 +176,19 @@ test("lowering either hand requests the previous section with the same deliberat
 });
 
 
-test("centred gesture arming rejects repositioning, requires a short hold and resets after tracking loss", async () => {
+test("either hand can raise or lower from the camera edges without a central hold", async () => {
     const { CameraSwipes } = await import("../src/camera-swipes.mjs");
     for (const landmark of [15, 16]) {
-        const swipes = new CameraSwipes({ requireCenter: true });
-        let wrist = { x: .1, y: .9 };
-        const session = { coordinate: index => index === landmark ? wrist : null };
-        assert.deepEqual(swipes.update(session, 0), []);
-        wrist = { x: .5, y: .5 };
-        assert.deepEqual(swipes.update(session, 100), []);
-        wrist.x = .72;
-        assert.deepEqual(swipes.update(session, 200), []);
-        swipes.reset(); wrist = { x: .5, y: .5 };
-        assert.deepEqual(swipes.update(session, 300), []);
-        assert.deepEqual(swipes.update(session, 500), []);
-        wrist.x = .74;
-        assert.deepEqual(swipes.update(session, 650), ["next_slide"]);
-        swipes.reset(); wrist = { x: .5, y: .5 };
-        swipes.update(session, 700); swipes.update(session, 900);
-        wrist.y = .28; swipes.update(session, 1050);
-        wrist.y = .06;
-        assert.deepEqual(swipes.update(session, 1200), ["scroll_presentation"]);
-        wrist = null; swipes.update(session, 1250);
-        wrist = { x: .5, y: .95 };
-        assert.deepEqual(swipes.update(session, 1300), []);
+        for (const direction of [1, -1]) {
+            const swipes = new CameraSwipes();
+            let wrist = { x: .2, y: direction === 1 ? .85 : .15 };
+            const session = { coordinate: index => index === landmark ? wrist : null };
+            assert.deepEqual(swipes.update(session, 0), []);
+            wrist.y = .5;
+            assert.deepEqual(swipes.update(session, 150), []);
+            wrist.y = direction === 1 ? .15 : .85;
+            assert.deepEqual(swipes.update(session, 300), [direction === 1 ? "scroll_presentation" : "scroll_previous"]);
+        }
     }
 });
 

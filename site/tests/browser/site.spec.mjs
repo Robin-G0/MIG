@@ -31,6 +31,7 @@ async function mockCamera(page, failure = "") {
 
 async function holdHandsInFrame(page) {
     await expect(page.locator("#start-camera")).toBeHidden();
+    await page.clock.pauseAt(new Date(await page.evaluate(() => Date.now() + 1000)));
     await page.evaluate(() => window.demoCamera.frame(true));
     for (let index = 0; index < 5; index++) {
         await page.clock.runFor(200);
@@ -323,28 +324,35 @@ test("history diagrams move and the grid explains order, cancellation and condit
     await expect(status).toHaveAttribute("data-result", "gridTriggered");
 });
 
-test("repositioning at camera edges cannot change slides until a hand settles in the middle", async ({ page }) => {
+test("either hand can sweep at camera edges and navigate vertically without a central hold", async ({ page }) => {
     await mockCamera(page);
     await page.clock.install();
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("./?lang=en");
     await page.locator("#start-camera").click();
     await holdHandsInFrame(page);
-    await focusPresentation(page);
-    for (const height of [.01, .99]) {
+    for (const landmark of [15, 16]) {
         await page.clock.runFor(3000);
-        await page.evaluate(y => {
+        await page.evaluate(landmark => {
             const camera = window.demoCamera;
-            camera.coordinate = index => index === 15 ? camera.wrist : null;
-            camera.wrist = { x: .1, y }; camera.frame(true);
-            camera.wrist = { x: .4, y }; camera.frame(true);
-        }, height);
-        await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
+            camera.wrist = { x: .2, y: .85 };
+            camera.coordinate = index => index === landmark ? camera.wrist : index === 11 || index === 12 ? { x: .5, y: .5 } : null;
+            camera.frame(true);
+        }, landmark);
+        await page.clock.runFor(150);
+        await page.evaluate(() => { window.demoCamera.wrist.y = .5; window.demoCamera.frame(true); });
+        await page.clock.runFor(150);
+        await page.evaluate(() => { window.demoCamera.wrist.y = .15; window.demoCamera.frame(true); });
+        await expect(page.locator("#slide-gesture-tip")).toBeVisible();
+        await page.clock.runFor(3000);
+        await page.evaluate(() => { window.demoCamera.wrist = { x: .1, y: .01 }; window.demoCamera.frame(true); });
+        await page.clock.runFor(100);
+        await page.evaluate(() => { window.demoCamera.wrist.x = .35; window.demoCamera.frame(true); });
+        await expect(page.locator("#slide-counter")).toHaveText(landmark === 15 ? "Slide 2 / 3" : "Slide 3 / 3");
+        await swipeHand(page, "scroll_previous", landmark);
+        await expect(page.locator("#scroll-gesture-tip")).toBeVisible();
     }
-    await swipeHand(page, "next_slide");
-    await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
 });
-
 
 test("camera onboarding repeats its nudge while a hand is visible and stops after navigation", async ({ page }) => {
     await mockCamera(page);
@@ -659,7 +667,7 @@ test("the welcome fills a large screen and introduces the camera only after the 
     expect(await tip.evaluate(node => getComputedStyle(node).animationName)).toBe("none");
 });
 
-test("centred vertical sweeps repeatedly navigate all sections with a shared two-second cooldown", async ({ page }) => {
+test("vertical sweeps repeatedly navigate all sections with a shared two-second cooldown", async ({ page }) => {
     await mockCamera(page);
     await page.clock.install();
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -708,7 +716,7 @@ test("departure and return fade progressively while Escape restores the page imm
     await expect(page.locator("#page-content")).toBeVisible();
 });
 
-test("either hand can advance and reverse slides from the centre, with continuous tooltip motion", async ({ page }) => {
+test("either hand can advance and reverse slides, with continuous tooltip motion", async ({ page }) => {
     await mockCamera(page);
     await page.clock.install();
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -840,7 +848,7 @@ test("the finale keeps hand navigation and opens GitHub only after a held thumbs
 });
 
 
-test("golden cooldown is one continuous viewport perimeter with progress tied to the two-second timer", async ({ page }) => {
+test("golden loading bar fills continuously and unlocks hand navigation after two seconds", async ({ page }) => {
     await mockCamera(page);
     await page.clock.install();
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -849,27 +857,21 @@ test("golden cooldown is one continuous viewport perimeter with progress tied to
     await page.locator("#start-camera").click();
     await holdHandsInFrame(page);
     await expect(page.locator("#camera-status")).toHaveText("Put your hands in the frame to begin the quick demo!");
-    await expect(page.locator("#camera-placement")).toHaveText("Now take a step back, show your hands and follow the tooltips to navigate!");
     await swipeHand(page, "scroll_presentation");
-    const border = page.locator("#navigation-cooldown");
-    await expect(border).toBeVisible();
-    const rect = border.locator("[data-cooldown-progress]");
-    const geometry = await border.evaluate(node => ({
-        viewBox: node.getAttribute("viewBox"),
-        width: node.querySelector("rect").getAttribute("width"),
-        height: node.querySelector("rect").getAttribute("height")
-    }));
-    const viewport = page.viewportSize();
-    expect(geometry).toEqual({ viewBox: `0 0 ${viewport.width} ${viewport.height}`, width: String(viewport.width - 12), height: String(viewport.height - 12) });
-    await expect(rect).toHaveCSS("vector-effect", "none");
-    await expect(rect).toHaveCSS("stroke", "rgb(255, 228, 154)");
+    const bar = page.locator("#navigation-cooldown");
+    const fill = bar.locator("[data-cooldown-progress]");
+    await expect(bar).toBeVisible();
+    await expect(bar).toHaveAttribute("role", "progressbar");
+    await expect(bar.locator("svg, rect")).toHaveCount(0);
+    await expect(bar).toHaveCSS("height", "6px");
     await page.clock.runFor(1000);
-    const offset = await rect.evaluate(node => Number.parseFloat(getComputedStyle(node).strokeDashoffset));
-    expect(offset).toBeGreaterThan(45); expect(offset).toBeLessThan(55);
+    const filled = await fill.boundingBox();
+    expect(filled.width / page.viewportSize().width).toBeCloseTo(.5, 1);
+    await expect(bar).toHaveAttribute("aria-valuenow", /^(49|50|51)$/);
     await page.setViewportSize({ width: 390, height: 844 });
-    await expect(border).toHaveAttribute("viewBox", "0 0 390 844");
+    expect((await fill.boundingBox()).width).toBeCloseTo(195, -1);
     await page.clock.runFor(1000);
-    await expect(border).toBeHidden();
+    await expect(bar).toBeHidden();
 });
 
 test("French welcome punctuation stays with its preceding word at phone and desktop widths", async ({ page }) => {
@@ -881,4 +883,19 @@ test("French welcome punctuation stays with its preceding word at phone and desk
         expect(await ending.evaluate(node => node.getClientRects().length)).toBe(1);
         await expect(ending).toHaveCSS("white-space", "nowrap");
     }
+});
+
+
+test("native MIG slide events remain connected to the page navigation", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.goto("./?lang=en");
+    await page.locator("#start-camera").click();
+    await holdHandsInFrame(page);
+    await focusPresentation(page);
+    await page.evaluate(() => window.demoCamera.action("next_slide"));
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
+    await page.clock.runFor(2200);
+    await page.evaluate(() => window.demoCamera.action("previous_slide"));
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
 });

@@ -215,10 +215,6 @@ body.is-away { background: #000; }
 .camera-card.is-running #camera-status { margin-bottom: 0; }
 .camera-card.is-running .camera-hint { display: none; }
 .danger { background: #63232d; border-color: #ff7770; color: #fff; margin-left: 16px; }
-#navigation-cooldown { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 40; pointer-events: none; }
-#navigation-cooldown rect { fill: none; stroke-width: 4px; }
-#navigation-cooldown .cooldown-track { stroke: #a77a2f; opacity: .6; }
-#navigation-cooldown [data-cooldown-progress] { stroke: #ffe49a; stroke-dasharray: 100; stroke-dashoffset: 100; filter: drop-shadow(0 0 3px #eebf4b); }
 .thumb-pictogram { font-size: 36px; }
 .phone #scroll-gesture-tip .hand-up-right { display: none; }
 @keyframes hand-swim-left {
@@ -259,3 +255,7 @@ body.is-away { background: #000; }
     #scroll-gesture-tip[data-direction="down"] .hand-up-left svg { animation: hand-swim-down-left 3s ease-in-out infinite; }
     #scroll-gesture-tip[data-direction="down"] .hand-up-right svg { animation: hand-swim-down-right 3s ease-in-out infinite; }
 }
+
+/* A continuous loading bar indicates when the next hand gesture is available. */
+#navigation-cooldown { position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: #785b2a80; z-index: 40; pointer-events: none; }
+#navigation-cooldown [data-cooldown-progress] { width: 100%; height: 100%; transform: scaleX(0); transform-origin: left; background: linear-gradient(90deg, #c28d2e, #ffe49a); box-shadow: 0 0 10px #ffd875aa; }

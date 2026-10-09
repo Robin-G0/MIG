@@ -12,7 +12,7 @@ import { cameraError, createCameraSession, enableThumbTracking, thumbRaised } fr
 const element = id => document.getElementById(id);
 const slides = new SlideController(translations.fr.slides.length, settings.slideDelay);
 const presence = new PresenceMonitor(settings);
-const cameraSwipes = new CameraSwipes({ requireCenter: true });
+const cameraSwipes = new CameraSwipes();
 const illustration = new HistoryIllustration(element("history-illustration"));
 const guide = new GestureGuide(element("scroll-gesture-tip"), element("slide-gesture-tip"),
     element("slide"), [element("welcome"), element("presentation"), element("presence-demo"), element("finale")]);
@@ -178,7 +178,7 @@ function handlePresence(currentSession) {
     if (document.hidden || currentSession !== session || !currentSession.state.running) return;
     const time = performance.now();
     updateHandHint(currentSession, time);
-    // Only centred, deliberate movements can navigate; cooldown discards repositioning.
+    // Track either wrist across the camera, using the original movement thresholds.
     if (handScrollReady && !cooldown.locked && !away) {
         for (const action of cameraSwipes.update(currentSession, time, { horizontal: slideFocused() })) {
             handleAction({ action });
@@ -337,8 +337,8 @@ async function startCamera() {
     element("stop-camera").hidden = false;
     setStatus("loading");
     try {
-        // Camera-space navigation shares centering and cooldown gates for both axes.
-        const candidate = await createCameraSession(() => {}, handlePresence);
+        // Native MIG events and camera-space movements share the navigation cooldown.
+        const candidate = await createCameraSession(handleAction, handlePresence);
         if (run !== generation) {
             candidate.dispose();
             return;
