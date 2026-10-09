@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Essayez Motion Input Grid : pilotez une présentation avec vos gestes, directement dans votre navigateur.">
+    <meta name="theme-color" content="#f5f3ec">
+    <title>Motion Input Grid — à vous de jouer</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./src/main.mjs"></script>
+</head>
+<body>
+    <div id="page-content">
+        <header class="header">
+            <a class="brand" href="#welcome" aria-label="Motion Input Grid"><span class="brand-mark" aria-hidden="true">M</span> MIG<span class="brand-name"> / Motion Input Grid</span></a>
+            <nav data-label="navigation">
+                <a data-link="repository" data-text="repository">Repository</a>
+                <div class="languages" aria-label="Language / Langue">
+                    <button type="button" data-language="fr" lang="fr" aria-pressed="true">FR</button>
+                    <button type="button" data-language="en" lang="en" aria-pressed="false">EN</button>
+                </div>
+            </nav>
+        </header>
+        <main>
+            <section class="hero section" id="welcome">
+                <div class="hero-copy">
+                    <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span><span data-text="tagline">Le mouvement devient une interface.</span></p>
+                    <p class="welcome" data-text="welcome">Bienvenue sur le repository officiel de MIG.</p>
+                    <h1 data-text="invitation">Alors, on teste tout ça ?</h1>
+                    <p class="lead" data-text="introduction"></p>
+                    <div class="camera-actions">
+                        <button class="button primary" id="start-camera" type="button" data-text="start">Oui, on essaie !</button>
+                        <button class="button secondary" id="stop-camera" type="button" data-text="stop" hidden></button>
+                    </div>
+                    <p class="privacy"><span data-text="privacy"></span> <a data-link="source" data-text="source"></a></p>
+                </div>
+                <aside class="camera-card">
+                    <div class="card-top"><span data-text="cameraTitle"></span><span class="camera-state" id="camera-state" aria-hidden="true"></span></div>
+                    <div class="camera-preview">
+                        <div class="preview-decoration" aria-hidden="true"><span>↗</span><div class="grid-decoration"></div><span class="preview-word">YOUR MOVE.</span></div>
+                        <video id="camera-video" muted playsinline></video>
+                        <canvas id="camera-overlay" aria-hidden="true"></canvas>
+                    </div>
+                    <p id="camera-status" role="status" aria-live="polite"></p>
+                    <p class="camera-hint" data-text="cameraHint"></p>
+                </aside>
+            </section>
+
+            <section class="section slideshow-section" id="presentation" aria-labelledby="slideshow-title">
+                <p class="eyebrow" data-text="slideshowEyebrow"></p>
+                <h2 id="slideshow-title" data-text="slideshowTitle"></h2>
+                <div class="slide" id="slide" tabindex="0" role="region" aria-labelledby="slideshow-title" aria-roledescription="carousel">
+                    <div class="slide-copy">
+                        <p class="slide-tag" id="slide-tag"></p>
+                        <h3 id="slide-title"></h3>
+                        <p id="slide-description"></p>
+                    </div>
+                    <div class="slide-art" aria-hidden="true"><span id="slide-symbol"></span><span class="slide-number" id="slide-number"></span></div>
+                </div>
+                <div class="slide-controls">
+                    <button class="arrow-button" id="previous-slide" type="button" data-label="previous">←</button>
+                    <span id="slide-counter" role="status" aria-live="polite" aria-atomic="true"></span>
+                    <button class="arrow-button" id="next-slide" type="button" data-label="next">→</button>
+                </div>
+                <div class="gesture-instructions">
+                    <p><span aria-hidden="true">←</span> <span data-text="nextInstruction"></span></p>
+                    <p><span aria-hidden="true">→</span> <span data-text="previousInstruction"></span></p>
+                </div>
+                <p class="manual-hint" data-text="manualHint"></p>
+            </section>
+
+            <section class="section presence-section" aria-labelledby="presence-title">
+                <p class="eyebrow" data-text="presenceEyebrow"></p>
+                <h2 id="presence-title" data-text="presenceTitle"></h2>
+                <p class="lead" data-text="presenceDescription"></p>
+                <p class="manual-hint" data-text="presenceNote"></p>
+                <div class="departure-art" aria-hidden="true"><span>○</span><span>→</span><span>✦</span></div>
+            </section>
+
+            <section class="section finale" id="finale" hidden aria-labelledby="finale-title">
+                <p class="eyebrow" data-text="finaleEyebrow"></p>
+                <h2 id="finale-title" data-text="finaleTitle"></h2>
+                <p data-text="finaleDescription"></p>
+                <a class="button primary" data-link="repository" data-text="finaleLink"></a>
+            </section>
+        </main>
+        <footer class="footer">
+            <p data-text="footerDescription"></p>
+            <nav data-label="navigation">
+                <a data-link="repository" data-text="repository"></a>
+                <a data-link="downloads" data-text="downloads"></a>
+                <a data-link="linkedin">LinkedIn ↗</a>
+                <a data-link="github">GitHub ↗</a>
+            </nav>
+        </footer>
+    </div>
+    <div id="away-screen" hidden><p class="visually-hidden" data-text="away" role="status"></p></div>
+    <noscript><p>Activez JavaScript pour essayer les gestes. / Enable JavaScript to try the gestures. <a href="https://github.com/Robin-G0/Motion-Input-Grid">GitHub</a></p></noscript>
+</body>
+</html>
