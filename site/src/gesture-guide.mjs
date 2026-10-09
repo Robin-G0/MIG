@@ -8,6 +8,7 @@ export class GestureGuide {
         this.motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
         this.active = false;
         this.entered = false;
+        this.scrolled = false;
         this.frame = null;
         this.timer = null;
         this.animation = null;
@@ -28,6 +29,7 @@ export class GestureGuide {
         this.stop();
         this.active = true;
         this.entered = false;
+        this.scrolled = false;
         this.scrollTip.hidden = false;
         const bounds = this.slide.getBoundingClientRect();
         if (bounds.top < innerHeight && bounds.bottom > 0) {
@@ -61,7 +63,8 @@ export class GestureGuide {
     }
 
     raiseHand() {
-        if (!this.active || this.entered) return;
+        if (!this.active || this.scrolled) return;
+        this.scrolled = true;
         this.cancelNudge(true);
         this.showSlides();
         // Frame the title and the complete animation, leaving the hints below it.

@@ -108,6 +108,9 @@ test("gestures advance and reverse the presentation; departure and return reveal
     await expect(page.locator("#away-screen")).toBeHidden();
     await expect(page.locator("#finale")).toBeVisible();
     await expect(page.locator("#finale-title")).toBeFocused();
+    const finale = await page.locator("#finale").boundingBox();
+    expect(finale.y).toBeGreaterThanOrEqual(0);
+    expect(finale.y + finale.height).toBeLessThanOrEqual(await page.evaluate(() => innerHeight));
     await expect(page.locator('[data-text="finaleStar"]')).toContainText("GitHub");
     await page.getByRole("button", { name: "EN", exact: true }).click();
     await expect(page).toHaveTitle("Motion Input Grid : your move");
@@ -313,8 +316,8 @@ test("camera onboarding nudges scrolling, then a raised hand reveals the slide h
     });
     await expect(page.locator("#scroll-gesture-tip")).toBeHidden();
     await expect(page.locator("#slide-gesture-tip")).toBeVisible();
-    await expect(page.locator("#slide-gesture-tip")).toContainText("Right hand, right to left");
-    expect(await page.locator("#presentation").evaluate(node => Math.abs(node.getBoundingClientRect().top))).toBeLessThan(50);
+    await expect(page.locator("#slide-gesture-tip")).toContainText("Right hand, gently from right to left");
+    expect(await page.locator("#slideshow-title").evaluate(node => Math.abs(node.getBoundingClientRect().top))).toBeLessThan(50);
     await page.evaluate(() => window.demoCamera.action("next_slide"));
     await expect(page.locator("#slide-gesture-tip")).toBeHidden();
     await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
@@ -426,7 +429,7 @@ test("the evolving grid presents detection, cancellation, then a one-second thum
     await expect(outcome).toHaveText("Entr\u00e9e d\u00e9tect\u00e9e");
 });
 
-for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 }, { width: 390, height: 700 }]) {
+for (const viewport of [{ width: 844, height: 390 }, { width: 1440, height: 1080 }, { width: 1280, height: 720 }, { width: 390, height: 844 }, { width: 390, height: 700 }]) {
     test(`hand scrolling frames the title and equally sized animations at ${viewport.width}x${viewport.height}`, async ({ page }) => {
         await page.setViewportSize(viewport);
         await page.emulateMedia({ reducedMotion: "reduce" });
@@ -434,6 +437,7 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         await page.clock.install();
         await page.goto("./?lang=en");
         await page.locator("#start-camera").click();
+        await expect(page.locator("#start-camera")).toBeHidden();
         await page.evaluate(() => window.demoCamera.action("scroll_presentation"));
         const slide = page.locator("#slide");
         const original = await slide.boundingBox();
@@ -447,6 +451,13 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
             const copy = await page.locator(".slide-copy").boundingBox();
             expect(art.y + art.height).toBeLessThanOrEqual(frame.y + frame.height);
             expect(copy.y + copy.height).toBeLessThanOrEqual(frame.y + frame.height);
+            // Change language without scrolling back to the header control.
+            await page.evaluate(() => document.querySelector('[data-language="fr"]').click());
+            const frenchArt = await page.locator("#history-illustration").boundingBox();
+            const frenchCopy = await page.locator(".slide-copy").boundingBox();
+            expect(frenchArt.y + frenchArt.height).toBeLessThanOrEqual(frame.y + frame.height);
+            expect(frenchCopy.y + frenchCopy.height).toBeLessThanOrEqual(frame.y + frame.height);
+            await page.evaluate(() => document.querySelector('[data-language="en"]').click());
             if (index < 2) {
                 await page.evaluate(() => window.demoCamera.action("next_slide"));
                 await page.clock.runFor(900);
