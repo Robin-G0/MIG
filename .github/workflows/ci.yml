@@ -175,14 +175,30 @@ jobs:
     web:
         name: WebAssembly browser SDK
         runs-on: ubuntu-24.04
-        container: emscripten/emsdk:4.0.15
         timeout-minutes: 15
         steps:
             - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
               with:
                   persist-credentials: false
+            - name: Set up cached Emscripten 4.0.15
+              uses: emscripten-core/setup-emsdk@667eb33f24e84e7f362c16d8d7fff0629a73e15e # v15
+              with:
+                  version: '4.0.15'
+                  actions-cache-folder: build/emsdk-cache
+            - name: Set up Node.js
+              uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+              with:
+                  node-version: '24'
             - name: Install compatible CMake
-              run: python3 -m pip install cmake==3.31.10
+              run: |
+                  python3 -m venv "$RUNNER_TEMP/mig-cmake"
+                  "$RUNNER_TEMP/mig-cmake/bin/python" -m pip install cmake==3.31.10
+                  echo "$RUNNER_TEMP/mig-cmake/bin" >> "$GITHUB_PATH"
+            - name: Verify WebAssembly toolchain
+              run: |
+                  emcc --version
+                  cmake --version
+                  node --version
             - name: Prepare checksummed browser assets
               run: |
                   cmake -P tools/bootstrap/bootstrap-web.cmake
