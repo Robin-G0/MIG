@@ -15,7 +15,7 @@ set(MIG_PACKAGE_MAINTAINER "Robin-G0 <robin.g0.dev@gmail.com>" CACHE STRING "Deb
 set(CPACK_PACKAGE_CONTACT "${MIG_PACKAGE_MAINTAINER}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Motion Input Grid C++20 positions SDK and C ABI")
 set(CPACK_DEBIAN_PACKAGE_SECTION libdevel)
-set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/Robin-G0/MIG")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/Robin-G0/Motion-Input-Grid")
 set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.35), libstdc++6 (>= 11), libgcc-s1")
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")

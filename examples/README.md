@@ -18,9 +18,9 @@ included; browser examples require Node 22.12+ and a modern browser.
 
 | Example type | Choose a tutorial and platform |
 | --- | --- |
-| Python, SDL2, SFML and C++ consumers | [Native examples](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-native-examples) |
-| HTML, React, Vue and Next.js | [Browser examples](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-browser-examples) |
-| Godot, Unity and Unreal | [Engine projects and integrations](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-game-engines) |
+| Python, SDL2, SFML and C++ consumers | [Native examples](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-native-examples) |
+| HTML, React, Vue and Next.js | [Browser examples](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-browser-examples) |
+| Godot, Unity and Unreal | [Engine projects and integrations](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-game-engines) |
 
 1. Start one viewer from the table below and allow camera access.
 2. Keep both shoulders visible for a second to calibrate, then lower your hands.

@@ -16,7 +16,7 @@ engine in your own project. Choose a starting point below.
 | Add a hand sign or finger condition | [Hand tracking](guides/hands.md) |
 
 Download a **desktop applications archive** archive for the applications or a **`*-examples`** archive
-for the demos from [Releases](https://github.com/Robin-G0/MIG/releases).
+for the demos from [Releases](https://github.com/Robin-G0/Motion-Input-Grid/releases).
 The application guides identify the files to launch and system requirements.
 
 ## Build an application with MIG

@@ -111,7 +111,10 @@ with tempfile.TemporaryDirectory(dir=ROOT / 'build', prefix='example-package-tes
     # Removed optional source links resolve to matching-version documentation;
     # the manifest must describe the rewritten files, not their earlier bytes.
     archiver.archive_examples(small_browser, root / 'tutorial.tar.gz')
-    assert 'https://github.com/Robin-G0/MIG/blob/v' in (small_browser / 'README.md').read_text()
+    from release_metadata import release_version
+    expected_link = (f'https://github.com/Robin-G0/Motion-Input-Grid/blob/v{release_version()}/'
+                     'tools/build/build-windows.ps1')
+    assert f'[Build]({expected_link})' in (small_browser / 'README.md').read_text()
     import hashlib
     manifest = json.loads((small_browser / 'manifest.json').read_text())
     assert manifest['sha256']['README.md'] == hashlib.sha256((small_browser / 'README.md').read_bytes()).hexdigest()

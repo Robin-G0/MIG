@@ -7,7 +7,7 @@ import shutil
 import tempfile
 
 from package_linux import copy_tree, create_archive
-from release_metadata import build_directory, ROOT, release_version, file_hash, rewrite_package_guides
+from release_metadata import build_directory, ROOT, REPOSITORY, release_version, file_hash, rewrite_package_guides
 
 
 def package(destination, source_url=None):
@@ -26,7 +26,7 @@ def package(destination, source_url=None):
         copy_tree(ROOT / "ports/motion-input-grid", overlay / "motion-input-grid")
         shutil.copy2(ROOT / "LICENSE", overlay / "LICENSE")
         rewrite_package_guides(overlay)
-        url = source_url or f"https://github.com/Robin-G0/MIG/releases/download/v{version}/{archive.name}"
+        url = source_url or f"{REPOSITORY}/releases/download/v{version}/{archive.name}"
         (overlay / "motion-input-grid/source.cmake").write_text(
             f'set(MIG_SOURCE_URL "{url}")\n'
             f'set(MIG_SOURCE_SHA512 "{file_hash(archive, "sha512")}")\n', encoding="utf-8")

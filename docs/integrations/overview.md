@@ -30,7 +30,7 @@ React, Vue and Next.js. See the guides for
 
 These packages are libraries. Desktop applications and the Python camera
 runtime are separate downloads from
-[Releases](https://github.com/Robin-G0/MIG/releases).
+[Releases](https://github.com/Robin-G0/Motion-Input-Grid/releases).
 
 The distributable packages are in `distribution/windows`, `distribution/linux` and
 `distribution/web`. Windows has directly accessible `mig-configurator.exe` and

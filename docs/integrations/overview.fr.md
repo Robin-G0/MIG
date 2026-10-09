@@ -27,7 +27,7 @@ navigateur, React, Vue et Next.js. Consultez les guides
 
 Ces packages sont des bibliothèques. Les applications de bureau et le
 runtime caméra Python se téléchargent séparément dans les
-[Releases](https://github.com/Robin-G0/MIG/releases).
+[Releases](https://github.com/Robin-G0/Motion-Input-Grid/releases).
 
 Le dossier `distribution/` regroupe les applications, le SDK CMake et les ressources
 préparées pour chaque plateforme ; `build/releases/` contient les archives compressées.

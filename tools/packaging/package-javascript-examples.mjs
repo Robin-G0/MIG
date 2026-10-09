@@ -151,7 +151,7 @@ async function inventory(folder) {
 await inventory(destination);
 await writeFile(join(destination, "manifest.json"), JSON.stringify({
     project: "Motion Input Grid", package: "motion-input-grid",
-    repository: "https://github.com/Robin-G0/MIG", version, sha256: hashes
+    repository: "https://github.com/Robin-G0/Motion-Input-Grid", version, sha256: hashes
 }, null, 2) + "\n");
 const archive = join(releases, `${name}.tar.gz`);
 execFileSync(python, [join(root, "tools/packaging/archive-examples.py"), destination, archive]);

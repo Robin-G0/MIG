@@ -19,7 +19,7 @@ targets. Camera tracking is separate from the positions-only SDK.
 ## Use a prebuilt SDK
 
 Download the `motion-input-grid-<version>-<platform>-sdk` archive from
-[Releases](https://github.com/Robin-G0/MIG/releases) and extract it completely.
+[Releases](https://github.com/Robin-G0/Motion-Input-Grid/releases) and extract it completely.
 Choose your OS and architecture. Windows requires a compatible MSVC toolset;
 Linux release SDKs target glibc 2.35+ and GCC 11+.
 

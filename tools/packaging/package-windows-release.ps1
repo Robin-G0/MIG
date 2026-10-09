@@ -82,7 +82,7 @@ Utilisez windows/sdk comme CMAKE_PREFIX_PATH pour compiler un consommateur.
     $manifest = [ordered]@{
         project = 'Motion Input Grid'
         package = 'motion-input-grid'
-        repository = 'https://github.com/Robin-G0/MIG'
+        repository = 'https://github.com/Robin-G0/Motion-Input-Grid'
         version = $Version
         architecture = $Architecture
         sha256 = $hashes

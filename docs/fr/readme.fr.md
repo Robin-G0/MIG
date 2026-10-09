@@ -4,7 +4,7 @@
 
 > [!NOTE]
 > MIG est en cours de développement et vient de commencer à publier ses premières versions.
-> Tous les [retours et suggestions](https://github.com/Robin-G0/MIG/issues) sont les bienvenus.
+> Tous les [retours et suggestions](https://github.com/Robin-G0/Motion-Input-Grid/issues) sont les bienvenus.
 
 **Transformez un mouvement en action.** Dessinez le trajet d'un poignet ou d'une
 autre partie du corps, puis utilisez une caméra pour le reconnaître. MIG peut
@@ -15,7 +15,7 @@ Levez la main pour avancer une présentation, utilisez un mouvement dans un jeu
 ou associez un signe de main à un raccourci. Vous choisissez les mouvements et
 leurs commandes.
 
-[**Télécharger**](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-downloads) ·
+[**Télécharger**](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-downloads) ·
 [**Documentation**](../index.fr.md) · [**Exemples**](../../examples/README.fr.md)
 
 [Essayer](#essayer-mig-maintenant) · [Téléchargements](#téléchargements) · [Applications](#utiliser-mig-sur-votre-ordinateur) · [Intégrer MIG](#intégrer-mig-dans-votre-application) · [Architecture](#explorer-le-moteur)
@@ -28,9 +28,9 @@ les prérequis installés ; le chargement des modèles dépend du matériel.
 
 | Exemple | Essayez-moi | Lancement |
 | --- | --- | --- |
-| [Navigateur](../../examples/web/README.fr.md) | [Télécharger](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-web-examples) | `run.cmd` / `sh run.sh`, puis ouvrez localhost et autorisez la caméra |
-| [Python/Tk](../../examples/python-tkinter/README.fr.md) | [Windows / Linux](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-python-tkinter-examples) | `main.exe` / `./main` ; Python est fourni |
-| [SDL2](../../examples/sdl2/README.fr.md) | [Windows / Linux](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-sdl2-examples) | `mig-sdl2.exe` / `./mig-sdl2` ; levez un poignet du vert vers le jaune |
+| [Navigateur](../../examples/web/README.fr.md) | [Télécharger](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-web-examples) | `run.cmd` / `sh run.sh`, puis ouvrez localhost et autorisez la caméra |
+| [Python/Tk](../../examples/python-tkinter/README.fr.md) | [Windows / Linux](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-python-tkinter-examples) | `main.exe` / `./main` ; Python est fourni |
+| [SDL2](../../examples/sdl2/README.fr.md) | [Windows / Linux](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-sdl2-examples) | `mig-sdl2.exe` / `./mig-sdl2` ; levez un poignet du vert vers le jaune |
 
 Navigateur : Node 22.12+ et navigateur moderne. Viewers natifs : runtime Visual C++
 2022 x64 sous Windows, glibc 2.35+ sous Linux. Les tutoriels des moteurs de jeu
@@ -42,12 +42,12 @@ Choisissez votre usage, puis un exemple et votre plateforme dans le tableau de l
 
 | Votre besoin | Téléchargements de la dernière release |
 | --- | --- |
-| Créer un profil et piloter une application | [Applications de bureau](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-desktop-applications) |
-| Essayer Python, SDL2, SFML ou un consumer C++ | [Exemples natifs indépendants](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-native-examples) |
-| Essayer HTML, React, Vue ou Next.js | [Exemples navigateur indépendants](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-browser-examples) |
-| Utiliser Godot, Unity ou Unreal | [Tutoriels et intégrations des moteurs](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-game-engines) |
-| Intégrer MIG dans votre projet | [SDK et packages Python/npm/Debian](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-sdks-and-language-packages) |
-| Compiler ou vérifier un téléchargement | [Sources et empreintes](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-source-and-integrity-files) |
+| Créer un profil et piloter une application | [Applications de bureau](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-desktop-applications) |
+| Essayer Python, SDL2, SFML ou un consumer C++ | [Exemples natifs indépendants](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-native-examples) |
+| Essayer HTML, React, Vue ou Next.js | [Exemples navigateur indépendants](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-browser-examples) |
+| Utiliser Godot, Unity ou Unreal | [Tutoriels et intégrations des moteurs](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-game-engines) |
+| Intégrer MIG dans votre projet | [SDK et packages Python/npm/Debian](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-sdks-and-language-packages) |
+| Compiler ou vérifier un téléchargement | [Sources et empreintes](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-source-and-integrity-files) |
 
 ## Utiliser MIG sur votre ordinateur
 
@@ -58,7 +58,7 @@ Choisissez votre usage, puis un exemple et votre plateforme dans le tableau de l
 
 Aucun code n'est nécessaire pour créer et utiliser un profil de mouvements.
 
-1. Téléchargez [**desktop applications archive**](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-desktop-applications) pour Windows x64 ou Linux x64 et extrayez-la entièrement.
+1. Téléchargez [**desktop applications archive**](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-desktop-applications) pour Windows x64 ou Linux x64 et extrayez-la entièrement.
 2. Ouvrez le [**configurateur**](../guides/configurator.fr.md), démarrez la caméra,
    dessinez votre mouvement et enregistrez son profil.
 3. Ouvrez le [**contrôleur**](../guides/controller.fr.md), importez ce profil et

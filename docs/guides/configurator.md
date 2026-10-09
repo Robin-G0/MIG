@@ -23,7 +23,7 @@ Run the saved profile in the [controller](controller.md) or an application using
 > On Debian, the configurator, controller and some native examples are still
 > being developed and tested. They may not yet work fully.
 
-In [Releases](https://github.com/Robin-G0/MIG/releases), choose a matching native
+In [Releases](https://github.com/Robin-G0/Motion-Input-Grid/releases), choose a matching native
 archive when available:
 
 | System | Archive | File after extraction |

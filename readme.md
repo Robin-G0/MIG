@@ -4,7 +4,7 @@
 
 > [!NOTE]
 > MIG is under active development and has just started publishing its first versions.
-> All [feedback and suggestions](https://github.com/Robin-G0/MIG/issues) are welcome.
+> All [feedback and suggestions](https://github.com/Robin-G0/Motion-Input-Grid/issues) are welcome.
 
 **Turn a movement into an action.** Draw a route for a wrist or another body part,
 then use a camera to recognize it. MIG can send a keyboard shortcut to your desktop
@@ -13,7 +13,7 @@ application or report an action to your game, website or Python program.
 Use a raised hand to advance a presentation, a movement to control a game, or a
 hand sign to run a shortcut. You choose the movements and their bindings.
 
-[**Download**](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-downloads) ·
+[**Download**](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-downloads) ·
 [**Documentation**](docs/index.md) · [**Examples**](examples/README.md)
 
 [Try MIG](#try-mig-now) · [Downloads](#downloads) · [Desktop](#use-mig-on-your-desktop) · [Integrate MIG](#add-mig-to-your-application) · [Architecture](#explore-the-engine)
@@ -26,9 +26,9 @@ installed; initial model loading depends on your hardware.
 
 | Example | Try me | Launch |
 | --- | --- | --- |
-| [Browser](examples/web/README.md) | [Download](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-web-examples) | `run.cmd` / `sh run.sh`, then open localhost and grant camera permission |
-| [Python/Tk](examples/python-tkinter/README.md) | [Windows / Linux](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-python-tkinter-examples) | `main.exe` / `./main`; Python is bundled |
-| [SDL2](examples/sdl2/README.md) | [Windows / Linux](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-sdl2-examples) | `mig-sdl2.exe` / `./mig-sdl2`; raise a wrist from green into yellow |
+| [Browser](examples/web/README.md) | [Download](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-web-examples) | `run.cmd` / `sh run.sh`, then open localhost and grant camera permission |
+| [Python/Tk](examples/python-tkinter/README.md) | [Windows / Linux](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-python-tkinter-examples) | `main.exe` / `./main`; Python is bundled |
+| [SDL2](examples/sdl2/README.md) | [Windows / Linux](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-sdl2-examples) | `mig-sdl2.exe` / `./mig-sdl2`; raise a wrist from green into yellow |
 
 Browser: Node 22.12+ and a modern browser. Native viewers: Visual C++ 2022 x64
 runtime on Windows, glibc 2.35+ on Linux. Engine tutorials require their editor
@@ -40,12 +40,12 @@ Choose your use case, then an example and platform in the release table.
 
 | Your goal | v1.0.2 downloads |
 | --- | --- |
-| Create a profile and control an application | [Desktop applications](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-desktop-applications) |
-| Try Python, SDL2, SFML or a C++ consumer | [Independent native examples](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-native-examples) |
-| Try HTML, React, Vue or Next.js | [Independent browser examples](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-browser-examples) |
-| Use Godot, Unity or Unreal | [Engine tutorials and integrations](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-game-engines) |
-| Integrate MIG into your project | [SDKs and Python/npm/Debian packages](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-sdks-and-language-packages) |
-| Build from source or verify a download | [Source and checksums](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-source-and-integrity-files) |
+| Create a profile and control an application | [Desktop applications](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-desktop-applications) |
+| Try Python, SDL2, SFML or a C++ consumer | [Independent native examples](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-native-examples) |
+| Try HTML, React, Vue or Next.js | [Independent browser examples](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-browser-examples) |
+| Use Godot, Unity or Unreal | [Engine tutorials and integrations](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-game-engines) |
+| Integrate MIG into your project | [SDKs and Python/npm/Debian packages](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-sdks-and-language-packages) |
+| Build from source or verify a download | [Source and checksums](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-source-and-integrity-files) |
 
 ## Use MIG on your desktop
 
@@ -55,7 +55,7 @@ Choose your use case, then an example and platform in the release table.
 
 No code is needed to create and run a movement profile.
 
-1. Download the [**desktop applications archive**](https://github.com/Robin-G0/MIG/releases/tag/v1.0.2#user-content-desktop-applications) for Windows x64 or Linux x64 and extract it completely.
+1. Download the [**desktop applications archive**](https://github.com/Robin-G0/Motion-Input-Grid/releases/tag/v1.0.2#user-content-desktop-applications) for Windows x64 or Linux x64 and extract it completely.
 2. Open the [**configurator**](docs/guides/configurator.md), start the camera,
    draw your movement and save its profile.
 3. Open the [**controller**](docs/guides/controller.md), import that profile and

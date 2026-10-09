@@ -25,7 +25,7 @@ ou dans une application utilisant MIG.
 > encore en cours de développement et de test. Ils peuvent ne pas fonctionner
 > entièrement pour le moment.
 
-Dans les [Releases](https://github.com/Robin-G0/MIG/releases), choisissez une
+Dans les [Releases](https://github.com/Robin-G0/Motion-Input-Grid/releases), choisissez une
 archive native correspondant à votre système, lorsqu'elle est disponible :
 
 | Système | Archive | Fichier après extraction |
