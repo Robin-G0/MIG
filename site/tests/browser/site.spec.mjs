@@ -46,7 +46,7 @@ test("bilingual page, footer and controls work under the repository subpath", as
         navigator.mediaDevices.getUserMedia = (...args) => { ++window.cameraRequests; return original(...args); };
     });
     await page.goto("./");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Alors, on teste tout Ã§a ?");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Alors, on teste tout ça ?");
     await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
     await expect(page.locator("#finale")).toBeHidden();
     await expect(page.locator("#away-screen")).toBeHidden();
@@ -157,7 +157,7 @@ test("a denied camera leaves manual navigation usable and allows retry", async (
     await mockCamera(page, "Permission denied");
     await page.goto("./");
     await page.locator("#start-camera").click();
-    await expect(page.locator("#camera-status")).toContainText("refusÃ©");
+    await expect(page.locator("#camera-status")).toContainText("refusé");
     await expect(page.locator("#start-camera")).toBeEnabled();
     await expect(page.locator("#away-screen")).toBeHidden();
     await page.locator("#next-slide").click();
