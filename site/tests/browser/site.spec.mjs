@@ -93,6 +93,9 @@ test("gestures advance and reverse the presentation; departure and return reveal
     await page.clock.runFor(900);
     await page.evaluate(() => window.demoCamera.action("previous_slide"));
     await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
+    // The departure demo is only available in the final section.
+    await page.locator("#presence-demo").evaluate(node => node.scrollIntoView({ behavior: "instant", block: "start" }));
+    await page.evaluate(() => window.demoCamera.frame(true));
     // A sustained loss of tracking, not just one missing frame, hides everything.
     for (let index = 0; index < 17; ++index) {
         await page.evaluate(() => window.demoCamera.frame(false));
@@ -118,6 +121,9 @@ test("gestures advance and reverse the presentation; departure and return reveal
     await page.getByRole("button", { name: "FR", exact: true }).click();
     await expect(page).toHaveTitle("Motion Input Grid : \u00e0 vous de jouer");
     await expect(page.locator('[data-text="finaleStar"]')).toContainText("\u00e9toile sur GitHub");
+    // Language controls scroll back to the header; return to the final section.
+    await page.locator("#presence-demo").evaluate(node => node.scrollIntoView({ behavior: "instant", block: "start" }));
+    await page.evaluate(() => window.demoCamera.frame(true));
     // Escape must also recover the page while the black screen is active.
     for (let index = 0; index < 17; ++index) {
         await page.evaluate(() => window.demoCamera.frame(false));
@@ -473,3 +479,71 @@ for (const viewport of [{ width: 844, height: 390 }, { width: 1440, height: 1080
         await expect(page.locator('[data-text="previousInstruction"]')).toContainText("Gently");
     });
 }
+
+test("camera placement and hand hints guide visitors without triggering departure at the welcome screen", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("./?lang=fr");
+    const hint = page.locator("#hands-tip");
+    const placement = page.locator("#camera-placement");
+    await expect(placement).toBeHidden();
+    await expect(hint).toBeHidden();
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#start-camera")).toBeHidden();
+    await expect(placement).toBeVisible();
+    await expect(placement).toContainText("clavier ni de la souris");
+    await page.evaluate(() => {
+        const camera = window.demoCamera;
+        camera.missingHand = false;
+        camera.coordinate = index => camera.detected && !(index === 16 && camera.missingHand)
+            ? { x: .5, y: .5, z: 0 } : null;
+        camera.frame(true);
+        camera.missingHand = true;
+        camera.frame(true);
+    });
+    await page.clock.runFor(400);
+    await page.evaluate(() => window.demoCamera.frame(true));
+    await expect(hint).toBeHidden();
+    await page.clock.runFor(300);
+    await page.evaluate(() => window.demoCamera.frame(true));
+    await expect(hint).toBeVisible();
+    await expect(hint).toContainText("Vos deux mains");
+    await page.getByRole("button", { name: "EN", exact: true }).click();
+    await expect(hint).toContainText("Keep both hands");
+    await expect(placement).toContainText("no keyboard or mouse required");
+    await page.evaluate(() => { window.demoCamera.missingHand = false; window.demoCamera.frame(true); });
+    await expect(hint).toBeHidden();
+    // A predicted wrist outside the image also needs a hint.
+    await page.evaluate(() => {
+        window.demoCamera.coordinate = index => ({ x: index === 15 ? 1.2 : .5, y: .5 });
+        window.demoCamera.frame(true);
+    });
+    await page.clock.runFor(700);
+    await page.evaluate(() => window.demoCamera.frame(true));
+    await expect(hint).toBeVisible();
+    await page.evaluate(() => {
+        window.demoCamera.coordinate = () => window.demoCamera.detected ? { x: .5, y: .5 } : null;
+    });
+    for (let index = 0; index < 20; index++) {
+        await page.evaluate(() => window.demoCamera.frame(false));
+        await page.clock.runFor(100);
+    }
+    await expect(page.locator("#page-content")).toBeVisible();
+    await expect(page.locator("#away-screen")).toBeHidden();
+    await expect(page.locator("#finale")).toBeHidden();
+    await page.locator("#presence-demo").evaluate(node => node.scrollIntoView({ behavior: "instant", block: "start" }));
+    await page.evaluate(() => window.demoCamera.frame(true));
+    // Leaving the final section cancels a pending departure.
+    await page.evaluate(() => window.demoCamera.frame(false));
+    await page.clock.runFor(1000);
+    await page.locator("#welcome").evaluate(node => node.scrollIntoView({ behavior: "instant", block: "start" }));
+    for (let index = 0; index < 10; index++) {
+        await page.evaluate(() => window.demoCamera.frame(false));
+        await page.clock.runFor(100);
+    }
+    await expect(page.locator("#away-screen")).toBeHidden();
+    await page.keyboard.press("Escape");
+    await expect(hint).toBeHidden();
+    await expect(placement).toBeHidden();
+});

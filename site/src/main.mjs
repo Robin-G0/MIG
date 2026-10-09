@@ -25,6 +25,7 @@ let starting = false;
 let generation = 0;
 let away = false;
 let returnFocus = null;
+let handsMissingSince = null;
 
 function renderSlide() {
     const text = translations[language];
@@ -72,16 +73,45 @@ function showPage() {
     element("away-screen").hidden = true;
 }
 
+function handInFrame(point) {
+    return point && Number.isFinite(point.x) && Number.isFinite(point.y)
+        && point.x >= 0 && point.x <= 1 && point.y >= 0 && point.y <= 1;
+}
+
+function updateHandHint(currentSession, time) {
+    const handsVisible = [15, 16].every(index => handInFrame(currentSession.coordinate(index)));
+    if (handsVisible || away) {
+        handsMissingSince = null;
+        element("hands-tip").hidden = true;
+        return;
+    }
+    // Ignore a brief tracking dropout so the hint does not flicker.
+    handsMissingSince ??= time;
+    element("hands-tip").hidden = time - handsMissingSince < 600;
+}
+
+function departureSectionReached() {
+    return element("presence-demo").getBoundingClientRect().top < innerHeight / 2;
+}
+
 function handlePresence(currentSession) {
-    if (document.hidden) return;
+    if (document.hidden || currentSession !== session || !currentSession.state.running) return;
+    const time = performance.now();
+    updateHandHint(currentSession, time);
     // Image coordinates keep sweeps usable at every height and outside the body grid.
     for (const action of cameraSwipes.update(currentSession, performance.now())) {
         handleAction({ action });
     }
     const detected = currentSession.coordinate(11) !== null && currentSession.coordinate(12) !== null;
-    const nextState = presence.update(detected, performance.now());
+    // Only the final section can start the departure demo. Scrolling back up
+    // clears its timer; an already hidden page still waits for the person to return.
+    const departureEnabled = away || departureSectionReached();
+    if (!departureEnabled) presence.reset();
+    const nextState = departureEnabled ? presence.update(detected, time) : "waiting";
     if (nextState === "away" && !away) {
         guide.stop();
+        element("hands-tip").hidden = true;
+        handsMissingSince = null;
         away = true;
         returnFocus = document.activeElement;
         if (returnFocus instanceof HTMLElement) returnFocus.blur();
@@ -96,7 +126,7 @@ function handlePresence(currentSession) {
         element("finale").scrollIntoView({ behavior: "instant", block: "center" });
         element("finale-title").tabIndex = -1;
         element("finale-title").focus({ preventScroll: true });
-    } else if (nextState === "present" && status === "searching") {
+    } else if (detected && status === "searching") {
         setStatus("tracking");
     }
 }
@@ -121,6 +151,9 @@ function stopCamera() {
     starting = false;
     presence.reset();
     cameraSwipes.reset();
+    handsMissingSince = null;
+    element("hands-tip").hidden = true;
+    element("camera-placement").hidden = true;
     guide.stop();
     showPage();
     document.querySelector(".camera-card").classList.remove("is-running");
@@ -165,6 +198,7 @@ async function startCamera() {
         document.querySelector(".camera-card").classList.add("is-running");
         element("start-camera").hidden = true;
         setStatus("searching");
+        element("camera-placement").hidden = false;
         guide.start();
         session.subscribe(state => {
             if (!state.running && !state.busy && session === candidate) {
@@ -259,6 +293,8 @@ document.addEventListener("visibilitychange", () => {
     // Start a new presence interval after tab suspension.
     cameraSwipes.reset();
     if (document.hidden) guide.cancelNudge(true);
+    handsMissingSince = null;
+    element("hands-tip").hidden = true;
     presence.changedAt = null;
     presence.lastTime = null;
 });

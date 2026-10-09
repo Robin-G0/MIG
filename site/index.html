@@ -32,6 +32,7 @@
                         <button class="button primary" id="start-camera" type="button" data-text="start">Oui, on essaie !</button>
                         <button class="button secondary" id="stop-camera" type="button" data-text="stop" hidden></button>
                     </div>
+                    <p class="camera-placement" id="camera-placement" data-text="cameraPlacement" hidden></p>
                     <div class="gesture-tip" id="scroll-gesture-tip" role="status" hidden><span class="tip-motion" aria-hidden="true">↑</span><p data-text="scrollTip"></p></div>
                     <p class="privacy"><span data-text="privacy"></span> <a data-link="source" data-text="source"></a></p>
                 </div>
@@ -91,7 +92,7 @@
                 <p class="manual-hint" data-text="manualHint"></p>
             </section>
 
-            <section class="section presence-section" aria-labelledby="presence-title">
+            <section class="section presence-section" id="presence-demo" aria-labelledby="presence-title">
                 <p class="eyebrow" data-text="presenceEyebrow"></p>
                 <h2 id="presence-title" data-text="presenceTitle"></h2>
                 <p class="lead" data-text="presenceDescription"></p>
@@ -106,6 +107,7 @@
                 <p data-text="finaleStar"></p>
                 <a class="button primary" data-link="repository" data-text="finaleLink"></a>
             </section>
+            <div class="hands-tip" id="hands-tip" role="status" hidden><p data-text="handsOutside"></p></div>
         </main>
         <footer class="footer">
             <p data-text="footerDescription"></p>

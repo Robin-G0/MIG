@@ -179,3 +179,7 @@ body.is-away { background: #000; }
     .slide-tip .tip-motion { animation-name: slide-cue; }
     .button, .arrow-button { transition: background .15s ease; }
 }
+
+.camera-placement { max-width: 560px; font-size: 14px; line-height: 1.6; color: #d8eaf5; }
+.hands-tip { position: fixed; right: 20px; bottom: 20px; z-index: 20; width: min(340px, calc(100% - 40px)); border: 1px solid #e5b94f80; border-radius: 14px; padding: 12px 16px; background: #171d2df5; box-shadow: 0 8px 24px #0005; pointer-events: none; }
+.hands-tip p { margin: 0; font-size: 13px; line-height: 1.5; }
