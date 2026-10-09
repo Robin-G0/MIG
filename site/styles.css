@@ -28,6 +28,7 @@ nav { display: flex; align-items: center; gap: 28px; font-size: 14px; }
 .section { padding-block: 80px; }
 .hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 70px; align-items: center; min-height: 620px; padding-top: 55px; }
 .eyebrow { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 750; display: flex; gap: 8px; align-items: center; }
+.hero-copy > .eyebrow { position: relative; top: -12px; font-size: clamp(18px, 1.7vw, 22px); line-height: 1.4; letter-spacing: .06em; }
 .welcome { color: var(--muted); margin-top: 32px; }
 h1 { font-size: clamp(46px, 5.7vw, 78px); line-height: 1.03; letter-spacing: -.055em; margin: 20px 0 24px; font-weight: 750; }
 h2 { font-size: clamp(32px, 4.1vw, 54px); line-height: 1.1; letter-spacing: -.045em; max-width: 790px; margin: 20px 0 30px; }
