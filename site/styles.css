@@ -260,7 +260,7 @@ body.is-away { background: #000; }
 
 /* Match the visitor's system palette, including the camera and drawings. */
 @media (prefers-color-scheme: light) {
-    :root {
+    :root:not([data-theme="dark"]) {
         color-scheme: light;
         --paper: #f7f8fc;
         --ink: #192332;
@@ -348,4 +348,90 @@ body.is-away { background: #000; }
 
 @media (prefers-reduced-motion: reduce) {
     .slide-tip .hand-right { display: none; }
+}
+
+:root[data-theme="light"] {
+        color-scheme: light;
+        --paper: #f7f8fc;
+        --ink: #192332;
+        --muted: #505e70;
+        --mint: #dff2eb;
+        --peach: #f8e6de;
+        --lilac: #eee6f8;
+        --border: #c6cdd8;
+        --camera-surface: #edf1f8;
+        --camera-shadow: #d9e0eb;
+        --camera-ink: #293b50;
+        --grid-lines: #24364a30;
+        --diagram-first: #08777b;
+        --diagram-second: #985a19;
+        --detected-ink: #146234;
+        --cancelled-ink: #a32726;
+}
+
+/* Optional assistance keeps the real controls and camera session available. */
+.theme-toggle { min-width: 42px; min-height: 42px; border: 1px solid var(--border); border-radius: 50%; background: var(--camera-surface); color: var(--ink); font-size: 24px; }
+.camera-preview video { transition: visibility .2s; }
+.camera-preview.preview-offscreen video { visibility: hidden; }
+.camera-card.is-running .camera-preview { transition: outline-color .5s ease; box-shadow: none; }
+.gesture-tip, .hands-tip { background: transparent; border: 0; box-shadow: none; color: #d9a52c; padding: 8px; gap: 6px; }
+#scroll-gesture-tip .hand-up-right { display: none; }
+.gesture-arrow { font-size: 38px; font-weight: 800; }
+#scroll-gesture-tip[data-direction="down"] .gesture-arrow { transform: rotate(180deg); }
+.directional-hand::before { content: "\2192"; font-size: 32px; }
+.directional-hand.hand-right::before { content: "\2190"; }
+.hands-tip { border: 3px solid #d9a52c; border-radius: 18px; width: 90px; height: 80px; position: fixed; }
+.hand-target-icon { position: absolute; inset: 0; display: grid; place-items: center; font-size: 60px; opacity: .5; }
+.hands-tip .gesture-pictogram { z-index: 1; }
+#assistance { pointer-events: none; }
+.assistance-shade { position: fixed; inset: 0; z-index: 35; background: #020713b3; }
+.assistance-highlight { position: relative; z-index: 36; box-shadow: 0 0 0 4px #ffd878, 0 0 32px #ffd87866 !important; }
+#navigation-cooldown.assistance-highlight { position: fixed; z-index: 40; }
+.assistance-bubble { position: fixed; z-index: 38; bottom: 16px; left: 50%; transform: translateX(-50%); width: min(760px, calc(100% - 32px)); max-height: calc(100svh - 32px); overflow: auto; padding: 20px 28px; border: 2px solid #ffd878; border-radius: 24px; color: var(--ink); background: var(--paper); pointer-events: auto; box-shadow: 0 12px 40px #0005; }
+.assistance-bubble h2 { font-size: 28px; margin: 0 0 10px; }
+.assistance-bubble p { font-size: clamp(18px, 2vw, 24px); line-height: 1.5; margin: 0 0 16px; }
+.assistance-robot { float: right; font-size: 42px; margin-left: 12px; }
+.assistance-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.assistance-target { position: fixed; inset: 0; z-index: 39; }
+.aim-circle { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; border: 5px solid #ffd878; border-radius: 50%; box-shadow: 0 0 0 20px #ffd87825; }
+.aim-pointer { position: absolute; transform: translate(-50%, -50%); font-size: 46px; color: #65ffae; text-shadow: 0 2px 8px #000; }
+@media (max-width: 600px) {
+    .header { gap: 8px; }
+    .header nav { gap: 8px; flex-wrap: wrap; }
+    .assistance-bubble { padding: 14px 18px; }
+    .assistance-bubble h2 { font-size: 22px; }
+    .assistance-actions .button { min-height: 42px; padding: 10px 14px; font-size: 13px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+    .gesture-arrow { animation: arrow-lift 2s ease-in-out infinite; }
+    .hand-left::before { animation: hand-sweep-left 6.4s ease-in-out infinite; }
+    .hand-right::before { animation: hand-sweep-right 6.4s ease-in-out infinite; }
+    @keyframes arrow-lift { 0%, 100% { translate: 0 6px; } 50% { translate: 0 -6px; } }
+    @keyframes arrow-sweep { 0%, 100% { translate: -4px 0; } 50% { translate: 4px 0; } }
+}
+
+.assistance-bubble [data-assistance-source] { display: inline-block; margin-bottom: 12px; }
+.assistance-gesture { position: fixed; left: 50%; top: 42%; translate: -50% -50%; z-index: 37; display: flex; align-items: center; gap: 20px; color: #ffd878; }
+.assistance-gesture svg { width: 88px; height: 88px; fill: currentColor; }
+.assistance-gesture span { font-size: 64px; }
+.assistance-gesture[data-direction="left"] span { rotate: 180deg; }
+.assistance-gesture[data-direction="up"] span { rotate: -90deg; }
+.assistance-gesture[data-direction="down"] span { rotate: 90deg; }
+@media (prefers-reduced-motion: no-preference) {
+    .assistance-gesture { animation: practice-right 2.5s ease-in-out infinite; }
+    .assistance-gesture[data-direction="left"] { animation-name: practice-left; }
+    .assistance-gesture[data-direction="up"] { animation-name: practice-up; }
+    .assistance-gesture[data-direction="down"] { animation-name: practice-down; }
+    @keyframes practice-right { 0%, 100% { transform: translateX(-25px); } 65% { transform: translateX(25px); } }
+    @keyframes practice-left { 0%, 100% { transform: translateX(25px); } 65% { transform: translateX(-25px); } }
+    @keyframes practice-up { 0%, 100% { transform: translateY(25px); } 65% { transform: translateY(-25px); } }
+    @keyframes practice-down { 0%, 100% { transform: translateY(-25px); } 65% { transform: translateY(25px); } }
+}
+
+/* A side panel leaves the central target visible in short landscape windows. */
+@media (min-width: 600px) and (max-height: 500px) {
+    .assistance-bubble { left: auto; right: 16px; transform: none; width: 40vw; padding: 14px; }
+    .assistance-bubble h2 { font-size: 20px; }
+    .assistance-bubble p { font-size: 16px; }
+    .assistance-actions .button { min-height: 40px; padding: 8px 12px; font-size: 12px; }
 }

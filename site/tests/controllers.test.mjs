@@ -281,3 +281,22 @@ test("camera edge hysteresis separates the warning and clearing thresholds on al
         assert.deepEqual(cameraFrame(session).edges, []);
     }
 });
+
+
+test("visual camera feedback ignores brief loss and requires sustained edge changes", async () => {
+    const { StableCameraFrame } = await import("../src/stable-camera-frame.mjs");
+    const feedback = new StableCameraFrame();
+    const edge = { edges: ["top"], centred: false };
+    const centre = { edges: [], centred: true };
+    assert.equal(feedback.update(centre, true, 0).hasHands, true);
+    assert.equal(feedback.update(centre, false, 200).hasHands, true);
+    assert.equal(feedback.update(centre, false, 700).hasHands, false);
+    assert.deepEqual(feedback.update(edge, true, 800).edges, []);
+    assert.deepEqual(feedback.update(edge, true, 1000).edges, ["top"]);
+    assert.deepEqual(feedback.update(centre, true, 1100).edges, ["top"]);
+    assert.deepEqual(feedback.update(edge, true, 1300).edges, ["top"]);
+    feedback.update(centre, true, 1400);
+    assert.deepEqual(feedback.update(centre, true, 1950).edges, []);
+    feedback.reset();
+    assert.equal(feedback.hasHands, false);
+});

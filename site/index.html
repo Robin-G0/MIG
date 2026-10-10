@@ -17,6 +17,7 @@
         <header class="header">
             <nav data-label="navigation">
                 <a data-link="repository" data-text="repository">Repository</a>
+                <button class="theme-toggle" id="theme-toggle" type="button"></button>
                 <div class="languages" aria-label="Language / Langue">
                     <button type="button" data-language="fr" lang="fr" aria-pressed="true">FR</button>
                     <button type="button" data-language="en" lang="en" aria-pressed="false">EN</button>
@@ -32,6 +33,8 @@
                     <p id="phone-note" class="manual-hint" hidden></p>
                     <div class="camera-actions">
                         <button class="button primary" id="start-camera" type="button" data-text="start">Oui, on essaie !</button>
+                        <button class="button secondary" id="start-assisted" type="button" data-text="startAssisted"></button>
+                        <button class="button secondary" id="assistance-toggle" type="button" data-text="assistance" hidden></button>
                         <button class="button secondary" id="stop-camera" type="button" data-text="stop" hidden></button>
                     </div>
                     <p class="camera-placement" id="camera-placement" data-text="cameraPlacement" hidden></p>
@@ -106,11 +109,11 @@
                 <a class="button primary" data-link="repository" data-text="finaleLink"></a>
                 <button class="button danger" id="finale-stop-camera" type="button" data-text="stop" hidden></button>
             </section>
-            <div class="gesture-tip" id="scroll-gesture-tip" role="status" hidden><span class="gesture-pictogram hand-up hand-up-left" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand" transform="translate(100 0) scale(-1 1)"/></svg></span><span data-text="scrollShort"></span><span class="gesture-pictogram hand-up hand-up-right" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><p class="visually-hidden" data-text="scrollTip"></p></div>
-            <div class="gesture-tip slide-tip" id="slide-gesture-tip" role="status" hidden><span class="gesture-pictogram hand-left" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand" transform="translate(100 0) scale(-1 1)"/></svg></span><span data-text="slideShort"></span><span class="gesture-pictogram hand-right" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><p class="visually-hidden" data-text="slideTip"></p></div>
-            <div class="gesture-tip" id="departure-tip" role="status" hidden><span class="gesture-pictogram person-leaving" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="42" cy="16" r="9"/><path d="M42 30 L36 55 L20 80 M36 55 L58 80 M40 35 L62 48 L77 40 M40 35 L20 48" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><path d="M70 70 H94 M84 60 L94 70 L84 80" fill="none" stroke="currentColor" stroke-width="5"/></svg></span><span data-text="departureShort"></span><p class="visually-hidden" data-text="departureTip"></p></div>
-            <div class="gesture-tip" id="cover-camera-tip" role="status" hidden><span class="gesture-pictogram hand-cover" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><span data-text="coverShort"></span><p class="visually-hidden" data-text="coverCamera"></p></div>
-            <div class="hands-tip" id="hands-tip" role="status" hidden><span class="gesture-pictogram" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><span data-text="handsShort"></span><p class="visually-hidden" data-text="handsOutside"></p></div>
+            <div class="gesture-tip" id="scroll-gesture-tip" role="status" hidden><span class="gesture-arrow" aria-hidden="true">↑</span><span class="gesture-pictogram hand-up hand-up-left" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand" transform="translate(100 0) scale(-1 1)"/></svg></span><span class="visually-hidden" data-text="scrollShort"></span><span class="gesture-pictogram hand-up hand-up-right" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><p class="visually-hidden" data-text="scrollTip"></p></div>
+            <div class="gesture-tip slide-tip" id="slide-gesture-tip" role="status" hidden><span class="gesture-pictogram hand-left directional-hand" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand" transform="translate(100 0) scale(-1 1)"/></svg></span><span class="visually-hidden" data-text="slideShort"></span><span class="gesture-pictogram hand-right directional-hand" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><p class="visually-hidden" data-text="slideTip"></p></div>
+            <div class="gesture-tip" id="departure-tip" role="status" hidden><span class="gesture-pictogram person-leaving" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="42" cy="16" r="9"/><path d="M42 30 L36 55 L20 80 M36 55 L58 80 M40 35 L62 48 L77 40 M40 35 L20 48" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><path d="M70 70 H94 M84 60 L94 70 L84 80" fill="none" stroke="currentColor" stroke-width="5"/></svg></span><span class="visually-hidden" data-text="departureShort"></span><p class="visually-hidden" data-text="departureTip"></p></div>
+            <div class="gesture-tip" id="cover-camera-tip" role="status" hidden><span class="gesture-pictogram hand-cover" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><span class="visually-hidden" data-text="coverShort"></span><p class="visually-hidden" data-text="coverCamera"></p></div>
+            <div class="hands-tip" id="hands-tip" role="status" hidden><span class="hand-target-icon" aria-hidden="true">◎</span><span class="gesture-pictogram" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg></span><span class="visually-hidden" data-text="handsShort"></span><p class="visually-hidden" data-text="handsOutside"></p></div>
         </main>
         <footer class="footer">
             <p data-text="footerDescription"></p>
@@ -122,6 +125,18 @@
             </nav>
         </footer>
     </div>
+    <section id="assistance" role="dialog" aria-modal="false" aria-labelledby="assistance-title" hidden>
+        <div class="assistance-shade" aria-hidden="true"></div>
+        <div class="assistance-target" data-assistance-target aria-hidden="true" hidden><span class="aim-circle"></span><span class="aim-pointer" data-assistance-pointer hidden>➜</span></div>
+        <div class="assistance-gesture" data-assistance-gesture aria-hidden="true" hidden><svg viewBox="0 0 100 100"><use href="#gesture-hand"/></svg><span>→</span></div>
+        <div class="assistance-bubble">
+            <span class="assistance-robot" aria-hidden="true">🤖</span>
+            <h2 id="assistance-title" data-assistance-title></h2>
+            <p data-assistance-message aria-live="polite"></p>
+            <a data-assistance-source data-link="source" data-text="source"></a>
+            <div class="assistance-actions"><button class="button primary" type="button" data-assistance-next></button><button class="button secondary" type="button" data-assistance-close></button></div>
+        </div>
+    </section>
     <div id="navigation-cooldown" role="progressbar" data-label="cooldownLabel" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><div data-cooldown-progress></div></div>
     <div id="navigation-edge" aria-hidden="true" hidden></div>
     <div id="away-screen" hidden><p class="visually-hidden" data-text="away" role="status"></p></div>

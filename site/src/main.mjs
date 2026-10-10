@@ -1,3 +1,5 @@
+import { Assistance } from "./assistance.mjs";
+import { ThemeToggle } from "./theme.mjs";
 import { NavigationInputGuard } from "./navigation-inputs.mjs";
 import { CameraFraming } from "./camera-framing.mjs";
 import { BoundaryFeedback } from "./boundary-feedback.mjs";
@@ -39,7 +41,6 @@ let handsMissingSince = null;
 let departureStartedAt = null;
 let greenSince = null;
 let handScrollReady = false;
-let bothHandsSeen = false;
 let demoStarted = false;
 const phone = matchMedia("(pointer: coarse)").matches && Math.min(innerWidth, innerHeight) <= 800;
 document.body.classList.toggle("phone", phone);
@@ -47,12 +48,32 @@ const cooldown = new NavigationCooldown(element("navigation-cooldown"), () => {
     cameraSwipes.reset();
     // Clear native ordered gestures as well as camera-space samples.
     session?.tracker?.restart?.();
+    assistance.render();
 }, locked => {
     element("previous-slide").disabled = locked || slides.index === 0;
     element("next-slide").disabled = locked || slides.index === slides.count - 1;
     if (locked) {
         swipeStart = null;
         wheelDistance = 0;
+    }
+});
+
+const theme = new ThemeToggle(element("theme-toggle"), () => translations[language]);
+const assistance = new Assistance(element("assistance"), {
+    language: () => language,
+    locked: () => cooldown.locked,
+    running: () => Boolean(session?.state.running),
+    startCamera,
+    focusCamera: frameCameraPreview,
+    resetGestures: () => { cameraSwipes.reset(); session?.tracker?.restart?.(); },
+    pauseHints: () => guide.stop(),
+    resumeHints: () => { if (handScrollReady && session?.state.running) guide.start(); },
+    cooldown: () => cooldown.start(),
+    showGrid: () => { slides.move(2 - slides.index); renderSlide(); },
+    navigate: action => {
+        guide.resume();
+        if (action === "scroll_presentation") { guide.navigate(1); cooldown.start(true); }
+        else { slides.move(action === "next_slide" ? 1 : -1); renderSlide(); cooldown.start(false, ribbon.animation); }
     }
 });
 
@@ -79,12 +100,14 @@ function setStatus(nextStatus) {
     status = nextStatus;
     const text = translations[language];
     element("camera-status").textContent = ["searching", "tracking"].includes(status)
-        ? (demoStarted ? text.frameHands : phone ? text.oneHandBeginHint : text.cameraHint) : text[status];
+        ? (demoStarted ? text.frameHands : text.oneHandBeginHint) : text[status];
     element("camera-status").hidden = !element("camera-status").textContent;
 }
 
 function renderLanguage() {
     const text = translations[language];
+    theme.render();
+    assistance.render();
     document.documentElement.lang = language;
     document.title = text.title;
     document.querySelectorAll("[data-text]").forEach(node => {
@@ -113,11 +136,10 @@ function renderLanguage() {
 
 function renderHandInstructions() {
     const text = translations[language];
-    const oneHand = phone || bothHandsSeen;
-    element("camera-placement").textContent = phone ? text.oneHandPlacement : text.cameraPlacement;
-    element("hands-tip").querySelector("[data-text=handsOutside]").textContent = oneHand ? text.oneHandOutside : text.handsOutside;
-    element("hands-tip").querySelector("[data-text=handsShort]").textContent = oneHand ? text.oneHandShort : text.handsShort;
-    element("scroll-gesture-tip").classList.toggle("one-hand", phone);
+    element("camera-placement").textContent = text.oneHandPlacement;
+    element("hands-tip").querySelector("[data-text=handsOutside]").textContent = text.oneHandOutside;
+    element("hands-tip").querySelector("[data-text=handsShort]").textContent = text.oneHandShort;
+    element("scroll-gesture-tip").classList.add("one-hand");
 }
 
 function slideFocused() {
@@ -149,20 +171,15 @@ function prepareHandScrolling(handsVisible, time) {
     if (time - greenSince < 1000) return;
     handScrollReady = true;
     cameraSwipes.reset();
-    guide.start();
+    if (assistance.step) guide.resume();
+    else guide.start();
     guide.setHandsVisible(true);
 }
 
 function updateHandHint(currentSession, time) {
     const visibleHands = [15, 16].filter(index => handInFrame(currentSession.coordinate(index))).length;
-    if (visibleHands === 2 && !bothHandsSeen) {
-        bothHandsSeen = true;
-        renderHandInstructions();
-        setStatus(status);
-    }
     const handsVisible = visibleHands > 0;
     guide.setHandsVisible(handsVisible);
-    document.querySelector(".camera-card").classList.toggle("has-hands", handsVisible);
     prepareHandScrolling(handsVisible, time);
     if (handsVisible || away || !element("finale").hidden) {
         handsMissingSince = null;
@@ -195,9 +212,10 @@ function handlePresence(currentSession) {
     if (document.hidden || currentSession !== session || !currentSession.state.running) return;
     const time = performance.now();
     updateHandHint(currentSession, time);
-    framing.update(currentSession);
+    framing.update(currentSession, time);
+    assistance.observe(currentSession, time, !departureSectionReached() && !away && !cooldown.locked);
     if (handScrollReady && !cooldown.locked && !away) {
-        for (const action of cameraSwipes.update(currentSession, time, { horizontal: slideFocused() })) {
+        for (const action of cameraSwipes.update(currentSession, time, { horizontal: assistance.practice || slideFocused() })) {
             handleAction({ action });
             if (cooldown.locked) break;
         }
@@ -210,6 +228,7 @@ function handlePresence(currentSession) {
     if (!departureEnabled) presence.reset();
     const nextState = departureEnabled ? presence.update(detected, time) : "waiting";
     if (nextState === "away" && !away) {
+        assistance.depart();
         guide.stop();
         cooldown.reset();
         element("hands-tip").hidden = true;
@@ -227,6 +246,7 @@ function handlePresence(currentSession) {
         cameraSwipes.reset();
         cooldown.start(true);
         setStatus("returned");
+        assistance.returned();
         element("finale").scrollIntoView({ behavior: "instant", block: "center" });
         element("finale-title").tabIndex = -1;
         element("finale-title").focus({ preventScroll: true });
@@ -237,6 +257,7 @@ function handlePresence(currentSession) {
 
 function handleAction(event) {
     if (away || !session?.state.running || !handScrollReady || cooldown.locked) return;
+    if (assistance.action(event.action)) return;
     if (event.action === "scroll_presentation" || event.action === "scroll_previous") {
         if (guide.navigate(event.action === "scroll_presentation" ? 1 : -1)) {
             demoStarted = true;
@@ -272,6 +293,7 @@ function handleAction(event) {
 }
 
 function stopCamera() {
+    assistance.close();
     ++generation;
     const previousSession = session;
     session = null;
@@ -296,6 +318,8 @@ function stopCamera() {
     element("start-camera").disabled = false;
     element("start-camera").hidden = false;
     element("stop-camera").hidden = true;
+    element("assistance-toggle").hidden = true;
+    element("start-assisted").hidden = false;
     setStatus("stopped");
     if (returnFocus instanceof HTMLElement && returnFocus.isConnected) {
         returnFocus.focus({ preventScroll: true });
@@ -344,13 +368,14 @@ async function startCamera() {
         return;
     }
     element("finale").hidden = true;
-    bothHandsSeen = false;
     demoStarted = false;
     renderHandInstructions();
     const run = ++generation;
     starting = true;
     element("start-camera").disabled = true;
     element("stop-camera").hidden = false;
+    element("assistance-toggle").hidden = false;
+    element("start-assisted").hidden = true;
     setStatus("loading");
     try {
         // Native MIG events and camera-space movements share the navigation cooldown.
@@ -409,6 +434,13 @@ document.querySelectorAll("[data-language]").forEach(button => {
     });
 });
 element("start-camera").addEventListener("click", startCamera);
+element("start-assisted").addEventListener("click", () => { revealCamera(); assistance.open(); });
+element("assistance-toggle").addEventListener("click", () => assistance.open());
+// Avoid painting an off-screen camera preview while inference keeps running.
+const previewObserver = new IntersectionObserver(entries => {
+    document.querySelector(".camera-preview").classList.toggle("preview-offscreen", !entries[0].isIntersecting);
+});
+previewObserver.observe(document.querySelector(".camera-preview"));
 element("stop-camera").addEventListener("click", stopCamera);
 element("finale-stop-camera").addEventListener("click", stopCamera);
 function slideBoundary(direction) {
@@ -418,7 +450,7 @@ function slideBoundary(direction) {
 }
 
 function moveSlide(direction) {
-    if (cooldown.locked) return;
+    if (cooldown.locked || assistance.blocking) return;
     if (slideBoundary(direction)) return;
     slides.move(direction);
     renderSlide();
@@ -511,7 +543,7 @@ window.addEventListener("wheel", event => {
 
 
 // The guard drops partial wheel and touch gestures as well as held keys.
-new NavigationInputGuard(() => cooldown.locked, () => {
+new NavigationInputGuard(() => cooldown.locked || assistance.blocking, () => {
     wheelDistance = 0;
     lastWheelAt = -Infinity;
     swipeStart = null;

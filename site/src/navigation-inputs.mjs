@@ -30,6 +30,7 @@ export class NavigationInputGuard {
 
     keyDown(event) {
         const target = event.target instanceof HTMLElement ? event.target : null;
+        if (target?.closest("#assistance")) return;
         const navigationEnter = event.key === "Enter" && target?.closest("#previous-slide, #next-slide");
         if (!this.navigationKeys.has(event.key) && !navigationEnter) return;
         // Editing a diagram or stopping the camera remains possible.
