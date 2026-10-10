@@ -56,7 +56,7 @@ function renderSlide() {
     element("slide-title").textContent = slide.title;
     element("slide-description").textContent = slide.description;
     illustration.show(slides.index, text);
-    ribbon.show(slides.index, text);
+    ribbon.show(slides.index, text, slides.returnedToFirst);
     element("previous-slide").disabled = slides.index === 0;
     element("next-slide").disabled = slides.index === slides.count - 1;
     element("slide-number").textContent = slide.number;

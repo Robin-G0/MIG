@@ -27,7 +27,9 @@ export class CameraFraming {
         for (const edge of this.preview.querySelectorAll("[data-camera-edge]")) {
             edge.hidden = !frame.edges.includes(edge.dataset.cameraEdge);
         }
-        this.hint.textContent = text[frame.edges.length ? "repositionHands" : "frameHands"];
+        const arrows = { top: "\u2193", bottom: "\u2191", left: "\u2192", right: "\u2190" };
+        this.hint.textContent = frame.edges.length
+            ? `${text.repositionHands} ${frame.edges.map(edge => arrows[edge]).join(" ")}` : text.frameHands;
         if (frame.centred && !this.centred) {
             clearTimeout(this.timer);
             this.preview.classList.add("framing-confirmed");

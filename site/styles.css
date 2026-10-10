@@ -73,14 +73,12 @@ video:not([src]) { background: transparent; }
 .slide-copy > p:last-child { max-width: 540px; font-size: clamp(16px, 1.2vw, 20px); line-height: 1.6; }
 .slide-art { display: flex; align-items: center; justify-content: center; position: relative; min-width: 0; }
 
-.slide-number { position: absolute; top: -12px; right: 0; font-size: 14px; font-weight: 750; }
+.slide-number { position: absolute; top: -12px; right: 0; font-size: clamp(26px, 3vw, 44px); font-weight: 850; }
 .slide-controls { display: flex; justify-content: center; align-items: center; gap: 24px; margin-top: 22px; }
 .arrow-button { border: 1px solid var(--border); color: var(--ink); background: transparent; border-radius: 50%; width: 48px; height: 48px; font-size: 22px; }
 .arrow-button:hover { background: #273345; }
 #slide-counter { font-size: 13px; min-width: 78px; text-align: center; }
 .gesture-instructions { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; font-size: 14px; margin-top: 24px; }
-.gesture-instructions p { margin: 0; }
-.gesture-instructions p > span:first-child { font-size: 23px; }
 .manual-hint { color: var(--muted); font-size: 12px; line-height: 1.6; }
 .slideshow-section > .manual-hint { text-align: center; }
 .presence-section { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; border-top: 1px solid var(--border); position: relative; overflow: hidden; }
@@ -96,7 +94,7 @@ body.is-away { background: #000; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 /* The history drawings are editable SVG; the grid uses ordinary buttons. */
 .history-illustration { position: relative; width: 100%; min-width: 0; height: clamp(340px, 44svh, 600px); }
-.history-visual { height: calc(100% - 60px); }
+.history-visual { height: calc(100% - 60px); container-type: size; }
 .history-visual > svg { display: block; width: 100%; height: 100%; touch-action: pan-y; }
 .coordinate-label { font: bold 15px Consolas, monospace; fill: var(--ink); }
 .point-label { font: 12px "Segoe UI", sans-serif; fill: var(--ink); }
@@ -110,10 +108,10 @@ body.is-away { background: #000; }
 /* Keyboard controls appear on focus without changing the frame dimensions. */
 .history-illustration .visually-hidden:focus-within { width: 100%; height: auto; bottom: 0; left: 0; clip-path: none; white-space: normal; background: var(--paper); z-index: 2; margin: 0; }
 .thumb-control { position: absolute; bottom: 0; left: 0; background: var(--paper); padding: 8px; border-radius: 8px; z-index: 1; }
-.history-grid { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(6, 1fr); height: 100%; aspect-ratio: 1; width: auto; max-width: 100%; margin-inline: auto; border: 1px solid var(--grid-lines); border-radius: 12px; overflow: hidden; background-image: linear-gradient(var(--grid-lines) 1px, transparent 1px), linear-gradient(90deg, var(--grid-lines) 1px, transparent 1px); background-size: calc(100% / 6) calc(100% / 6); }
+.history-grid { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: repeat(6, minmax(0, 1fr)); width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); container-type: inline-size; aspect-ratio: 1; margin-inline: auto; border: 1px solid var(--grid-lines); border-radius: 12px; overflow: hidden; background-image: linear-gradient(var(--grid-lines) 1px, transparent 1px), linear-gradient(90deg, var(--grid-lines) 1px, transparent 1px); background-size: calc(100% / 6) calc(100% / 6); }
 .grid-body { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--grid-lines); stroke-width: 7; pointer-events: none; }
-.history-grid button { z-index: 1; margin: 4px; padding: 2px; border: 2px solid #236a44; border-radius: 8px; background: #b0e9b9; color: #12311b; font-weight: 800; font-size: clamp(18px, 2vw, 32px); min-width: 0; }
-.history-grid button small { display: block; font: 9px Consolas, monospace; white-space: nowrap; margin-top: 4px; }
+.history-grid button { z-index: 1; margin: 4px; padding: 2px; border: 2px solid #236a44; border-radius: 8px; background: #b0e9b9; color: #12311b; font-weight: 800; font-size: 8cqw; line-height: 1; min-width: 0; min-height: 0; aspect-ratio: 1; }
+.history-grid button small { display: block; font: 2.3cqw Consolas, monospace; line-height: 1; white-space: nowrap; margin-top: 0; }
 .history-grid [data-cell="first"] { grid-column: 3; grid-row: 3; }
 .history-grid [data-cell="second"] { grid-column: 4; grid-row: 3; }
 .history-grid [data-cell="cancel"] { grid-column: 4; grid-row: 4; background: #ffc1bd; border-color: #9e3430; font-size: 24px; }
@@ -133,7 +131,6 @@ body.is-away { background: #000; }
 .arrow-button:disabled { opacity: .35; cursor: default; }
 #presentation { scroll-margin-top: 24px; }
 @keyframes prism-shine { 0%, 20% { transform: translateX(-50%); } 80%, 100% { transform: translateX(50%); } }
-@keyframes hand-side-demo { from { transform: translateX(-16px); } to { transform: translateX(16px); } }
 @keyframes hand-cover-demo { from { transform: scale(.75); } to { transform: scale(1.1); } }
 @keyframes camera-arrive { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
 .prismatic-text { color: #cdbdff; background: linear-gradient(110deg, #70faff, #c698ff, #ff91d8, #ffe09c, #70faff); background-size: 250% 100%; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 8px #bd8fff66); }
@@ -242,7 +239,6 @@ body.is-away { background: #000; }
     .finale .danger { display: flex; margin: 16px 0 0; }
 }
 
-.phone .slide-tip .hand-right { display: none; }
 
 
 /* Keep French punctuation attached to the final word of the welcome title. */
@@ -309,12 +305,9 @@ body.is-away { background: #000; }
 .carousel-track { display: grid; grid-template-columns: repeat(3, 100%); gap: 20px; transform: translateX(calc(-100% - 20px)); }
 .carousel-track .slide { border-radius: 0; grid-template-columns: .9fr 1.1fr; padding: 24px; }
 .slide-neighbour { pointer-events: none; }
-.slide-number { font-size: clamp(26px, 3vw, 44px); font-weight: 850; }
-.history-grid [data-stage] { aspect-ratio: 1; }
 .history-grid[data-stage="condition"] [data-cell="condition"] { grid-column: 5; }
 .history-grid [data-cell="condition"] { font-size: clamp(14px, 2vw, 30px); }
 .history-grid [data-condition-content].is-thumb { display: grid; place-items: center; width: 100%; height: 100%; font-size: clamp(28px, 4vw, 62px); line-height: 1; }
-.history-grid button { aspect-ratio: 1; }
 .presence-section { align-items: center; text-align: center; }
 .presence-section .eyebrow { justify-content: center; }
 .presence-section .lead, .presence-section h2 { margin-inline: auto; }
@@ -334,7 +327,6 @@ body.is-away { background: #000; }
     88% { opacity: 1; transform: translateX(-16px); }
     98%, 100% { opacity: 0; transform: translateX(-16px); }
 }
-.phone .slide-tip .hand-right { display: flex; }
 #navigation-edge { position: fixed; inset: 0; pointer-events: none; z-index: 35; opacity: 0; }
 #navigation-edge[data-direction="left"] { background: linear-gradient(to right, #ff5148aa, transparent 25%); }
 #navigation-edge[data-direction="right"] { background: linear-gradient(to left, #ff5148aa, transparent 25%); }
@@ -349,8 +341,6 @@ body.is-away { background: #000; }
     .framing-confirmed { animation: none; outline-color: #38f581; }
 }
 
-.history-visual { container-type: size; }
-.history-grid { width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); container-type: inline-size; }
 .history-grid [data-condition-content].is-thumb { font-size: 12cqw; }
 .carousel-track .slide[data-returned="true"] { grid-template-columns: 1fr; }
 
@@ -358,4 +348,12 @@ body.is-away { background: #000; }
     .carousel-track .history-illustration { height: 100%; max-height: 600px; }
     .carousel-track .slide h3 { font-size: clamp(28px, 3vw, 52px); }
     .carousel-track .slide-copy > p:last-child { font-size: clamp(15px, 1.2vw, 18px); line-height: 1.5; }
+}
+
+
+#scroll-gesture-tip [data-text="scrollShort"]::before { content: "\2193  "; font-size: 22px; }
+#scroll-gesture-tip[data-direction="down"] [data-text="scrollShort"]::before { content: "\2191  "; }
+
+@media (prefers-reduced-motion: reduce) {
+    .slide-tip .hand-right { display: none; }
 }

@@ -27,9 +27,12 @@ export class SlideRibbon {
         this.track.append(this.neighbours[0].panel, slide, this.neighbours[1].panel);
     }
 
-    show(index, text) {
+    show(index, text, returnedToFirst = false) {
         for (const neighbour of this.neighbours) {
-            const content = text.slides[index + neighbour.direction];
+            const original = text.slides[index + neighbour.direction];
+            const returned = index + neighbour.direction === 0 && returnedToFirst;
+            const content = original && returned ? { ...original, tag: text.returnTag, title: text.returnTitle, description: text.returnDescription } : original;
+            neighbour.panel.dataset.returned = String(returned);
             neighbour.panel.style.visibility = content ? "visible" : "hidden";
             if (!content) continue;
             neighbour.panel.dataset.color = content.color;
