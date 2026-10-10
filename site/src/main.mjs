@@ -79,7 +79,8 @@ function setStatus(nextStatus) {
     status = nextStatus;
     const text = translations[language];
     element("camera-status").textContent = ["searching", "tracking"].includes(status)
-        ? (demoStarted ? text.oneHandHint : phone ? text.oneHandBeginHint : text.cameraHint) : text[status];
+        ? (demoStarted ? "" : phone ? text.oneHandBeginHint : text.cameraHint) : text[status];
+    element("camera-status").hidden = !element("camera-status").textContent;
 }
 
 function renderLanguage() {
@@ -115,7 +116,6 @@ function renderHandInstructions() {
     const oneHand = phone || bothHandsSeen;
     element("camera-placement").textContent = phone ? text.oneHandPlacement : text.cameraPlacement;
     element("hands-tip").querySelector("[data-text=handsOutside]").textContent = oneHand ? text.oneHandOutside : text.handsOutside;
-    element("camera-hint").textContent = demoStarted ? text.oneHandHint : phone ? text.oneHandBeginHint : text.cameraHint;
     element("hands-tip").querySelector("[data-text=handsShort]").textContent = oneHand ? text.oneHandShort : text.handsShort;
     element("scroll-gesture-tip").classList.toggle("one-hand", phone);
 }
@@ -494,12 +494,19 @@ document.addEventListener("visibilitychange", () => {
 window.addEventListener("pagehide", () => session?.dispose());
 renderLanguage();
 
-// Give ordinary wheel scrolling the same feedback at the page boundaries.
+// One elastic return per wheel gesture, including its momentum tail.
+let boundaryWheelActive = false;
+let boundaryWheelTimer = null;
 window.addEventListener("wheel", event => {
+    clearTimeout(boundaryWheelTimer);
+    boundaryWheelTimer = setTimeout(() => { boundaryWheelActive = false; }, 250);
     if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
     const atTop = scrollY <= 1 && event.deltaY < 0;
     const atBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 1 && event.deltaY > 0;
-    if (atTop || atBottom) boundaries.show(element("page-content"), atTop ? "top" : "bottom");
+    if ((atTop || atBottom) && !boundaryWheelActive) {
+        boundaryWheelActive = true;
+        boundaries.show(element("page-content"), atTop ? "top" : "bottom");
+    }
 }, { passive: true });
 
 

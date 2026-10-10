@@ -568,7 +568,8 @@ test("one hand can navigate and both-hands onboarding is never requested again a
     await page.evaluate(() => { window.demoCamera.coordinate = () => ({ x: .5, y: .5 }); window.demoCamera.frame(true); });
     await page.evaluate(() => { window.demoCamera.coordinate = index => window.demoCamera.detected && index !== 16 ? { x: .5, y: .5 } : null; window.demoCamera.frame(true); });
     await expect(page.locator("#hands-tip")).toBeHidden();
-    await expect(page.locator("#camera-hint")).toContainText("either hand");
+    await expect(page.locator("#camera-hint")).toHaveCount(0);
+    await expect(page.locator("#camera-status")).toBeHidden();
     await page.evaluate(() => window.demoCamera.frame(false));
     await page.clock.runFor(700);
     await page.evaluate(() => window.demoCamera.frame(false));
@@ -1036,4 +1037,47 @@ test("the two-second recovery starts after the ribbon animation finishes", async
     await expect(bar).toBeVisible();
     await page.clock.runFor(150);
     await expect(bar).toBeHidden();
+});
+
+
+test("trackpad momentum produces one elastic return until the wheel stream stops", async ({ page }) => {
+    await page.clock.install();
+    await page.goto("./?lang=en");
+    await page.evaluate(() => {
+        window.elasticReturns = 0;
+        const content = document.querySelector("#page-content");
+        const animate = content.animate.bind(content);
+        content.animate = (...args) => { window.elasticReturns++; return animate(...args); };
+    });
+    for (let index = 0; index < 20; index++) {
+        await page.locator("body").dispatchEvent("wheel", { deltaY: -20 });
+        await page.clock.runFor(100);
+    }
+    expect(await page.evaluate(() => window.elasticReturns)).toBe(1);
+    await page.clock.runFor(300);
+    await page.locator("body").dispatchEvent("wheel", { deltaY: -20 });
+    expect(await page.evaluate(() => window.elasticReturns)).toBe(2);
+});
+
+
+test("camera guidance stays inside the preview and boundary jitter does not flash the edges", async ({ page }) => {
+    await mockCamera(page);
+    await page.goto("./?lang=en");
+    await page.locator("#start-camera").click();
+    await expect(page.locator("#framing-hint")).toHaveText("Try to keep at least one hand near the centre to navigate.");
+    await expect(page.locator(".camera-card > p")).toHaveCount(0);
+    await expect(page.locator(".camera-preview #camera-status")).toHaveCount(1);
+    const edge = page.locator('[data-camera-edge="top"]');
+    for (const y of [.24, .26, .24, .29, .31]) {
+        await page.evaluate(y => {
+            window.demoCamera.coordinate = index => index === 15 ? { x: .5, y } : null;
+            window.demoCamera.frame(true);
+        }, y);
+        await expect(edge).toBeVisible();
+    }
+    await page.evaluate(() => {
+        window.demoCamera.coordinate = index => index === 15 ? { x: .5, y: .33 } : null;
+        window.demoCamera.frame(true);
+    });
+    await expect(edge).toBeHidden();
 });

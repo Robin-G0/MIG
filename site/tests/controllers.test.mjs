@@ -257,3 +257,27 @@ test("framing reserves a quarter at each edge and works with just one visible wr
         assert.deepEqual(cameraFrame(session), { edges: [], centred: false });
     }
 });
+
+
+test("camera edge hysteresis separates the warning and clearing thresholds on all sides", async () => {
+    const { cameraFrame } = await import("../src/camera-framing.mjs");
+    for (const [edge, axis, enter, jitter, clear] of [
+        ["top", "y", .24, .27, .33],
+        ["bottom", "y", .76, .73, .67],
+        ["right", "x", .24, .27, .33],
+        ["left", "x", .76, .73, .67]
+    ]) {
+        const hand = { x: .5, y: .5 };
+        const session = { coordinate: index => index === 15 ? hand : null };
+        hand[axis] = enter;
+        let frame = cameraFrame(session);
+        assert.deepEqual(frame.edges, [edge]);
+        hand[axis] = jitter;
+        frame = cameraFrame(session, frame.edges);
+        assert.deepEqual(frame.edges, [edge]);
+        hand[axis] = clear;
+        assert.deepEqual(cameraFrame(session, frame.edges).edges, []);
+        hand[axis] = jitter;
+        assert.deepEqual(cameraFrame(session).edges, []);
+    }
+});

@@ -59,8 +59,7 @@ video, canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(
 video:not([src]) { background: transparent; }
 .preview-decoration { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; }
 .camera-card.is-running .preview-decoration { display: none; }
-#camera-status { font-size: 13px; min-height: 36px; line-height: 1.5; margin-bottom: 8px; }
-.camera-hint { color: var(--muted); font-size: 11px; line-height: 1.5; margin-bottom: 0; }
+#camera-status { position: absolute; top: 8px; left: 8px; right: 8px; z-index: 3; font-size: 12px; line-height: 1.5; margin: 0; padding: 8px; text-align: center; color: white; background: #142333cc; border-radius: 8px; }
 .slideshow-section { border-top: 1px solid var(--border); min-height: 100svh; }
 .slide { display: grid; grid-template-columns: 1.3fr 1fr; padding: 32px; gap: 32px; border-radius: 26px; background: var(--mint); height: clamp(420px, 56svh, 740px); touch-action: pan-y; }
 .slide[data-color="peach"] { background: var(--peach); }
@@ -186,8 +185,6 @@ body.is-away { background: #000; }
     .hero.camera-open .camera-card { padding: 10px; }
     .hero.camera-open .camera-preview { aspect-ratio: 16 / 9; }
     .hero.camera-open video { object-fit: contain; }
-    .hero.camera-open .camera-hint { display: none; }
-    .hero.camera-open #camera-status { min-height: 0; margin: 8px 0 0; font-size: 11px; line-height: 1.3; }
     .slide { height: 280px; padding: 20px; gap: 20px; }
     .slide h3 { font-size: 22px; margin: 12px 0; }
     .slide-copy > p:last-child { font-size: 12px; line-height: 1.4; }
@@ -217,8 +214,6 @@ body.is-away { background: #000; }
 
 /* Onboarding and gesture recovery. */
 .hero.camera-open .hero-copy { width: 100%; }
-.camera-card.is-running #camera-status { margin-bottom: 0; }
-.camera-card.is-running .camera-hint { display: none; }
 .danger { background: #63232d; border-color: #ff7770; color: #fff; margin-left: 16px; }
 .phone #scroll-gesture-tip .hand-up-right { display: none; }
 @keyframes hand-swim-left {
