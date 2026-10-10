@@ -971,3 +971,35 @@ test("system palettes, square cells, the ribbon and elastic limits remain usable
     await expect(page.locator("#slide-counter")).toHaveText("Slide 3 / 3");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+
+
+test("cooldown discards keys, clicks, partial wheel motion, touch and native gesture progress", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("./?lang=en");
+    await page.locator("#start-camera").click();
+    await holdHandsInFrame(page);
+    await focusPresentation(page);
+    await page.evaluate(() => { window.restarts = 0; window.demoCamera.tracker = { restart() { window.restarts++; } }; });
+    await swipeHand(page, "next_slide");
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
+    await expect(page.locator("#next-slide")).toBeDisabled();
+    const position = await page.evaluate(() => scrollY);
+    await page.locator("#slide").focus();
+    await page.keyboard.down("ArrowRight");
+    await page.keyboard.press("PageDown");
+    await page.locator("#next-slide").dispatchEvent("click");
+    await page.locator("#slide").dispatchEvent("wheel", { deltaX: 40, deltaY: 0 });
+    await page.locator("#slide").dispatchEvent("pointerdown", { pointerType: "touch", pointerId: 1, clientX: 300 });
+    await page.clock.runFor(3000);
+    await page.locator("#slide").dispatchEvent("pointerup", { pointerType: "touch", pointerId: 1, clientX: 100 });
+    await page.locator("#slide").dispatchEvent("wheel", { deltaX: 30, deltaY: 0 });
+    await page.keyboard.down("ArrowRight");
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
+    expect(await page.evaluate(() => scrollY)).toBe(position);
+    expect(await page.evaluate(() => window.restarts)).toBeGreaterThan(0);
+    await page.keyboard.up("ArrowRight");
+    await page.keyboard.press("ArrowRight");
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 3 / 3");
+});

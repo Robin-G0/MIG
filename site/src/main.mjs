@@ -1,3 +1,4 @@
+import { NavigationInputGuard } from "./navigation-inputs.mjs";
 import { CameraFraming } from "./camera-framing.mjs";
 import { BoundaryFeedback } from "./boundary-feedback.mjs";
 import { SlideRibbon } from "./slide-ribbon.mjs";
@@ -42,7 +43,18 @@ let bothHandsSeen = false;
 let demoStarted = false;
 const phone = matchMedia("(pointer: coarse)").matches && Math.min(innerWidth, innerHeight) <= 800;
 document.body.classList.toggle("phone", phone);
-const cooldown = new NavigationCooldown(element("navigation-cooldown"), () => cameraSwipes.reset());
+const cooldown = new NavigationCooldown(element("navigation-cooldown"), () => {
+    cameraSwipes.reset();
+    // Clear native ordered gestures as well as camera-space samples.
+    session?.tracker?.restart?.();
+}, locked => {
+    element("previous-slide").disabled = locked || slides.index === 0;
+    element("next-slide").disabled = locked || slides.index === slides.count - 1;
+    if (locked) {
+        swipeStart = null;
+        wheelDistance = 0;
+    }
+});
 
 function renderSlide() {
     const text = translations[language];
@@ -57,8 +69,8 @@ function renderSlide() {
     element("slide-description").textContent = slide.description;
     illustration.show(slides.index, text);
     ribbon.show(slides.index, text, slides.returnedToFirst);
-    element("previous-slide").disabled = slides.index === 0;
-    element("next-slide").disabled = slides.index === slides.count - 1;
+    element("previous-slide").disabled = cooldown.locked || slides.index === 0;
+    element("next-slide").disabled = cooldown.locked || slides.index === slides.count - 1;
     element("slide-number").textContent = slide.number;
     element("slide-counter").textContent = `${text.slideLabel} ${slides.index + 1} / ${slides.count}`;
 }
@@ -406,6 +418,7 @@ function slideBoundary(direction) {
 }
 
 function moveSlide(direction) {
+    if (cooldown.locked) return;
     if (slideBoundary(direction)) return;
     slides.move(direction);
     renderSlide();
@@ -436,9 +449,9 @@ element("slide").addEventListener("wheel", event => {
     wheelDistance += event.deltaX * scale;
     if (Math.abs(wheelDistance) < 60) return;
     if (!cooldown.locked && time - lastWheelMoveAt >= settings.slideDelay) {
-        cooldown.start();
         lastWheelMoveAt = time;
         moveSlide(wheelDistance > 0 ? 1 : -1);
+        cooldown.start();
         guide.completeSwipe();
     }
     wheelDistance = 0;
@@ -447,12 +460,13 @@ element("slide").addEventListener("wheel", event => {
 // Pointer events support touch without interfering with vertical page scrolling.
 let swipeStart = null;
 element("slide").addEventListener("pointerdown", event => {
-    if (event.pointerType === "touch" && !event.target.closest(".history-illustration")) {
+    if (!cooldown.locked && event.pointerType === "touch" && !event.target.closest(".history-illustration")) {
         swipeStart = { id: event.pointerId, x: event.clientX };
     }
 });
 element("slide").addEventListener("pointerup", event => {
     if (!swipeStart || event.pointerId !== swipeStart.id) return;
+    if (cooldown.locked) { swipeStart = null; return; }
     const distance = event.clientX - swipeStart.x;
     if (Math.abs(distance) > 60) {
         moveSlide(distance < 0 ? 1 : -1);
@@ -487,3 +501,11 @@ window.addEventListener("wheel", event => {
     const atBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 1 && event.deltaY > 0;
     if (atTop || atBottom) boundaries.show(element("page-content"), atTop ? "top" : "bottom");
 }, { passive: true });
+
+
+// The guard drops partial wheel and touch gestures as well as held keys.
+new NavigationInputGuard(() => cooldown.locked, () => {
+    wheelDistance = 0;
+    lastWheelAt = -Infinity;
+    swipeStart = null;
+});
