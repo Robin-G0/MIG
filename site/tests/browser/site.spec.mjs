@@ -419,7 +419,7 @@ test("returning by hand changes the first slide and scrolling right resumes the 
     await expect(page.locator("#history-illustration")).toBeHidden();
     await page.getByRole("button", { name: "EN", exact: true }).click();
     await expect(page.locator("#slide-title")).toHaveText("Pretty neat, right?");
-    await page.clock.runFor(2200);
+    await page.clock.runFor(3000);
     await page.locator("#slide").dispatchEvent("wheel", { deltaX: 0, deltaY: 150 });
     await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
     await page.locator("#slide").dispatchEvent("wheel", { deltaX: 100, deltaY: 0 });
@@ -428,7 +428,7 @@ test("returning by hand changes the first slide and scrolling right resumes the 
     await expect(page.locator("#history-illustration")).toBeVisible();
     await page.locator("#slide").dispatchEvent("wheel", { deltaX: 100, deltaY: 0 });
     await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
-    await page.clock.runFor(2200);
+    await page.clock.runFor(3000);
     await page.locator("#slide").dispatchEvent("wheel", { deltaX: -100, deltaY: 0 });
     await expect(page.locator("#slide-title")).toHaveText("Pretty neat, right?");
 });
@@ -1002,4 +1002,28 @@ test("cooldown discards keys, clicks, partial wheel motion, touch and native ges
     await page.keyboard.up("ArrowRight");
     await page.keyboard.press("ArrowRight");
     await expect(page.locator("#slide-counter")).toHaveText("Slide 3 / 3");
+});
+
+
+test("the two-second recovery starts after the ribbon animation finishes", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("./?lang=en");
+    await page.locator("#start-camera").click();
+    await holdHandsInFrame(page);
+    await focusPresentation(page);
+    await page.evaluate(() => window.demoCamera.action("next_slide"));
+    const bar = page.locator("#navigation-cooldown");
+    await page.clock.runFor(400);
+    await expect(bar).toHaveAttribute("aria-valuenow", "0");
+    await expect(page.locator("#next-slide")).toBeDisabled();
+    // Browser animations use their own timeline, outside Playwright's fake clock.
+    await page.evaluate(() => {
+        for (const animation of document.querySelector(".carousel-track").getAnimations()) animation.finish();
+    });
+    await page.clock.runFor(1900);
+    await expect(bar).toBeVisible();
+    await page.clock.runFor(150);
+    await expect(bar).toBeHidden();
 });

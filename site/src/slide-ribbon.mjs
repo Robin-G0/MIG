@@ -5,6 +5,7 @@ export class SlideRibbon {
     constructor(slide) {
         this.slide = slide;
         this.index = 0;
+        this.animation = null;
         this.window = document.createElement("div");
         this.window.className = "carousel-window";
         this.track = document.createElement("div");
@@ -45,7 +46,7 @@ export class SlideRibbon {
         if (index !== this.index && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
             const base = -this.slide.getBoundingClientRect().width - 20;
             const start = base + Math.sign(index - this.index) * -base;
-            this.track.animate([{ transform: `translateX(${start}px)` }, { transform: `translateX(${base}px)` }],
+            this.animation = this.track.animate([{ transform: `translateX(${start}px)` }, { transform: `translateX(${base}px)` }],
                 { duration: 550, easing: "cubic-bezier(.2,.8,.2,1)" });
         }
         this.index = index;

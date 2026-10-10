@@ -264,10 +264,10 @@ function handleAction(event) {
         demoStarted = true;
         renderHandInstructions();
         setStatus(status);
-        cooldown.start();
         cameraSwipes.reset();
         guide.completeSwipe();
         renderSlide();
+        cooldown.start(false, ribbon.animation);
     }
 }
 
@@ -451,7 +451,7 @@ element("slide").addEventListener("wheel", event => {
     if (!cooldown.locked && time - lastWheelMoveAt >= settings.slideDelay) {
         lastWheelMoveAt = time;
         moveSlide(wheelDistance > 0 ? 1 : -1);
-        cooldown.start();
+        cooldown.start(false, ribbon.animation);
         guide.completeSwipe();
     }
     wheelDistance = 0;

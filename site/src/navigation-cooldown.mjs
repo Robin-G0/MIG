@@ -6,25 +6,35 @@ export class NavigationCooldown {
         this.onReady = onReady;
         this.onChange = onChange;
         this.locked = false;
+        this.animation = null;
         this.settling = false;
         this.timer = null;
         this.frame = null;
         window.addEventListener("scroll", () => {
-            if (this.settling) this.waitForScroll(180);
+            if (this.settling && !this.animation) this.waitForScroll(180);
         }, { passive: true });
         document.addEventListener("scrollend", () => {
-            if (this.settling) this.recover();
+            if (this.settling && !this.animation) this.recover();
         });
     }
 
-    start(scrolling = false) {
+    start(scrolling = false, animation = null) {
         this.reset();
         this.locked = true;
         this.onChange(true);
         this.border.removeAttribute("hidden");
         this.progress.style.transform = "scaleX(0)";
         this.border.setAttribute("aria-valuenow", "0");
-        if (scrolling && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        if (animation) {
+            this.animation = animation;
+            this.settling = true;
+            const finished = () => {
+                if (this.animation !== animation || !this.locked) return;
+                this.animation = null;
+                this.recover();
+            };
+            animation.finished.then(finished, finished);
+        } else if (scrolling && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
             this.settling = true;
             this.waitForScroll(800);
         } else this.recover();
@@ -57,6 +67,7 @@ export class NavigationCooldown {
         cancelAnimationFrame(this.frame);
         this.frame = null;
         this.locked = false;
+        this.animation = null;
         this.settling = false;
         this.border.setAttribute("hidden", "");
         this.onChange(false);
