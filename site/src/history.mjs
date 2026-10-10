@@ -216,6 +216,7 @@ export class HistoryIllustration {
     }
 
     updateGrid() {
+        this.conditionContent.classList.toggle("is-thumb", this.conditionContent.textContent === "\u{1f44d}");
         for (const button of this.grid.querySelectorAll("button")) {
             const fired = this.result === "gridTriggered";
             const completed = button.dataset.cell === "first" && (this.progress >= 1 || fired)

@@ -40,6 +40,11 @@
                     <div class="camera-preview">
                         <div class="preview-decoration"><p data-text="cameraHint"></p></div>
                         <video id="camera-video" muted playsinline></video>
+                        <div class="camera-edge" data-camera-edge="top" hidden></div>
+                        <div class="camera-edge" data-camera-edge="bottom" hidden></div>
+                        <div class="camera-edge" data-camera-edge="left" hidden></div>
+                        <div class="camera-edge" data-camera-edge="right" hidden></div>
+                        <p id="framing-hint" class="framing-hint" data-text="frameHands"></p>
                         <canvas id="camera-overlay" aria-hidden="true" hidden></canvas>
                     </div>
                     <p id="camera-status" role="status" aria-live="polite"></p>
@@ -83,10 +88,7 @@
                     <span id="slide-counter" role="status" aria-live="polite" aria-atomic="true"></span>
                     <button class="arrow-button" id="next-slide" type="button" data-label="next">→</button>
                 </div>
-                <div class="gesture-instructions">
-                    <p><span aria-hidden="true">←</span> <span data-text="nextInstruction"></span></p>
-                    <p><span aria-hidden="true">→</span> <span data-text="previousInstruction"></span></p>
-                </div>
+                <p class="gesture-instructions"><span aria-hidden="true">←</span> <span data-text="slideInstructions"></span> <span aria-hidden="true">→</span></p>
                 <p class="manual-hint" data-text="manualHint"></p>
             </section>
 
@@ -123,6 +125,7 @@
         </footer>
     </div>
     <div id="navigation-cooldown" role="progressbar" data-label="cooldownLabel" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><div data-cooldown-progress></div></div>
+    <div id="navigation-edge" aria-hidden="true" hidden></div>
     <div id="away-screen" hidden><p class="visually-hidden" data-text="away" role="status"></p></div>
     <noscript><p>Activez JavaScript pour essayer les gestes. / Enable JavaScript to try the gestures. <a href="https://github.com/Robin-G0/Motion-Input-Grid">GitHub</a></p></noscript>
 </body>

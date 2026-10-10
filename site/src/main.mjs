@@ -1,3 +1,6 @@
+import { CameraFraming } from "./camera-framing.mjs";
+import { BoundaryFeedback } from "./boundary-feedback.mjs";
+import { SlideRibbon } from "./slide-ribbon.mjs";
 import { NavigationCooldown } from "./navigation-cooldown.mjs";
 import { ScreenTransition } from "./screen-transition.mjs";
 import { GestureGuide } from "./gesture-guide.mjs";
@@ -13,7 +16,10 @@ const element = id => document.getElementById(id);
 const slides = new SlideController(translations.fr.slides.length, settings.slideDelay);
 const presence = new PresenceMonitor(settings);
 const cameraSwipes = new CameraSwipes();
+const ribbon = new SlideRibbon(element("slide"));
 const illustration = new HistoryIllustration(element("history-illustration"));
+const framing = new CameraFraming(document.querySelector(".camera-preview"), element("framing-hint"));
+const boundaries = new BoundaryFeedback(element("navigation-edge"));
 const guide = new GestureGuide(element("scroll-gesture-tip"), element("slide-gesture-tip"),
     element("slide"), [element("welcome"), element("presentation"), element("presence-demo"), element("finale")]);
 const screenTransition = new ScreenTransition(element("away-screen"), element("page-content"));
@@ -50,6 +56,7 @@ function renderSlide() {
     element("slide-title").textContent = slide.title;
     element("slide-description").textContent = slide.description;
     illustration.show(slides.index, text);
+    ribbon.show(slides.index, text);
     element("previous-slide").disabled = slides.index === 0;
     element("next-slide").disabled = slides.index === slides.count - 1;
     element("slide-number").textContent = slide.number;
@@ -176,6 +183,7 @@ function handlePresence(currentSession) {
     if (document.hidden || currentSession !== session || !currentSession.state.running) return;
     const time = performance.now();
     updateHandHint(currentSession, time);
+    framing.update(currentSession, translations[language]);
     if (handScrollReady && !cooldown.locked && !away) {
         for (const action of cameraSwipes.update(currentSession, time, { horizontal: slideFocused() })) {
             handleAction({ action });
@@ -227,7 +235,17 @@ function handleAction(event) {
             const down = !element("finale").hidden && finaleFocused();
             element("scroll-gesture-tip").dataset.direction = down ? "down" : "up";
             element("scroll-gesture-tip").querySelector("[data-text=scrollShort]").textContent = translations[language][down ? "lowerShort" : "scrollShort"];
+        } else {
+            boundaries.show(element("page-content"), event.action === "scroll_previous" ? "top" : "bottom");
+            cooldown.start();
+            cameraSwipes.reset();
         }
+        return;
+    }
+    const horizontal = event.action === "next_slide" || event.action === "previous_slide";
+    if (slideFocused() && horizontal && slideBoundary(event.action === "next_slide" ? 1 : -1)) {
+        cooldown.start();
+        cameraSwipes.reset();
         return;
     }
     if (slideFocused() && slides.gesture(event.action, performance.now())) {
@@ -248,6 +266,7 @@ function stopCamera() {
     previousSession?.dispose();
     starting = false;
     presence.reset();
+    framing.reset();
     cameraSwipes.reset();
     handsMissingSince = null;
     greenSince = null;
@@ -292,7 +311,10 @@ function revealCamera() {
 }
 
 function frameCameraPreview() {
-    const bounds = document.querySelector(".camera-preview").getBoundingClientRect();
+    const preview = document.querySelector(".camera-preview");
+    const video = element("camera-video");
+    if (video.videoWidth && video.videoHeight) preview.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+    const bounds = preview.getBoundingClientRect();
     // Browsers can retain the old button's scroll position after the layout opens.
     if (bounds.top < 16 || bounds.bottom > innerHeight - 16) {
         window.scrollTo({
@@ -377,14 +399,25 @@ document.querySelectorAll("[data-language]").forEach(button => {
 element("start-camera").addEventListener("click", startCamera);
 element("stop-camera").addEventListener("click", stopCamera);
 element("finale-stop-camera").addEventListener("click", stopCamera);
-element("previous-slide").addEventListener("click", () => { slides.move(-1); renderSlide(); });
-element("next-slide").addEventListener("click", () => { slides.move(1); renderSlide(); });
+function slideBoundary(direction) {
+    const atEdge = direction < 0 ? slides.index === 0 : slides.index === slides.count - 1;
+    if (atEdge) boundaries.show(ribbon.window, direction < 0 ? "left" : "right");
+    return atEdge;
+}
+
+function moveSlide(direction) {
+    if (slideBoundary(direction)) return;
+    slides.move(direction);
+    renderSlide();
+}
+
+element("previous-slide").addEventListener("click", () => moveSlide(-1));
+element("next-slide").addEventListener("click", () => moveSlide(1));
 element("slide").addEventListener("keydown", event => {
     if (event.target !== element("slide")) return;
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
         event.preventDefault();
-        slides.move(event.key === "ArrowRight" ? 1 : -1);
-        renderSlide();
+        moveSlide(event.key === "ArrowRight" ? 1 : -1);
     }
 });
 // A horizontal trackpad scroll to the right advances the presentation.
@@ -405,9 +438,8 @@ element("slide").addEventListener("wheel", event => {
     if (!cooldown.locked && time - lastWheelMoveAt >= settings.slideDelay) {
         cooldown.start();
         lastWheelMoveAt = time;
-        slides.move(wheelDistance > 0 ? 1 : -1);
+        moveSlide(wheelDistance > 0 ? 1 : -1);
         guide.completeSwipe();
-        renderSlide();
     }
     wheelDistance = 0;
 }, { passive: false });
@@ -423,8 +455,7 @@ element("slide").addEventListener("pointerup", event => {
     if (!swipeStart || event.pointerId !== swipeStart.id) return;
     const distance = event.clientX - swipeStart.x;
     if (Math.abs(distance) > 60) {
-        slides.move(distance < 0 ? 1 : -1);
-        renderSlide();
+        moveSlide(distance < 0 ? 1 : -1);
     }
     swipeStart = null;
 });
@@ -448,3 +479,11 @@ document.addEventListener("visibilitychange", () => {
 });
 window.addEventListener("pagehide", () => session?.dispose());
 renderLanguage();
+
+// Give ordinary wheel scrolling the same feedback at the page boundaries.
+window.addEventListener("wheel", event => {
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    const atTop = scrollY <= 1 && event.deltaY < 0;
+    const atBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 1 && event.deltaY > 0;
+    if (atTop || atBottom) boundaries.show(element("page-content"), atTop ? "top" : "bottom");
+}, { passive: true });
