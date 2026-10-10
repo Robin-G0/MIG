@@ -168,10 +168,10 @@ test("gestures advance and reverse the presentation; departure and return reveal
     await expect(page.locator('[data-text="finaleStar"]')).toContainText("GitHub");
     await page.getByRole("button", { name: "EN", exact: true }).click();
     await expect(page).toHaveTitle("Motion Input Grid : your move");
-    await expect(page.locator('[data-text="finaleStar"]')).toHaveText("If you find the project interesting, would you please consider giving it a star on GitHub? Thank you for your support!");
+    await expect(page.locator('[data-text="finaleStar"]')).toHaveText("If you find the project interesting, would you please consider giving it a 🌟 on GitHub? Thank you for your support!");
     await page.getByRole("button", { name: "FR", exact: true }).click();
     await expect(page).toHaveTitle("Motion Input Grid : \u00e0 vous de jouer");
-    await expect(page.locator('[data-text="finaleStar"]')).toContainText("\u00e9toile sur GitHub");
+    await expect(page.locator('[data-text="finaleStar"]')).toContainText("🌟 sur GitHub");
     expect(await page.evaluate(() => window.demoCamera.state.running)).toBe(true);
     await expect(page.locator("#hands-tip")).toBeHidden();
     await expect(page.locator("#departure-tip")).toBeHidden();
