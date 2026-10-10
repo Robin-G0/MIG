@@ -40,8 +40,18 @@ async function holdHandsInFrame(page) {
 }
 
 
+// CSS/Web Animations have a separate timeline from Playwright's simulated timers.
+async function finishRibbonAnimation(page) {
+    await page.evaluate(() => {
+        for (const animation of document.querySelector(".carousel-track").getAnimations()) animation.finish();
+    });
+}
+
 async function swipeHand(page, action, landmark = 15, wait = true) {
-    if (wait) await page.clock.runFor(3000);
+    if (wait) {
+        await finishRibbonAnimation(page);
+        await page.clock.runFor(3000);
+    }
     const horizontal = action === "next_slide" || action === "previous_slide";
     const sign = ["next_slide", "scroll_previous"].includes(action) ? 1 : -1;
     await page.evaluate(landmark => {
@@ -419,6 +429,7 @@ test("returning by hand changes the first slide and scrolling right resumes the 
     await expect(page.locator("#history-illustration")).toBeHidden();
     await page.getByRole("button", { name: "EN", exact: true }).click();
     await expect(page.locator("#slide-title")).toHaveText("Pretty neat, right?");
+    await finishRibbonAnimation(page);
     await page.clock.runFor(3000);
     await page.locator("#slide").dispatchEvent("wheel", { deltaX: 0, deltaY: 150 });
     await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
@@ -428,6 +439,7 @@ test("returning by hand changes the first slide and scrolling right resumes the 
     await expect(page.locator("#history-illustration")).toBeVisible();
     await page.locator("#slide").dispatchEvent("wheel", { deltaX: 100, deltaY: 0 });
     await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
+    await finishRibbonAnimation(page);
     await page.clock.runFor(3000);
     await page.locator("#slide").dispatchEvent("wheel", { deltaX: -100, deltaY: 0 });
     await expect(page.locator("#slide-title")).toHaveText("Pretty neat, right?");
@@ -889,6 +901,7 @@ test("native MIG slide events remain connected to the page navigation", async ({
     await focusPresentation(page);
     await page.evaluate(() => window.demoCamera.action("next_slide"));
     await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
+    await finishRibbonAnimation(page);
     await page.clock.runFor(2200);
     await page.evaluate(() => window.demoCamera.action("previous_slide"));
     await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
@@ -1018,10 +1031,7 @@ test("the two-second recovery starts after the ribbon animation finishes", async
     await page.clock.runFor(400);
     await expect(bar).toHaveAttribute("aria-valuenow", "0");
     await expect(page.locator("#next-slide")).toBeDisabled();
-    // Browser animations use their own timeline, outside Playwright's fake clock.
-    await page.evaluate(() => {
-        for (const animation of document.querySelector(".carousel-track").getAnimations()) animation.finish();
-    });
+    await finishRibbonAnimation(page);
     await page.clock.runFor(1900);
     await expect(bar).toBeVisible();
     await page.clock.runFor(150);
