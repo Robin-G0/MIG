@@ -301,7 +301,7 @@ body.is-away { background: #000; }
 .framing-confirmed { animation: framing-valid .9s ease-out; }
 
 /* A horizontal strip with a glimpse of the adjacent panels. */
-.carousel-window { overflow: hidden; width: calc(100% + 48px); margin-left: -24px; padding-inline: 24px; }
+.carousel-window { overflow: hidden; width: calc(100% + 48px); margin-left: -24px; padding-inline: 52px; }
 .carousel-track { display: grid; grid-template-columns: repeat(3, 100%); gap: 20px; transform: translateX(calc(-100% - 20px)); }
 .carousel-track .slide { border-radius: 0; grid-template-columns: .9fr 1.1fr; padding: 24px; }
 .slide-neighbour { pointer-events: none; }
@@ -333,8 +333,8 @@ body.is-away { background: #000; }
 #navigation-edge[data-direction="top"] { background: linear-gradient(#ff5148aa, transparent 25%); }
 #navigation-edge[data-direction="bottom"] { background: linear-gradient(to top, #ff5148aa, transparent 25%); }
 @media (max-width: 800px) {
-    .carousel-track .slide { grid-template-columns: 1fr; }
-    .carousel-window { width: calc(100% + 24px); margin-left: -12px; padding-inline: 12px; }
+    .carousel-track .slide { grid-template-columns: 1fr; padding: 20px; }
+    .carousel-window { width: calc(100% + 24px); margin-left: -12px; padding-inline: 40px; }
     .gesture-instructions { justify-content: center; font-size: 12px; gap: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
