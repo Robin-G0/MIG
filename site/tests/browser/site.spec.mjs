@@ -264,10 +264,10 @@ test("history diagrams move and the grid explains order, cancellation and condit
     await page.goto("./?lang=en");
     const illustration = page.locator("#history-illustration");
     const slider = illustration.locator("input[type=range]");
-    await expect(page.locator("#slide-title")).toHaveText("Positions and plenty of decimal places.");
+    await expect(page.locator("#slide-title")).toHaveText("Positions");
     await expect(illustration.locator("[data-history-play]")).toHaveAttribute("aria-pressed", "false");
     const coordinates = illustration.locator(".coordinate-label");
-    await expect(coordinates.first()).toHaveText(/x: \d\.\d{9}.*y: \d\.\d{9}/);
+    await expect(coordinates.first()).toHaveText(/x: \d\.\d{3}.*y: \d\.\d{3}/);
     const before = await coordinates.allTextContents();
     await slider.focus();
     await slider.press("ArrowRight");
@@ -406,7 +406,7 @@ test("returning by hand changes the first slide and scrolling right resumes the 
     await mockCamera(page);
     await page.clock.install();
     await page.goto("./?lang=fr");
-    await expect(page.locator("#slide-title")).toContainText("d\u00e9cimales");
+    await expect(page.locator("#slide-title")).toHaveText("Les positions");
     await page.locator("#start-camera").click();
     await expect(page.locator("#start-camera")).toBeHidden();
     await holdHandsInFrame(page);
@@ -424,7 +424,7 @@ test("returning by hand changes the first slide and scrolling right resumes the 
     await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
     await page.locator("#slide").dispatchEvent("wheel", { deltaX: 100, deltaY: 0 });
     await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
-    await expect(page.locator("#slide-title")).toHaveText("Connect the points. Measure the angles.");
+    await expect(page.locator("#slide-title")).toHaveText("Angles");
     await expect(page.locator("#history-illustration")).toBeVisible();
     await page.locator("#slide").dispatchEvent("wheel", { deltaX: 100, deltaY: 0 });
     await expect(page.locator("#slide-counter")).toHaveText("Slide 2 / 3");
@@ -438,9 +438,9 @@ test("the evolving grid presents detection, cancellation, then a one-second thum
     await page.goto("./?lang=en");
     await page.locator("#next-slide").click();
     await page.locator("#next-slide").click();
-    const grid = page.locator("[data-history-grid]");
+    const grid = page.locator("#slide [data-history-grid]");
     const cell = name => grid.locator(`[data-cell=${name}]`);
-    const outcome = page.locator("[data-history-outcome]");
+    const outcome = page.locator("#slide [data-history-outcome]");
     await expect(cell("cancel")).toBeHidden();
     await expect(cell("condition")).toBeHidden();
     await expect(grid.locator("button:visible")).toHaveCount(3);
@@ -512,13 +512,13 @@ for (const viewport of [{ width: 844, height: 390 }, { width: 1440, height: 1080
             expect(frame.y + frame.height).toBeLessThanOrEqual(viewport.height);
             expect(frame.height).toBe(original.height);
             const art = await page.locator("#history-illustration").boundingBox();
-            const copy = await page.locator(".slide-copy").boundingBox();
+            const copy = await page.locator("#slide .slide-copy").boundingBox();
             expect(art.y + art.height).toBeLessThanOrEqual(frame.y + frame.height);
             expect(copy.y + copy.height).toBeLessThanOrEqual(frame.y + frame.height);
             // Change language without scrolling back to the header control.
             await page.evaluate(() => document.querySelector('[data-language="fr"]').click());
             const frenchArt = await page.locator("#history-illustration").boundingBox();
-            const frenchCopy = await page.locator(".slide-copy").boundingBox();
+            const frenchCopy = await page.locator("#slide .slide-copy").boundingBox();
             expect(frenchArt.y + frenchArt.height).toBeLessThanOrEqual(frame.y + frame.height);
             expect(frenchCopy.y + frenchCopy.height).toBeLessThanOrEqual(frame.y + frame.height);
             await page.evaluate(() => document.querySelector('[data-language="en"]').click());
@@ -527,14 +527,13 @@ for (const viewport of [{ width: 844, height: 390 }, { width: 1440, height: 1080
                 await page.clock.runFor(900);
             }
         }
-        const second = await page.locator('[data-cell="second"]').boundingBox();
+        const second = await page.locator('#slide [data-cell="second"]').boundingBox();
         // Reveal the cancellation stage by interacting with a green cell.
-        await page.locator('[data-cell="second"]').click();
-        const cancel = await page.locator('[data-cell="cancel"]').boundingBox();
+        await page.locator('#slide [data-cell="second"]').click();
+        const cancel = await page.locator('#slide [data-cell="cancel"]').boundingBox();
         expect(cancel.x).toBeCloseTo(second.x, 0);
         expect(cancel.y).toBeGreaterThan(second.y);
-        await expect(page.locator('[data-text="nextInstruction"]')).toContainText("Gently");
-        await expect(page.locator('[data-text="previousInstruction"]')).toContainText("Gently");
+        await expect(page.locator('[data-text="slideInstructions"]')).toContainText("gently");
     });
 }
 
@@ -655,7 +654,7 @@ test("the welcome fills a large screen and introduces the camera only after the 
     await expect(page.locator("#start-camera")).toBeHidden();
     await expect(page.locator(".camera-card")).toBeVisible();
     await expect(page.locator("#welcome")).toHaveClass(/camera-open/);
-    await expect(page.locator(".camera-preview")).toHaveCSS("outline-width", "16px");
+    await expect(page.locator(".camera-preview")).toHaveCSS("outline-width", "3px");
     await holdHandsInFrame(page);
     const tip = page.locator("#scroll-gesture-tip");
     await expect(tip).toBeVisible();
@@ -730,7 +729,7 @@ test("either hand can advance and reverse slides, with continuous tooltip motion
         await expect(page.locator("#slide-counter")).toHaveText("Slide 1 / 3");
     }
     await page.emulateMedia({ reducedMotion: "no-preference" });
-    await expect(page.locator(".hand-left svg")).toHaveCSS("animation-duration", "3.2s");
+    await expect(page.locator(".hand-left svg")).toHaveCSS("animation-duration", "6.4s");
     await expect(page.locator(".hand-left svg")).toHaveCSS("animation-timing-function", "ease-in-out");
 });
 
@@ -918,4 +917,57 @@ test("a slow sweep with a missing frame navigates down and back up", async ({ pa
         if (direction === 1) await expect(page.locator("#presentation h2")).toBeInViewport();
         else expect(await page.evaluate(() => scrollY)).toBe(0);
     }
+});
+
+
+test("camera edge guidance mirrors the image, marks all four limits and validates one centred hand", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.goto("./?lang=en");
+    await page.locator("#start-camera").click();
+    for (const [x, y, edges] of [[.1, .1, ["top", "right"]], [.9, .9, ["bottom", "left"]], [.5, .5, []]]) {
+        await page.evaluate(({ x, y }) => {
+            const camera = window.demoCamera;
+            camera.coordinate = index => index === 15 ? { x, y } : index === 11 || index === 12 ? { x: .5, y: .5 } : null;
+            camera.frame(true);
+        }, { x, y });
+        for (const edge of ["top", "bottom", "left", "right"]) {
+            const overlay = page.locator(`[data-camera-edge="${edge}"]`);
+            if (edges.includes(edge)) await expect(overlay).toBeVisible();
+            else await expect(overlay).toBeHidden();
+        }
+    }
+    await expect(page.locator(".camera-preview")).toHaveClass(/framing-confirmed/);
+    await page.clock.runFor(1000);
+    await expect(page.locator(".camera-preview")).not.toHaveClass(/framing-confirmed/);
+    await expect(page.locator("#framing-hint")).toContainText("centre");
+    await page.locator("#stop-camera").click();
+    await expect(page.locator("#framing-hint")).toBeHidden();
+});
+
+test("system palettes, square cells, the ribbon and elastic limits remain usable", async ({ page }) => {
+    await mockCamera(page);
+    await page.clock.install();
+    await page.emulateMedia({ colorScheme: "light", reducedMotion: "reduce" });
+    await page.goto("./?lang=en");
+    const colour = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--paper"));
+    await page.emulateMedia({ colorScheme: "dark" });
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--paper"))).not.toBe(colour);
+    await page.locator("#slide").focus();
+    await page.keyboard.press("ArrowLeft");
+    await expect(page.locator("#navigation-edge")).toHaveAttribute("data-direction", "left");
+    await page.clock.runFor(700);
+    await expect(page.locator("#navigation-edge")).toBeHidden();
+    await page.locator("#next-slide").click();
+    await page.locator("#next-slide").click();
+    await expect(page.locator(".slide-neighbour")).toHaveCount(2);
+    const grid = await page.locator("#slide .history-grid").boundingBox();
+    expect(grid.width).toBeCloseTo(grid.height, 0);
+    const cell = await page.locator('#slide [data-cell="first"]').boundingBox();
+    expect(cell.width).toBeCloseTo(cell.height, 0);
+    await page.locator("#slide").focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(page.locator("#navigation-edge")).toHaveAttribute("data-direction", "right");
+    await expect(page.locator("#slide-counter")).toHaveText("Slide 3 / 3");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

@@ -158,7 +158,7 @@ export class HistoryIllustration {
                 + 3 * u * t ** 2 * (200 + offset) + t ** 3 * (90 + offset);
             this.drawing.append(svgElement("circle", { cx: x, cy: y, r: 9, fill: color }));
             this.drawing.append(svgElement("text", { x: 22, y: 264 + index * 24, class: "coordinate-label" },
-                `P${index + 1}  x: ${(x / 360).toFixed(9)}  y: ${(y / 320).toFixed(9)}`));
+                `P${index + 1}  x: ${(x / 360).toFixed(3)}  y: ${(y / 320).toFixed(3)}`));
         }
         this.setStatus(this.text.coordinateHistory);
     }

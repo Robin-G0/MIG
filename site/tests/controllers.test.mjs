@@ -243,3 +243,17 @@ test("a reversal after stale tracking starts a new gesture instead of scrolling 
     wrist.y = .95;
     assert.deepEqual(swipes.update(session, 1000), []);
 });
+
+
+test("framing reserves a quarter at each edge and works with just one visible wrist", async () => {
+    const { cameraFrame } = await import("../src/camera-framing.mjs");
+    for (const index of [15, 16]) {
+        let hand = { x: .1, y: .9 };
+        const session = { coordinate: landmark => landmark === index ? hand : null };
+        assert.deepEqual(cameraFrame(session), { edges: ["bottom", "right"], centred: false });
+        hand = { x: .5, y: .5 };
+        assert.deepEqual(cameraFrame(session), { edges: [], centred: true });
+        hand = null;
+        assert.deepEqual(cameraFrame(session), { edges: [], centred: false });
+    }
+});

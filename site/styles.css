@@ -348,3 +348,8 @@ body.is-away { background: #000; }
 @media (prefers-reduced-motion: reduce) {
     .framing-confirmed { animation: none; outline-color: #38f581; }
 }
+
+.history-visual { container-type: size; }
+.history-grid { width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); container-type: inline-size; }
+.history-grid [data-condition-content].is-thumb { font-size: 12cqw; }
+.carousel-track .slide[data-returned="true"] { grid-template-columns: 1fr; }
