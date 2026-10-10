@@ -465,7 +465,7 @@ test("the evolving grid presents detection, cancellation, then a one-second thum
     await page.clock.runFor(3000);
     await expect(cell("cancel")).toBeHidden();
     await expect(cell("trigger")).toBeHidden();
-    await expect(cell("condition")).toHaveText("if thumbsup, trigger");
+    await expect(cell("condition")).toHaveText("\u{1f44d}");
     await page.clock.runFor(1000);
     await expect(cell("condition")).toHaveText("3");
     await page.clock.runFor(1000);

@@ -241,7 +241,7 @@ export class HistoryIllustration {
         cell("condition").hidden = stage !== "condition" && stage !== "interactive";
         cell("trigger").hidden = stage === "condition";
         this.thumb.closest("label").hidden = stage !== "interactive";
-        this.conditionContent.textContent = stage === "interactive" ? "if thumbsup, trigger" : "3";
+        this.conditionContent.textContent = stage === "interactive" ? "\u{1f44d}" : "3";
     }
 
     resetGrid(stage) {
@@ -261,7 +261,7 @@ export class HistoryIllustration {
         if (step === 6) this.resetGrid("cancel");
         if (step === 12) {
             this.resetGrid("condition");
-            this.conditionContent.textContent = "if thumbsup, trigger";
+            this.conditionContent.textContent = "\u{1f44d}";
         }
         if (step === 13) this.conditionContent.textContent = "3";
         if ([1, 7, 14].includes(step)) this.activateCell("first");
