@@ -17,8 +17,9 @@ function angleAt(origin, first, second) {
 }
 
 export class HistoryIllustration {
-    constructor(root) {
+    constructor(root, { animated = true } = {}) {
         this.root = root;
+        this.animated = animated;
         this.drawing = root.querySelector("svg");
         this.slider = root.querySelector("input[type=range]");
         this.playButton = root.querySelector("[data-history-play]");
@@ -30,7 +31,7 @@ export class HistoryIllustration {
         this.stage = "detect";
         this.lastActivated = null;
         this.motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
-        this.playing = !this.motionPreference.matches;
+        this.playing = animated && !this.motionPreference.matches;
         this.position = 0;
         this.progress = 0;
         this.result = "gridReady";
@@ -69,7 +70,7 @@ export class HistoryIllustration {
             });
         });
         this.frame = this.frame.bind(this);
-        requestAnimationFrame(this.frame);
+        if (this.animated) requestAnimationFrame(this.frame);
     }
 
     show(index, text) {
@@ -130,7 +131,7 @@ export class HistoryIllustration {
             this.draw();
         }
         this.lastFrame = visible ? time : null;
-        requestAnimationFrame(this.frame);
+        if (this.animated) requestAnimationFrame(this.frame);
     }
 
     draw() {

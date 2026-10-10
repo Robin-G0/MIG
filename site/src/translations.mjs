@@ -42,7 +42,7 @@ export const translations = {
         unavailable: "La caméra n’est pas disponible. Vérifiez sa connexion et les applications qui l’utilisent.",
         error: "La démo n’a pas pu démarrer. Vous pouvez réessayer ou utiliser les boutons.",
         slideshowEyebrow: "01 / Mon parcours",
-        slideshowTitle: "Comment je suis arriv\u00e9 \u00e0 cette grille",
+        slideshowTitle: "Comment j\u2019ai cr\u00e9\u00e9 MIG",
         nextInstruction: "Balayez doucement une main de droite à gauche pour avancer.",
         previousInstruction: "Balayez doucement une main de gauche à droite pour revenir.",
         manualHint: "Les flèches, les boutons et le tactile fonctionnent aussi.",
@@ -89,7 +89,7 @@ export const translations = {
                 "number": "02",
                 "tag": "L’étape suivante / angles",
                 "title": "Les angles",
-                "description": "J\u2019ai ensuite essay\u00e9 de tracer des lignes et de mesurer les angles. Je pensais que ce serait plus simple et plus souple, mais cela ne suffisait pas : je veux que chacun puisse personnaliser MIG sans savoir coder.",
+                "description": "J\u2019ai trac\u00e9 des lignes et mesur\u00e9 les angles, en pensant gagner en souplesse. Mais je veux que chacun puisse personnaliser MIG sans savoir coder.",
                 "color": "peach"
             },
             {

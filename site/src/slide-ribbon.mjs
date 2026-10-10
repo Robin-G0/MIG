@@ -21,8 +21,7 @@ export class SlideRibbon {
             panel.setAttribute("aria-hidden", "true");
             panel.classList.add("slide-neighbour");
             for (const node of panel.querySelectorAll("[id]")) node.removeAttribute("id");
-            const illustration = new HistoryIllustration(panel.querySelector(".history-illustration"));
-            illustration.playing = false;
+            const illustration = new HistoryIllustration(panel.querySelector(".history-illustration"), { animated: false });
             return { panel, illustration, direction };
         });
         this.track.append(this.neighbours[0].panel, slide, this.neighbours[1].panel);

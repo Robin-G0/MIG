@@ -353,3 +353,9 @@ body.is-away { background: #000; }
 .history-grid { width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); container-type: inline-size; }
 .history-grid [data-condition-content].is-thumb { font-size: 12cqw; }
 .carousel-track .slide[data-returned="true"] { grid-template-columns: 1fr; }
+
+@media (min-width: 801px) and (min-height: 601px) {
+    .carousel-track .history-illustration { height: 100%; max-height: 600px; }
+    .carousel-track .slide h3 { font-size: clamp(28px, 3vw, 52px); }
+    .carousel-track .slide-copy > p:last-child { font-size: clamp(15px, 1.2vw, 18px); line-height: 1.5; }
+}
