@@ -19,7 +19,7 @@ const presence = new PresenceMonitor(settings);
 const cameraSwipes = new CameraSwipes();
 const ribbon = new SlideRibbon(element("slide"));
 const illustration = new HistoryIllustration(element("history-illustration"));
-const framing = new CameraFraming(document.querySelector(".camera-preview"), element("framing-hint"));
+const framing = new CameraFraming(document.querySelector(".camera-preview"));
 const boundaries = new BoundaryFeedback(element("navigation-edge"));
 const guide = new GestureGuide(element("scroll-gesture-tip"), element("slide-gesture-tip"),
     element("slide"), [element("welcome"), element("presentation"), element("presence-demo"), element("finale")]);
@@ -79,7 +79,7 @@ function setStatus(nextStatus) {
     status = nextStatus;
     const text = translations[language];
     element("camera-status").textContent = ["searching", "tracking"].includes(status)
-        ? (demoStarted ? "" : phone ? text.oneHandBeginHint : text.cameraHint) : text[status];
+        ? (demoStarted ? text.frameHands : phone ? text.oneHandBeginHint : text.cameraHint) : text[status];
     element("camera-status").hidden = !element("camera-status").textContent;
 }
 
@@ -195,7 +195,7 @@ function handlePresence(currentSession) {
     if (document.hidden || currentSession !== session || !currentSession.state.running) return;
     const time = performance.now();
     updateHandHint(currentSession, time);
-    framing.update(currentSession, translations[language]);
+    framing.update(currentSession);
     if (handScrollReady && !cooldown.locked && !away) {
         for (const action of cameraSwipes.update(currentSession, time, { horizontal: slideFocused() })) {
             handleAction({ action });

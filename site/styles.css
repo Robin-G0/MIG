@@ -289,8 +289,6 @@ body.is-away { background: #000; }
 [data-camera-edge="bottom"] { inset: auto 0 0; height: 25%; background: linear-gradient(to top, #ff8b8b99, transparent); }
 [data-camera-edge="left"] { inset: 0 auto 0 0; width: 25%; background: linear-gradient(to right, #ff8b8b99, transparent); }
 [data-camera-edge="right"] { inset: 0 0 0 auto; width: 25%; background: linear-gradient(to left, #ff8b8b99, transparent); }
-.framing-hint { display: none; position: absolute; bottom: 6px; left: 8px; right: 8px; z-index: 3; text-align: center; font-size: 11px; line-height: 1.4; margin: 0; padding: 6px; color: white; background: #142333cc; border-radius: 8px; }
-.is-running .framing-hint { display: block; }
 .camera-card.is-running.has-hands .camera-preview { box-shadow: none; }
 @keyframes framing-valid { from { box-shadow: inset 0 0 0 5px #38f581, 0 0 24px #38f581aa; } to { box-shadow: inset 0 0 0 0 transparent, 0 0 0 transparent; } }
 .framing-confirmed { animation: framing-valid .9s ease-out; }
@@ -301,8 +299,8 @@ body.is-away { background: #000; }
 .carousel-track .slide { border-radius: 0; grid-template-columns: .9fr 1.1fr; padding: 24px; }
 .slide-neighbour { pointer-events: none; }
 .history-grid[data-stage="condition"] [data-cell="condition"] { grid-column: 5; }
-.history-grid [data-cell="condition"] { font-size: clamp(14px, 2vw, 30px); }
-.history-grid [data-condition-content].is-thumb { display: grid; place-items: center; width: 100%; height: 100%; font-size: clamp(28px, 4vw, 62px); line-height: 1; }
+.history-grid [data-cell="condition"] { display: grid; place-items: center; padding: 0; font-size: clamp(14px, 2vw, 30px); }
+.history-grid [data-condition-content].is-thumb { display: grid; place-items: center; width: 100%; height: 100%; font-family: system-ui, sans-serif; font-size: 10cqw; line-height: 1; }
 .presence-section { align-items: center; text-align: center; }
 .presence-section .eyebrow { justify-content: center; }
 .presence-section .lead, .presence-section h2 { margin-inline: auto; }
@@ -336,7 +334,6 @@ body.is-away { background: #000; }
     .framing-confirmed { animation: none; outline-color: #38f581; }
 }
 
-.history-grid [data-condition-content].is-thumb { font-size: 12cqw; }
 .carousel-track .slide[data-returned="true"] { grid-template-columns: 1fr; }
 
 @media (min-width: 801px) and (min-height: 601px) {

@@ -259,11 +259,7 @@ export class HistoryIllustration {
         this.step = step;
         if (step === 0) this.resetGrid("detect");
         if (step === 6) this.resetGrid("cancel");
-        if (step === 12) {
-            this.resetGrid("condition");
-            this.conditionContent.textContent = "\u{1f44d}";
-        }
-        if (step === 13) this.conditionContent.textContent = "3";
+        if (step === 12) this.resetGrid("condition");
         if ([1, 7, 14].includes(step)) this.activateCell("first");
         if ([2, 8, 15].includes(step)) this.activateCell("second");
         if (step === 3) this.activateCell("trigger");

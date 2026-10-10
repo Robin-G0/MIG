@@ -17,21 +17,19 @@ export function cameraFrame(session, previousEdges = []) {
 }
 
 export class CameraFraming {
-    constructor(preview, hint) {
+    constructor(preview) {
         this.preview = preview;
-        this.hint = hint;
         this.centred = false;
         this.edges = [];
         this.timer = null;
     }
 
-    update(session, text) {
+    update(session) {
         const frame = cameraFrame(session, this.edges);
         this.edges = frame.edges;
         for (const edge of this.preview.querySelectorAll("[data-camera-edge]")) {
             edge.hidden = !frame.edges.includes(edge.dataset.cameraEdge);
         }
-        this.hint.textContent = text.frameHands;
         if (frame.centred && !this.centred) {
             clearTimeout(this.timer);
             this.preview.classList.add("framing-confirmed");

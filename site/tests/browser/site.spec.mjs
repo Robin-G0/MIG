@@ -477,7 +477,8 @@ test("the evolving grid presents detection, cancellation, then a one-second thum
     await page.clock.runFor(3000);
     await expect(cell("cancel")).toBeHidden();
     await expect(cell("trigger")).toBeHidden();
-    await expect(cell("condition")).toHaveText("\u{1f44d}");
+    await expect(cell("condition")).toHaveText("3");
+    await expect(cell("first")).not.toHaveClass(/is-complete/);
     await page.clock.runFor(1000);
     await expect(cell("condition")).toHaveText("3");
     await page.clock.runFor(1000);
@@ -486,6 +487,14 @@ test("the evolving grid presents detection, cancellation, then a one-second thum
     await expect(cell("second")).toHaveClass(/is-active/);
     await page.clock.runFor(1000);
     await expect(cell("condition")).toHaveText("\u{1f44d}");
+    await expect(cell("first")).toHaveClass(/is-complete/);
+    await expect(cell("second")).toHaveClass(/is-complete/);
+    const square = await cell("condition").boundingBox();
+    const thumb = await cell("condition").locator("span").boundingBox();
+    expect(thumb.x + thumb.width / 2).toBeCloseTo(square.x + square.width / 2, 0);
+    expect(thumb.y + thumb.height / 2).toBeCloseTo(square.y + square.height / 2, 0);
+    expect(thumb.width).toBeLessThan(square.width);
+    expect(thumb.height).toBeLessThan(square.height);
     await expect(outcome).toBeEmpty();
     await page.clock.runFor(1000);
     await expect(cell("condition")).toHaveClass(/is-active/);
@@ -569,7 +578,7 @@ test("one hand can navigate and both-hands onboarding is never requested again a
     await page.evaluate(() => { window.demoCamera.coordinate = index => window.demoCamera.detected && index !== 16 ? { x: .5, y: .5 } : null; window.demoCamera.frame(true); });
     await expect(page.locator("#hands-tip")).toBeHidden();
     await expect(page.locator("#camera-hint")).toHaveCount(0);
-    await expect(page.locator("#camera-status")).toBeHidden();
+    await expect(page.locator("#camera-status")).toContainText("centre");
     await page.evaluate(() => window.demoCamera.frame(false));
     await page.clock.runFor(700);
     await page.evaluate(() => window.demoCamera.frame(false));
@@ -954,9 +963,9 @@ test("camera edge guidance mirrors the image, marks all four limits and validate
     await expect(page.locator(".camera-preview")).toHaveClass(/framing-confirmed/);
     await page.clock.runFor(1000);
     await expect(page.locator(".camera-preview")).not.toHaveClass(/framing-confirmed/);
-    await expect(page.locator("#framing-hint")).toContainText("centre");
+    await expect(page.locator("#framing-hint")).toHaveCount(0);
     await page.locator("#stop-camera").click();
-    await expect(page.locator("#framing-hint")).toBeHidden();
+    await expect(page.locator("#framing-hint")).toHaveCount(0);
 });
 
 test("system palettes, square cells, the ribbon and elastic limits remain usable", async ({ page }) => {
@@ -1064,7 +1073,8 @@ test("camera guidance stays inside the preview and boundary jitter does not flas
     await mockCamera(page);
     await page.goto("./?lang=en");
     await page.locator("#start-camera").click();
-    await expect(page.locator("#framing-hint")).toHaveText("Try to keep at least one hand near the centre to navigate.");
+    await expect(page.locator("#framing-hint")).toHaveCount(0);
+    await expect(page.locator(".camera-preview > p")).toHaveCount(1);
     await expect(page.locator(".camera-card > p")).toHaveCount(0);
     await expect(page.locator(".camera-preview #camera-status")).toHaveCount(1);
     const edge = page.locator('[data-camera-edge="top"]');
